@@ -1,0 +1,24 @@
+:root {
+  font-family: system-ui, sans-serif;
+  line-height: 1.55;
+  color: #231e2b;
+  background: #fffaf6;
+  --accent: #533494;
+  --line: #ded4e8;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+a { color: var(--accent); text-underline-offset: .2em; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; }
+:focus-visible { outline: 3px solid #7542ae; outline-offset: 3px; }
+h1, h2 { line-height: 1.13; letter-spacing: -.035em; }
+h1 { font-size: clamp(2.2rem, 8vw, 4rem); margin: .25em 0; max-width: 16ch; }
+h2 { margin-top: 1.5em; }
+pre {
+  background: #f0e9f8;
+  border-radius: .75rem;
+  padding: .85rem;
+  overflow: auto;
+}

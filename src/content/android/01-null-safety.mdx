@@ -1,0 +1,45 @@
+---
+id: android-kotlin-null-safety-01
+track: android
+nivel: junior
+modulo: Kotlin
+titulo: Ausencia de datos en Kotlin
+duracion_min: 4
+prerequisitos: []
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: ¿Qué tipo usarías para un nombre que puede faltar?
+    opciones: ["String", "String?", "Int"]
+    correcta: 1
+    explicacion: Agregar el signo de pregunta al tipo permite que el valor sea null.
+  - tipo: completar
+    pregunta: Completá el operador que elige Invitado cuando el nombre es null.
+    codigo: 'val visible = nombre ___ "Invitado"'
+    respuestas: ["?:"]
+    explicacion: El operador Elvis devuelve el valor de la izquierda cuando está presente y usa el de la derecha cuando es null.
+  - tipo: opcion_multiple
+    pregunta: Si nombre vale "Ana", ¿qué imprime el programa?
+    opciones: ["Hola, Invitado", "Hola, null", "Hola, Ana"]
+    correcta: 2
+    explicacion: El valor alternativo se usa cuando el nombre es null.
+tarea_local: En un archivo Kotlin, escribí una función nombreVisible que reciba un String? y devuelva un String. Probala con null, "Ana" y una cadena vacía.
+resultado_esperado: Devolvé "Invitado" para null, "Ana" para "Ana" y una cadena vacía para una cadena vacía.
+---
+
+import example from '../../../android-samples/kotlin/AusenciaDeDatos.kt?raw'
+
+## Concepto
+
+El nombre de una persona puede venir vacío, o el dato puede faltar por completo. Kotlin te permite expresar la segunda situación en el tipo. Un `String` contiene texto. Un `String?` permite que el valor sea `null`. Cuando lo vas a usar, podés decidir qué mostrar si falta.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{example}</code></pre>
+
+El operador `?:` usa el valor de la izquierda si está presente. Cuando es `null`, usa el valor de la derecha. El programa imprime `Hola, Invitado`.
+
+## Para repasar
+
+- `String?` permite representar un dato ausente.
+- `?:` elige un valor alternativo cuando el dato es `null`.
+- Una cadena vacía es un valor distinto de `null`.
