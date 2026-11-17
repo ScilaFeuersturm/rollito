@@ -5,7 +5,7 @@ import frontmatter from 'remark-frontmatter'
 import mdxFrontmatter from 'remark-mdx-frontmatter'
 
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [
     { ...mdx({ remarkPlugins: [frontmatter, mdxFrontmatter] }), enforce: 'pre' },
     react(),

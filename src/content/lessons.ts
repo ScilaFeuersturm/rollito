@@ -6,14 +6,18 @@ interface LessonModule {
   frontmatter: unknown
 }
 
-export const lessons = Object.entries(import.meta.glob<LessonModule>('./**/*.mdx', { eager: true }))
-  .map(([path, module]) => {
-    const parsed = lessonSchema.safeParse(module.frontmatter)
-    if (!parsed.success) {
-      throw new Error(`Frontmatter inválido en ${path}: ${parsed.error.message}`)
-    }
-    return { ...parsed.data, Content: module.default }
-  })
+function toLesson([path, module]: [string, LessonModule]) {
+  const parsed = lessonSchema.safeParse(module.frontmatter)
+  if (!parsed.success) {
+    throw new Error(`Frontmatter inválido en ${path}: ${parsed.error.message}`)
+  }
+  return { ...parsed.data, Content: module.default }
+}
+
+export type Lesson = ReturnType<typeof toLesson>
+
+export const lessons: Lesson[] = Object.entries(import.meta.glob<LessonModule>('./**/*.mdx', { eager: true }))
+  .map(toLesson)
 
 const ids = new Set(lessons.map(lesson => lesson.id))
 if (ids.size !== lessons.length) throw new Error('Hay lecciones con IDs repetidos.')
