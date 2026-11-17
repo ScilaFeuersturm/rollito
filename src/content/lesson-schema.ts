@@ -24,6 +24,7 @@ export const lessonSchema = z.object({
   ejercicios: z.array(exerciseSchema).min(2).max(5),
   tarea_local: z.string().min(1),
   resultado_esperado: z.string().min(1),
+  resumen: z.array(z.string().trim().min(1)).min(3).max(5),
 })
 
 export type Exercise = z.infer<typeof exerciseSchema>

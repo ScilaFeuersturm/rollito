@@ -4,8 +4,9 @@ import { localDay, readProgress, saveProgress, streak, xpPerLesson, type Progres
 import styles from './App.module.css'
 import { Home } from './Home'
 import { LessonPage } from './LessonPage'
+import { Repaso } from './Repaso'
 import { Link, usePathname } from './router'
-import { homePath, matchRoute, pageTitle } from './routes'
+import { homePath, matchRoute, pageTitle, repasoPath } from './routes'
 
 export function App({ url }: { url: string }) {
   const pathname = usePathname(url)
@@ -39,6 +40,10 @@ export function App({ url }: { url: string }) {
     <header className={styles.header}>
       <div className={styles.bar}>
         <Link className={styles.brand} href={homePath}>Rollito<span aria-hidden="true">.</span></Link>
+        <nav aria-label="Principal">
+          <Link className={styles.navLink} href={repasoPath}
+            aria-current={route.name === 'repaso' ? 'page' : undefined}>Repaso</Link>
+        </nav>
         <div className={styles.stats} aria-label="Tu progreso">
           <span>{completed * xpPerLesson} XP</span>
           <span>Racha · {days} {days === 1 ? 'día' : 'días'}</span>
@@ -50,6 +55,7 @@ export function App({ url }: { url: string }) {
       {route.name === 'leccion' && <LessonPage key={route.lesson.id} lesson={route.lesson}
         completed={Object.hasOwn(progress, route.lesson.id)} onComplete={() => complete(route.lesson.id)} />}
       {route.name === 'inicio' && <Home progress={progress} />}
+      {route.name === 'repaso' && <Repaso progress={progress} />}
       {route.name === 'no-encontrada' && <section className={styles.hero}>
         <h1 tabIndex={-1}>No encontramos esa página</h1>
         <p>Puede que la dirección haya cambiado. <Link href={homePath}>Volvé al recorrido</Link>.</p>

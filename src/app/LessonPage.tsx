@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { AudioPlayer } from '../components/audio/AudioPlayer'
 import { ExerciseCard } from '../components/exercises/ExerciseCard'
 import { lessons, type Lesson } from '../content/lessons'
 import { xpPerLesson } from '../progress/progress'
@@ -13,6 +14,7 @@ export function LessonPage({ lesson, completed, onComplete }: {
 }) {
   const [solved, setSolved] = useState<number[]>([])
   const { Content } = lesson
+  const tracks = useMemo(() => [{ id: lesson.id, title: lesson.titulo, lines: lesson.resumen }], [lesson])
 
   return <article>
     <Link href={homePath}>← Volver al recorrido</Link>
@@ -34,6 +36,10 @@ export function LessonPage({ lesson, completed, onComplete }: {
       <h2 id="task">Tarea para tu máquina</h2>
       <p>{lesson.tarea_local}</p>
       <p><strong>Resultado esperado.</strong> {lesson.resultado_esperado}</p>
+    </section>
+    <section aria-labelledby="summary">
+      <h2 id="summary">Para repasar</h2>
+      <AudioPlayer tracks={tracks} />
     </section>
     <div role="status">{completed && <p>Lección completada · +{xpPerLesson} XP</p>}</div>
     {!completed && <>

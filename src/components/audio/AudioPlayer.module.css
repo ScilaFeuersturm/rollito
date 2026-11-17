@@ -1,0 +1,30 @@
+.player { margin-block: 1rem; }
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface, #fffaf6);
+  padding-block: .5rem;
+}
+.main, .secondary {
+  min-height: 44px;
+  border-radius: 99px;
+  padding: .5rem 1rem;
+  font-weight: 700;
+}
+.main { border: 0; background: var(--accent); color: #fff; }
+.secondary { border: 1px solid var(--line); background: #f5eefb; color: var(--accent); min-width: 44px; }
+.rate { display: flex; align-items: center; gap: .4rem; margin-left: auto; }
+.rate select { min-height: 44px; border: 1px solid #776785; border-radius: .4rem; padding-inline: .4rem; background: #fff; font: inherit; }
+.note { color: #5d4b71; }
+.track { border-radius: .9rem; }
+.track[aria-current] { background: #f5eefb; }
+.trackHead { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1.25rem; }
+.trackHead h2 { font-size: 1.25rem; margin: 0; letter-spacing: -.02em; }
+.track ul { padding-left: 1.4rem; }
+.track li { padding: .2rem .3rem; border-radius: .35rem; }
+.speaking { background: #e2d3f7; }

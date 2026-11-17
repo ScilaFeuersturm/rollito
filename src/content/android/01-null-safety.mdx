@@ -24,6 +24,10 @@ ejercicios:
     explicacion: El valor alternativo se usa cuando el nombre es null.
 tarea_local: En un archivo Kotlin, escribí una función nombreVisible que reciba un String? y devuelva un String. Probala con null, "Ana" y una cadena vacía.
 resultado_esperado: Devolvé "Invitado" para null, "Ana" para "Ana" y una cadena vacía para una cadena vacía.
+resumen:
+  - "`String?` permite representar un dato ausente."
+  - "`?:` elige un valor alternativo cuando el dato es `null`."
+  - "Una cadena vacía es un valor distinto de `null`."
 ---
 
 import example from '../../../android-samples/kotlin/AusenciaDeDatos.kt?raw'
@@ -37,9 +41,3 @@ El nombre de una persona puede venir vacío, o el dato puede faltar por completo
 <pre><code className="language-kotlin">{example}</code></pre>
 
 El operador `?:` usa el valor de la izquierda si está presente. Cuando es `null`, usa el valor de la derecha. El programa imprime `Hola, Invitado`.
-
-## Para repasar
-
-- `String?` permite representar un dato ausente.
-- `?:` elige un valor alternativo cuando el dato es `null`.
-- Una cadena vacía es un valor distinto de `null`.

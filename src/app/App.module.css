@@ -53,3 +53,6 @@
 .topics li { background: #f0e9f8; color: #49326b; padding: .2rem .6rem; border-radius: .5rem; }
 .level .pending { color: #5d4b71; margin: .9rem 0 0; }
 .level .lessons { margin-bottom: 0; }
+.navLink { font-weight: 700; text-decoration: none; padding: .4rem .2rem; }
+.navLink[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 2px; }
+.badge { font-size: .8rem; font-weight: 650; background: #eaf6eb; color: #20532b; border-radius: 99px; padding: .1rem .5rem; margin-left: .5rem; vertical-align: middle; }
