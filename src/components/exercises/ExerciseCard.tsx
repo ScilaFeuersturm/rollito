@@ -1,6 +1,9 @@
 import { useId, useState } from 'react'
 import type { Exercise } from '../../content/lesson-schema'
+import { inline } from '../inline'
 import styles from './ExerciseCard.module.css'
+
+const plain = (text: string) => text.replace(/`/g, '')
 
 export function ExerciseCard({ exercise, onSolved }: { exercise: Exercise; onSolved: () => void }) {
   const id = useId()
@@ -32,12 +35,12 @@ export function ExerciseCard({ exercise, onSolved }: { exercise: Exercise; onSol
   return (
     <form className={styles.card} onSubmit={event => { event.preventDefault(); check() }}>
       <fieldset disabled={result === true}>
-        <legend>{exercise.pregunta}</legend>
+        <legend>{inline(exercise.pregunta)}</legend>
         {exercise.tipo === 'opcion_multiple' && exercise.opciones.map((option, index) =>
           <label className={styles.option} key={index}>
             <input type="radio" name={id} checked={choice === index}
               onChange={() => { setChoice(index); setResult(undefined) }} />
-            {option}
+            {inline(option)}
           </label>
         )}
         {exercise.tipo === 'completar' && <>
@@ -48,11 +51,11 @@ export function ExerciseCard({ exercise, onSolved }: { exercise: Exercise; onSol
         </>}
         {exercise.tipo === 'ordenar' && <ol>
           {order.map((step, index) => <li key={step}>
-            <span>{exercise.pasos[step]}</span>
+            <span>{inline(exercise.pasos[step])}</span>
             <div className={styles.controls}>
-              <button type="button" disabled={index === 0} aria-label={`Subir: ${exercise.pasos[step]}`}
+              <button type="button" disabled={index === 0} aria-label={`Subir: ${plain(exercise.pasos[step])}`}
                 onClick={() => move(index, -1)}>↑</button>
-              <button type="button" disabled={index === order.length - 1} aria-label={`Bajar: ${exercise.pasos[step]}`}
+              <button type="button" disabled={index === order.length - 1} aria-label={`Bajar: ${plain(exercise.pasos[step])}`}
                 onClick={() => move(index, 1)}>↓</button>
             </div>
           </li>)}
@@ -60,7 +63,7 @@ export function ExerciseCard({ exercise, onSolved }: { exercise: Exercise; onSol
       </fieldset>
       {result !== true && <button className={styles.check} disabled={!ready}>Verificar</button>}
       <div role="status">{result !== undefined && <p className={result ? styles.success : styles.retry}>
-        <strong>{result ? '¡Bien!' : 'Casi. Mirá esto…'}</strong> {exercise.explicacion}
+        <strong>{result ? '¡Bien!' : 'Casi. Mirá esto…'}</strong> {inline(exercise.explicacion)}
       </p>}</div>
     </form>
   )

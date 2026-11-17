@@ -1,0 +1,16 @@
+.interview {
+  margin-top: 2rem;
+  padding: 1rem;
+  border: 2px solid var(--accent);
+  border-radius: 1rem;
+  background: #fff;
+}
+.interview h2 { margin-top: 0; }
+.interview h3 { font-size: 1.05rem; margin: 1.25rem 0 .4rem; }
+.interview blockquote {
+  margin: 0;
+  padding: .1rem 1rem;
+  border-left: 4px solid var(--accent);
+  background: #f5eefb;
+  border-radius: 0 .5rem .5rem 0;
+}

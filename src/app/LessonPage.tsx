@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { AudioPlayer } from '../components/audio/AudioPlayer'
 import { ExerciseCard } from '../components/exercises/ExerciseCard'
 import { inline } from '../components/inline'
+import { Interview } from '../components/lesson/Interview'
 import { hasAudio } from '../content/audio'
 import { lessons, type Lesson } from '../content/lessons'
 import { xpPerLesson } from '../progress/progress'
@@ -36,14 +37,16 @@ export function LessonPage({ lesson, completed, onComplete }: {
     </section>
     <section className={styles.task} aria-labelledby="task">
       <h2 id="task">Tarea para tu máquina</h2>
-      <p>{lesson.tarea_local}</p>
-      <p><strong>Resultado esperado.</strong> {lesson.resultado_esperado}</p>
+      <p>{inline(lesson.tarea_local)}</p>
+      <p><strong>Resultado esperado.</strong> {inline(lesson.resultado_esperado)}</p>
+      {lesson.salida_esperada && <pre><code>{lesson.salida_esperada}</code></pre>}
     </section>
     <section aria-labelledby="summary">
       <h2 id="summary">Para repasar</h2>
       {hasAudio(lesson) ? <AudioPlayer tracks={tracks} />
         : <ul>{lesson.resumen.map((line, index) => <li key={index}>{inline(line)}</li>)}</ul>}
     </section>
+    {lesson.entrevista && <Interview interview={lesson.entrevista} />}
     <div role="status">{completed && <p>Lección completada · +{xpPerLesson} XP</p>}</div>
     {!completed && <>
       <p>{solved.length} de {lesson.ejercicios.length} ejercicios resueltos</p>

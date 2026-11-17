@@ -38,6 +38,11 @@ Cada página llega al navegador con el contenido ya escrito (se ve rápido en el
 
 Cada lección es un `.mdx` con frontmatter. El cuerpo tiene **Concepto** y **Ejemplo**; los ejercicios, la tarea para tu máquina y el resumen (`resumen:`, de 3 a 5 ítems) van en el frontmatter y la app los muestra en ese orden.
 
+Campos opcionales:
+
+- `salida_esperada`: la salida de la tarea para tu máquina, en bloque de código.
+- `entrevista`: "Cómo contarlo en una entrevista" (`en_30_segundos`, `trampas` y `cuando_no`). Es obligatoria en las lecciones de Arquitectura. Cada trampa puede tener `codigo: arquitectura/Archivo.kt`, que se carga de `android-samples/kotlin/`; si el archivo no existe, el build falla.
+
 - Cada lección completada otorga 10 XP una sola vez. La racha cuenta días consecutivos del calendario local y sigue vigente si la última lección se completó ayer.
 - El progreso se guarda en el navegador. Si el guardado falla, dura hasta que se cierre o recargue la página.
 

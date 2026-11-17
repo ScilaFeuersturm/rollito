@@ -1,0 +1,84 @@
+---
+id: fundamentos-arquitectura-capas-01
+track: fundamentos
+nivel: junior
+modulo: Arquitectura
+titulo: Arquitectura en capas
+duracion_min: 6
+prerequisitos: [fundamentos-poo-clases-y-objetos-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿En qué capa va la regla \"no se puede agregar una tarea repetida\"?"
+    opciones: ["Presentación", "Dominio", "Datos"]
+    correcta: 1
+    explicacion: "Es una regla del negocio. En el dominio se puede reusar desde cualquier pantalla y testear sin interfaz."
+  - tipo: ordenar
+    pregunta: "Ordená lo que pasa cuando tocás \"Agregar\"."
+    pasos:
+      - "La pantalla recibe el toque."
+      - "El servicio valida el título."
+      - "El repositorio guarda la tarea."
+      - "La pantalla muestra el resultado."
+    explicacion: "La acción baja de capa en capa y el resultado vuelve hacia arriba."
+  - tipo: opcion_multiple
+    pregunta: "Una pantalla llama directamente al repositorio y valida ella misma que el título no esté vacío. ¿Qué problema tiene?"
+    opciones:
+      - "Ninguno: es más corto y funciona igual."
+      - "La regla queda atada a esa pantalla: no se puede reusar ni testear sola."
+      - "El repositorio deja de poder guardar tareas."
+    correcta: 1
+    explicacion: "Si mañana agregás tareas desde otra pantalla o desde un widget, vas a tener que copiar la validación, y las copias tarde o temprano se desincronizan."
+tarea_local: "Partí del ejemplo y hacé dos cambios. Primero, una regla nueva: el título puede tener como máximo 50 caracteres (pensá en qué clase va antes de escribirla). Segundo, un método `alTocarListar()` en la pantalla que imprima todas las tareas, cada una precedida por un guion. Probalo agregando un título de 51 letras y después \"Llamar al médico\", y listá las tareas."
+resultado_esperado: "La regla queda en `ServicioDeTareas`. Para listar, la pantalla le pide las tareas al servicio, no al repositorio."
+salida_esperada: |-
+  El título puede tener hasta 50 caracteres
+  Tarea agregada
+  - Comprar yerba
+  - Pagar la luz
+  - Llamar al médico
+resumen:
+  - "La arquitectura en capas separa la app en presentación, dominio y datos."
+  - "La presentación muestra y recibe acciones, el dominio decide las reglas y los datos guardan y traen información."
+  - "Cada capa solo habla con la de abajo, nunca al revés."
+  - "Las reglas de negocio van en el dominio, así se reusan y se testean sin pantalla."
+  - "En la arquitectura en capas clásica, el dominio depende de los datos. Clean Architecture invierte esa dependencia."
+entrevista:
+  en_30_segundos: "Separo la app en presentación, dominio y datos, y cada capa solo depende de la de abajo. Las reglas de negocio quedan en el dominio, así puedo cambiar la base de datos o la interfaz sin tocarlas, y testear la lógica sin levantar pantallas."
+  trampas:
+    - pregunta: "¿Capas y Clean Architecture son lo mismo?"
+      respuesta: "No. En capas clásica, el dominio depende de la capa de datos: en el ejemplo, `ServicioDeTareas` recibe un `TareaRepositorio` concreto. En Clean, el dominio define una interfaz (`interface TareaRepositorio`) y la capa de datos la implementa. La dependencia se invierte y el dominio no conoce a nadie. Eso es la D de SOLID."
+    - pregunta: "¿Capas es lo mismo que MVC?"
+      respuesta: "Tampoco. MVC organiza la capa de presentación. Las capas organizan toda la app."
+  cuando_no: |-
+    En un script o en una app de una sola pantalla sin reglas de negocio, las capas suman archivos y saltos sin beneficio.
+
+    También ojo con las capas "pasamanos": si el servicio solo reenvía llamadas al repositorio sin decidir nada, es ceremonia y no arquitectura.
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/ArquitecturaEnCapas.kt?raw'
+
+## Concepto
+
+La arquitectura en capas separa la app en tres partes, cada una con una responsabilidad:
+
+- **Presentación:** muestra cosas y recibe las acciones de la persona.
+- **Dominio:** decide las reglas del negocio.
+- **Datos:** guarda y trae información (base de datos, API, archivos).
+
+La regla de oro es que cada capa solo habla con la de abajo: presentación → dominio → datos. Nunca al revés.
+
+Pensalo como un restaurante. El mozo (presentación) toma el pedido y lo lleva a la mesa. La cocina (dominio) decide cómo se prepara cada plato y si se puede hacer. El depósito (datos) guarda los ingredientes. El mozo no entra al depósito a buscar papas, y la cocina no atiende mesas.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+Imprime:
+
+```text
+Tarea agregada
+El título no puede estar vacío
+Esa tarea ya existe
+```
+
+La pantalla no sabe que las tareas están en una lista, y el repositorio no sabe qué es un título válido. Cada clase hace una sola cosa.

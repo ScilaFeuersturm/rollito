@@ -13,6 +13,25 @@ const exerciseSchema = z.discriminatedUnion('tipo', [
   z.object({ ...prompt, tipo: z.literal('ordenar'), pasos: lines }),
 ])
 
+const text = z.string().trim().min(1)
+
+// "Cómo contarlo en una entrevista": obligatorio en las lecciones de Arquitectura (ver lessons.ts).
+const trapSchema = z.object({
+  pregunta: text,
+  // Párrafos separados por una línea en blanco.
+  respuesta: text,
+  // Archivo de android-samples/kotlin/, por ejemplo "arquitectura/IgualdadDeObjetos.kt".
+  codigo: z.string().regex(/^[\w/-]+\.kt$/).optional(),
+  salida: text.optional(),
+  despues: text.optional(),
+})
+
+const interviewSchema = z.object({
+  en_30_segundos: text,
+  trampas: z.array(trapSchema).min(1).max(3),
+  cuando_no: text,
+})
+
 export const lessonSchema = z.object({
   id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   track: z.string().min(1),
@@ -24,7 +43,10 @@ export const lessonSchema = z.object({
   ejercicios: z.array(exerciseSchema).min(2).max(5),
   tarea_local: z.string().min(1),
   resultado_esperado: z.string().min(1),
+  salida_esperada: text.optional(),
   resumen: z.array(z.string().trim().min(1)).min(3).max(5),
+  entrevista: interviewSchema.optional(),
 })
 
 export type Exercise = z.infer<typeof exerciseSchema>
+export type Interview = z.infer<typeof interviewSchema>

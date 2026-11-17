@@ -2,6 +2,8 @@
 
 Sección del track Fundamentos (`track: fundamentos`, `modulo: Arquitectura`). Es la única con repaso en audio.
 
+> Los borradores 1 y 2 están aprobados y maquetados en `src/content/fundamentos/arquitectura/`.
+
 Todo el código está en Kotlin y sale de `android-samples/kotlin/arquitectura/`. Cada ejemplo se compiló con kotlinc 2.3.10, y las salidas que aparecen acá son las reales.
 
 ## Recorrido propuesto

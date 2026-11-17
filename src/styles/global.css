@@ -22,3 +22,11 @@ pre {
   padding: .85rem;
   overflow: auto;
 }
+:not(pre) > code {
+  background: #f0e9f8;
+  color: #3d2766;
+  padding: .1em .35em;
+  border-radius: .3em;
+  font-size: .92em;
+  overflow-wrap: anywhere;
+}

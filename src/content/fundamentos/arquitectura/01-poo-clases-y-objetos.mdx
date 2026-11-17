@@ -1,0 +1,73 @@
+---
+id: fundamentos-poo-clases-y-objetos-01
+track: fundamentos
+nivel: junior
+modulo: Arquitectura
+titulo: "POO: clases y objetos"
+duracion_min: 4
+prerequisitos: []
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál es la diferencia entre una clase y un objeto?"
+    opciones:
+      - "La clase es el molde; el objeto es una instancia concreta creada a partir de ella."
+      - "Son lo mismo con distinto nombre."
+      - "El objeto define qué datos va a tener la clase."
+    correcta: 0
+    explicacion: "La clase describe; el objeto existe y tiene sus propios valores."
+  - tipo: opcion_multiple
+    pregunta: "En el ejemplo, ¿qué muestra la segunda línea?"
+    opciones:
+      - "`Ir al gimnasio: true`"
+      - "`Ir al gimnasio: false`"
+      - "Nada, porque da error."
+    correcta: 1
+    explicacion: "Solo se llamó a `completar()` sobre `compras`. Cada objeto guarda su propio estado."
+  - tipo: completar
+    pregunta: "Completá para crear una tarea nueva."
+    codigo: 'val tarea = ___("Pagar la luz")'
+    respuestas: ["Tarea"]
+    explicacion: "En Kotlin creás un objeto llamando a la clase, sin `new`."
+tarea_local: "En un archivo Kotlin, creá una clase `Juego` con `nombre` y `precio` (un `Int`) y un método `aplicarDescuento(porcentaje: Int)` que baje el precio. Creá dos juegos, por ejemplo \"Carrera nocturna\" a 10000 y \"Laberinto\" a 6000. Aplicale un 20 % de descuento solo al primero e imprimí los dos."
+resultado_esperado: "El primer juego baja a 8000 y el segundo queda igual."
+salida_esperada: |-
+  Carrera nocturna: 8000
+  Laberinto: 6000
+resumen:
+  - "Una clase es un molde: define qué datos y qué comportamiento tienen sus objetos."
+  - "Un objeto es una instancia concreta de una clase, con sus propios valores."
+  - "Cambiar un objeto no cambia a los otros objetos de la misma clase."
+  - "En Kotlin creás un objeto llamando a la clase como si fuera una función, sin la palabra new."
+entrevista:
+  en_30_segundos: "Una clase es la definición: qué datos y qué comportamiento tiene un tipo de cosa. Un objeto es una instancia de esa clase, que vive en memoria con sus propios valores. Puedo crear muchos objetos de la misma clase, y cada uno mantiene su propio estado."
+  trampas:
+    - pregunta: "Si dos objetos tienen los mismos datos, ¿son iguales?"
+      respuesta: "Depende. Con una clase común, `==` compara por defecto si son el mismo objeto, así que da `false`. Con una `data class`, Kotlin genera `equals` comparando las propiedades del constructor, y da `true`."
+      codigo: arquitectura/IgualdadDeObjetos.kt
+      salida: |-
+        false
+        true
+      despues: "Si además mencionás que `data class` también genera `hashCode`, `toString` y `copy`, sumás puntos."
+  cuando_no: "No todo tiene que ser una clase. Si algo no guarda estado, por ejemplo calcular un precio con descuento, en Kotlin alcanza con una función suelta. Envolverla en una clase solo agrega ceremonia."
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/ClasesYObjetos.kt?raw'
+
+## Concepto
+
+Una **clase** es un molde: define qué datos tiene algo y qué puede hacer. Un **objeto** es una cosa concreta hecha con ese molde, con sus propios valores.
+
+Pensalo como una receta de torta y las tortas. La receta dice qué ingredientes lleva y qué pasos seguir, pero no se come. Con la misma receta podés hacer muchas tortas, y si a una le ponés dulce de leche, las otras no cambian.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+Imprime:
+
+```text
+Comprar yerba: true
+Ir al gimnasio: false
+```
+
+`Tarea` es la clase. `compras` y `gimnasio` son dos objetos distintos: completar uno no toca al otro. Si venís de Java, ojo: en Kotlin no se escribe `new`, se llama a la clase como si fuera una función.
