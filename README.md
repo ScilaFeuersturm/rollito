@@ -43,7 +43,7 @@ Cada lección es un `.mdx` con frontmatter. El cuerpo tiene **Concepto** y **Eje
 
 ## Repaso en audio
 
-Solo para la sección **Arquitectura** (POO, MVC, MVVM, MVP, Hexagonal, Clean y VIPER): conceptos para escuchar y pensar, no sintaxis. Una lección tiene audio si su frontmatter dice `track: fundamentos` y `modulo: Arquitectura` (ver `src/content/audio.ts`). El resto de las lecciones muestra el resumen como texto.
+Solo para la sección **Arquitectura**: los temas que más se preguntan en entrevistas (POO, capas, MVC, MVP, MVVM, MVI, Flux/Redux, VIPER, Clean, Hexagonal, modular y monolito vs. microservicios; la lista está en `src/content/audio.ts`): conceptos para escuchar y pensar, no sintaxis. Una lección tiene audio si su frontmatter dice `track: fundamentos` y `modulo: Arquitectura` (ver `src/content/audio.ts`). El resto de las lecciones muestra el resumen como texto.
 
 El resumen se puede escuchar al final de cada lección de Arquitectura, y todos juntos en `/repaso/`, como un podcast corto. Usa la voz que trae el dispositivo: prefiere español rioplatense, después latinoamericano y después cualquier español.
 
