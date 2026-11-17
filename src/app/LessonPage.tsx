@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
 import { AudioPlayer } from '../components/audio/AudioPlayer'
 import { ExerciseCard } from '../components/exercises/ExerciseCard'
+import { inline } from '../components/inline'
+import { hasAudio } from '../content/audio'
 import { lessons, type Lesson } from '../content/lessons'
 import { xpPerLesson } from '../progress/progress'
 import styles from './App.module.css'
@@ -39,7 +41,8 @@ export function LessonPage({ lesson, completed, onComplete }: {
     </section>
     <section aria-labelledby="summary">
       <h2 id="summary">Para repasar</h2>
-      <AudioPlayer tracks={tracks} />
+      {hasAudio(lesson) ? <AudioPlayer tracks={tracks} />
+        : <ul>{lesson.resumen.map((line, index) => <li key={index}>{inline(line)}</li>)}</ul>}
     </section>
     <div role="status">{completed && <p>Lección completada · +{xpPerLesson} XP</p>}</div>
     {!completed && <>

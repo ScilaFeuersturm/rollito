@@ -1,15 +1,10 @@
 import { useId, useMemo, type ReactNode } from 'react'
 import { toSegments, type Track } from '../../audio/speech'
 import { useSpeech } from '../../audio/useSpeech'
+import { inline } from '../inline'
 import styles from './AudioPlayer.module.css'
 
 const rates = [0.75, 1, 1.25, 1.5]
-
-/** Muestra `texto con `código`` con los fragmentos entre backticks como <code>. */
-function inline(text: string) {
-  return text.split(/(`[^`]+`)/).map((part, index) =>
-    part.startsWith('`') && part.endsWith('`') && part.length > 1 ? <code key={index}>{part.slice(1, -1)}</code> : part)
-}
 
 export function AudioPlayer({ tracks, showTitles = false, renderTitle }: {
   tracks: Track[]

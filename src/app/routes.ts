@@ -22,7 +22,7 @@ export function matchRoute(pathname: string): Route {
 export function pageTitle(route: Route) {
   switch (route.name) {
     case 'inicio': return 'Rollito · Aprendé programación'
-    case 'repaso': return 'Repaso en audio · Rollito'
+    case 'repaso': return 'Repaso de Arquitectura · Rollito'
     case 'leccion': return `${route.lesson.titulo} · Rollito`
     case 'no-encontrada': return 'No encontramos esa página · Rollito'
   }
