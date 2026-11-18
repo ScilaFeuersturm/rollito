@@ -1,0 +1,53 @@
+---
+id: android-vistas-estado-compose-01
+track: android
+nivel: junior
+modulo: Vistas
+titulo: "De actualizar un TextView a describir una pantalla con estado"
+duracion_min: 6
+prerequisitos: [android-vistas-medicion-layout-dibujo-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿En qué dirección viaja el estado de la fila?"
+    opciones: ["De quien lo mantiene a la vista", "Del botón a la base de datos", "Del texto al botón"]
+    correcta: 0
+    explicacion: "La vista recibe el estado que necesita para representarlo."
+  - tipo: ordenar
+    pregunta: "Ordená el flujo al completar una tarea."
+    pasos:
+      - "Tocar el botón."
+      - "Enviar el evento."
+      - "Actualizar el estado."
+      - "Mostrar la tarea completada."
+    explicacion: "El toque informa una intención y la actualización del dato determina qué se muestra."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué caso puede resolverse con estado local?"
+    opciones: ["Un dato compartido por varias pantallas", "Expandir una sección que solo usa esa pantalla", "El total sincronizado con el servidor"]
+    correcta: 1
+    explicacion: "Expandir una sección es una decisión de la interfaz local si nadie más necesita ese dato."
+tarea_local: "En un proyecto Compose, armá una fila que reciba si la tarea está completada y una función que se llame al tocar el botón. En la pantalla que la contiene, mantené un estado observable y pasalo a la fila. Probá el cambio desde el emulador."
+resultado_esperado: "La fila empieza mostrando `Pendiente`. Al tocar el botón, la pantalla cambia el estado y la fila muestra `Completada`."
+resumen:
+  - "La interfaz describe el resultado a partir del estado."
+  - "Un toque puede convertirse en un evento para quien mantiene el estado."
+  - "Compose actualiza las partes que dependen de los valores que cambian."
+entrevista:
+  en_30_segundos: "Con Compose describo la pantalla para un estado dado. La UI comunica las acciones y quien mantiene el estado decide la actualización. Compose puede reejecutar las partes que leyeron el estado cambiado."
+  trampas:
+    - pregunta: "¿Un cambio de estado vuelve a dibujar toda la pantalla?"
+      respuesta: "Compose puede limitar el trabajo a las partes afectadas. Recomposición, layout y dibujo son fases distintas."
+  cuando_no: "Si otra parte de la pantalla necesita el mismo dato o lo puede cambiar, ubicalo en un dueño común y pasá a cada componente los valores y eventos que necesita."
+---
+
+## Concepto
+
+Con Views podés actualizar un objeto existente, por ejemplo asignar el texto de una etiqueta. En Compose, una función composable describe qué se muestra para los datos que recibe. Cuando cambia un estado observable leído por esa parte de la interfaz, Compose puede reejecutar las funciones que dependen de ese estado para actualizar lo que corresponde. [Modelo mental de Compose](https://developer.android.com/develop/ui/compose/mental-model)
+
+## Ejemplo
+
+La misma fila de tareas puede recibir un título y un estado inicial pendiente. El botón comunica la acción al dueño del estado. A partir del nuevo estado, la etiqueta pasa a mostrar `Completada`.
+
+```text
+Estado inicial → la vista muestra Pendiente
+Toque → evento → nuevo estado → la vista muestra Completada
+```

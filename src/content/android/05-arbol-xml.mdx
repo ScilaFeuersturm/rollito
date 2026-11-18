@@ -1,0 +1,56 @@
+---
+id: android-vistas-arbol-xml-01
+track: android
+nivel: junior
+modulo: Vistas
+titulo: "Del XML al árbol de vistas"
+duracion_min: 5
+prerequisitos: [android-kotlin-extensiones-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué crea la inflación de un layout XML?"
+    opciones: ["Una captura", "Un árbol de objetos de vista", "Una cadena con el XML"]
+    correcta: 1
+    explicacion: "Android crea instancias de View y ViewGroup a partir del recurso."
+  - tipo: ordenar
+    pregunta: "Ordená el flujo de la fila de tareas."
+    pasos:
+      - "Elegir el recurso."
+      - "Inflar la fila."
+      - "Asignar el título de la tarea."
+      - "Mostrar la fila."
+    explicacion: "El layout da la estructura y el código le asigna los datos de la tarea."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué agrupa al texto y al botón?"
+    opciones: ["Un ViewGroup", "El título", "El listener"]
+    correcta: 0
+    explicacion: "El ViewGroup aloja y organiza a sus hijos."
+tarea_local: "En una pantalla de práctica con Views, armá una fila con texto y un botón. Activá ViewBinding, actualizá el texto desde Kotlin y abrí el Layout Inspector para comparar la jerarquía en ejecución con el XML."
+resultado_esperado: "El inspector muestra un contenedor con los dos hijos. El texto que ves en ejecución es el valor que asignaste desde Kotlin."
+resumen:
+  - "El XML describe la jerarquía de una pantalla."
+  - "Inflar crea objetos de vista durante la ejecución."
+  - "ViewBinding permite acceder a las vistas identificadas desde Kotlin."
+entrevista:
+  en_30_segundos: "Un layout XML describe qué vistas existen y cómo se anidan. Inflarlo crea las instancias. A partir de ahí puedo asignar datos y eventos, y Android mide, ubica y dibuja la jerarquía."
+  trampas:
+    - pregunta: "¿Inflar una fila define el título final de cada tarea?"
+      respuesta: "La inflación crea la estructura y aplica los valores del recurso. El código que enlaza los datos de la tarea puede actualizar ese texto después."
+  cuando_no: "Si la pantalla nueva pertenece a una app Compose, una función composable puede describirla. Si estás migrando una app grande, una pantalla existente puede seguir usando Views mientras migrás otra."
+---
+
+## Concepto
+
+En Android clásico, un XML de layout describe una jerarquía. Al inflarlo, Android crea los objetos `View` y `ViewGroup` que la componen. El contenedor organiza a sus hijos. Una vista como `TextView` muestra texto y una como `Button` puede recibir un toque. ViewBinding da acceso tipado a las vistas del layout que tienen un identificador. [Layouts con Views](https://developer.android.com/develop/ui/views/layout/declaring-layout) · [ViewBinding](https://developer.android.com/topic/libraries/view-binding)
+
+## Ejemplo
+
+Pensá en una fila de la app de tareas. El XML describe qué piezas tiene. La fila concreta recibe después el título que corresponde a esa tarea.
+
+```text
+Recurso XML de una fila
+  ↓ inflación
+Contenedor de la fila
+  ├─ View de texto → Comprar yerba
+  └─ Botón → Completar
+```

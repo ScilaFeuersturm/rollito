@@ -39,6 +39,14 @@ Los niveles sirven para organizar la preparación. Cada empresa puede repartir l
 | Semi Senior | Ciclo de vida de Fragment y de su vista, suscripciones ligadas a la vista, estado que sobrevive a recreaciones, listas con identidad, gestos, semántica, interoperabilidad XML y Compose, pruebas de UI. | ¿Por qué una suscripción que actualiza el binding debería vivir lo mismo que la vista del Fragment? |
 | Senior | Fases de Compose, recomposición y estabilidad, medición de jank, sobrecarga de layout y dibujo, rendimiento de listas, layouts adaptativos y estrategia de migración incremental. | Si una lista se traba al hacer scroll, ¿qué medirías para separar el costo de composición, layout y dibujo? |
 
+## Borradores del recorrido completo
+
+Las siete lecciones iniciales están incorporadas a la vista previa local. Las próximas lecciones están escritas para revisión por nivel. Cada ficha incluye concepto, ejemplo, dos ejercicios con respuesta, práctica local con resultado esperado y una pregunta de entrevista.
+
+- [Junior](android/junior.md) · 9 borradores.
+- [Semi Senior](android/semi-senior.md) · 14 borradores.
+- [Senior](android/senior.md) · 13 borradores.
+
 ## Lección disponible · Ausencia de datos en Kotlin
 
 **Duración estimada** 4 minutos.
@@ -189,7 +197,7 @@ Agregá una extensión para un receptor `String?` con el nombre `tituloVisibleOA
 
 **Cuándo simplificar.** Si la operación depende de varias piezas del negocio y el receptor es un argumento más, una función común puede expresar mejor esa relación.
 
-## Borrador 5 · Del XML al árbol de vistas
+## Lección 5 · Del XML al árbol de vistas
 
 **Nivel** Junior · **Duración estimada** 5 minutos · **Antes** Funciones de extensión
 
@@ -233,7 +241,7 @@ En una pantalla de práctica con Views, armá una fila con texto y un botón. Ac
 
 **Cuándo elegir otra opción.** Si la pantalla nueva pertenece a una app Compose, una función composable puede describirla. Si estás migrando una app grande, una pantalla existente puede seguir usando Views mientras migrás otra.
 
-## Borrador 6 · Cómo una vista ocupa espacio: medir, ubicar y dibujar
+## Lección 6 · Cómo una vista ocupa espacio: medir, ubicar y dibujar
 
 **Nivel** Junior · **Duración estimada** 6 minutos · **Antes** Del XML al árbol de vistas
 
@@ -276,7 +284,7 @@ Probá la fila anterior con un título corto y uno largo. Permití que el texto 
 
 **Cuándo simplificar.** Para acomodar una fila común, empezá con los contenedores existentes. Considerá un layout propio si necesitás un comportamiento de medición o ubicación que esos contenedores no cubren.
 
-## Borrador 7 · De actualizar un TextView a describir una pantalla con estado
+## Lección 7 · De actualizar un TextView a describir una pantalla con estado
 
 **Nivel** Junior · **Duración estimada** 6 minutos · **Antes** Del XML al árbol de vistas
 

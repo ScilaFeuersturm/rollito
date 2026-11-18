@@ -1,0 +1,54 @@
+---
+id: android-vistas-medicion-layout-dibujo-01
+track: android
+nivel: junior
+modulo: Vistas
+titulo: "Cómo una vista ocupa espacio: medir, ubicar y dibujar"
+duracion_min: 6
+prerequisitos: [android-vistas-arbol-xml-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde se decide la posición del botón?"
+    opciones: ["En la medición", "En el dibujo", "En el layout"]
+    correcta: 2
+    explicacion: "Medir determina el tamaño. El layout ubica el botón."
+  - tipo: ordenar
+    pregunta: "Ordená las fases del ejemplo."
+    pasos:
+      - "Medir."
+      - "Ubicar."
+      - "Dibujar."
+    explicacion: "El dibujo usa los tamaños y posiciones ya calculados."
+  - tipo: opcion_multiple
+    pregunta: "Si el ancho disponible cambia, ¿qué puede requerir otro cálculo?"
+    opciones: ["Solo el color", "El tamaño y la posición de las vistas", "El identificador de la tarea"]
+    correcta: 1
+    explicacion: "Las nuevas restricciones pueden cambiar el ancho, las líneas del texto y la posición de las piezas."
+tarea_local: "Probá la fila anterior con un título corto y uno largo. Permití que el texto use varias líneas y cambiale el ancho disponible usando una vista previa o el emulador. Observá el tamaño de la fila en el inspector."
+resultado_esperado: "Cuando el ancho es menor, el título largo se reparte en más líneas y la fila se hace más alta si el padre admite ese alto."
+resumen:
+  - "Las restricciones del padre influyen en el tamaño de cada hijo."
+  - "Medir resuelve tamaño y ubicar resuelve posición."
+  - "Dibujar hace visible el resultado de esas decisiones."
+entrevista:
+  en_30_segundos: "El padre comunica restricciones. Primero se resuelve el tamaño, después la posición y al final el dibujo. Si un cambio afecta el tamaño, puede requerir otra medición y otro layout."
+  trampas:
+    - pregunta: "¿Cambiar el color obliga a medir de nuevo?"
+      respuesta: "Si el cambio afecta solo cómo se pinta, alcanza con actualizar el dibujo. Un cambio de texto, tamaño o restricciones puede requerir layout."
+  cuando_no: "Para acomodar una fila común, empezá con los contenedores existentes. Considerá un layout propio si necesitás un comportamiento de medición o ubicación que esos contenedores no cubren."
+---
+
+## Concepto
+
+El padre comunica restricciones de tamaño. En la medición se calcula cuánto puede ocupar cada pieza. En el layout se decide su posición. En el dibujo se produce lo que aparece en pantalla. En Compose también hay un paso de layout que incluye medir y ubicar. Además, el orden de los modificadores influye en las restricciones y en cómo se ve el resultado. [Ciclo de dibujo de Views](https://developer.android.com/guide/topics/ui/how-android-draws) · [Restricciones y orden de modificadores en Compose](https://developer.android.com/develop/ui/compose/layouts/constraints-modifiers)
+
+## Ejemplo
+
+En una fila de tareas, el texto y el botón comparten el ancho disponible. Cuando el título necesita más líneas, la fila puede crecer en alto si sus restricciones se lo permiten.
+
+```text
+El padre informa cuánto espacio hay
+  → Medir: calcular tamaño del texto, botón y fila
+  → Ubicar: decidir dónde queda cada pieza
+  → Dibujar: mostrar texto y botón
+```
