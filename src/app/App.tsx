@@ -3,6 +3,7 @@ import { lessons } from '../content/lessons'
 import { localDay, readProgress, saveProgress, streak, xpPerLesson, type Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Home } from './Home'
+import { InterviewPractice } from './InterviewPractice'
 import { LessonPage } from './LessonPage'
 import { Repaso } from './Repaso'
 import { Link, usePathname } from './router'
@@ -55,6 +56,7 @@ export function App({ url }: { url: string }) {
       {route.name === 'leccion' && <LessonPage key={route.lesson.id} lesson={route.lesson}
         completed={Object.hasOwn(progress, route.lesson.id)} onComplete={() => complete(route.lesson.id)} />}
       {route.name === 'inicio' && <Home progress={progress} />}
+      {route.name === 'simulacro' && <InterviewPractice key={route.level.level} level={route.level} />}
       {route.name === 'repaso' && <Repaso progress={progress} />}
       {route.name === 'no-encontrada' && <section className={styles.hero}>
         <h1 tabIndex={-1}>No encontramos esa página</h1>
