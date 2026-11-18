@@ -1,0 +1,40 @@
+---
+id: android-junior-tipos-condiciones-y-funciones-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Tipos, condiciones y funciones"
+duracion_min: 5
+prerequisitos: [android-vistas-estado-compose-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué tipo devuelve la regla?"
+    opciones: ["Texto, porque la regla entrega una etiqueta.", "Un número, porque recibe la cantidad de días."]
+    correcta: 0
+    explicacion: "Texto, porque la regla entrega una etiqueta."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué devuelve con dos días?"
+    opciones: ["Normal, porque dos días están fuera del límite.", "Alta, porque el límite está incluido."]
+    correcta: 1
+    explicacion: "Alta, porque el límite está incluido."
+tarea_local: "Implementá la regla en Kotlin y comprobá con check los casos uno, dos y tres."
+resultado_esperado: "Alta, Alta, Normal."
+resumen:
+  - "Una función declara qué recibe y qué devuelve. Usá condiciones para elegir un resultado y tipos para que cada llamada lleve los datos correctos."
+  - "Una regla de prioridad devuelve Alta si quedan dos días o menos, y Normal para los demás."
+  - "Cuando existe un conjunto cerrado de opciones y querés impedir valores arbitrarios."
+entrevista:
+  en_30_segundos: "Una función declara qué recibe y qué devuelve. Usá condiciones para elegir un resultado y tipos para que cada llamada lleve los datos correctos. Una regla de prioridad devuelve Alta si quedan dos días o menos, y Normal para los demás."
+  trampas:
+    - pregunta: "¿Cuándo conviene un enum para la prioridad?"
+      respuesta: "Cuando existe un conjunto cerrado de opciones y querés impedir valores arbitrarios."
+  cuando_no: "Si la prioridad ya viene validada de otra capa, mostrá ese resultado en la interfaz y dejá la regla en un único lugar."
+---
+
+## Concepto
+
+Una función declara qué recibe y qué devuelve. Usá condiciones para elegir un resultado y tipos para que cada llamada lleve los datos correctos.
+
+## Ejemplo
+
+Una regla de prioridad devuelve Alta si quedan dos días o menos, y Normal para los demás.

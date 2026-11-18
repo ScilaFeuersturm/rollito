@@ -1,0 +1,40 @@
+---
+id: android-junior-accesibilidad-y-foco-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Accesibilidad y foco"
+duracion_min: 5
+prerequisitos: [android-junior-activity-recreacion-y-estado-local-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué nombre le darías al botón de borrar de la fila?"
+    opciones: ["Uno que diga la acción y, si hace falta, qué tarea afecta.", "Un nombre técnico como icon_delete."]
+    correcta: 0
+    explicacion: "Uno que diga la acción y, si hace falta, qué tarea afecta."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué observarías además de que el botón se vea?"
+    opciones: ["Solo el tamaño de la imagen.", "Orden de foco, etiqueta y estado anunciado."]
+    correcta: 1
+    explicacion: "Orden de foco, etiqueta y estado anunciado."
+tarea_local: "Recorré la pantalla con TalkBack y sin mirar. Completá una tarea y volvé a la lista."
+resultado_esperado: "Podés identificar la tarea, ejecutar la acción y escuchar el cambio."
+resumen:
+  - "La interfaz necesita nombres y estados que se puedan entender con lector de pantalla y entradas distintas al toque. La semántica también permite comprobar el comportamiento en tests."
+  - "Un ícono de borrar sin etiqueta deja ambiguo qué tarea se elimina."
+  - "Un ícono decorativo puede quedar fuera del foco si el control que lo contiene ya explica la acción."
+entrevista:
+  en_30_segundos: "La interfaz necesita nombres y estados que se puedan entender con lector de pantalla y entradas distintas al toque. La semántica también permite comprobar el comportamiento en tests. Un ícono de borrar sin etiqueta deja ambiguo qué tarea se elimina."
+  trampas:
+    - pregunta: "¿Todo ícono necesita una descripción propia?"
+      respuesta: "Un ícono decorativo puede quedar fuera del foco si el control que lo contiene ya explica la acción."
+  cuando_no: "Si el gráfico es decorativo y la etiqueta ya explica la acción, agregar otro anuncio puede duplicar el mensaje."
+---
+
+## Concepto
+
+La interfaz necesita nombres y estados que se puedan entender con lector de pantalla y entradas distintas al toque. La semántica también permite comprobar el comportamiento en tests.
+
+## Ejemplo
+
+Un ícono de borrar sin etiqueta deja ambiguo qué tarea se elimina.

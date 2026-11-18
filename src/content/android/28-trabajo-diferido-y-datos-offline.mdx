@@ -1,0 +1,40 @@
+---
+id: android-semi-senior-trabajo-diferido-y-datos-offline-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Trabajo diferido y datos offline"
+duracion_min: 6
+prerequisitos: [android-semi-senior-inyeccion-con-hilt-y-alcances-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pasa si la red no está disponible?"
+    opciones: ["Los cambios pueden seguir pendientes hasta cumplir las restricciones.", "La sincronización debe correr inmediatamente aunque tenga una restricción de red."]
+    correcta: 0
+    explicacion: "Los cambios pueden seguir pendientes hasta cumplir las restricciones."
+  - tipo: opcion_multiple
+    pregunta: "¿El usuario tiene que esperar dentro de la pantalla?"
+    opciones: ["Sí, el trabajo debe terminar antes de navegar.", "La UI puede mostrar el estado local y comunicar la sincronización pendiente."]
+    correcta: 1
+    explicacion: "La UI puede mostrar el estado local y comunicar la sincronización pendiente."
+tarea_local: "Simulá editar una tarea sin red. Reconectá y verificá que el cambio pendiente se procese una sola vez en el ejemplo."
+resultado_esperado: "La vista se mantiene usable offline y el cambio se confirma al sincronizar."
+resumen:
+  - "Elegí el mecanismo según cuándo debe correr la tarea y qué garantías necesita. WorkManager sirve para trabajo persistente y diferible con restricciones, no para prometer una hora exacta."
+  - "La sincronización espera conectividad y manda cambios que quedaron pendientes. La pantalla sigue leyendo datos locales."
+  - "El sistema decide según restricciones y disponibilidad. Diseñá la UI para esa demora."
+entrevista:
+  en_30_segundos: "Elegí el mecanismo según cuándo debe correr la tarea y qué garantías necesita. WorkManager sirve para trabajo persistente y diferible con restricciones, no para prometer una hora exacta. La sincronización espera conectividad y manda cambios que quedaron pendientes. La pantalla sigue leyendo datos locales."
+  trampas:
+    - pregunta: "¿Un trabajo diferible tiene ejecución inmediata garantizada?"
+      respuesta: "El sistema decide según restricciones y disponibilidad. Diseñá la UI para esa demora."
+  cuando_no: "Cuando la operación debe terminar durante una acción visible inmediata, elegí un mecanismo apropiado para esa interacción."
+---
+
+## Concepto
+
+Elegí el mecanismo según cuándo debe correr la tarea y qué garantías necesita. WorkManager sirve para trabajo persistente y diferible con restricciones, no para prometer una hora exacta.
+
+## Ejemplo
+
+La sincronización espera conectividad y manda cambios que quedaron pendientes. La pantalla sigue leyendo datos locales.

@@ -1,0 +1,40 @@
+---
+id: android-senior-pruebas-de-ui-y-rendimiento-en-ci-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Pruebas de UI y rendimiento en CI"
+duracion_min: 7
+prerequisitos: [android-senior-interfaz-adaptable-y-migracion-incremental-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué prueba observaría que aparece el error al tocar Agregar?"
+    opciones: ["Una prueba de UI con datos controlados.", "Un test unitario que devuelve un booleano pero nunca monta la pantalla."]
+    correcta: 0
+    explicacion: "Una prueba de UI con datos controlados."
+  - tipo: opcion_multiple
+    pregunta: "¿Una prueba de rendimiento debería fallar por una sola muestra ruidosa?"
+    opciones: ["Sí, una sola muestra siempre refleja una regresión real.", "Usá corridas repetidas y un criterio de regresión explícito."]
+    correcta: 1
+    explicacion: "Usá corridas repetidas y un criterio de regresión explícito."
+tarea_local: "Proponé una matriz de CI para cambios comunes y una corrida de rendimiento. Anotá qué bloquea una entrega y cómo investigarías un resultado inestable."
+resultado_esperado: "La matriz distingue qué valida cada prueba y cómo interpretar una regresión."
+resumen:
+  - "Separá las pruebas de lógica, integración, comportamiento visible y rendimiento. Para medir regresiones, mantené condiciones comparables y evitá umbrales basados en una sola corrida."
+  - "Una prueba de UI valida que el error se vea. Una medición separada compara el tiempo que tarda la lista en estar lista."
+  - "Para acercarte al comportamiento real, compará builds equivalentes representativos del lanzamiento."
+entrevista:
+  en_30_segundos: "Separá las pruebas de lógica, integración, comportamiento visible y rendimiento. Para medir regresiones, mantené condiciones comparables y evitá umbrales basados en una sola corrida. Una prueba de UI valida que el error se vea. Una medición separada compara el tiempo que tarda la lista en estar lista."
+  trampas:
+    - pregunta: "¿Conviene medir rendimiento con el mismo build de depuración de todos los días?"
+      respuesta: "Para acercarte al comportamiento real, compará builds equivalentes representativos del lanzamiento."
+  cuando_no: "Si una comprobación solo cubre una regla determinista, corré un test unitario y dejá la prueba de UI para el flujo."
+---
+
+## Concepto
+
+Separá las pruebas de lógica, integración, comportamiento visible y rendimiento. Para medir regresiones, mantené condiciones comparables y evitá umbrales basados en una sola corrida.
+
+## Ejemplo
+
+Una prueba de UI valida que el error se vea. Una medición separada compara el tiempo que tarda la lista en estar lista.

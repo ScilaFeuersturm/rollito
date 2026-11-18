@@ -1,0 +1,40 @@
+---
+id: android-junior-listas-keys-y-objetos-reciclados-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Listas, keys y objetos reciclados"
+duracion_min: 5
+prerequisitos: [android-junior-eventos-formularios-y-validacion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué clave elegirías al ordenar tareas?"
+    opciones: ["El índice actual dentro de la lista.", "El identificador estable."]
+    correcta: 1
+    explicacion: "El identificador estable."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuándo la posición deja de identificar a una tarea?"
+    opciones: ["Cuando se inserta, borra o reordena la lista.", "Solo cuando cambia el título de la tarea."]
+    correcta: 0
+    explicacion: "Cuando se inserta, borra o reordena la lista."
+tarea_local: "Expandí una fila y reordená la lista en una demo. Compará una clave de posición con una de identificador."
+resultado_esperado: "Con la clave estable, la expansión sigue a la misma tarea."
+resumen:
+  - "Separá la identidad de un elemento de su posición. En una lista que cambia, una clave estable permite asociar el estado de cada fila al elemento correcto."
+  - "La tarea 5 pasa de la fila dos a la primera. Su identificador sigue siendo 5."
+  - "Ambos evitan trabajar con toda la lista de una sola vez, aunque RecyclerView recicla objetos View y Compose administra contenido bajo demanda."
+entrevista:
+  en_30_segundos: "Separá la identidad de un elemento de su posición. En una lista que cambia, una clave estable permite asociar el estado de cada fila al elemento correcto. La tarea 5 pasa de la fila dos a la primera. Su identificador sigue siendo 5."
+  trampas:
+    - pregunta: "¿RecyclerView y LazyColumn conservan todas las filas como vistas activas?"
+      respuesta: "Ambos evitan trabajar con toda la lista de una sola vez, aunque RecyclerView recicla objetos View y Compose administra contenido bajo demanda."
+  cuando_no: "En una lista fija donde las filas no guardan estado propio, la posición puede ser suficiente."
+---
+
+## Concepto
+
+Separá la identidad de un elemento de su posición. En una lista que cambia, una clave estable permite asociar el estado de cada fila al elemento correcto.
+
+## Ejemplo
+
+La tarea 5 pasa de la fila dos a la primera. Su identificador sigue siendo 5.

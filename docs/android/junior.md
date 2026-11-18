@@ -1,8 +1,8 @@
-# Android Junior · Borradores de lección
+# Android Junior · Guía de lecciones
 
 Después de las siete lecciones disponibles. Practicá leer el código y predecir el comportamiento visible.
 
-**Estado** 9 borradores para revisión. Los ejemplos Android se describen como escenarios de práctica.
+**Contenido** 9 lecciones incorporadas a la vista previa local. Los ejemplos Android se describen como escenarios de práctica.
 
 ## 8. Tipos, condiciones y funciones
 

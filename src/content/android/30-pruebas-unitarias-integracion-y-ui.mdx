@@ -1,0 +1,40 @@
+---
+id: android-semi-senior-pruebas-unitarias-integracion-y-ui-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Pruebas unitarias, integración y UI"
+duracion_min: 6
+prerequisitos: [android-semi-senior-navegacion-deep-links-e-interoperabilidad-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde detectarías una regla de título demasiado permisiva?"
+    opciones: ["En una prueba unitaria del caso de uso.", "Una prueba visual del color del botón."]
+    correcta: 0
+    explicacion: "En una prueba unitaria del caso de uso."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué prueba comprueba que el texto aparece después de tocar un botón?"
+    opciones: ["Una prueba que solo comprueba el resultado del validador.", "Una prueba de UI."]
+    correcta: 1
+    explicacion: "Una prueba de UI."
+tarea_local: "Escribí una matriz con un caso válido y uno inválido para unidad, integración y UI. Ejecutá primero el caso de negocio."
+resultado_esperado: "Cada prueba cubre un fallo diferente sin repetir todo el flujo."
+resumen:
+  - "Probá decisiones en la capa más cercana a la regla y reservá pruebas de integración o UI para los contratos entre piezas y los flujos completos."
+  - "La validación del título se prueba con Kotlin. El guardado en Room prueba consultas reales. Un test de UI verifica que se pueda completar una tarea."
+  - "Combiná niveles. Un flujo completo detecta cables rotos, mientras una prueba local aísla reglas y errores."
+entrevista:
+  en_30_segundos: "Probá decisiones en la capa más cercana a la regla y reservá pruebas de integración o UI para los contratos entre piezas y los flujos completos. La validación del título se prueba con Kotlin. El guardado en Room prueba consultas reales. Un test de UI verifica que se pueda completar una tarea."
+  trampas:
+    - pregunta: "¿Más pruebas de UI siempre dan más confianza?"
+      respuesta: "Combiná niveles. Un flujo completo detecta cables rotos, mientras una prueba local aísla reglas y errores."
+  cuando_no: "Si solo querés comprobar una regla de negocio, evitá levantar toda la pantalla."
+---
+
+## Concepto
+
+Probá decisiones en la capa más cercana a la regla y reservá pruebas de integración o UI para los contratos entre piezas y los flujos completos.
+
+## Ejemplo
+
+La validación del título se prueba con Kotlin. El guardado en Room prueba consultas reales. Un test de UI verifica que se pueda completar una tarea.

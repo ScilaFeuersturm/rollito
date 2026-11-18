@@ -1,0 +1,40 @@
+---
+id: android-semi-senior-http-retrofit-y-clasificacion-de-fallas-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "HTTP, Retrofit y clasificación de fallas"
+duracion_min: 6
+prerequisitos: [android-semi-senior-ui-unidireccional-y-pruebas-de-estado-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Un 500 significa que el teléfono perdió conectividad?"
+    opciones: ["Sí, significa que el dispositivo perdió la conexión.", "Es una respuesta del servidor."]
+    correcta: 1
+    explicacion: "Es una respuesta del servidor."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué error puede necesitar iniciar sesión de nuevo?"
+    opciones: ["Uno de autenticación, según el contrato del servidor.", "Cualquier error de transporte junto con un timeout."]
+    correcta: 0
+    explicacion: "Uno de autenticación, según el contrato del servidor."
+tarea_local: "Usá respuestas simuladas 200, 401, 500 y un timeout para el mismo pedido."
+resultado_esperado: "La app produce cuatro resultados identificables y ofrece una acción apropiada para cada uno."
+resumen:
+  - "Una capa de red transforma llamadas HTTP en resultados para la app. Separá problemas de transporte, autenticación, respuestas fallidas y errores de datos."
+  - "La lista devuelve 500 y se puede reintentar. Una respuesta 401 puede requerir renovar la sesión."
+  - "Verificá si el error es transitorio y si repetir la operación es seguro."
+entrevista:
+  en_30_segundos: "Una capa de red transforma llamadas HTTP en resultados para la app. Separá problemas de transporte, autenticación, respuestas fallidas y errores de datos. La lista devuelve 500 y se puede reintentar. Una respuesta 401 puede requerir renovar la sesión."
+  trampas:
+    - pregunta: "¿Conviene reintentar cualquier pedido automáticamente?"
+      respuesta: "Verificá si el error es transitorio y si repetir la operación es seguro."
+  cuando_no: "Ante una respuesta que requiere una acción del usuario, mostrá esa acción antes de repetir el mismo pedido."
+---
+
+## Concepto
+
+Una capa de red transforma llamadas HTTP en resultados para la app. Separá problemas de transporte, autenticación, respuestas fallidas y errores de datos.
+
+## Ejemplo
+
+La lista devuelve 500 y se puede reintentar. Una respuesta 401 puede requerir renovar la sesión.

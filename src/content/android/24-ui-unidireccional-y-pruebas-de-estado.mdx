@@ -1,0 +1,40 @@
+---
+id: android-semi-senior-ui-unidireccional-y-pruebas-de-estado-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "UI unidireccional y pruebas de estado"
+duracion_min: 6
+prerequisitos: [android-semi-senior-fragment-viewmodel-y-restauracion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿En qué dirección viajan las acciones?"
+    opciones: ["De la vista a quien maneja el estado.", "Del repositorio hacia el botón de la pantalla."]
+    correcta: 0
+    explicacion: "De la vista a quien maneja el estado."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué deberías afirmar en una prueba del ViewModel?"
+    opciones: ["Solo que el método de carga se llamó alguna vez.", "El estado que resulta de cada acción y resultado de la dependencia."]
+    correcta: 1
+    explicacion: "El estado que resulta de cada acción y resultado de la dependencia."
+tarea_local: "Simulá un repositorio que primero falla y luego devuelve dos tareas. Verificá los estados de error y reintento."
+resultado_esperado: "El error permite reintentar y el nuevo contenido contiene dos tareas."
+resumen:
+  - "La pantalla envía acciones y observa estado. Las reglas y dependencias se pueden probar haciendo que el caso de uso entregue resultados controlados."
+  - "Al reintentar, el estado pasa de Error a Cargando y después a Contenido."
+  - "Compará cómo se representan las acciones, quién produce el estado y qué puede observar la vista."
+entrevista:
+  en_30_segundos: "La pantalla envía acciones y observa estado. Las reglas y dependencias se pueden probar haciendo que el caso de uso entregue resultados controlados. Al reintentar, el estado pasa de Error a Cargando y después a Contenido."
+  trampas:
+    - pregunta: "¿MVVM y MVI se distinguen solo por el nombre de la clase?"
+      respuesta: "Compará cómo se representan las acciones, quién produce el estado y qué puede observar la vista."
+  cuando_no: "Si el dato solo cambia una parte de la vista, empezá con estado local y compartilo cuando aparezca otro consumidor."
+---
+
+## Concepto
+
+La pantalla envía acciones y observa estado. Las reglas y dependencias se pueden probar haciendo que el caso de uso entregue resultados controlados.
+
+## Ejemplo
+
+Al reintentar, el estado pasa de Error a Cargando y después a Contenido.

@@ -39,13 +39,13 @@ Los niveles sirven para organizar la preparación. Cada empresa puede repartir l
 | Semi Senior | Ciclo de vida de Fragment y de su vista, suscripciones ligadas a la vista, estado que sobrevive a recreaciones, listas con identidad, gestos, semántica, interoperabilidad XML y Compose, pruebas de UI. | ¿Por qué una suscripción que actualiza el binding debería vivir lo mismo que la vista del Fragment? |
 | Senior | Fases de Compose, recomposición y estabilidad, medición de jank, sobrecarga de layout y dibujo, rendimiento de listas, layouts adaptativos y estrategia de migración incremental. | Si una lista se traba al hacer scroll, ¿qué medirías para separar el costo de composición, layout y dibujo? |
 
-## Borradores del recorrido completo
+## Recorrido completo en la vista previa local
 
-Las siete lecciones iniciales están incorporadas a la vista previa local. Las próximas lecciones están escritas para revisión por nivel. Cada ficha incluye concepto, ejemplo, dos ejercicios con respuesta, práctica local con resultado esperado y una pregunta de entrevista.
+Las 43 lecciones de Android están incorporadas a la vista previa local. Las guías por nivel reúnen las fichas de las últimas 36 lecciones y sus respuestas. Las siete iniciales se describen más abajo.
 
-- [Junior](android/junior.md) · 9 borradores.
-- [Semi Senior](android/semi-senior.md) · 14 borradores.
-- [Senior](android/senior.md) · 13 borradores.
+- [Junior](android/junior.md) · 9 lecciones adicionales.
+- [Semi Senior](android/semi-senior.md) · 14 lecciones.
+- [Senior](android/senior.md) · 13 lecciones.
 
 ## Lección disponible · Ausencia de datos en Kotlin
 

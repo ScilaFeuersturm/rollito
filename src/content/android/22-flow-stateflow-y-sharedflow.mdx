@@ -1,0 +1,40 @@
+---
+id: android-semi-senior-flow-stateflow-y-sharedflow-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Flow, StateFlow y SharedFlow"
+duracion_min: 6
+prerequisitos: [android-semi-senior-corrutinas-scopes-y-cancelacion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué opción expone un estado que siempre tiene valor actual?"
+    opciones: ["StateFlow.", "Un Flow frío que ejecuta la consulta para cada colección."]
+    correcta: 0
+    explicacion: "StateFlow."
+  - tipo: opcion_multiple
+    pregunta: "¿Un Flow es necesariamente frío?"
+    opciones: ["Sí, cualquier Flow reinicia su trabajo por colección.", "Hay flujos fríos y flujos calientes."]
+    correcta: 1
+    explicacion: "Hay flujos fríos y flujos calientes."
+tarea_local: "Prepará un flujo frío con un contador de inicio y un StateFlow con una lista inicial. Agregá dos colecciones de cada uno."
+resultado_esperado: "El flujo frío arranca una vez por colección. Las dos colecciones de StateFlow pueden leer el valor actual."
+resumen:
+  - "Flow describe emisiones. Un flujo frío común empieza su trabajo por colección. StateFlow mantiene un valor actual y SharedFlow permite configurar cómo se comparten emisiones."
+  - "Una pantalla que se vuelve a abrir quiere leer el estado actual de tareas. Una repetición configurable se decide según qué consumidores requieren los eventos."
+  - "Depende de si debe recuperarse al recrear la UI. El replay puede repetir un efecto que ya se atendió."
+entrevista:
+  en_30_segundos: "Flow describe emisiones. Un flujo frío común empieza su trabajo por colección. StateFlow mantiene un valor actual y SharedFlow permite configurar cómo se comparten emisiones. Una pantalla que se vuelve a abrir quiere leer el estado actual de tareas. Una repetición configurable se decide según qué consumidores requieren los eventos."
+  trampas:
+    - pregunta: "¿Conviene emitir un evento de una sola vez con replay por defecto?"
+      respuesta: "Depende de si debe recuperarse al recrear la UI. El replay puede repetir un efecto que ya se atendió."
+  cuando_no: "Una llamada suspend que devuelve un único resultado puede alcanzar si no hay cambios continuos que observar."
+---
+
+## Concepto
+
+Flow describe emisiones. Un flujo frío común empieza su trabajo por colección. StateFlow mantiene un valor actual y SharedFlow permite configurar cómo se comparten emisiones.
+
+## Ejemplo
+
+Una pantalla que se vuelve a abrir quiere leer el estado actual de tareas. Una repetición configurable se decide según qué consumidores requieren los eventos.

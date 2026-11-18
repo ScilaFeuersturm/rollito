@@ -1,0 +1,40 @@
+---
+id: android-junior-recursos-densidad-y-escalado-de-texto-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Recursos, densidad y escalado de texto"
+duracion_min: 5
+prerequisitos: [android-junior-identidad-con-listas-conjuntos-y-mapas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué unidad usarías para definir el tamaño de la tipografía?"
+    opciones: ["sp.", "dp."]
+    correcta: 0
+    explicacion: "sp."
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde guardarías la etiqueta «Completar» para traducirla?"
+    opciones: ["En el texto fijo del layout, una vez por pantalla.", "En recursos de cadenas."]
+    correcta: 1
+    explicacion: "En recursos de cadenas."
+tarea_local: "Probá una fila con el tamaño de fuente del sistema aumentado. Ajustá el alto para que dependa del contenido."
+resultado_esperado: "El título y el botón siguen completos y legibles."
+resumen:
+  - "Usá dp para tamaños de diseño, sp para texto y recursos de cadenas para lo que se traduce. Probá distintos tamaños de fuente y pantallas."
+  - "Una fila con alto fijo de 32 dp puede recortar el título cuando la persona agranda el texto."
+  - "El tamaño físico y las preferencias de escala cambian entre dispositivos y personas."
+entrevista:
+  en_30_segundos: "Usá dp para tamaños de diseño, sp para texto y recursos de cadenas para lo que se traduce. Probá distintos tamaños de fuente y pantallas. Una fila con alto fijo de 32 dp puede recortar el título cuando la persona agranda el texto."
+  trampas:
+    - pregunta: "¿Por qué no fijar el texto en píxeles?"
+      respuesta: "El tamaño físico y las preferencias de escala cambian entre dispositivos y personas."
+  cuando_no: "Usá las unidades de diseño para el layout y reservá los píxeles para operaciones que trabajan sobre un bitmap o coordenadas físicas."
+---
+
+## Concepto
+
+Usá dp para tamaños de diseño, sp para texto y recursos de cadenas para lo que se traduce. Probá distintos tamaños de fuente y pantallas.
+
+## Ejemplo
+
+Una fila con alto fijo de 32 dp puede recortar el título cuando la persona agranda el texto.

@@ -1,8 +1,8 @@
-# Android Senior · Borradores de lección
+# Android Senior · Guía de lecciones
 
 Después de Semi Senior. Practicá justificar límites, medir resultados y explicar trade-offs.
 
-**Estado** 13 borradores para revisión. Los ejemplos Android se describen como escenarios de práctica.
+**Contenido** 13 lecciones incorporadas a la vista previa local. Los ejemplos Android se describen como escenarios de práctica.
 
 ## 1. Diseño de APIs Kotlin e interoperabilidad con Java
 

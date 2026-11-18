@@ -1,0 +1,40 @@
+---
+id: android-semi-senior-inyeccion-con-hilt-y-alcances-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Inyección con Hilt y alcances"
+duracion_min: 6
+prerequisitos: [android-semi-senior-room-migraciones-y-repositorios-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pasa si una dependencia compartida guarda el borrador de una pantalla?"
+    opciones: ["El estado se reinicia de forma automática al cerrar cada formulario.", "Ese estado puede sobrevivir más de lo esperado o mezclarse con otro formulario."]
+    correcta: 1
+    explicacion: "Ese estado puede sobrevivir más de lo esperado o mezclarse con otro formulario."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué ganás al inyectar por constructor?"
+    opciones: ["Dependencias explícitas y reemplazables al probar.", "Permite que el objeto elija su propia dependencia oculta."]
+    correcta: 0
+    explicacion: "Dependencias explícitas y reemplazables al probar."
+tarea_local: "Empezá con inyección manual y armá dos formularios con estados separados. Dibujá qué componentes usarías si lo llevaras a Hilt."
+resultado_esperado: "Cada formulario conserva su propio estado y ambos pueden usar la misma política."
+resumen:
+  - "El ensamblado elige implementaciones y define cuánto viven. Un alcance aplica a una instancia dentro de su componente, según el ciclo que ese componente representa."
+  - "Una política común puede compartirse. Un objeto con estado de un formulario necesita un alcance más corto."
+  - "El contenedor ensambla. La dirección del código depende de qué contratos conoce cada pieza."
+entrevista:
+  en_30_segundos: "El ensamblado elige implementaciones y define cuánto viven. Un alcance aplica a una instancia dentro de su componente, según el ciclo que ese componente representa. Una política común puede compartirse. Un objeto con estado de un formulario necesita un alcance más corto."
+  trampas:
+    - pregunta: "¿Usar Hilt equivale a invertir cualquier dependencia?"
+      respuesta: "El contenedor ensambla. La dirección del código depende de qué contratos conoce cada pieza."
+  cuando_no: "En una app chica, ensamblar las dependencias manualmente puede dejar sus ciclos de vida más claros."
+---
+
+## Concepto
+
+El ensamblado elige implementaciones y define cuánto viven. Un alcance aplica a una instancia dentro de su componente, según el ciclo que ese componente representa.
+
+## Ejemplo
+
+Una política común puede compartirse. Un objeto con estado de un formulario necesita un alcance más corto.

@@ -1,0 +1,40 @@
+---
+id: android-senior-jank-anr-y-profiling-de-memoria-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Jank, ANR y profiling de memoria"
+duracion_min: 7
+prerequisitos: [android-senior-recomposicion-estabilidad-y-actualizaciones-de-ui-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué mirarías primero para un scroll irregular?"
+    opciones: ["Solo cuánto dependen las clases entre sí.", "La traza de frames y el trabajo que ocupa el hilo principal."]
+    correcta: 1
+    explicacion: "La traza de frames y el trabajo que ocupa el hilo principal."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué te ayuda a seguir una vista retenida?"
+    opciones: ["Un perfil de memoria y la cadena de referencias.", "Un conteo global de líneas del módulo."]
+    correcta: 0
+    explicacion: "Un perfil de memoria y la cadena de referencias."
+tarea_local: "Compará una lista antes y después de mover un cálculo repetido fuera del camino de scroll. Revisá el perfil y repetí varias veces."
+resultado_esperado: "La comparación muestra si bajó el trabajo durante el scroll y cuál fue el efecto en frames."
+resumen:
+  - "Jank y ANR describen problemas distintos. La traza indica dónde se consume tiempo. Un perfil de memoria ayuda a ver asignaciones repetidas o referencias retenidas."
+  - "Una fila hace trabajo pesado al aparecer. Por otro lado, un binding retenido puede impedir liberar una vista que ya salió."
+  - "Buscá objetos que siguen retenidos tras terminar su ciclo de vida y repetí el escenario."
+entrevista:
+  en_30_segundos: "Jank y ANR describen problemas distintos. La traza indica dónde se consume tiempo. Un perfil de memoria ayuda a ver asignaciones repetidas o referencias retenidas. Una fila hace trabajo pesado al aparecer. Por otro lado, un binding retenido puede impedir liberar una vista que ya salió."
+  trampas:
+    - pregunta: "¿Un pico de memoria es prueba de fuga?"
+      respuesta: "Buscá objetos que siguen retenidos tras terminar su ciclo de vida y repetí el escenario."
+  cuando_no: "Si el problema apunta a una llamada de red, medí esa espera y su efecto sobre la interfaz antes de modificar memoria."
+---
+
+## Concepto
+
+Jank y ANR describen problemas distintos. La traza indica dónde se consume tiempo. Un perfil de memoria ayuda a ver asignaciones repetidas o referencias retenidas.
+
+## Ejemplo
+
+Una fila hace trabajo pesado al aparecer. Por otro lado, un binding retenido puede impedir liberar una vista que ya salió.

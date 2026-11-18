@@ -1,0 +1,40 @@
+---
+id: android-senior-seguridad-y-privacidad-movil-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Seguridad y privacidad móvil"
+duracion_min: 7
+prerequisitos: [android-senior-entregas-observabilidad-y-recuperacion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Un id válido demuestra que la persona tiene acceso?"
+    opciones: ["El servicio o la capa responsable todavía debe autorizarlo.", "Sí, el identificador garantiza el permiso de lectura."]
+    correcta: 0
+    explicacion: "El servicio o la capa responsable todavía debe autorizarlo."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué evitarías registrar durante un error de sesión?"
+    opciones: ["Solo los nombres de archivo del proyecto.", "Credenciales, tokens y datos personales innecesarios."]
+    correcta: 1
+    explicacion: "Credenciales, tokens y datos personales innecesarios."
+tarea_local: "Revisá permisos, enlaces, almacenamiento y logs de una demo. Probá sesión ausente, id inválido y tarea sin acceso."
+resultado_esperado: "Cada caso se resuelve sin mostrar datos que no corresponden y sin registrar secretos."
+resumen:
+  - "Tratá datos entrantes y enlaces como entradas externas. Reducí permisos, evitá secretos de servidor en el APK y limitá qué información llega a logs o telemetría."
+  - "Un enlace trae un id de tarea. La app valida el argumento y comprueba el acceso antes de mostrar información."
+  - "El cliente puede inspeccionarse. Las credenciales de servidor necesitan un límite del lado servidor."
+entrevista:
+  en_30_segundos: "Tratá datos entrantes y enlaces como entradas externas. Reducí permisos, evitá secretos de servidor en el APK y limitá qué información llega a logs o telemetría. Un enlace trae un id de tarea. La app valida el argumento y comprueba el acceso antes de mostrar información."
+  trampas:
+    - pregunta: "¿Guardar un secreto de servidor en una app ofuscada lo vuelve privado?"
+      respuesta: "El cliente puede inspeccionarse. Las credenciales de servidor necesitan un límite del lado servidor."
+  cuando_no: "Si un permiso se pide por comodidad y la función puede operar sin él, simplificá el flujo antes de solicitarlo."
+---
+
+## Concepto
+
+Tratá datos entrantes y enlaces como entradas externas. Reducí permisos, evitá secretos de servidor en el APK y limitá qué información llega a logs o telemetría.
+
+## Ejemplo
+
+Un enlace trae un id de tarea. La app valida el argumento y comprueba el acceso antes de mostrar información.

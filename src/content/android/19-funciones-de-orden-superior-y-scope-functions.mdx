@@ -1,0 +1,40 @@
+---
+id: android-semi-senior-funciones-de-orden-superior-y-scope-functions-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Funciones de orden superior y scope functions"
+duracion_min: 6
+prerequisitos: [android-semi-senior-tipos-sellados-y-estados-de-pantalla-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué se inyecta al pasar un criterio como lambda?"
+    opciones: ["El estado visual completo de la pantalla.", "El comportamiento que debe ejecutar la función."]
+    correcta: 1
+    explicacion: "El comportamiento que debe ejecutar la función."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué devuelve apply?"
+    opciones: ["El objeto receptor.", "El último valor que evaluó el bloque aunque sea de otro tipo."]
+    correcta: 0
+    explicacion: "El objeto receptor."
+tarea_local: "Reescribí una transformación como lambda nombrada. Compará configurar un ejemplo con apply y con asignaciones explícitas."
+resultado_esperado: "Ambas versiones devuelven el mismo objeto configurado."
+resumen:
+  - "Pasar una función como valor permite delegar un criterio. Las scope functions cambian cómo se accede al receptor o qué devuelve el bloque."
+  - "El repositorio recibe una transformación de lista. En otro lugar apply configura un objeto y devuelve ese mismo objeto."
+  - "Cada anidamiento puede volver ambiguo qué representan it o this. Elegí la forma que deja claro el receptor."
+entrevista:
+  en_30_segundos: "Pasar una función como valor permite delegar un criterio. Las scope functions cambian cómo se accede al receptor o qué devuelve el bloque. El repositorio recibe una transformación de lista. En otro lugar apply configura un objeto y devuelve ese mismo objeto."
+  trampas:
+    - pregunta: "¿Anidar varias scope functions mejora siempre la legibilidad?"
+      respuesta: "Cada anidamiento puede volver ambiguo qué representan it o this. Elegí la forma que deja claro el receptor."
+  cuando_no: "Si una función de alcance hace ambiguo el receptor, usá una variable con nombre."
+---
+
+## Concepto
+
+Pasar una función como valor permite delegar un criterio. Las scope functions cambian cómo se accede al receptor o qué devuelve el bloque.
+
+## Ejemplo
+
+El repositorio recibe una transformación de lista. En otro lugar apply configura un objeto y devuelve ese mismo objeto.

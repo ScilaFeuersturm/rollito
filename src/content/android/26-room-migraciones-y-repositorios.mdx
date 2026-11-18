@@ -1,0 +1,40 @@
+---
+id: android-semi-senior-room-migraciones-y-repositorios-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Room, migraciones y repositorios"
+duracion_min: 6
+prerequisitos: [android-semi-senior-http-retrofit-y-clasificacion-de-fallas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué deberías verificar al migrar?"
+    opciones: ["Que los datos previos se conserven con la forma esperada.", "Solo que el archivo de base de datos tenga el mismo tamaño."]
+    correcta: 0
+    explicacion: "Que los datos previos se conserven con la forma esperada."
+  - tipo: opcion_multiple
+    pregunta: "¿Quién decide si una lectura usa los datos locales o remotos?"
+    opciones: ["Cada vista decide de manera independiente.", "El repositorio o la política de datos de la aplicación."]
+    correcta: 1
+    explicacion: "El repositorio o la política de datos de la aplicación."
+tarea_local: "Prepará una base de prueba con dos tareas en el esquema anterior. Migrala y consultá las filas."
+resultado_esperado: "Siguen las dos tareas y el campo nuevo tiene un valor válido."
+resumen:
+  - "Room modela entidades y consultas persistentes. El repositorio define qué fuente se lee y cómo se actualiza. Las migraciones preservan datos al cambiar el esquema."
+  - "Sumar una propiedad requiere declarar cómo se proyectan las filas existentes al esquema nuevo."
+  - "Siempre que los datos previos importen o no se puedan reconstruir de manera fiable."
+entrevista:
+  en_30_segundos: "Room modela entidades y consultas persistentes. El repositorio define qué fuente se lee y cómo se actualiza. Las migraciones preservan datos al cambiar el esquema. Sumar una propiedad requiere declarar cómo se proyectan las filas existentes al esquema nuevo."
+  trampas:
+    - pregunta: "¿Cuándo evitarías una migración destructiva?"
+      respuesta: "Siempre que los datos previos importen o no se puedan reconstruir de manera fiable."
+  cuando_no: "Si no vas a consultar ni preservar datos estructurados, evaluá un almacenamiento más sencillo."
+---
+
+## Concepto
+
+Room modela entidades y consultas persistentes. El repositorio define qué fuente se lee y cómo se actualiza. Las migraciones preservan datos al cambiar el esquema.
+
+## Ejemplo
+
+Sumar una propiedad requiere declarar cómo se proyectan las filas existentes al esquema nuevo.

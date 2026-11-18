@@ -1,0 +1,40 @@
+---
+id: android-senior-modularizacion-gradle-y-limites-del-dominio-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Modularización, Gradle y límites del dominio"
+duracion_min: 7
+prerequisitos: [android-senior-concurrencia-atomicidad-y-consistencia-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué evitás si Resumen conoce solo el contrato?"
+    opciones: ["Depender de detalles que cambian dentro de Tareas.", "Que Resumen pueda usar una tarea sin conocer ni siquiera su contrato de lectura."]
+    correcta: 0
+    explicacion: "Depender de detalles que cambian dentro de Tareas."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué señal indica un límite débil?"
+    opciones: ["Que un cambio interno del almacenamiento quede dentro de Tareas.", "Un cambio común exige tocar módulos que deberían evolucionar separados."]
+    correcta: 1
+    explicacion: "Un cambio común exige tocar módulos que deberían evolucionar separados."
+tarea_local: "Dibujá el grafo de app, tareas, resumen y contratos. Anotá qué dependencias permite Gradle y qué cambios quedarían dentro de cada módulo."
+resultado_esperado: "El grafo carece de ciclos y una actualización del almacenamiento no obliga a modificar Resumen."
+resumen:
+  - "Un módulo es útil cuando tiene una responsabilidad y una API que mantiene dependencias claras. Buscá direcciones estables y un lugar para ensamblar las implementaciones."
+  - "La pantalla de Resumen depende de un contrato de lectura. La implementación de tareas queda en su módulo y app conecta ambos."
+  - "Los beneficios dependen del grafo, caché y tamaño. Medí antes y después de una división."
+entrevista:
+  en_30_segundos: "Un módulo es útil cuando tiene una responsabilidad y una API que mantiene dependencias claras. Buscá direcciones estables y un lugar para ensamblar las implementaciones. La pantalla de Resumen depende de un contrato de lectura. La implementación de tareas queda en su módulo y app conecta ambos."
+  trampas:
+    - pregunta: "¿Más módulos aceleran siempre el build?"
+      respuesta: "Los beneficios dependen del grafo, caché y tamaño. Medí antes y después de una división."
+  cuando_no: "Si los módulos cambian juntos cada vez, revisá si la separación refleja un límite real del dominio."
+---
+
+## Concepto
+
+Un módulo es útil cuando tiene una responsabilidad y una API que mantiene dependencias claras. Buscá direcciones estables y un lugar para ensamblar las implementaciones.
+
+## Ejemplo
+
+La pantalla de Resumen depende de un contrato de lectura. La implementación de tareas queda en su módulo y app conecta ambos.

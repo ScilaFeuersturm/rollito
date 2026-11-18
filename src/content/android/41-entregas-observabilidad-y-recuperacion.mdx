@@ -1,0 +1,40 @@
+---
+id: android-senior-entregas-observabilidad-y-recuperacion-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Entregas, observabilidad y recuperación"
+duracion_min: 7
+prerequisitos: [android-senior-pruebas-de-ui-y-rendimiento-en-ci-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué compararías antes de atribuir el cambio al release?"
+    opciones: ["Solo el promedio histórico agregado de todas las versiones.", "Versiones, población y métricas del flujo afectado."]
+    correcta: 1
+    explicacion: "Versiones, población y métricas del flujo afectado."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué revisás antes de recomendar una reversión?"
+    opciones: ["Si el código anterior tolera el esquema y los datos que ya se escribieron.", "Únicamente si se puede recompilar el código anterior."]
+    correcta: 0
+    explicacion: "Si el código anterior tolera el esquema y los datos que ya se escribieron."
+tarea_local: "Diseñá un plan de lanzamiento para cambiar la pantalla de tareas, con señal de detención y pasos de recuperación."
+resultado_esperado: "El plan dice qué medir, cuándo pausar y cómo tratar el estado persistido."
+resumen:
+  - "Una entrega gradual permite comparar indicadores y limitar el impacto si empeoran. Separá detener una entrega, revertir código, desactivar una función y recuperar datos."
+  - "Después de una entrega suben los cierres inesperados al abrir una tarea. Podés detener la expansión mientras identificás la versión afectada."
+  - "Las escrituras y migraciones ya realizadas requieren una estrategia explícita."
+entrevista:
+  en_30_segundos: "Una entrega gradual permite comparar indicadores y limitar el impacto si empeoran. Separá detener una entrega, revertir código, desactivar una función y recuperar datos. Después de una entrega suben los cierres inesperados al abrir una tarea. Podés detener la expansión mientras identificás la versión afectada."
+  trampas:
+    - pregunta: "¿Volver al código anterior recupera automáticamente los datos previos?"
+      respuesta: "Las escrituras y migraciones ya realizadas requieren una estrategia explícita."
+  cuando_no: "Si el código anterior no puede leer el esquema nuevo, contemplá una desactivación de la función o una corrección hacia adelante."
+---
+
+## Concepto
+
+Una entrega gradual permite comparar indicadores y limitar el impacto si empeoran. Separá detener una entrega, revertir código, desactivar una función y recuperar datos.
+
+## Ejemplo
+
+Después de una entrega suben los cierres inesperados al abrir una tarea. Podés detener la expansión mientras identificás la versión afectada.

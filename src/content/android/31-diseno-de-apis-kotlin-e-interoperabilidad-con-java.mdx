@@ -1,0 +1,40 @@
+---
+id: android-senior-diseno-de-apis-kotlin-e-interoperabilidad-con-java-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Diseño de APIs Kotlin e interoperabilidad con Java"
+duracion_min: 7
+prerequisitos: [android-semi-senior-pruebas-unitarias-integracion-y-ui-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde validarías el valor si no podés modificar Java?"
+    opciones: ["En cada vista que renderice el título, después de usarlo.", "En un adaptador que modele el contrato para Kotlin."]
+    correcta: 1
+    explicacion: "En un adaptador que modele el contrato para Kotlin."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué comprobás antes de cambiar la firma pública?"
+    opciones: ["Compatibilidad de clientes fuente y binarios, según cómo consumen el componente.", "Solo el nombre del archivo donde vive el método."]
+    correcta: 0
+    explicacion: "Compatibilidad de clientes fuente y binarios, según cómo consumen el componente."
+tarea_local: "Armá un pequeño proveedor Java que devuelva un título o null. Escribí un adaptador y probá los dos casos."
+resultado_esperado: "Los consumidores Kotlin reciben un tipo explícito y manejan el dato ausente."
+resumen:
+  - "Una API pública debe declarar contratos claros de nullability, errores y compatibilidad. Los tipos de plataforma de Java pueden dejar incertidumbre sobre si un valor es nulo."
+  - "Un proveedor Java puede devolver null y Kotlin puede permitir usar el resultado con supuestos distintos. Validá en el límite y exponé un tipo claro al resto de la app."
+  - "Compará las firmas generadas y testeá consumidores ya compilados. Compatibilidad de fuente y binaria son distintas."
+entrevista:
+  en_30_segundos: "Una API pública debe declarar contratos claros de nullability, errores y compatibilidad. Los tipos de plataforma de Java pueden dejar incertidumbre sobre si un valor es nulo. Un proveedor Java puede devolver null y Kotlin puede permitir usar el resultado con supuestos distintos. Validá en el límite y exponé un tipo claro al resto de la app."
+  trampas:
+    - pregunta: "¿Agregar un argumento por defecto conserva siempre la compatibilidad binaria?"
+      respuesta: "Compará las firmas generadas y testeá consumidores ya compilados. Compatibilidad de fuente y binaria son distintas."
+  cuando_no: "Si el código se usa dentro de un único módulo sin consumidores compilados aparte, un cambio de firma puede coordinarse en el mismo cambio."
+---
+
+## Concepto
+
+Una API pública debe declarar contratos claros de nullability, errores y compatibilidad. Los tipos de plataforma de Java pueden dejar incertidumbre sobre si un valor es nulo.
+
+## Ejemplo
+
+Un proveedor Java puede devolver null y Kotlin puede permitir usar el resultado con supuestos distintos. Validá en el límite y exponé un tipo claro al resto de la app.

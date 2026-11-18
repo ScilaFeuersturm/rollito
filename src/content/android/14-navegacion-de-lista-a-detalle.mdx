@@ -1,0 +1,40 @@
+---
+id: android-junior-navegacion-de-lista-a-detalle-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Navegación de lista a detalle"
+duracion_min: 5
+prerequisitos: [android-junior-listas-keys-y-objetos-reciclados-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál es el dato mínimo para abrir un detalle?"
+    opciones: ["El identificador de la tarea.", "Una copia completa de la tarea y de sus subtareas."]
+    correcta: 0
+    explicacion: "El identificador de la tarea."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué respuesta necesita la UI si el identificador no existe?"
+    opciones: ["Una fila vacía indistinguible de una tarea válida.", "Un estado visible de elemento ausente."]
+    correcta: 1
+    explicacion: "Un estado visible de elemento ausente."
+tarea_local: "Conectá lista y detalle, y probá un identificador válido y uno que no esté."
+resultado_esperado: "El primero muestra la tarea. El segundo muestra el estado ausente y permite volver."
+resumen:
+  - "La ruta puede llevar el identificador de la tarea. El detalle obtiene los datos con esa clave y los representa según el estado actual."
+  - "Desde la lista abrís la tarea 5. Si el dato ya no existe, el detalle muestra que no se encontró."
+  - "Reduce datos duplicados y permite que el detalle consulte la fuente actual."
+entrevista:
+  en_30_segundos: "La ruta puede llevar el identificador de la tarea. El detalle obtiene los datos con esa clave y los representa según el estado actual. Desde la lista abrís la tarea 5. Si el dato ya no existe, el detalle muestra que no se encontró."
+  trampas:
+    - pregunta: "¿Por qué preferir un id antes que pasar el objeto completo?"
+      respuesta: "Reduce datos duplicados y permite que el detalle consulte la fuente actual."
+  cuando_no: "Para una UI maestra con detalle en la misma pantalla, un estado de selección puede resolver el flujo sin crear otro destino."
+---
+
+## Concepto
+
+La ruta puede llevar el identificador de la tarea. El detalle obtiene los datos con esa clave y los representa según el estado actual.
+
+## Ejemplo
+
+Desde la lista abrís la tarea 5. Si el dato ya no existe, el detalle muestra que no se encontró.

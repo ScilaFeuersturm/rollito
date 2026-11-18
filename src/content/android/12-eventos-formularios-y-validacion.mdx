@@ -1,0 +1,40 @@
+---
+id: android-junior-eventos-formularios-y-validacion-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Eventos, formularios y validación"
+duracion_min: 5
+prerequisitos: [android-junior-layout-con-row-column-y-modificadores-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Quién debería decidir si un envío cumple una regla compartida?"
+    opciones: ["La capa que posee esa regla.", "El componente de texto que dibuja el formulario."]
+    correcta: 0
+    explicacion: "La capa que posee esa regla."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué dato necesita la vista para habilitar el botón?"
+    opciones: ["Solo el texto de la última tarea guardada.", "El resultado de la validación o el estado que lo representa."]
+    correcta: 1
+    explicacion: "El resultado de la validación o el estado que lo representa."
+tarea_local: "Armá un campo y un botón. Probá cadena vacía, espacios y un título válido."
+resultado_esperado: "Solo el título válido habilita el envío."
+resumen:
+  - "La interfaz comunica cambios de texto y toques. Quien mantiene el estado decide qué valores mostrar, cuándo habilitar un botón y cómo informar errores."
+  - "Escribir espacios mantiene deshabilitado Agregar. Escribir «Llamar al médico» habilita el botón."
+  - "La interfaz ayuda al usuario. El caso de uso sigue protegiendo la regla desde cualquier entrada."
+entrevista:
+  en_30_segundos: "La interfaz comunica cambios de texto y toques. Quien mantiene el estado decide qué valores mostrar, cuándo habilitar un botón y cómo informar errores. Escribir espacios mantiene deshabilitado Agregar. Escribir «Llamar al médico» habilita el botón."
+  trampas:
+    - pregunta: "¿Deshabilitar un botón reemplaza la validación del caso de uso?"
+      respuesta: "La interfaz ayuda al usuario. El caso de uso sigue protegiendo la regla desde cualquier entrada."
+  cuando_no: "Para una regla que solo afecta la apariencia de un campo, puede alcanzar con resolverla en la interfaz."
+---
+
+## Concepto
+
+La interfaz comunica cambios de texto y toques. Quien mantiene el estado decide qué valores mostrar, cuándo habilitar un botón y cómo informar errores.
+
+## Ejemplo
+
+Escribir espacios mantiene deshabilitado Agregar. Escribir «Llamar al médico» habilita el botón.

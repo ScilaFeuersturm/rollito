@@ -1,0 +1,40 @@
+---
+id: android-senior-inline-reified-y-limites-de-una-api-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Inline, reified y límites de una API"
+duracion_min: 7
+prerequisitos: [android-senior-diseno-de-apis-kotlin-e-interoperabilidad-con-java-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve reified en un filtro?"
+    opciones: ["Permite referirse al tipo en una comprobación dentro de la función inline.", "Obliga a crear una instancia nueva de la colección."]
+    correcta: 0
+    explicacion: "Permite referirse al tipo en una comprobación dentro de la función inline."
+  - tipo: opcion_multiple
+    pregunta: "¿El tipo reified garantiza que cada elemento dentro de List<String> sea String?"
+    opciones: ["Sí, comprueba siempre los tipos de todos los elementos internos.", "El borrado de tipos limita esa comprobación."]
+    correcta: 1
+    explicacion: "El borrado de tipos limita esa comprobación."
+tarea_local: "Filtrá una lista mixta por String. Compará el resultado con un filtro que recibe una condición explícita."
+resultado_esperado: "Las dos versiones conservan las cadenas."
+resumen:
+  - "Inline puede insertar el cuerpo de la función y habilitar un parámetro reified. Esto permite comprobar ese tipo, con límites derivados del borrado de tipos."
+  - "Un filtro puede recuperar los elementos String de una colección mixta. La JVM no verifica todos los argumentos de un tipo genérico anidado en esa operación."
+  - "El beneficio depende del caso. Evaluá legibilidad, tamaño del código, API pública y mediciones."
+entrevista:
+  en_30_segundos: "Inline puede insertar el cuerpo de la función y habilitar un parámetro reified. Esto permite comprobar ese tipo, con límites derivados del borrado de tipos. Un filtro puede recuperar los elementos String de una colección mixta. La JVM no verifica todos los argumentos de un tipo genérico anidado en esa operación."
+  trampas:
+    - pregunta: "¿Conviene hacer inline toda función de orden superior?"
+      respuesta: "El beneficio depende del caso. Evaluá legibilidad, tamaño del código, API pública y mediciones."
+  cuando_no: "Usá un parámetro de tipo ordinario si la función no necesita inspeccionarlo en ejecución."
+---
+
+## Concepto
+
+Inline puede insertar el cuerpo de la función y habilitar un parámetro reified. Esto permite comprobar ese tipo, con límites derivados del borrado de tipos.
+
+## Ejemplo
+
+Un filtro puede recuperar los elementos String de una colección mixta. La JVM no verifica todos los argumentos de un tipo genérico anidado en esa operación.

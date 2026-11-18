@@ -1,0 +1,40 @@
+---
+id: android-semi-senior-tipos-sellados-y-estados-de-pantalla-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Tipos sellados y estados de pantalla"
+duracion_min: 6
+prerequisitos: [android-semi-senior-genericos-y-varianza-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué representa una lista vacía recibida correctamente?"
+    opciones: ["Contenido vacío.", "Un error de red."]
+    correcta: 0
+    explicacion: "Contenido vacío."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué ventaja aporta un when exhaustivo?"
+    opciones: ["Hace que los casos nuevos tomen cualquier rama existente de forma automática.", "El compilador señala casos que faltan al agregar una variante."]
+    correcta: 1
+    explicacion: "El compilador señala casos que faltan al agregar una variante."
+tarea_local: "Modelá el estado y agregá una variante SinConexion. Actualizá el render y probá las cuatro salidas."
+resultado_esperado: "Cada estado produce su mensaje. El render no mezcla vacío con error."
+resumen:
+  - "Un tipo sellado permite modelar alternativas conocidas y exigir que el render contemple cada una."
+  - "Cargando, Contenido y Error son alternativas. Contenido puede llevar una lista vacía sin confundirse con Cargando."
+  - "Varios booleanos pueden representar combinaciones incompatibles. Un tipo sellado hace explícitas las alternativas."
+entrevista:
+  en_30_segundos: "Un tipo sellado permite modelar alternativas conocidas y exigir que el render contemple cada una. Cargando, Contenido y Error son alternativas. Contenido puede llevar una lista vacía sin confundirse con Cargando."
+  trampas:
+    - pregunta: "¿Conviene un booleano por estado posible?"
+      respuesta: "Varios booleanos pueden representar combinaciones incompatibles. Un tipo sellado hace explícitas las alternativas."
+  cuando_no: "Una lista con un estado fijo y sin fallas simuladas puede arrancar con un modelo simple."
+---
+
+## Concepto
+
+Un tipo sellado permite modelar alternativas conocidas y exigir que el render contemple cada una.
+
+## Ejemplo
+
+Cargando, Contenido y Error son alternativas. Contenido puede llevar una lista vacía sin confundirse con Cargando.

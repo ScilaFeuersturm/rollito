@@ -1,0 +1,40 @@
+---
+id: android-senior-recomposicion-estabilidad-y-actualizaciones-de-ui-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Recomposición, estabilidad y actualizaciones de UI"
+duracion_min: 7
+prerequisitos: [android-senior-offline-colas-y-resolucion-de-conflictos-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Un cambio observable obliga a recomponer toda la pantalla?"
+    opciones: ["Compose puede limitar el trabajo a las partes afectadas.", "Sí, cambia cualquier vista y se repite toda la composición."]
+    correcta: 0
+    explicacion: "Compose puede limitar el trabajo a las partes afectadas."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué compararías antes de optimizar?"
+    opciones: ["Dos interacciones distintas en dispositivos distintos, usando solo el número de recomposiciones.", "La misma interacción en condiciones comparables, con una traza y una métrica de frames."]
+    correcta: 1
+    explicacion: "La misma interacción en condiciones comparables, con una traza y una métrica de frames."
+tarea_local: "Registrá una traza de scroll o animación. Cambiá un único punto de lectura o cálculo y repetí la medición."
+resultado_esperado: "Podés señalar en qué fase cambió el trabajo y si mejoraron los tiempos de frame."
+resumen:
+  - "Compose distingue composición, layout y dibujo. Observar un cambio invalida el trabajo necesario según dónde se leyó el estado. El costo se evalúa en la interacción real."
+  - "Un contador animado puede provocar trabajo repetido. La medición ayuda a distinguir si el costo está en composición, medición o dibujo."
+  - "Es una señal. Confirmá si el trabajo se traduce en frames lentos o en otra métrica de la experiencia."
+entrevista:
+  en_30_segundos: "Compose distingue composición, layout y dibujo. Observar un cambio invalida el trabajo necesario según dónde se leyó el estado. El costo se evalúa en la interacción real. Un contador animado puede provocar trabajo repetido. La medición ayuda a distinguir si el costo está en composición, medición o dibujo."
+  trampas:
+    - pregunta: "¿Una recomposición alta demuestra un problema visible?"
+      respuesta: "Es una señal. Confirmá si el trabajo se traduce en frames lentos o en otra métrica de la experiencia."
+  cuando_no: "Si las mediciones muestran tiempos de frame sanos, priorizá un problema que sí afecte la experiencia."
+---
+
+## Concepto
+
+Compose distingue composición, layout y dibujo. Observar un cambio invalida el trabajo necesario según dónde se leyó el estado. El costo se evalúa en la interacción real.
+
+## Ejemplo
+
+Un contador animado puede provocar trabajo repetido. La medición ayuda a distinguir si el costo está en composición, medición o dibujo.

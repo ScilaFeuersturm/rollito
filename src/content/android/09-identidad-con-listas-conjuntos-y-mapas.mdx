@@ -1,0 +1,40 @@
+---
+id: android-junior-identidad-con-listas-conjuntos-y-mapas-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Identidad con listas, conjuntos y mapas"
+duracion_min: 5
+prerequisitos: [android-junior-tipos-condiciones-y-funciones-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué usarías para saber si ya viste un identificador?"
+    opciones: ["Una lista que use el número como posición.", "Un conjunto."]
+    correcta: 1
+    explicacion: "Un conjunto."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué usarías para buscar títulos por identificador?"
+    opciones: ["Un mapa de identificador a título.", "Una lista ordenada alfabéticamente."]
+    correcta: 0
+    explicacion: "Un mapa de identificador a título."
+tarea_local: "Creá un mapa de tareas y buscá un identificador presente y uno ausente."
+resultado_esperado: "La primera búsqueda devuelve el título y la segunda devuelve null."
+resumen:
+  - "Elegí una colección según la operación principal. Una lista conserva posiciones, un conjunto representa elementos únicos y un mapa vincula claves con valores."
+  - "Si llegan los identificadores 2, 2 y 5, una lista conserva los tres datos y un conjunto queda con 2 y 5."
+  - "Depende de la implementación. Buscá una garantía explícita si la presentación depende del orden."
+entrevista:
+  en_30_segundos: "Elegí una colección según la operación principal. Una lista conserva posiciones, un conjunto representa elementos únicos y un mapa vincula claves con valores. Si llegan los identificadores 2, 2 y 5, una lista conserva los tres datos y un conjunto queda con 2 y 5."
+  trampas:
+    - pregunta: "¿Un mapa ordena sus claves automáticamente?"
+      respuesta: "Depende de la implementación. Buscá una garantía explícita si la presentación depende del orden."
+  cuando_no: "Si solo tenés que recorrer todos los elementos una vez, una lista puede alcanzar."
+---
+
+## Concepto
+
+Elegí una colección según la operación principal. Una lista conserva posiciones, un conjunto representa elementos únicos y un mapa vincula claves con valores.
+
+## Ejemplo
+
+Si llegan los identificadores 2, 2 y 5, una lista conserva los tres datos y un conjunto queda con 2 y 5.

@@ -1,0 +1,40 @@
+---
+id: android-junior-activity-recreacion-y-estado-local-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Activity, recreación y estado local"
+duracion_min: 5
+prerequisitos: [android-junior-navegacion-de-lista-a-detalle-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué debería pasar con el foco o el borrador?"
+    opciones: ["El foco y el borrador siempre se conservan sin configuración.", "Depende del requisito de experiencia."]
+    correcta: 1
+    explicacion: "Depende del requisito de experiencia."
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde esperás guardar la lista duradera?"
+    opciones: ["En almacenamiento persistente.", "En una variable del objeto de interfaz."]
+    correcta: 0
+    explicacion: "En almacenamiento persistente."
+tarea_local: "Girá la pantalla con un texto sin enviar y anotá qué datos quedan. Hacé que el borrador sobreviva a la recreación."
+resultado_esperado: "El formulario recupera el texto y no duplica ninguna tarea."
+resumen:
+  - "Cuando una Activity se recrea, sus objetos de interfaz se construyen de nuevo. Elegí qué estado es temporal y qué dato tiene que sobrevivir al cambio."
+  - "Al rotar, se puede recuperar el texto del formulario. Las tareas guardadas se leen de su fuente."
+  - "La recreación por configuración y la pérdida de proceso tienen alcances distintos. Probá ambas de forma separada."
+entrevista:
+  en_30_segundos: "Cuando una Activity se recrea, sus objetos de interfaz se construyen de nuevo. Elegí qué estado es temporal y qué dato tiene que sobrevivir al cambio. Al rotar, se puede recuperar el texto del formulario. Las tareas guardadas se leen de su fuente."
+  trampas:
+    - pregunta: "¿Una rotación es equivalente a perder el proceso?"
+      respuesta: "La recreación por configuración y la pérdida de proceso tienen alcances distintos. Probá ambas de forma separada."
+  cuando_no: "Para datos que la persona espera conservar después de cerrar la app, guardá el resultado de forma persistente."
+---
+
+## Concepto
+
+Cuando una Activity se recrea, sus objetos de interfaz se construyen de nuevo. Elegí qué estado es temporal y qué dato tiene que sobrevivir al cambio.
+
+## Ejemplo
+
+Al rotar, se puede recuperar el texto del formulario. Las tareas guardadas se leen de su fuente.

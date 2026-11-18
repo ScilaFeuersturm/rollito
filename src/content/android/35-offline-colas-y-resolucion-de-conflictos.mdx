@@ -1,0 +1,40 @@
+---
+id: android-senior-offline-colas-y-resolucion-de-conflictos-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Offline, colas y resolución de conflictos"
+duracion_min: 7
+prerequisitos: [android-senior-modularizacion-gradle-y-limites-del-dominio-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué debería mostrar la UI antes de sincronizar?"
+    opciones: ["Una lista vacía hasta tener aprobación remota.", "El estado local y la condición de pendiente si importa para la acción."]
+    correcta: 1
+    explicacion: "El estado local y la condición de pendiente si importa para la acción."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué permite reconocer un reintento de la misma operación?"
+    opciones: ["Un identificador de operación estable, si el servidor lo usa para deduplicar.", "Un identificador distinto en cada intento."]
+    correcta: 0
+    explicacion: "Un identificador de operación estable, si el servidor lo usa para deduplicar."
+tarea_local: "Diseñá una tabla de casos para éxito, respuesta perdida y conflicto. Simulá un reenvío con el mismo identificador."
+resultado_esperado: "El reenvío no duplica el cambio y el conflicto tiene una resolución explícita."
+resumen:
+  - "La fuente local puede sostener la experiencia offline. Un cambio pendiente necesita estado, una identidad para reintentar y una política para conflictos con actualizaciones remotas."
+  - "El teléfono cambia el título offline y otro dispositivo cambia el mismo título en el servidor. La política define cómo conservar o resolver esas versiones."
+  - "Puede descartar cambios válidos. Elegí según datos, reglas de negocio y costo de resolver conflictos."
+entrevista:
+  en_30_segundos: "La fuente local puede sostener la experiencia offline. Un cambio pendiente necesita estado, una identidad para reintentar y una política para conflictos con actualizaciones remotas. El teléfono cambia el título offline y otro dispositivo cambia el mismo título en el servidor. La política define cómo conservar o resolver esas versiones."
+  trampas:
+    - pregunta: "¿Última escritura gana siempre es una buena política?"
+      respuesta: "Puede descartar cambios válidos. Elegí según datos, reglas de negocio y costo de resolver conflictos."
+  cuando_no: "Si editar offline no es un requisito, una lectura local con una política explícita de frescura puede ser suficiente."
+---
+
+## Concepto
+
+La fuente local puede sostener la experiencia offline. Un cambio pendiente necesita estado, una identidad para reintentar y una política para conflictos con actualizaciones remotas.
+
+## Ejemplo
+
+El teléfono cambia el título offline y otro dispositivo cambia el mismo título en el servidor. La política define cómo conservar o resolver esas versiones.

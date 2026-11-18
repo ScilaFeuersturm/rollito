@@ -1,0 +1,40 @@
+---
+id: android-semi-senior-genericos-y-varianza-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Genéricos y varianza"
+duracion_min: 6
+prerequisitos: [android-junior-accesibilidad-y-foco-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde es razonable usar out?"
+    opciones: ["En un contrato que acepta T para modificarlo.", "En un contrato que produce T."]
+    correcta: 1
+    explicacion: "En un contrato que produce T."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué no entregar una lista mutable de tareas urgentes como lista mutable de cualquier tarea?"
+    opciones: ["Alguien podría agregar una tarea común al contenedor de urgentes.", "Porque el título de las tareas urgentes siempre es nullable."]
+    correcta: 0
+    explicacion: "Alguien podría agregar una tarea común al contenedor de urgentes."
+tarea_local: "Modelá una Fuente de solo lectura y probá asignar una fuente de subtipo a la de tipo base."
+resultado_esperado: "La asignación del productor compila y sigue devolviendo el subtipo."
+resumen:
+  - "Un tipo genérico preserva el tipo que entra y sale de una abstracción. Un productor covariante puede entregar valores de un subtipo; un consumidor contravariante puede aceptar valores de un supertipo."
+  - "Una fuente de TareaUrgente puede usarse como productora de Tarea cuando su contrato solo devuelve elementos."
+  - "La varianza depende de cómo el contrato usa el parámetro de tipo."
+entrevista:
+  en_30_segundos: "Un tipo genérico preserva el tipo que entra y sale de una abstracción. Un productor covariante puede entregar valores de un subtipo; un consumidor contravariante puede aceptar valores de un supertipo. Una fuente de TareaUrgente puede usarse como productora de Tarea cuando su contrato solo devuelve elementos."
+  trampas:
+    - pregunta: "¿Una clase genérica tiene que ser siempre covariante?"
+      respuesta: "La varianza depende de cómo el contrato usa el parámetro de tipo."
+  cuando_no: "Usá un tipo concreto cuando los clientes trabajan siempre con la misma entidad y la generalización agrega poco."
+---
+
+## Concepto
+
+Un tipo genérico preserva el tipo que entra y sale de una abstracción. Un productor covariante puede entregar valores de un subtipo; un consumidor contravariante puede aceptar valores de un supertipo.
+
+## Ejemplo
+
+Una fuente de TareaUrgente puede usarse como productora de Tarea cuando su contrato solo devuelve elementos.

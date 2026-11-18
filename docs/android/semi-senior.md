@@ -1,8 +1,8 @@
-# Android Semi Senior · Borradores de lección
+# Android Semi Senior · Guía de lecciones
 
 Después de Junior. Practicá aislar una falla y verificar la interacción entre piezas.
 
-**Estado** 14 borradores para revisión. Los ejemplos Android se describen como escenarios de práctica.
+**Contenido** 14 lecciones incorporadas a la vista previa local. Los ejemplos Android se describen como escenarios de práctica.
 
 ## 1. Genéricos y varianza
 

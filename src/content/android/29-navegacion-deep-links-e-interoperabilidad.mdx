@@ -1,0 +1,40 @@
+---
+id: android-semi-senior-navegacion-deep-links-e-interoperabilidad-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Navegación, deep links e interoperabilidad"
+duracion_min: 6
+prerequisitos: [android-semi-senior-trabajo-diferido-y-datos-offline-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pasa si el id llega vacío?"
+    opciones: ["Aceptar el valor como si fuera el identificador de la primera tarea.", "El destino debe manejarlo como entrada inválida."]
+    correcta: 1
+    explicacion: "El destino debe manejarlo como entrada inválida."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo migrarías una pantalla sin cambiar toda la app?"
+    opciones: ["Introduciría la nueva UI en un límite de interoperabilidad.", "Reescribir todas las pantallas al mismo tiempo."]
+    correcta: 0
+    explicacion: "Introduciría la nueva UI en un límite de interoperabilidad."
+tarea_local: "Probá abrir el detalle desde la lista y desde un enlace directo, con id válido e inválido."
+resultado_esperado: "Ambas entradas funcionan y el caso inválido ofrece una salida clara."
+resumen:
+  - "Un enlace externo puede abrir un destino directamente y requiere validar argumentos y el estado de acceso. Views y Compose pueden convivir durante una migración."
+  - "Un enlace a la tarea 5 abre el detalle aun si la lista no se mostró antes. Un id inválido tiene un estado propio."
+  - "El destino sigue verificando autenticación, permisos y datos."
+entrevista:
+  en_30_segundos: "Un enlace externo puede abrir un destino directamente y requiere validar argumentos y el estado de acceso. Views y Compose pueden convivir durante una migración. Un enlace a la tarea 5 abre el detalle aun si la lista no se mostró antes. Un id inválido tiene un estado propio."
+  trampas:
+    - pregunta: "¿Un deep link saltea las reglas de acceso?"
+      respuesta: "El destino sigue verificando autenticación, permisos y datos."
+  cuando_no: "Un flujo de uso interno y sin destinos externos puede arrancar con navegación directa."
+---
+
+## Concepto
+
+Un enlace externo puede abrir un destino directamente y requiere validar argumentos y el estado de acceso. Views y Compose pueden convivir durante una migración.
+
+## Ejemplo
+
+Un enlace a la tarea 5 abre el detalle aun si la lista no se mostró antes. Un id inválido tiene un estado propio.
