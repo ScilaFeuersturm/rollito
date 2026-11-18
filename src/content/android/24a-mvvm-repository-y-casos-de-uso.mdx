@@ -1,0 +1,54 @@
+---
+id: android-semi-senior-mvvm-repository-y-casos-de-uso-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "MVVM, Repository y casos de uso"
+duracion_min: 6
+prerequisitos: [android-semi-senior-ui-unidireccional-y-pruebas-de-estado-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde va la regla «no se puede completar una tarea vencida hace más de un mes»?"
+    opciones: ["En el composable", "En el ViewModel", "En un caso de uso del dominio"]
+    correcta: 2
+    explicacion: "Es una regla de negocio. En el dominio se reusa entre pantallas y se testea con Kotlin puro."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué traducir `TareaDto` a `Tarea`?"
+    opciones: ["Para que un cambio en la API no se propague a toda la app", "Porque Retrofit lo exige", "Para que la app ocupe menos memoria"]
+    correcta: 0
+    explicacion: "El modelo de dominio queda estable aunque la API cambie un campo."
+  - tipo: opcion_multiple
+    pregunta: "En Clean, ¿quién define la interfaz `TareaRepository`?"
+    opciones: ["La capa de datos", "El dominio; la capa de datos la implementa", "La UI"]
+    correcta: 1
+    explicacion: "Así las dependencias apuntan hacia el dominio y el dominio no conoce a nadie."
+tarea_local: "En papel o en un proyecto, dibujá los módulos o paquetes de una pantalla de tareas (`ui`, `domain`, `data`) y las flechas de dependencia. Verificá que `domain` no importe nada de `android.*` ni de Retrofit."
+resultado_esperado: "Todas las flechas apuntan hacia `domain`, y el dominio se puede testear con JUnit puro, sin emulador."
+resumen:
+  - "En MVVM la interfaz muestra el estado, el ViewModel lo produce y el repositorio decide de dónde vienen los datos."
+  - "Clean suma una capa de dominio con casos de uso y modelos propios, en Kotlin puro."
+  - "El dominio define las interfaces y la capa de datos las implementa."
+  - "Traducir los modelos de la API a modelos de dominio protege a la app de los cambios externos."
+entrevista:
+  en_30_segundos: "Uso MVVM con repositorios: la UI observa un estado del ViewModel y el repositorio abstrae las fuentes de datos. Cuando la lógica de negocio crece, sumo casos de uso en un dominio sin dependencias de Android, que define las interfaces que implementa la capa de datos."
+  trampas:
+    - pregunta: "¿Siempre hacen falta casos de uso?"
+      respuesta: "No. Un caso de uso que solo reenvía la llamada al repositorio es ceremonia. Suman cuando hay reglas, combinan varios repositorios o se reusan entre pantallas."
+  cuando_no: "En una app chica o en un prototipo, ViewModel más repositorio alcanza. El dominio completo se justifica cuando la lógica crece o hay varios equipos."
+---
+
+## Concepto
+
+En Android, MVVM se arma así:
+
+- La **UI** (Compose) muestra estado y manda eventos.
+- El **ViewModel** transforma eventos en estado.
+- El **Repository** decide de dónde salen los datos: red, base local o caché.
+
+Las nociones de Clean suman una capa de **dominio**: casos de uso con las reglas de negocio y modelos propios, en Kotlin puro, sin dependencias de Android. Las flechas apuntan hacia el dominio.
+
+## Ejemplo
+
+`CompletarTareaUseCase` valida que la tarea no esté ya completada y le pide al `TareaRepository` (una interfaz del dominio) que la guarde.
+
+La implementación del repositorio vive en la capa de datos y traduce el DTO de la API (`TareaDto`) al modelo de dominio (`Tarea`). El ViewModel solo llama al caso de uso y actualiza el estado.

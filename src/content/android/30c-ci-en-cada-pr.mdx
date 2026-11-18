@@ -1,0 +1,48 @@
+---
+id: android-semi-senior-ci-en-cada-pr-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Qué corre la CI en cada PR"
+duracion_min: 5
+prerequisitos: [android-junior-git-y-pull-requests-01, android-semi-senior-tests-unitarios-junit-y-mockk-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué chequeos mínimos correrías en cada PR de Android?"
+    opciones: ["Solo compilar", "Compilar, lint y tests unitarios", "Todos los tests de UI en todos los dispositivos"]
+    correcta: 1
+    explicacion: "Son rápidos y atrapan la mayoría de los problemas antes del merge."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué no correr todos los tests de UI en cada PR?"
+    opciones: ["Porque no sirven", "Son lentos, necesitan emulador y pueden ser inestables", "Porque GitHub no lo permite"]
+    correcta: 1
+    explicacion: "Se corren en un subconjunto, de noche o antes de cada versión."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué evita la protección de rama?"
+    opciones: ["Que se borre la rama", "Que se mergee a `main` código con chequeos en rojo o sin revisión", "Que se creen ramas nuevas"]
+    correcta: 1
+    explicacion: "Con la protección activada, `main` exige chequeos en verde y revisión."
+tarea_local: "En un repo tuyo de GitHub, creá un workflow en `.github/workflows/` que en cada `pull_request` corra los tests unitarios con Gradle. Abrí un PR con un test que falle a propósito y después arreglalo."
+resultado_esperado: "El PR muestra el chequeo en rojo con el test que falla y, después del arreglo, en verde."
+resumen:
+  - "La integración continua corre chequeos automáticos en cada pull request, antes de integrar el cambio."
+  - "Lo mínimo en Android es compilar, correr lint y correr los tests unitarios."
+  - "Los tests de interfaz son más lentos y suelen correr en un subconjunto o con menos frecuencia."
+  - "La protección de rama impide integrar código con chequeos en rojo."
+entrevista:
+  en_30_segundos: "Cada PR corre compilación, lint y tests unitarios en GitHub Actions, con caché de Gradle, y la rama principal está protegida. Los tests instrumentados corren en un subconjunto o en una corrida nocturna, para que el PR tenga respuesta en pocos minutos."
+  trampas:
+    - pregunta: "Un test falla a veces y a veces no. ¿Lo reintentás hasta que pase?"
+      respuesta: "No: un test inestable le quita confianza a toda la CI. Se aísla, se marca para investigar y se arregla la causa (esperas, datos compartidos, orden entre tests)."
+  cuando_no: "Una CI que tarda 40 minutos por PR frena al equipo. Si pasa eso, hay que paralelizar o mover lo más lento fuera del camino del PR."
+---
+
+## Concepto
+
+La integración continua corre chequeos automáticos en cada PR, antes de mergear: compilar, correr lint y correr los tests. En GitHub se configura con un workflow de **GitHub Actions** que se dispara con `pull_request`. Con **protección de rama**, `main` no acepta merges si los chequeos fallan.
+
+## Ejemplo
+
+El workflow de la app corre `./gradlew lintDebug testDebugUnitTest assembleDebug` en cada PR. Los tests instrumentados son más lentos y necesitan emulador, así que corren en un subconjunto, de noche o antes de cada versión.
+
+La caché de Gradle evita descargar todo en cada corrida.

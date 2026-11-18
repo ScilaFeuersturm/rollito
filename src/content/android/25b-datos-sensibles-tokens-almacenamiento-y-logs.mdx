@@ -1,0 +1,54 @@
+---
+id: android-semi-senior-datos-sensibles-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Datos sensibles: tokens, almacenamiento y logs"
+duracion_min: 5
+prerequisitos: [android-semi-senior-okhttp-y-serializacion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde guardarías un token de sesión?"
+    opciones: ["En SharedPreferences, en texto plano", "Cifrado, con una clave del Android Keystore", "En una constante del código"]
+    correcta: 1
+    explicacion: "El Keystore protege la clave de cifrado. En texto plano, el token queda expuesto."
+  - tipo: opcion_multiple
+    pregunta: "Un `Log.d` imprime la respuesta completa del login. ¿Qué problema hay?"
+    opciones: ["Ninguno, los logs son privados", "Puede exponer el token y datos personales a cualquiera con acceso a los logs", "Solo hace la app más lenta"]
+    correcta: 1
+    explicacion: "Los logs no son un lugar seguro: nunca llevan tokens, contraseñas ni datos personales."
+  - tipo: opcion_multiple
+    pregunta: "En Android 9 o superior, ¿qué pasa por defecto con una conexión `http://`?"
+    opciones: ["Funciona igual que HTTPS", "Se bloquea, salvo que la configuración de seguridad de red lo permita", "Se convierte sola en HTTPS"]
+    correcta: 1
+    explicacion: "Desde Android 9 (API 28) el tráfico sin cifrar está bloqueado por defecto."
+tarea_local: "Revisá un proyecto tuyo: buscá `Log.` y verificá qué imprime cada uno. Fijate también qué guarda en SharedPreferences o DataStore y si alguno de esos datos es sensible."
+resultado_esperado: "Una lista de cada dato sensible encontrado, con su arreglo: eliminar el log, ocultar el valor o cifrar el almacenamiento."
+resumen:
+  - "Los tokens y datos sensibles se guardan cifrados, con claves del Android Keystore."
+  - "Los logs y los reportes de errores nunca llevan tokens, contraseñas ni datos personales."
+  - "Los datos viajan solo por HTTPS, y desde Android 9 el tráfico sin cifrar está bloqueado por defecto."
+  - "Conviene revisar qué entra en los backups automáticos de la app."
+entrevista:
+  en_30_segundos: "Guardo los secretos cifrados con claves del Keystore, no logueo datos sensibles y oculto el header de autorización en los logs de red. El tráfico va solo por HTTPS, y en los reportes de errores identifico a la persona con un id interno, nunca con datos personales."
+  trampas:
+    - pregunta: "¿Poner una API key en el código o en BuildConfig la protege?"
+      respuesta: "No. Se puede extraer descompilando el APK. Las claves realmente secretas tienen que quedar en un backend propio que haga de intermediario."
+    - pregunta: "¿Usarías EncryptedSharedPreferences?"
+      respuesta: "En un proyecto nuevo, no: toda la librería `androidx.security:security-crypto` está deprecada desde la versión 1.1.0. Se cifra con claves del Android Keystore, por ejemplo junto con DataStore."
+  cuando_no: "Cifrar datos que no son sensibles, como una preferencia de modo oscuro, suma complejidad sin beneficio."
+---
+
+## Concepto
+
+El tratamiento seguro de datos tiene tres frentes:
+
+- **Qué guardás y dónde.** Los tokens van cifrados, con claves del **Android Keystore**, y nunca en texto plano.
+- **Qué logueás.** Nada de tokens, contraseñas ni datos personales en Logcat ni en reportes de errores.
+- **Cómo viaja.** Solo HTTPS. Desde Android 9 (API 28), el tráfico sin cifrar está bloqueado por defecto.
+
+Además, conviene revisar qué entra en los backups automáticos.
+
+## Ejemplo
+
+El token de sesión se guarda cifrado con una clave del Keystore. El interceptor de logs oculta el header de autorización con `redactHeader("Authorization")`. Los reportes de errores llevan un id interno, nunca el email.

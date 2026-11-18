@@ -1,0 +1,55 @@
+---
+id: android-semi-senior-tests-unitarios-junit-y-mockk-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Tests unitarios con JUnit y MockK"
+duracion_min: 6
+prerequisitos: [android-semi-senior-pruebas-unitarias-integracion-y-ui-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué usás para definir la respuesta de una función `suspend` con MockK?"
+    opciones: ["`every`", "`coEvery`", "`verify`"]
+    correcta: 1
+    explicacion: "`coEvery` y `coVerify` son las versiones de `every` y `verify` para funciones `suspend`."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué un ViewModel con `viewModelScope` necesita `Dispatchers.setMain` en un test de JVM?"
+    opciones: ["Porque `viewModelScope` usa `Dispatchers.Main`, que en la JVM no existe sin Android", "Porque MockK lo exige", "Para que el test corra más rápido"]
+    correcta: 0
+    explicacion: "En el test se reemplaza el dispatcher principal por uno de prueba."
+  - tipo: opcion_multiple
+    pregunta: "Para el repositorio de un ViewModel, ¿mock o fake?"
+    opciones: ["Siempre mock", "Un fake en memoria suele dar tests más legibles y menos frágiles; el mock sirve para verificar interacciones puntuales", "Ninguno: se usa la base real"]
+    correcta: 1
+    explicacion: "Testeá resultados, no llamadas."
+tarea_local: "Escribí dos tests para un ViewModel que carga tareas: uno donde el repositorio devuelve una lista y el estado termina en Contenido, y otro donde lanza una excepción y termina en Error. Usá MockK y `runTest`."
+resultado_esperado: "`./gradlew testDebugUnitTest` corre los dos tests en verde y sin emulador."
+resumen:
+  - "Un test unitario verifica una pieza aislada en la JVM, sin emulador."
+  - "MockK crea dobles en Kotlin, y co every y co verify sirven para funciones suspend."
+  - "Run test permite testear corrutinas, y set main reemplaza el dispatcher principal."
+  - "Un fake en memoria suele dar tests más claros que muchos mocks."
+entrevista:
+  en_30_segundos: "Testeo ViewModels y casos de uso en la JVM con JUnit, `runTest` y dobles. Prefiero fakes para repositorios y uso MockK cuando necesito verificar una interacción o simular un error puntual."
+  trampas:
+    - pregunta: "¿MockK o Mockito?"
+      respuesta: "MockK nació para Kotlin: maneja funciones `suspend`, `object` y extensiones de forma nativa. Mockito viene de Java. Las clases de Kotlin son `final` por defecto, y Mockito necesita el mock maker inline para poder mockearlas (desde Mockito 5 viene activado por defecto). Ambos sirven; en proyectos Kotlin se suele elegir MockK."
+  cuando_no: "Un test que mockea todo y solo verifica que se llamaron métodos queda atado a la implementación: se rompe al refactorizar sin que haya un bug. Testeá resultados, no llamadas."
+---
+
+## Concepto
+
+Un test unitario verifica una pieza aislada en la JVM, sin emulador. Se escribe con **JUnit** (`@Test` y aserciones) y las dependencias se reemplazan por **dobles**.
+
+**MockK** es la librería de mocks pensada para Kotlin:
+
+- `mockk<T>()` crea el doble.
+- `every { ... } returns ...` define respuestas.
+- `coEvery` y `coVerify` son las versiones para funciones `suspend`.
+- `verify { ... }` comprueba que hubo una llamada.
+
+Para corrutinas se usa `runTest`, de kotlinx-coroutines-test. Si el ViewModel usa `viewModelScope`, se reemplaza el dispatcher principal con `Dispatchers.setMain`.
+
+## Ejemplo
+
+Para testear el ViewModel de tareas, el repositorio es un mock que lanza `IOException` al pedirle las tareas. El test verifica que el estado termine en Error, sin red ni base de datos.

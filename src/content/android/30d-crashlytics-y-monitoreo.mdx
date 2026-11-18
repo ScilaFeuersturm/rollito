@@ -1,0 +1,52 @@
+---
+id: android-semi-senior-crashlytics-y-monitoreo-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Crashlytics y monitoreo"
+duracion_min: 5
+prerequisitos: [android-semi-senior-datos-sensibles-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Una excepción se atrapa y no cierra la app, pero la persona no puede sincronizar. ¿La registrás?"
+    opciones: ["No, porque no fue un crash", "Sí, como error no fatal con `recordException`", "Solo en Logcat"]
+    correcta: 1
+    explicacion: "Afecta a la persona aunque la app no se cierre: tiene que verse en el panel."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué los stack traces aparecen con nombres como `a.b.c`?"
+    opciones: ["Porque Crashlytics los acorta", "Porque la app se ofuscó con R8 y falta subir el archivo de mapping", "Porque el error vino de una librería"]
+    correcta: 1
+    explicacion: "El plugin de Gradle de Crashlytics sube el mapping para que se lean los nombres reales."
+  - tipo: opcion_multiple
+    pregunta: "¿Usarías el email de la persona como `setUserId`?"
+    opciones: ["Sí, es lo más útil", "No: es un dato personal; se usa un id interno anónimo", "Solo en versiones de prueba"]
+    correcta: 1
+    explicacion: "Los reportes de errores no llevan datos personales."
+tarea_local: "Agregá Crashlytics a un proyecto de prueba siguiendo la guía de Firebase. Forzá un crash con un botón de prueba y registrá un error no fatal con una clave personalizada."
+resultado_esperado: "En la consola de Firebase aparecen el crash y el error no fatal, con la clave que agregaste. Puede tardar unos minutos y el crash se envía la próxima vez que se abre la app."
+resumen:
+  - "Crashlytics junta los cierres inesperados con su stack trace, versión y dispositivo."
+  - "Los errores atrapados que igual afectan a la persona se registran como no fatales."
+  - "Con R8 hay que subir el archivo de mapping para que los errores se lean."
+  - "Los reportes usan un id interno, nunca datos personales."
+entrevista:
+  en_30_segundos: "Monitoreo con Crashlytics los crashes y los errores no fatales importantes, con claves de contexto y logs que no llevan datos personales. Sigo el porcentaje de personas sin crashes por versión, y lo cruzo con Android vitals para los ANRs."
+  trampas:
+    - pregunta: "¿Alcanza con mirar la cantidad de crashes?"
+      respuesta: "No. Importa a cuántas personas afecta y en qué versión empezó. Un crash que afecta a pocas personas en un flujo de pago puede ser más urgente que uno masivo en una pantalla secundaria."
+  cuando_no: "Registrar cada excepción menor como no fatal llena el panel de ruido y esconde lo importante. Se registra lo que afecta a la persona o lo que no debería pasar."
+---
+
+## Concepto
+
+Firebase Crashlytics junta los **cierres inesperados** (crashes) con su stack trace, versión y dispositivo. Además se pueden registrar **errores no fatales**, como una excepción capturada que igual afecta a la persona, con `recordException`, y sumar contexto con `log` (migas de pan) y `setCustomKey`.
+
+Si la app se ofusca con R8, hay que subir el archivo de mapping para que los stack traces se lean. De eso se encarga el plugin de Gradle de Crashlytics.
+
+Otras herramientas de monitoreo: Sentry, y Android vitals en Play Console para ANRs y crashes.
+
+## Ejemplo
+
+Al sincronizar tareas falla el parseo de una respuesta. La app lo atrapa y muestra un error amable, pero lo registra con `recordException`, más una clave con la pantalla y la versión de la API.
+
+En el panel ves cuántas personas afecta y desde qué versión.

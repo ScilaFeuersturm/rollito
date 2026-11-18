@@ -1,0 +1,52 @@
+---
+id: android-junior-git-y-pull-requests-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Git y pull requests en equipo"
+duracion_min: 5
+prerequisitos: []
+ejercicios:
+  - tipo: ordenar
+    pregunta: "Ordená el camino de un cambio en un equipo."
+    pasos:
+      - "Creás una rama para el cambio."
+      - "Hacés commits chicos que cuentan qué cambió y por qué."
+      - "Abrís un pull request."
+      - "Alguien lo revisa y la CI corre los chequeos."
+      - "Se mergea en main."
+    explicacion: "Nada llega a `main` sin pasar por revisión y chequeos automáticos."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué conviene un PR chico en vez de uno de 2000 líneas?"
+    opciones: ["Porque Git no acepta PRs grandes", "Se revisa mejor, se encuentran más errores y, si algo falla, se revierte fácil", "Porque los PRs chicos no necesitan revisión"]
+    correcta: 1
+    explicacion: "Un PR enorme se revisa por arriba. Uno chico se entiende entero."
+  - tipo: opcion_multiple
+    pregunta: "Mientras trabajabas, alguien cambió en main las mismas líneas que vos. ¿Qué pasa?"
+    opciones: ["Git elige la versión más nueva", "Hay un conflicto y lo resolvés a mano", "Se pierde tu cambio"]
+    correcta: 1
+    explicacion: "Git no puede decidir solo cuál versión es la correcta. Lo resolvés y volvés a correr los tests."
+tarea_local: "En un repo de prueba, creá una rama, hacé dos commits y mergeala en main. Después generá un conflicto a propósito: cambiá la misma línea en dos ramas y resolvelo."
+resultado_esperado: "`git log --oneline --graph` muestra la rama integrada y el archivo final tiene la versión que elegiste al resolver el conflicto."
+resumen:
+  - "Cada cambio va en su propia rama, nunca directo en main."
+  - "Los commits chicos cuentan qué cambió y por qué."
+  - "Un pull request permite revisar el cambio y correr los chequeos antes de integrarlo."
+  - "Un conflicto aparece cuando dos ramas cambian las mismas líneas y se resuelve a mano."
+entrevista:
+  en_30_segundos: "Trabajo en ramas cortas, con commits chicos y descriptivos, y abro PRs fáciles de revisar, que cuentan qué cambia y cómo probarlo. No se mergea sin revisión y sin la CI en verde."
+  trampas:
+    - pregunta: "¿Merge o rebase?"
+      respuesta: "`merge` conserva la historia tal como pasó y agrega un commit de merge. `rebase` reescribe tus commits encima de `main` y deja una historia lineal. Regla de oro: no hagas rebase de una rama que ya usa otra persona, porque le reescribís la historia."
+  cuando_no: "Para un proyecto personal de un día, abrir PRs contra vos misma puede ser ceremonia. Igual conviene practicar el hábito."
+---
+
+## Concepto
+
+En un equipo nadie trabaja directo sobre `main`. Cada cambio va en una **rama**, con **commits** chicos que cuentan qué cambió y por qué, y se integra con un **pull request (PR)**: alguien lo revisa, la CI corre los chequeos y recién después se mergea.
+
+## Ejemplo
+
+Para el botón "Completar tarea", creás la rama `feature/completar-tarea`. Hacés tres commits: el modelo, la pantalla y el test. Abrís un PR con qué cambia y cómo probarlo.
+
+Te piden un ajuste, sumás un commit y, cuando la revisión y la CI dan el visto bueno, se mergea.

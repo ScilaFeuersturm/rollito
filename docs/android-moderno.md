@@ -41,10 +41,11 @@ Los niveles sirven para organizar la preparación. Cada empresa puede repartir l
 
 ## Recorrido completo en la vista previa local
 
-Las 43 lecciones de Android están incorporadas a la vista previa local. Las guías por nivel reúnen las fichas de las últimas 36 lecciones y sus respuestas. Las siete iniciales se describen más abajo.
+Las 56 lecciones de Android están incorporadas a la vista previa local. Las guías por nivel reúnen las fichas de las últimas 36 lecciones y sus respuestas. Las siete iniciales se describen más abajo.
 
 - [Junior](android/junior.md) · 9 lecciones adicionales.
 - [Semi Senior](android/semi-senior.md) · 14 lecciones.
+- [Temas de búsquedas laborales](android/temas-nuevos.md) · 13 lecciones (2 Junior y 11 Semi Senior), intercaladas en el recorrido.
 - [Senior](android/senior.md) · 13 lecciones.
 
 ## Lección disponible · Ausencia de datos en Kotlin
@@ -344,4 +345,4 @@ Temas que suelen pedir las búsquedas de Android, ubicados por nivel. Algunos ya
 | Git, PRs e integración continua | Junior → Semi Senior | **Nuevas:** Git y pull requests en equipo (Junior), y qué corre la CI en cada PR (Semi Senior). |
 | Firebase Crashlytics u otras herramientas de monitoreo | Semi Senior → Senior | **Nueva (Semi Senior):** Crashlytics: crashes, no fatales y logs sin datos personales. Senior sigue en 41. |
 
-En total: 13 lecciones nuevas (2 Junior y 11 Semi Senior).
+En total: 13 lecciones nuevas (2 Junior y 11 Semi Senior), ya maquetadas e intercaladas junto a la lección que amplían (archivos `11a-`, `16a-`, `23a-`, `24a-`, `25a-`, `25b-`, `27a-`, `29a-`, `29b-` y `30a-` a `30d-`).

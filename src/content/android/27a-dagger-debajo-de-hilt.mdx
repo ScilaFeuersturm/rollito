@@ -1,0 +1,56 @@
+---
+id: android-semi-senior-dagger-debajo-de-hilt-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Dagger debajo de Hilt"
+duracion_min: 6
+prerequisitos: [android-semi-senior-inyeccion-con-hilt-y-alcances-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Tenés la interfaz `TareaRepository` y su implementación con `@Inject constructor`. ¿Qué usás para conectarlas?"
+    opciones: ["`@Binds`", "`@Provides`", "`@Singleton`"]
+    correcta: 0
+    explicacion: "`@Binds` ata una interfaz a una implementación que ya se puede inyectar. `@Provides` es para cuando tenés que construir el objeto vos."
+  - tipo: opcion_multiple
+    pregunta: "Sin anotación de scope, ¿cuántas instancias se crean?"
+    opciones: ["Una sola para toda la app", "Una nueva cada vez que se inyecta", "Una por Activity"]
+    correcta: 1
+    explicacion: "Sin scope, Dagger crea una instancia nueva en cada inyección."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué problema tiene marcar todo como `@Singleton`?"
+    opciones: ["Ninguno, es lo más eficiente", "Los objetos viven toda la app: ocupan memoria y pueden arrastrar estado viejo entre pantallas", "La app no compila"]
+    correcta: 1
+    explicacion: "El scope tiene que coincidir con cuánto debe vivir el objeto, ni más ni menos."
+tarea_local: "En un proyecto con Hilt, inyectá en dos ViewModels distintos una clase sin scope y otra con `@Singleton`, y logueá el `hashCode()` de cada una."
+resultado_esperado: "La clase sin scope muestra dos `hashCode` distintos. La `@Singleton` muestra el mismo en los dos ViewModels."
+resumen:
+  - "Hilt está construido sobre Dagger y trae componentes atados al ciclo de vida de Android."
+  - "Provides construye objetos que no son tuyos, y Binds conecta una interfaz con su implementación."
+  - "Sin scope, cada inyección crea una instancia nueva."
+  - "El scope tiene que coincidir con cuánto debe vivir el objeto, ni más ni menos."
+entrevista:
+  en_30_segundos: "Hilt es Dagger con componentes estándar de Android. Inyecto por constructor, uso `@Binds` para interfaces y `@Provides` para objetos de terceros, y elijo el scope según cuánto tiene que vivir cada objeto, sin hacer todo singleton."
+  trampas:
+    - pregunta: "¿Hilt o Dagger?"
+      respuesta: "Para una app Android, Hilt: menos código repetitivo y componentes que ya siguen el ciclo de vida. Dagger puro tiene sentido en módulos Kotlin sin Android o cuando hace falta un grafo muy personalizado. Por debajo, el grafo se resuelve igual, al compilar."
+  cuando_no: "En una app chica o en un ejemplo, la inyección manual por constructor es más simple y explícita."
+---
+
+## Concepto
+
+Hilt está construido sobre **Dagger** y le agrega componentes predefinidos, atados al ciclo de vida de Android. En Dagger se arman a mano:
+
+- **`@Component`:** el grafo de dependencias.
+- **`@Module`:** las recetas.
+- **`@Provides`:** cómo construir algo que no es tuyo, como un cliente de OkHttp.
+- **`@Binds`:** qué implementación usar para una interfaz. Es abstracto y más eficiente.
+- **`@Inject constructor`:** las clases propias.
+
+Hilt ya trae `SingletonComponent`, `ActivityRetainedComponent`, `ViewModelComponent`, `ActivityComponent` y `FragmentComponent`, con sus scopes: `@Singleton`, `@ActivityRetainedScoped`, `@ViewModelScoped`, `@ActivityScoped` y `@FragmentScoped`.
+
+## Ejemplo
+
+El cliente de OkHttp se crea con `@Provides` en un módulo instalado en `SingletonComponent` y lleva `@Singleton`: hay uno solo en toda la app.
+
+El `TareaRepository` (interfaz) se conecta a `TareaRepositoryImpl` con `@Binds`. Un objeto que guarda el borrador de un formulario va con `@ViewModelScoped`: vive lo que vive ese ViewModel.

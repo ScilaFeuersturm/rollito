@@ -1,0 +1,48 @@
+---
+id: android-semi-senior-gradle-kotlin-dsl-y-version-catalogs-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Gradle con Kotlin DSL y version catalogs"
+duracion_min: 5
+prerequisitos: []
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué ventaja tiene escribir el build en Kotlin DSL en vez de Groovy?"
+    opciones: ["Autocompletado, verificación de tipos y navegación en el IDE", "Compila la app más rápido en el teléfono", "No necesita Gradle"]
+    correcta: 0
+    explicacion: "Los errores del build aparecen en el IDE antes de sincronizar."
+  - tipo: completar
+    pregunta: "Completá para usar Retrofit desde el version catalog."
+    codigo: "implementation(___.retrofit)"
+    respuestas: ["libs"]
+    explicacion: "El catálogo `gradle/libs.versions.toml` genera los accesos tipados `libs.*`."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre `implementation` y `api`?"
+    opciones: ["Ninguna", "Con `api` la dependencia queda visible para los módulos que dependen del tuyo; con `implementation` queda oculta", "`api` es para librerías de red"]
+    correcta: 1
+    explicacion: "`implementation` aísla los módulos y hace que el build recompile menos."
+tarea_local: "En un proyecto nuevo de Android Studio (ya viene con Kotlin DSL y catálogo), agregá una librería pasando por el catálogo: la versión en `[versions]`, la librería en `[libraries]` y el `implementation(libs....)` en el módulo. Sincronizá y compilá."
+resultado_esperado: "El proyecto compila y la dependencia aparece en el catálogo, no escrita a mano en el `build.gradle.kts`."
+resumen:
+  - "El build se escribe en Kotlin, en archivos punto gradle punto kts, con autocompletado y verificación de tipos."
+  - "El version catalog centraliza dependencias y versiones en un solo archivo."
+  - "Con implementation la dependencia queda oculta para otros módulos, y con api queda expuesta."
+  - "Preferir implementation aísla los módulos y hace que el build recompile menos."
+entrevista:
+  en_30_segundos: "Uso Kotlin DSL con version catalog: las versiones viven en un solo archivo y los módulos las referencian de forma tipada. Uso `implementation` por defecto y `api` solo cuando un módulo expone tipos de esa dependencia en su interfaz pública."
+  trampas:
+    - pregunta: "¿Por qué el build se puso lento al cambiar una clase de un módulo base?"
+      respuesta: "Si ese módulo se expone con `api` o muchos módulos dependen de él, un cambio en su interfaz obliga a recompilar a todos. Revisar `api` contra `implementation` y los límites entre módulos suele ser lo primero."
+  cuando_no: "En un proyecto de un solo módulo, la lógica de build compartida (convention plugins) es de más. Esa parte va en la lección Senior de modularización."
+---
+
+## Concepto
+
+El build de Android se escribe en archivos `.gradle.kts` (Kotlin DSL): `settings.gradle.kts` declara los módulos y cada `build.gradle.kts` configura un módulo.
+
+Las versiones se centralizan en un **version catalog** (`gradle/libs.versions.toml`, con secciones `[versions]`, `[libraries]` y `[plugins]`). Se usan con accesos tipados como `implementation(libs.retrofit)` o `alias(libs.plugins.android.application)`.
+
+## Ejemplo
+
+Para actualizar Retrofit cambiás una sola línea del catálogo, y todos los módulos que lo usan pasan a la versión nueva. Un error de tipeo en `libs.retrofti` lo marca el IDE antes de compilar.

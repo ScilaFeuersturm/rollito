@@ -1,6 +1,6 @@
 # Android · Lecciones nuevas desde requisitos de búsquedas laborales
 
-**Estado:** borradores para revisar. Todavía no están maquetados.
+**Estado:** aprobadas y maquetadas en `src/content/android/`, intercaladas junto a la lección que amplía cada una.
 
 Son conceptuales, como el resto del recorrido Android: explican la idea con escenarios y nombran las APIs que suelen aparecer en entrevistas, sin mostrar código de librerías. La práctica con las herramientas reales va en la tarea para tu máquina. El plan completo y qué lección existente amplía cada una están en [android-moderno.md](../android-moderno.md#temas-agregados-desde-requisitos-de-búsquedas-laborales).
 

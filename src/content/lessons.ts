@@ -43,8 +43,9 @@ function toLesson([path, module]: [string, LessonModule]) {
 
 export type Lesson = ReturnType<typeof toLesson>
 
-// Vite devuelve los archivos ordenados por ruta: el prefijo numérico define el orden.
+// Se ordenan por ruta: el prefijo del archivo define el orden ("11-" va antes que "11a-").
 export const lessons: Lesson[] = Object.entries(import.meta.glob<LessonModule>('./**/*.mdx', { eager: true }))
+  .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
   .map(toLesson)
 
 const ids = new Set(lessons.map(lesson => lesson.id))

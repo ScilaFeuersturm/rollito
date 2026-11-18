@@ -1,0 +1,50 @@
+---
+id: android-semi-senior-navigation-compose-y-back-stack-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Navigation Compose y back stack"
+duracion_min: 5
+prerequisitos: [android-junior-navegacion-de-lista-a-detalle-01, android-semi-senior-navegacion-deep-links-e-interoperabilidad-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Después del login, ¿cómo evitás que «atrás» vuelva a la pantalla de login?"
+    opciones: ["Con `launchSingleTop = true`", "Con `popUpTo(Login) { inclusive = true }` al navegar a la lista", "No se puede evitar"]
+    correcta: 1
+    explicacion: "`popUpTo` con `inclusive = true` saca el login de la pila."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué evita `launchSingleTop`?"
+    opciones: ["Que se pueda volver atrás", "Tener dos copias seguidas del mismo destino en la pila", "Los deep links"]
+    correcta: 1
+    explicacion: "Si la persona toca dos veces rápido, no se abren dos detalles iguales."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué ganás con rutas tipadas en vez de strings?"
+    opciones: ["El compilador verifica los argumentos", "La app navega más rápido", "No hace falta un NavHost"]
+    correcta: 0
+    explicacion: "Sin errores de tipeo ni conversiones de argumentos a mano."
+tarea_local: "Armá tres pantallas (Login, Lista y Detalle). Después del login, navegá a la Lista sacando el Login de la pila. Desde el Detalle, devolvé «tarea completada» a la Lista y mostralo en un mensaje."
+resultado_esperado: "Desde la Lista, «atrás» cierra la app. Al volver del Detalle, la Lista muestra el mensaje con el resultado."
+resumen:
+  - "Navigation Compose usa un NavHost y un NavController para moverse entre pantallas."
+  - "Cada navegación apila un destino y atrás lo desapila."
+  - "Pop up to saca destinos de la pila, y launch single top evita duplicados."
+  - "Las rutas tipadas permiten que el compilador verifique los argumentos."
+entrevista:
+  en_30_segundos: "Navego con un `NavHost` y controlo el back stack a propósito: saco el login con `popUpTo`, evito duplicados con `launchSingleTop` y uso rutas tipadas. Los deep links entran al mismo grafo, así que validan argumentos igual que la navegación interna."
+  trampas:
+    - pregunta: "¿Pasarías un objeto Tarea completo como argumento de navegación?"
+      respuesta: "No. Se pasa el id y la pantalla de destino lo carga desde el repositorio. Los argumentos tienen que ser chicos, y el dato tiene que tener una sola fuente de verdad."
+  cuando_no: "En una app de una o dos pantallas, mostrar y ocultar contenido con estado puede ser más simple que un grafo de navegación."
+---
+
+## Concepto
+
+Navigation Compose maneja las pantallas con un `NavHost` y un `NavController`. Cada `navigate()` apila un destino en el **back stack** y "atrás" lo desapila.
+
+Las opciones de navegación controlan esa pila: `popUpTo(destino) { inclusive = true }` saca destinos, y `launchSingleTop = true` evita apilar la misma pantalla dos veces. Desde Navigation 2.8 las rutas pueden ser **tipadas**, con clases `@Serializable` en vez de strings.
+
+## Ejemplo
+
+Después del login, navegás a la lista sacando el login de la pila: si la persona aprieta "atrás", sale de la app en vez de volver al login. Si toca dos veces rápido una tarea, `launchSingleTop` evita abrir dos detalles.
+
+Para devolver un resultado del detalle a la lista, se escribe en el `savedStateHandle` de la entrada anterior (`previousBackStackEntry`).

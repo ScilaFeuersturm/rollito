@@ -1,0 +1,53 @@
+---
+id: android-semi-senior-okhttp-y-serializacion-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "OkHttp y serialización"
+duracion_min: 6
+prerequisitos: [android-semi-senior-http-retrofit-y-clasificacion-de-fallas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde agregarías el header de autorización a todos los pedidos?"
+    opciones: ["En cada método de la interfaz de Retrofit", "En un interceptor de OkHttp", "En el ViewModel"]
+    correcta: 1
+    explicacion: "El interceptor ve pasar todos los pedidos: se escribe una vez y aplica a todos."
+  - tipo: opcion_multiple
+    pregunta: "La API agrega un campo que la app no conoce. Con Kotlinx Serialization en su configuración por defecto, ¿qué pasa?"
+    opciones: ["Lo ignora", "Falla al decodificar; con `ignoreUnknownKeys = true` lo ignora", "Agrega la propiedad sola"]
+    correcta: 1
+    explicacion: "Por defecto Kotlinx Serialization es estricto con las claves desconocidas."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué no conviene `HttpLoggingInterceptor` con nivel `BODY` en producción?"
+    opciones: ["Porque no funciona en producción", "Puede loguear tokens y datos personales, y además es lento", "Porque desactiva HTTPS"]
+    correcta: 1
+    explicacion: "En producción, los logs de red tienen que estar apagados o sin datos sensibles."
+tarea_local: "Con Retrofit y OkHttp, consumí una API pública de prueba (por ejemplo JSONPlaceholder). Agregá un interceptor que loguee método, URL y tiempo de respuesta, y configurá un timeout de lectura de 10 segundos."
+resultado_esperado: "En Logcat aparece una línea por pedido con método, URL y milisegundos, y los datos se muestran en la pantalla."
+resumen:
+  - "Retrofit define la API como interfaz, y OkHttp es el que hace las llamadas de verdad."
+  - "Los interceptores ven pasar cada pedido y respuesta, y sirven para headers, logs y métricas."
+  - "Kotlinx Serialization y Moshi convierten el JSON en objetos de Kotlin."
+  - "Hay que configurar timeouts y decidir qué pasa cuando la API manda campos desconocidos."
+entrevista:
+  en_30_segundos: "Retrofit arma la API y OkHttp ejecuta: ahí configuro timeouts, un interceptor de autenticación y un `Authenticator` para renovar el token cuando llega un 401. Para el JSON uso Kotlinx Serialization, que respeta la nulabilidad y los valores por defecto de Kotlin."
+  trampas:
+    - pregunta: "¿Por qué no Gson en un proyecto Kotlin nuevo?"
+      respuesta: "Gson no conoce la nulabilidad de Kotlin: puede dejar `null` en una propiedad no nula y no respeta los valores por defecto del constructor. El error aparece después, lejos de donde se originó."
+  cuando_no: "Para uno o dos pedidos simples, sumar Retrofit puede ser de más: alcanza con un cliente HTTP liviano. En un proyecto con varios endpoints, Retrofit se paga solo."
+---
+
+## Concepto
+
+Retrofit define la API como una interfaz, pero por debajo las llamadas las hace **OkHttp**. En OkHttp se configuran:
+
+- Los **timeouts**: conexión, lectura y escritura.
+- Los **interceptores**, que ven pasar cada pedido y respuesta. Sirven para agregar el header de autorización, loguear o medir.
+
+El JSON se convierte a objetos con una librería de **serialización**. Las dos más usadas en Kotlin son **Kotlinx Serialization** (plugin del compilador, sin reflexión, multiplataforma) y **Moshi** (con generación de código por KSP o con reflexión).
+
+## Ejemplo
+
+Un interceptor agrega `Authorization: Bearer <token>` a todos los pedidos. Si la API responde 401, un `Authenticator` de OkHttp renueva el token y reintenta una vez.
+
+El `TareaDto` está marcado como `@Serializable`. Si la API agrega un campo nuevo, la configuración `ignoreUnknownKeys = true` evita que la app se rompa.

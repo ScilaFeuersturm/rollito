@@ -1,0 +1,51 @@
+---
+id: android-semi-senior-tests-de-ui-compose-y-espresso-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Tests de UI con Compose Testing y Espresso"
+duracion_min: 6
+prerequisitos: [android-semi-senior-tests-unitarios-junit-y-mockk-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo encontrás en un test de Compose un elemento que no tiene texto?"
+    opciones: ["No se puede", "Con un `testTag` y `onNodeWithTag`, o por su descripción de accesibilidad", "Por su posición en la pantalla"]
+    correcta: 1
+    explicacion: "`Modifier.testTag` le da un nombre al elemento dentro del árbol de semántica."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué en Compose Testing no hace falta poner esperas a mano?"
+    opciones: ["Porque la regla se sincroniza con Compose y espera a que la UI quede estable", "Porque los tests de Compose no son asincrónicos", "Sí hace falta, con `Thread.sleep`"]
+    correcta: 0
+    explicacion: "Las esperas fijas hacen los tests lentos e inestables. Compose Testing espera lo justo."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué conviene testear con un test de UI?"
+    opciones: ["Cada regla de negocio", "Los flujos críticos de punta a punta: lo que se ve y las interacciones", "Las consultas a la base de datos"]
+    correcta: 1
+    explicacion: "Las reglas van en tests unitarios, que son más rápidos."
+tarea_local: "Escribí un test con `createComposeRule()` para una pantalla con un campo, un botón Agregar y una lista: agregá una tarea y verificá que aparezca, y probá el caso del campo vacío."
+resultado_esperado: "`./gradlew connectedDebugAndroidTest` (con un emulador abierto) corre los dos tests en verde."
+resumen:
+  - "Compose Testing busca elementos en el árbol de semántica, por texto o por test tag."
+  - "Espresso hace lo mismo para pantallas hechas con vistas XML."
+  - "Los tests de Compose esperan solos a que la interfaz quede estable."
+  - "Los tests de UI verifican flujos completos, y las reglas de negocio se testean con tests unitarios."
+entrevista:
+  en_30_segundos: "Con Compose Testing verifico los flujos críticos tal como los ve la persona, buscando por texto o por semántica, y con Espresso las pantallas que siguen en XML. Las reglas van en tests unitarios. Los de UI son pocos, porque son más lentos y más caros de mantener."
+  trampas:
+    - pregunta: "¿Buscarías los elementos por texto o por test tag?"
+      respuesta: "Por texto o semántica cuando se puede, porque además prueba lo que ve la persona y la accesibilidad. El test tag queda para elementos sin texto. Ojo: buscar por texto se rompe si cambia la traducción, así que conviene usar los recursos de strings."
+  cuando_no: "Para validar una regla de negocio, un test de UI es lento e inestable: va en un test unitario."
+---
+
+## Concepto
+
+- **Compose Testing** busca elementos en el árbol de semántica: crea la pantalla con `createComposeRule()`, la encuentra con `onNodeWithText` u `onNodeWithTag`, actúa con `performClick()` y comprueba con `assertIsDisplayed()`. Espera sola a que la UI termine de recomponerse.
+- **Espresso** es lo mismo para vistas XML: `onView(withId(...)).perform(click()).check(matches(isDisplayed()))`.
+
+Los dos suelen correr como tests instrumentados, en `androidTest`, sobre un emulador o dispositivo.
+
+## Ejemplo
+
+Un test escribe un título en el campo, toca "Agregar" y comprueba que la tarea aparece en la lista. Otro deja el campo vacío y comprueba que se ve el mensaje de error.
+
+Para encontrar un elemento sin texto se le pone `Modifier.testTag("lista-tareas")`.

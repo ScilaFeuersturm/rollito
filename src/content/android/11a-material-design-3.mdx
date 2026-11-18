@@ -1,0 +1,50 @@
+---
+id: android-junior-material-design-3-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Material Design 3 en Compose"
+duracion_min: 5
+prerequisitos: [android-junior-layout-con-row-column-y-modificadores-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Un botón tiene fondo `primary`. ¿Qué rol de color usás para su texto?"
+    opciones: ["`primary`", "`onPrimary`", "Un color fijo, por ejemplo blanco"]
+    correcta: 1
+    explicacion: "`onPrimary` es el color del contenido que va sobre `primary`, elegido para que tenga contraste en modo claro y oscuro."
+  - tipo: opcion_multiple
+    pregunta: "Un texto está pintado con un color fijo. ¿Qué pasa cuando la persona activa el modo oscuro?"
+    opciones: ["Se adapta solo", "No cambia y puede quedar ilegible sobre el fondo oscuro", "La app no compila"]
+    correcta: 1
+    explicacion: "Solo los colores que salen del tema cambian con el modo oscuro. Un color fijo queda igual."
+  - tipo: opcion_multiple
+    pregunta: "¿Desde qué versión de Android hay color dinámico?"
+    opciones: ["Android 8 (API 26)", "Android 12 (API 31)", "Desde siempre"]
+    correcta: 1
+    explicacion: "El color dinámico llegó en Android 12. En versiones anteriores hace falta un esquema propio de respaldo."
+tarea_local: "Creá un proyecto nuevo de Compose en Android Studio (la plantilla ya trae un `Theme.kt` con Material 3). Armá una tarjeta de tarea con `Card`, título y botón Completar usando solo colores del tema. Cambiá el modo oscuro del emulador."
+resultado_esperado: "La tarjeta cambia de colores sola y el texto se sigue leyendo bien en los dos modos."
+resumen:
+  - "Material 3 se aplica con MaterialTheme, que define colores, tipografía y formas."
+  - "Los componentes usan roles de color, como primary y on primary, en vez de colores fijos."
+  - "Usar roles hace que el modo oscuro funcione sin cambiar cada pantalla."
+  - "Desde Android 12 se puede usar color dinámico, tomado del fondo de pantalla."
+entrevista:
+  en_30_segundos: "Defino el tema una vez con `MaterialTheme` y en los componentes uso roles de color y estilos tipográficos del tema, nunca valores fijos. Así el modo oscuro, el color dinámico y un cambio de marca se resuelven en un solo lugar."
+  trampas:
+    - pregunta: "¿Qué diferencia hay entre primary y onPrimary?"
+      respuesta: "`primary` es el color de fondo de los elementos destacados. `onPrimary` es el color del contenido que va encima, elegido para que tenga contraste."
+  cuando_no: "Si la app tiene una identidad visual muy propia, conviene un tema personalizado sobre Material 3, en vez de pelearse con los valores por defecto componente por componente."
+---
+
+## Concepto
+
+Material 3 es el sistema de diseño de Google. En Compose se aplica con `MaterialTheme`, que recibe un `colorScheme`, una `typography` y unas `shapes`. Los componentes (`Button`, `Card`, `TopAppBar`, `Scaffold`) leen el tema solos.
+
+La clave es usar **roles de color** (`primary`, `onPrimary`, `surface`, `onSurface`, `error`) en vez de colores fijos. `onPrimary` quiere decir "el color del texto que va sobre `primary`".
+
+## Ejemplo
+
+La tarjeta de una tarea usa `surface` de fondo y `onSurface` para el título. Al pasar a modo oscuro, el tema cambia de `lightColorScheme()` a `darkColorScheme()` y la tarjeta se adapta sin tocar su código.
+
+Desde Android 12 (API 31) se puede usar color dinámico con `dynamicLightColorScheme(context)`, que toma la paleta del fondo de pantalla.

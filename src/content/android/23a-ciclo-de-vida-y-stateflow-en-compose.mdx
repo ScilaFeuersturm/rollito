@@ -1,0 +1,50 @@
+---
+id: android-semi-senior-ciclo-de-vida-y-stateflow-en-compose-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Ciclo de vida y StateFlow en Compose"
+duracion_min: 6
+prerequisitos: [android-semi-senior-flow-stateflow-y-sharedflow-01, android-semi-senior-fragment-viewmodel-y-restauracion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pasa con el ViewModel al rotar la pantalla?"
+    opciones: ["Se destruye y se crea otro", "Sobrevive: la Activity se recrea, pero recibe el mismo ViewModel", "Se duplica"]
+    correcta: 1
+    explicacion: "El ViewModel sobrevive a los cambios de configuración."
+  - tipo: opcion_multiple
+    pregunta: "¿Y si el sistema mata el proceso porque la app quedó en segundo plano?"
+    opciones: ["El ViewModel sobrevive igual", "El ViewModel se pierde; lo que tenga que sobrevivir va en `SavedStateHandle` o en persistencia", "La app no puede volver a abrirse"]
+    correcta: 1
+    explicacion: "El ViewModel vive en memoria. Si el proceso muere, se pierde con él."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre `collectAsState()` y `collectAsStateWithLifecycle()`?"
+    opciones: ["Ninguna", "El primero sigue recolectando con la app en segundo plano; el segundo respeta el ciclo de vida", "El segundo solo funciona en vistas XML"]
+    correcta: 1
+    explicacion: "`collectAsStateWithLifecycle()` deja de recolectar por debajo de `STARTED`, así no se trabaja para una pantalla que nadie ve."
+tarea_local: "En un proyecto con un ViewModel que expone un contador como `StateFlow` que suma uno por segundo, agregá un log en cada emisión. Recolectalo primero con `collectAsState()` y después con `collectAsStateWithLifecycle()`, y mandá la app al fondo en cada caso."
+resultado_esperado: "Con `collectAsState()` el log sigue apareciendo con la app en segundo plano. Con `collectAsStateWithLifecycle()` se corta y vuelve al abrir la app. Si el flujo se construye con `stateIn` y `SharingStarted.WhileSubscribed(5000)`, además se frena el productor unos segundos después."
+resumen:
+  - "El ViewModel sobrevive a rotar la pantalla, pero no a que el sistema mate el proceso."
+  - "Lo que tiene que sobrevivir a la muerte del proceso va en SavedStateHandle o en persistencia."
+  - "La interfaz debería observar el estado solo mientras se ve."
+  - "En Compose eso se logra con collect as state with lifecycle."
+entrevista:
+  en_30_segundos: "El ViewModel guarda el estado de la pantalla y sobrevive a los cambios de configuración. La UI lo observa con `collectAsStateWithLifecycle`, así no trabaja en segundo plano, y lo que tiene que sobrevivir a la muerte del proceso va a `SavedStateHandle`."
+  trampas:
+    - pregunta: "¿El ViewModel sobrevive a todo?"
+      respuesta: "No. Sobrevive a la recreación por configuración, pero no a la muerte del proceso ni a que la persona cierre la pantalla."
+  cuando_no: "Un estado puramente visual y efímero, como si un menú está desplegado, puede quedarse en `remember` o `rememberSaveable` dentro del composable, sin pasar por el ViewModel."
+---
+
+## Concepto
+
+Una Activity pasa por `onCreate`, `onStart`, `onResume`, `onPause`, `onStop` y `onDestroy`. El **ViewModel** sobrevive a los cambios de configuración, como rotar la pantalla, y se destruye recién cuando su dueño termina de verdad (ahí se llama a `onCleared`).
+
+La UI tiene que **observar el estado solo mientras se ve**. En Compose se hace con `collectAsStateWithLifecycle()`, que por defecto deja de recolectar por debajo de `STARTED`. En vistas XML se logra lo mismo con `repeatOnLifecycle(Lifecycle.State.STARTED)`.
+
+## Ejemplo
+
+La pantalla de tareas expone un `StateFlow<EstadoTareas>` desde el ViewModel. La persona va al inicio del teléfono: con `collectAsStateWithLifecycle()` la recolección se pausa y no se hace trabajo para una pantalla que nadie ve. Al volver, se retoma con el último estado.
+
+Si rota la pantalla, el ViewModel es el mismo y no se vuelve a cargar nada.
