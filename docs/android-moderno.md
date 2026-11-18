@@ -8,7 +8,7 @@ El primer recorrido usa una lista de tareas como ejemplo común. Arranca con Kot
 | --- | --- | --- |
 | Junior | 1. Ausencia de datos en Kotlin | Mostrás un nombre alternativo si el dato falta. |
 | Junior | 2. Data classes, colecciones y extensiones | Modelás una tarea, filtrás una lista y preparás títulos para mostrar. Se reparte en tres lecciones. |
-| Junior | 3. De XML a Compose | Dibujás una tarjeta a partir de sus datos. |
+| Junior | 3. Cómo funciona una vista | Seguís una tarjeta desde el XML hasta el dibujo y explicás cómo se actualiza con estado en Compose. |
 | Junior | 4. Eventos y estado | Actualizás un contador con una acción del usuario. |
 | Junior | 5. Listas y elementos con identidad | Mostrás tareas y preservás su identidad al reordenar. |
 | Junior | 6. Navegación entre lista y detalle | Abrís una tarea a partir de su identificador. |
@@ -30,6 +30,14 @@ Los niveles sirven para organizar la preparación. Cada empresa puede repartir l
 | Junior | Variables y tipos, inferencia, null safety, operadores, control de flujo, funciones y parámetros, clases, constructores, visibilidad, interfaces, data classes, igualdad, colecciones, lambdas, extensiones y excepciones básicas. | Ciclo de vida de Activity y Fragment, puente Java/XML a Kotlin/Compose, layouts, listas y keys, estado local, formularios, navegación, recursos y accesibilidad. Practicá leer código, predecir la salida y explicar una decisión básica. |
 | Semi Senior | Genéricos y varianza, sealed classes e interfaces, funciones de orden superior, scope functions, delegación, colecciones vs. secuencias, corrutinas, cancelación, concurrencia estructurada, Flow, StateFlow y SharedFlow. | ViewModel, estado y eventos, recreación y muerte del proceso, MVVM/MVI, Retrofit y HTTP, Room y migraciones, repositorios y caché, Hilt, navegación y deep links, trabajo en segundo plano, pruebas unitarias y de integración. Practicá diagnosticar errores y defender límites entre capas. |
 | Senior | Interoperabilidad Java, contratos y diseño de APIs, inline y reified, concurrencia y sincronización, memoria, asignaciones, mediciones y compatibilidad de bibliotecas. | Modularización y Gradle, límites de Clean Architecture, estrategia de datos offline y sincronización, recomposición y estabilidad, arranque y Baseline Profiles, ANR y profiling, pruebas UI y de rendimiento, CI/CD y rollbacks, observabilidad, seguridad, privacidad y migraciones. Practicá diseñar un sistema, medir un problema y defender trade-offs con datos. |
+
+## Vistas e interfaces para entrevistas
+
+| Nivel | Qué practicar | Pregunta para probarte |
+| --- | --- | --- |
+| Junior | Jerarquía de View y ViewGroup, inflación, ViewBinding, medida y dibujo, tamaños y restricciones, componentes de Compose, modificadores, estado local, eventos, listas, navegación, foco y accesibilidad. | Si cambia el largo del título, ¿qué pasos determinan cuánto espacio ocupa y cómo aparece? |
+| Semi Senior | Ciclo de vida de Fragment y de su vista, suscripciones ligadas a la vista, estado que sobrevive a recreaciones, listas con identidad, gestos, semántica, interoperabilidad XML y Compose, pruebas de UI. | ¿Por qué una suscripción que actualiza el binding debería vivir lo mismo que la vista del Fragment? |
+| Senior | Fases de Compose, recomposición y estabilidad, medición de jank, sobrecarga de layout y dibujo, rendimiento de listas, layouts adaptativos y estrategia de migración incremental. | Si una lista se traba al hacer scroll, ¿qué medirías para separar el costo de composición, layout y dibujo? |
 
 ## Lección disponible · Ausencia de datos en Kotlin
 
@@ -180,3 +188,131 @@ Agregá una extensión para un receptor `String?` con el nombre `tituloVisibleOA
 **Pregunta trampa.** ¿Una extensión puede sobrescribir un método del tipo receptor? Si un miembro y una extensión son aplicables y tienen la misma firma, Kotlin elige el miembro.
 
 **Cuándo simplificar.** Si la operación depende de varias piezas del negocio y el receptor es un argumento más, una función común puede expresar mejor esa relación.
+
+## Borrador 5 · Del XML al árbol de vistas
+
+**Nivel** Junior · **Duración estimada** 5 minutos · **Antes** Funciones de extensión
+
+### Concepto y ejemplo
+
+En Android clásico, un XML de layout describe una jerarquía. Al inflarlo, Android crea los objetos `View` y `ViewGroup` que la componen. El contenedor organiza a sus hijos. Una vista como `TextView` muestra texto y una como `Button` puede recibir un toque. ViewBinding da acceso tipado a las vistas del layout que tienen un identificador. [Layouts con Views](https://developer.android.com/develop/ui/views/layout/declaring-layout) · [ViewBinding](https://developer.android.com/topic/libraries/view-binding)
+
+Pensá en una fila de la app de tareas. El XML describe qué piezas tiene. La fila concreta recibe después el título que corresponde a esa tarea.
+
+```text
+Recurso XML de una fila
+  ↓ inflación
+Contenedor de la fila
+  ├─ View de texto → Comprar yerba
+  └─ Botón → Completar
+```
+
+### Práctica
+
+1. ¿Qué produce la inflación? Opciones un árbol de objetos, una imagen o el texto XML. Respuesta un árbol de objetos.
+2. Ordená el flujo. Elegir el recurso → inflar la fila → asignar el título → mostrar la fila.
+3. ¿Qué pieza agrupa el texto y el botón? Opciones ViewGroup, el título o el listener. Respuesta ViewGroup.
+
+### Tarea para tu máquina
+
+En una pantalla de práctica con Views, armá una fila con texto y un botón. Activá ViewBinding, actualizá el texto desde Kotlin y abrí el Layout Inspector para comparar la jerarquía en ejecución con el XML.
+
+**Resultado esperado.** El inspector muestra un contenedor con los dos hijos. El texto que ves en ejecución es el valor que asignaste desde Kotlin.
+
+### Para repasar
+
+- El XML describe la jerarquía de una pantalla.
+- Inflar crea objetos de vista durante la ejecución.
+- ViewBinding permite acceder a las vistas identificadas desde Kotlin.
+
+### Entrevista
+
+**En 30 segundos.** Un layout XML describe qué vistas existen y cómo se anidan. Inflarlo crea las instancias. A partir de ahí puedo asignar datos y eventos, y Android mide, ubica y dibuja la jerarquía.
+
+**Pregunta trampa.** ¿Inflar una fila define el título final de cada tarea? La inflación crea la estructura y aplica los valores del recurso. El código que enlaza los datos de la tarea puede actualizar ese texto después.
+
+**Cuándo elegir otra opción.** Si la pantalla nueva pertenece a una app Compose, una función composable puede describirla. Si estás migrando una app grande, una pantalla existente puede seguir usando Views mientras migrás otra.
+
+## Borrador 6 · Cómo una vista ocupa espacio: medir, ubicar y dibujar
+
+**Nivel** Junior · **Duración estimada** 6 minutos · **Antes** Del XML al árbol de vistas
+
+### Concepto y ejemplo
+
+El padre comunica restricciones de tamaño. En la medición se calcula cuánto puede ocupar cada pieza. En el layout se decide su posición. En el dibujo se produce lo que aparece en pantalla. En Compose también hay un paso de layout que incluye medir y ubicar. Además, el orden de los modificadores influye en las restricciones y en cómo se ve el resultado. [Ciclo de dibujo de Views](https://developer.android.com/guide/topics/ui/how-android-draws) · [Restricciones y orden de modificadores en Compose](https://developer.android.com/develop/ui/compose/layouts/constraints-modifiers)
+
+En una fila de tareas, el texto y el botón comparten el ancho disponible. Cuando el título necesita más líneas, la fila puede crecer en alto si sus restricciones se lo permiten.
+
+```text
+El padre informa cuánto espacio hay
+  → Medir: calcular tamaño del texto, botón y fila
+  → Ubicar: decidir dónde queda cada pieza
+  → Dibujar: mostrar texto y botón
+```
+
+### Práctica
+
+1. ¿Dónde se decide la posición del botón? Opciones medición, layout o dibujo. Respuesta layout.
+2. Ordená las fases. Medir → ubicar → dibujar.
+3. Si cambia el ancho disponible, ¿qué hace falta resolver otra vez? Respuesta el tamaño y la posición que correspondan a las nuevas restricciones.
+
+### Tarea para tu máquina
+
+Probá la fila anterior con un título corto y uno largo. Permití que el texto use varias líneas y cambiale el ancho disponible usando una vista previa o el emulador. Observá el tamaño de la fila en el inspector.
+
+**Resultado esperado.** Cuando el ancho es menor, el título largo se reparte en más líneas y la fila se hace más alta si el padre admite ese alto.
+
+### Para repasar
+
+- Las restricciones del padre influyen en el tamaño de cada hijo.
+- Medir resuelve tamaño y ubicar resuelve posición.
+- Dibujar hace visible el resultado de esas decisiones.
+
+### Entrevista
+
+**En 30 segundos.** El padre comunica restricciones. Primero se resuelve el tamaño, después la posición y al final el dibujo. Si un cambio afecta el tamaño, puede requerir otra medición y otro layout.
+
+**Pregunta trampa.** ¿Cambiar el color obliga a medir de nuevo? Si el cambio afecta solo cómo se pinta, alcanza con actualizar el dibujo. Un cambio de texto, tamaño o restricciones puede requerir layout.
+
+**Cuándo simplificar.** Para acomodar una fila común, empezá con los contenedores existentes. Considerá un layout propio si necesitás un comportamiento de medición o ubicación que esos contenedores no cubren.
+
+## Borrador 7 · De actualizar un TextView a describir una pantalla con estado
+
+**Nivel** Junior · **Duración estimada** 6 minutos · **Antes** Del XML al árbol de vistas
+
+### Concepto y ejemplo
+
+Con Views podés actualizar un objeto existente, por ejemplo asignar el texto de una etiqueta. En Compose, una función composable describe qué se muestra para los datos que recibe. Cuando cambia un estado observable leído por esa parte de la interfaz, Compose puede reejecutar las funciones que dependen de ese estado para actualizar lo que corresponde. [Modelo mental de Compose](https://developer.android.com/develop/ui/compose/mental-model)
+
+La misma fila de tareas puede recibir un título y un estado inicial pendiente. El botón comunica la acción al dueño del estado. A partir del nuevo estado, la etiqueta pasa a mostrar `Completada`.
+
+```text
+Estado inicial → la vista muestra Pendiente
+Toque → evento → nuevo estado → la vista muestra Completada
+```
+
+### Práctica
+
+1. ¿En qué dirección viaja el estado? Opciones de quien lo mantiene hacia la vista, del botón hacia el texto o de la vista a la base. Respuesta hacia la vista.
+2. Ordená el flujo. Toque → evento → actualización del estado → pantalla actualizada.
+3. ¿En qué caso puede alcanzar con estado local? Respuesta expandir o contraer una sección que solo usa esa pantalla.
+
+### Tarea para tu máquina
+
+En un proyecto Compose, armá una fila que reciba si la tarea está completada y una función que se llame al tocar el botón. En la pantalla que la contiene, mantené un estado observable y pasalo a la fila. Probá el cambio desde el emulador.
+
+**Resultado esperado.** La fila empieza mostrando `Pendiente`. Al tocar el botón, la pantalla cambia el estado y la fila muestra `Completada`.
+
+### Para repasar
+
+- La interfaz describe el resultado a partir del estado.
+- Un toque puede convertirse en un evento para quien mantiene el estado.
+- Compose actualiza las partes que dependen de los valores que cambian.
+
+### Entrevista
+
+**En 30 segundos.** Con Compose describo la pantalla para un estado dado. La UI comunica las acciones y quien mantiene el estado decide la actualización. Compose puede reejecutar las partes que leyeron el estado cambiado.
+
+**Pregunta trampa.** ¿Un cambio de estado vuelve a dibujar toda la pantalla? Compose puede limitar el trabajo a las partes afectadas. Recomposición, layout y dibujo son fases distintas.
+
+**Cuándo elevar el estado.** Si otra parte de la pantalla necesita el mismo dato o lo puede cambiar, ubicalo en un dueño común y pasá a cada componente los valores y eventos que necesita.
