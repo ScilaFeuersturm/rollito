@@ -23,7 +23,11 @@ npm run preview  # sirve dist/ para probar el build
 3. `vite build --ssr` arma una versión de la app que corre en Node (`dist-ssr/`, temporal).
 4. `scripts/prerender.js` usa esa versión para escribir un HTML por ruta: `dist/index.html`, `dist/repaso/index.html`, `dist/lecciones/<id>/index.html` y `dist/404.html`.
 
-Cada página llega al navegador con el contenido ya escrito (se ve rápido en el celular y Google la puede indexar). Después React la "hidrata" y la navegación entre páginas es instantánea. Cualquier hosting estático sirve; Netlify usa `404.html` automáticamente para direcciones inexistentes.
+Cada página llega al navegador con el contenido ya escrito (se ve rápido en el celular y Google la puede indexar). Después React la "hidrata" y la navegación entre páginas es instantánea. Cualquier hosting estático sirve.
+
+## Deploy
+
+Publicado en **https://rollito.onrender.com** como sitio estático de Render. Cada push a `main` dispara un deploy automático: corre `npm ci --include=dev && npm run build` y publica `dist/`. Render sirve `404.html` en las direcciones inexistentes.
 
 ## Estructura
 
