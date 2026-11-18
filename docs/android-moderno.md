@@ -67,7 +67,7 @@ El operador `?:` usa el valor de la izquierda si está presente. Cuando es `null
 
 En un archivo de Kotlin, escribí una función `nombreVisible` que reciba un `String?` y devuelva un `String`. Probala con `null`, `"Ana"` y `""`. El resultado esperado es `"Invitado"`, `"Ana"` y `""`, respectivamente.
 
-## Borrador 2 · Data classes: copiá una tarea sin perder sus datos
+## Lección 2 · Data classes: copiá una tarea sin perder sus datos
 
 **Nivel** Junior · **Duración estimada** 5 minutos · **Antes** Ausencia de datos en Kotlin
 
@@ -106,7 +106,7 @@ Hacé una copia que cambie el título a `"Comprar café"` y conserve el identifi
 
 **Cuándo simplificar.** Para una clase que prioriza comportamiento, identidad o invariantes complejas, evaluá si una clase común expresa mejor el contrato.
 
-## Borrador 3 · Colecciones: filtrá tareas y quedate con sus títulos
+## Lección 3 · Colecciones: filtrá tareas y quedate con sus títulos
 
 **Nivel** Junior · **Duración estimada** 5 minutos · **Antes** Data classes
 
@@ -143,7 +143,7 @@ Extraé los títulos de las tareas completadas y verificá que el resultado sea 
 
 **Cuándo simplificar.** Si la transformación tiene varios pasos con reglas distintas, ponerle nombre a un paso intermedio puede hacer más claro el flujo.
 
-## Borrador 4 · Funciones de extensión: limpiá títulos antes de mostrarlos
+## Lección 4 · Funciones de extensión: limpiá títulos antes de mostrarlos
 
 **Nivel** Junior · **Duración estimada** 5 minutos · **Antes** Ausencia de datos en Kotlin
 

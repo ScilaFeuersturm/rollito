@@ -1,0 +1,56 @@
+---
+id: android-kotlin-data-classes-01
+track: android
+nivel: junior
+modulo: Kotlin
+titulo: "Data classes: copiá una tarea sin perder sus datos"
+duracion_min: 5
+prerequisitos: ["android-kotlin-null-safety-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué devuelve original.completada después de copiar?"
+    opciones: ["true", "false", "null"]
+    correcta: 1
+    explicacion: "La copia recibe el estado actualizado. La tarea original conserva su estado."
+  - tipo: completar
+    pregunta: "Completá el nombre del parámetro para marcar la copia como completada."
+    codigo: "original.copy(___ = true)"
+    respuestas: ["completada"]
+    explicacion: "El argumento nombrado cambia solo la propiedad completada en la copia."
+  - tipo: opcion_multiple
+    pregunta: "En el ejemplo, ¿dos tareas con el mismo id y distinto estado son iguales según el equals generado?"
+    opciones: ["Sí, basta con el id", "Sí, si se usó copy", "El estado también participa de la comparación"]
+    correcta: 2
+    explicacion: "El estado está en el constructor principal y su valor cuenta en la igualdad generada."
+tarea_local: "Hacé una copia que cambie el título a `\"Comprar café\"` y conserve el identificador. Usá `check` para comprobar el título de ambas tareas y el identificador."
+resultado_esperado: "La tarea original conserva `\"Comprar yerba\"`, la copia tiene `\"Comprar café\"` y ambas mantienen el identificador uno."
+resumen:
+  - "Una data class genera operaciones a partir de las propiedades del constructor principal."
+  - "La copia permite cambiar valores puntuales y conservar el resto."
+  - "Igualdad de valores e identidad de negocio pueden representar cosas distintas."
+entrevista:
+  en_30_segundos: "Uso una data class para datos que quiero comparar por valores y copiar con cambios puntuales. La igualdad generada toma las propiedades del constructor principal."
+  trampas:
+    - pregunta: "¿Copy duplica las colecciones internas?"
+      respuesta: "La copia es superficial. Si ambas instancias contienen la misma lista mutable, siguen referenciando esa lista."
+  cuando_no: "Si una clase prioriza el comportamiento, la identidad o reglas complejas, evaluá qué forma de clase expresa mejor ese contrato."
+---
+
+import example from '../../../android-samples/kotlin/fundamentos/DataClasses.kt?raw'
+
+## Concepto
+
+Una `data class` sirve para representar datos como el identificador, el título y el estado de una tarea. Kotlin genera operaciones como igualdad y copia a partir de las propiedades del constructor principal. [Data classes en Kotlin](https://kotlinlang.org/docs/data-classes.html)
+
+## Ejemplo
+
+`copy` crea otra tarea con el estado actualizado y conserva el identificador. Los dos últimos resultados comprueban la igualdad de valores con otra tarea completada y que el identificador se mantiene.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+false
+true
+true
+true
+```

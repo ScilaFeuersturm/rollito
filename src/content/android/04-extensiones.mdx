@@ -1,0 +1,55 @@
+---
+id: android-kotlin-extensiones-01
+track: android
+nivel: junior
+modulo: Kotlin
+titulo: "Funciones de extensión: limpiá títulos antes de mostrarlos"
+duracion_min: 5
+prerequisitos: ["android-kotlin-null-safety-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál es el receptor de tituloVisible?"
+    opciones: ["Int", "String", "List<String>"]
+    correcta: 1
+    explicacion: "La función se declara con String antes del nombre."
+  - tipo: completar
+    pregunta: "Completá el tipo del receptor."
+    codigo: "fun ___.tituloVisible(): String"
+    respuestas: ["String"]
+    explicacion: "El receptor indica sobre qué valor podés llamar a la extensión."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué devuelve tituloVisible si la cadena tiene solo espacios?"
+    opciones: ["Sin título", "null", "Los espacios originales"]
+    correcta: 0
+    explicacion: "trim deja un texto vacío y la función devuelve el valor alternativo."
+tarea_local: "Agregá la extensión `tituloVisibleOAlternativo` con receptor `String?`. Verificá con `check` un título con espacios, una cadena vacía y un valor `null`."
+resultado_esperado: "El título válido pierde los espacios de los extremos. La cadena vacía y el valor `null` devuelven `Sin título`."
+resumen:
+  - "Una extensión se llama como una operación del tipo receptor."
+  - "Dentro de la extensión podés trabajar con el valor que recibió la llamada."
+  - "Un receptor nullable permite hacer explícito el caso en que falta el dato."
+entrevista:
+  en_30_segundos: "Una extensión permite escribir una operación cómoda para un tipo existente. Kotlin resuelve qué extensión usar según el tipo declarado del receptor."
+  trampas:
+    - pregunta: "¿Una extensión puede sobrescribir un método del tipo receptor?"
+      respuesta: "Si un método miembro y una extensión son aplicables y tienen la misma firma, Kotlin elige el miembro."
+  cuando_no: "Si la operación depende de varias piezas del negocio y el receptor es un argumento más, una función común puede expresar mejor esa relación."
+---
+
+import example from '../../../android-samples/kotlin/fundamentos/Extensiones.kt?raw'
+
+## Concepto
+
+Una extensión permite llamar a una función sobre un tipo existente. El tipo antes del nombre de la función es el receptor. [Funciones de extensión en Kotlin](https://kotlinlang.org/docs/extensions.html)
+
+## Ejemplo
+
+`String.tituloVisible()` quita los espacios de los extremos y devuelve `Sin título` si el resultado queda vacío. El texto original conserva sus espacios.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Comprar yerba
+Sin título
+Original: [ Comprar yerba ]
+```

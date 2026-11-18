@@ -1,0 +1,57 @@
+---
+id: android-kotlin-colecciones-01
+track: android
+nivel: junior
+modulo: Kotlin
+titulo: "Colecciones: filtrá tareas y quedate con sus títulos"
+duracion_min: 5
+prerequisitos: ["android-kotlin-data-classes-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Con qué operación seleccionás las tareas pendientes?"
+    opciones: ["filter", "map", "copy"]
+    correcta: 0
+    explicacion: "filter conserva los elementos que cumplen la condición de la lambda."
+  - tipo: ordenar
+    pregunta: "Ordená el flujo para mostrar los títulos pendientes."
+    pasos:
+      - "Leer las tareas."
+      - "Filtrar las pendientes."
+      - "Extraer los títulos."
+      - "Mostrar el resultado."
+    explicacion: "Primero seleccionás las tareas y después cambiás su representación."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué tipo tiene titulosPendientes?"
+    opciones: ["List<Tarea>", "List<String>", "String"]
+    correcta: 1
+    explicacion: "Cada llamada de map devuelve un título de tipo String y la operación produce una lista de esos valores."
+tarea_local: "Extraé los títulos de las tareas completadas. Verificá el resultado con los datos del ejemplo y con una lista vacía."
+resultado_esperado: "Con los datos de ejemplo obtenés `listOf(\"Comprar yerba\")` y la entrada conserva sus tres elementos. Con la lista vacía obtenés una lista vacía."
+resumen:
+  - "Filter decide qué elementos quedan."
+  - "Map convierte cada elemento que recibe."
+  - "Podés encadenar las operaciones cuando el segundo paso usa el resultado del primero."
+entrevista:
+  en_30_segundos: "Uso filter para elegir elementos y map para transformar su representación. Primero filtro las tareas pendientes y después extraigo el título que necesita la vista."
+  trampas:
+    - pregunta: "¿Una lista de solo lectura siempre es inmutable?"
+      respuesta: "La interfaz limita las operaciones disponibles por esa referencia. Otra referencia mutable al mismo objeto todavía puede modificarlo."
+  cuando_no: "Si una transformación tiene varios pasos con reglas distintas, un nombre para el paso intermedio puede hacer más claro el flujo."
+---
+
+import example from '../../../android-samples/kotlin/fundamentos/Colecciones.kt?raw'
+
+## Concepto
+
+Una lambda describe qué hacer con cada elemento. Usá `filter` para conservar los elementos que cumplan una condición y `map` para transformar los que recibís. [Transformaciones de colecciones en Kotlin](https://kotlinlang.org/docs/collection-transformations.html)
+
+## Ejemplo
+
+El ejemplo filtra las tareas pendientes y transforma cada tarea en su título. El resultado es una lista de textos y la lista de entrada conserva sus tres elementos.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+[Pagar la luz, Regar las plantas]
+Total: 3
+```
