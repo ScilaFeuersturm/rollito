@@ -48,9 +48,9 @@ Campos opcionales:
 
 ## Repaso en audio
 
-Solo para la sección **Arquitectura**: los temas que más se preguntan en entrevistas (POO, capas, MVC, MVP, MVVM, MVI, Flux/Redux, VIPER, Clean, Hexagonal, modular y monolito vs. microservicios; la lista está en `src/content/audio.ts`): conceptos para escuchar y pensar, no sintaxis. Una lección tiene audio si su frontmatter dice `track: fundamentos` y `modulo: Arquitectura` (ver `src/content/audio.ts`). El resto de las lecciones muestra el resumen como texto.
+Las lecciones de la ruta **Arquitectura** tienen audio. Incluye POO, SOLID, Patrones de diseño y Arquitecturas. El repaso sigue el mismo orden que la tarjeta del inicio. Los módulos habilitados son `Arquitectura`, `SOLID` y `Patrones de diseño` del track Fundamentos.
 
-El resumen se puede escuchar al final de cada lección de Arquitectura, y todos juntos en `/repaso/`, como un podcast corto. Usa la voz que trae el dispositivo: prefiere español rioplatense, después latinoamericano y después cualquier español.
+El resumen se puede escuchar al final de cada lección habilitada y en `/repaso/`. Usa la voz que trae el dispositivo y prefiere español rioplatense, después latinoamericano y después cualquier español.
 
 Limitaciones conocidas:
 

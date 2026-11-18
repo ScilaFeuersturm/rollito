@@ -1,0 +1,68 @@
+---
+id: fundamentos-arquitectura-mvvm-01
+track: fundamentos
+nivel: semi-senior
+modulo: Arquitectura
+titulo: "MVVM: la pantalla observa el estado"
+duracion_min: 6
+prerequisitos: [fundamentos-arquitectura-mvp-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué le da el ViewModel a la vista?"
+    opciones: ["El estado de la pantalla", "Una vista de consola", "Una copia del ViewModel"]
+    correcta: 0
+    explicacion: "El estado contiene las tareas y el error que la pantalla necesita dibujar."
+  - tipo: ordenar
+    pregunta: "Ordená el flujo cuando tocás Agregar."
+    pasos:
+      - "La vista envía el título."
+      - "El ViewModel le pide al modelo que lo guarde."
+      - "El ViewModel publica el nuevo estado."
+      - "La vista dibuja la lista y el error si corresponde."
+    explicacion: "El ViewModel publica el resultado como estado y la vista lo observa."
+  - tipo: opcion_multiple
+    pregunta: "Después de un título vacío, agregás uno válido. ¿Qué recibe la vista?"
+    opciones: ["La lista actualizada sin error", "La lista actualizada con el mismo error", "La lista vacía"]
+    correcta: 0
+    explicacion: "El intento válido actualiza las tareas y el nuevo estado deja el error en null."
+tarea_local: 'En `main`, agregá un observador que guarde cada estado en una lista. Agregá `"Comprar yerba"`, probá con `" "` y después agregá `"Pagar la luz"`. Usá `check` para verificar qué recibió el observador. Cancelá la suscripción, agregá `"Regar las plantas"` y comprobá que el observador deje de recibir estados.'
+resultado_esperado: 'Se reciben cuatro estados contando el inicial. El tercero conserva `"Comprar yerba"` y trae el error. El cuarto contiene las dos tareas válidas y un error igual a `null`. Después de cancelar, siguen siendo cuatro.'
+resumen:
+  - "La vista envía acciones y dibuja el estado que observa."
+  - "El ViewModel prepara el estado de pantalla y el modelo aplica las reglas."
+  - "El estado reúne lo que la vista necesita mostrar en ese momento."
+  - "Pausá y explicá qué debería ver una pantalla que empieza a observar justo después de un intento fallido."
+entrevista:
+  en_30_segundos: "En MVVM la vista envía acciones al ViewModel y observa el estado que este expone. El ViewModel usa el modelo para resolver la acción y publica una versión actualizada. Para probar la lógica de presentación, puedo verificar qué estado se produce ante cada acción."
+  trampas:
+    - pregunta: "¿Crear una clase que hereda del ViewModel de Jetpack alcanza para usar MVVM?"
+      respuesta: "Esa clase ayuda a manejar el ciclo de vida del estado. La separación se ve en el flujo de acciones, en el estado que expone el ViewModel y en dónde se aplican las reglas del modelo."
+  cuando_no: "Para algo local de una vista, como expandir una sección, el estado puede quedar en esa vista. Vale la pena elevarlo si afecta el contenido de la pantalla o si varias partes lo necesitan."
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Mvvm.kt?raw'
+
+## Concepto
+
+En MVVM, la **vista** dibuja la pantalla y envía las acciones de la persona. El **ViewModel** recibe las acciones y publica el estado que la pantalla necesita. El **modelo** guarda las tareas y aplica las reglas.
+
+En el ejemplo de MVP, el presentador llama a operaciones concretas de la vista. Acá el ViewModel publica un estado que contiene la lista y el error. La vista observa ese estado y decide cómo dibujarlo. Una vista nueva recibe el estado actual al empezar a observar.
+
+## Ejemplo
+
+```text
+Vista → alAgregar(título) → ViewModel → Modelo
+Vista ← observa EstadoTareas ← ViewModel
+```
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+El ejemplo usa Kotlin puro y una suscripción síncrona. En Android, un ViewModel de Jetpack puede exponer el estado con `StateFlow`, y Compose puede observarlo según el ciclo de vida. [Guía de la capa de interfaz de Android](https://developer.android.com/topic/architecture/ui-layer)
+
+```text
+Tareas: (vacía)
+Tareas: Comprar yerba
+Tareas: Comprar yerba
+Escribí un título
+Tareas: Comprar yerba, Pagar la luz
+```

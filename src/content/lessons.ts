@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
-import { hasAudio } from './audio'
+import { androidRoadmap } from './android/roadmap'
+import { architectureSection, hasAudio } from './audio'
 import { lessonSchema } from './lesson-schema'
 
 interface LessonModule {
@@ -52,4 +53,28 @@ for (const lesson of lessons) {
   for (const id of lesson.prerequisitos) {
     if (id === lesson.id || !ids.has(id)) throw new Error(`Prerrequisito inválido en ${lesson.id}: ${id}`)
   }
+}
+
+export const architectureSections = [
+  { id: 'poo', title: 'POO', topics: 'Clases, interfaces, herencia y composición.' },
+  { id: 'solid', title: 'SOLID', topics: 'Cinco principios para pensar qué cambia y cómo se relacionan las piezas.' },
+  { id: 'patterns', title: 'Patrones de diseño', topics: 'Diez temas, de Strategy a Repository e inyección de dependencias.' },
+  { id: 'architectures', title: 'Arquitecturas', topics: 'De MVC, MVP y MVVM a Clean Architecture y microservicios.' },
+].map(section => ({
+  ...section,
+  lessons: lessons.filter(lesson => hasAudio(lesson) && architectureSection(lesson) === section.id),
+}))
+
+export const androidSections = androidRoadmap.map(level => ({
+  ...level,
+  lessons: lessons.filter(lesson => lesson.track === 'android' && lesson.nivel === level.level),
+}))
+
+const architectureSequence = architectureSections.flatMap(section => section.lessons)
+const androidSequence = androidSections.flatMap(section => section.lessons)
+
+export function nextLesson(lesson: Lesson): Lesson | undefined {
+  const sequence = hasAudio(lesson) ? architectureSequence : androidSequence
+  const position = sequence.findIndex(item => item.id === lesson.id)
+  return position === -1 ? undefined : sequence[position + 1]
 }

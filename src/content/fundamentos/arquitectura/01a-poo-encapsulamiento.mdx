@@ -1,0 +1,72 @@
+---
+id: fundamentos-poo-encapsulamiento-01
+track: fundamentos
+nivel: junior
+modulo: Arquitectura
+titulo: "POO: encapsulamiento"
+duracion_min: 5
+prerequisitos: [fundamentos-poo-clases-y-objetos-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `private set` en una propiedad?"
+    opciones: ["La oculta por completo.", "Se puede leer desde afuera, pero solo modificar desde adentro de la clase.", "Hace que no se pueda modificar nunca."]
+    correcta: 1
+    explicacion: "el getter sigue siendo público. Solo el setter queda privado."
+  - tipo: opcion_multiple
+    pregunta: "Una clase tiene `val subtareas = mutableListOf<String>()` pública. ¿Está protegida?"
+    opciones: ["Sí, porque es `val`.", "No: `val` impide reasignar la lista, pero no cambiar su contenido.", "Sí, porque las listas de Kotlin son inmutables."]
+    correcta: 1
+    explicacion: "`val` es una referencia fija a una lista que sigue siendo mutable. Cualquiera puede hacer `tarea.subtareas.add(...)` y saltearse las reglas."
+  - tipo: completar
+    pregunta: "Completá el código."
+    codigo: "var completada = false\n___ set"
+    respuestas: ["private"]
+    explicacion: "así se puede leer desde afuera, pero solo cambiar con `completar()`."
+tarea_local: "Creá una clase `Presupuesto` que reciba un monto inicial. Tiene que tener un `saldo` que se lea desde afuera pero no se pueda modificar directamente, y un método `gastar(monto: Int)`. Si el monto supera el saldo, imprime \"Saldo insuficiente\" y no descuenta nada. Probala con un presupuesto de 1000: gastá 300, después 900, e imprimí el saldo."
+resultado_esperado: "El gasto de 900 se rechaza y el saldo queda en 700."
+salida_esperada: |-
+  Saldo insuficiente
+  Saldo: 700
+resumen:
+  - "Encapsular es esconder el estado interno y permitir cambiarlo solo con operaciones que respetan las reglas."
+  - "Con private set, una propiedad se puede leer desde afuera pero solo modificar desde adentro."
+  - "Que una propiedad sea val no protege su contenido si es una lista mutable."
+  - "Para exponer una colección, devolvé una copia de solo lectura."
+entrevista:
+  en_30_segundos: "Encapsular es proteger el estado de un objeto: los datos quedan privados y solo se modifican a través de métodos que validan las reglas. Así el objeto nunca queda en un estado inválido, y puedo cambiar cómo guarda sus datos por dentro sin romper a quien lo usa."
+  trampas:
+    - pregunta: "Si expongo la lista como List en vez de MutableList, ¿ya está encapsulada?"
+      respuesta: "No del todo. `List` en Kotlin es una *vista* de solo lectura, no una lista inmutable. Si devolvés la misma lista interna, alguien puede castearla y modificarla:"
+      codigo: arquitectura/EncapsulamientoTrampa.kt
+      salida: |-
+        [Embalar libros, Algo que nadie validó]
+      despues: "Con `_subtareas.toList()`, el código externo recibe una copia y la lista interna conserva su contenido."
+  cuando_no: "Encapsular no es poner getters y setters a todo: eso es dejar la puerta abierta con más pasos. Y en una `data class` que solo transporta datos (por ejemplo, la respuesta de una API) sin reglas que proteger, propiedades `val` públicas está perfecto.\n"
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Encapsulamiento.kt?raw'
+
+## Concepto
+
+Encapsular es **esconder el estado interno de un objeto y dejar que se cambie solo a través de operaciones que respetan sus reglas**. Desde afuera se puede pedir, pero no meter la mano.
+
+Pensalo como un cajero automático. No abrís la caja para sacar billetes: pedís "extraer 5000" y el cajero se fija si tenés saldo. Si te dejara agarrar la plata directamente, la regla del saldo no serviría de nada.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+Imprime:
+
+```text
+No se pueden agregar subtareas a una tarea completada
+Subtareas: 1
+```
+
+Tres herramientas trabajando juntas:
+
+- `private set` permite leer `completada` desde afuera, pero solo cambiarla desde adentro.
+- `_subtareas` es privada: nadie de afuera la toca.
+- `subtareas` devuelve una copia de solo lectura.
+
+Así, la regla "no se agregan subtareas a una tarea completada" no se puede saltear.

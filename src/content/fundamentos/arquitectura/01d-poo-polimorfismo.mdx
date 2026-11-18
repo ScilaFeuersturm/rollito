@@ -1,0 +1,63 @@
+---
+id: fundamentos-poo-polimorfismo-01
+track: fundamentos
+nivel: junior
+modulo: Arquitectura
+titulo: "POO: polimorfismo"
+duracion_min: 5
+prerequisitos: [fundamentos-poo-herencia-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué muestra la segunda línea?"
+    opciones: ["`Mudanza: pendiente`", "`Mudanza: 2 de 5 pasos`", "Da error, porque la lista es de `Tarea`."]
+    correcta: 1
+    explicacion: "aunque la lista sea de `Tarea`, se ejecuta el `estado()` del objeto real: un `TareaConPasos`."
+  - tipo: opcion_multiple
+    pregunta: "Cada pantalla de la app tiene un `when (tarea) { is TareaSimple -> ...; is TareaConPasos -> ... }` para mostrar el estado. ¿Qué problema tiene?"
+    opciones: ["Ninguno, es lo más claro.", "Cada tipo de tarea nuevo obliga a encontrar y modificar todos esos `when`.", "Los `when` no funcionan con interfaces."]
+    correcta: 1
+    explicacion: "con polimorfismo, el tipo nuevo trae su propio `estado()` y las pantallas no se tocan."
+  - tipo: completar
+    pregunta: "Completá el código."
+    codigo: "___ fun estado() = \"vencida\""
+    respuestas: ["override"]
+    explicacion: "`override` indica que estás dando tu versión de una función del contrato."
+tarea_local: "Agregá al ejemplo una `TareaVencida` que reciba cuántos días pasaron desde que venció y responda `vencida hace N días`. Sumá a la lista \"Pagar la luz\", vencida hace 3 días, **sin tocar el `for`**."
+resultado_esperado: "El mismo bucle muestra las tres tareas y cada objeto responde con su propio estado."
+salida_esperada: |-
+  Comprar yerba: hecha
+  Mudanza: 2 de 5 pasos
+  Pagar la luz: vencida hace 3 días
+resumen:
+  - "Polimorfismo es que el mismo mensaje produzca comportamientos distintos según el objeto que lo recibe."
+  - "El código que llama no pregunta de qué tipo es cada objeto: confía en que cada uno sabe responder."
+  - "Agregar un tipo nuevo no obliga a modificar el código que recorre la lista."
+  - "Si tenés el mismo when sobre tipos repetido en muchos lugares, probablemente falte polimorfismo."
+entrevista:
+  en_30_segundos: "Polimorfismo es que distintos objetos respondan al mismo mensaje cada uno a su manera. El código trabaja contra una interfaz o una clase base y, en tiempo de ejecución, se llama a la implementación del objeto real. Así agrego tipos nuevos sin tocar el código que los usa."
+  trampas:
+    - pregunta: "¿La sobrecarga es polimorfismo?"
+      respuesta: "Técnicamente sí, pero es otro tipo. La sobrecarga son funciones con el mismo nombre y distintos parámetros, y se decide al compilar. La sobrescritura (`override`) se decide al ejecutar, según el objeto real. Cuando en una entrevista de POO preguntan por polimorfismo, casi siempre hablan de la segunda. Distinguirlas suma."
+  cuando_no: "Cuando el conjunto de tipos es cerrado y lo que cambia seguido son las operaciones, una `sealed class` con `when` suele ser mejor: el compilador te avisa si te olvidaste un caso. Es lo típico en los estados de una pantalla (cargando, contenido, error), que vas a ver en MVVM y MVI.\n"
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Polimorfismo.kt?raw'
+
+## Concepto
+
+Polimorfismo es que **el mismo mensaje produzca comportamientos distintos según el objeto que lo recibe**. El código que llama no pregunta "¿de qué tipo sos?": confía en que cada objeto sabe responder.
+
+Pensalo como el botón de play. En una app de música arranca una canción, en una de videos arranca una película, en un podcast sigue desde donde lo dejaste. Vos tocás lo mismo; cada uno sabe qué hacer.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+Imprime:
+
+```text
+Comprar yerba: hecha
+Mudanza: 2 de 5 pasos
+```
+
+El `for` no tiene ningún `if` ni `when` sobre el tipo. Llama a `estado()` y cada objeto responde a su manera.

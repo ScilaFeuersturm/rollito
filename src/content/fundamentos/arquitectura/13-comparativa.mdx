@@ -1,0 +1,64 @@
+---
+id: fundamentos-arquitectura-comparativa-01
+track: fundamentos
+nivel: senior
+modulo: Arquitectura
+titulo: "Una pantalla, tres enfoques: MVP, MVVM y VIPER"
+duracion_min: 7
+prerequisitos: ["fundamentos-arquitectura-mvp-01", "fundamentos-arquitectura-mvvm-01", "fundamentos-arquitectura-viper-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿En qué ejemplo la pantalla observa un estado con lista y error?"
+    opciones: ["MVP", "MVVM", "VIPER"]
+    correcta: 1
+    explicacion: "El ViewModel publica el estado que la vista dibuja."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué componente ejecuta el caso de uso en VIPER?"
+    opciones: ["La vista", "El interactor", "El router"]
+    correcta: 1
+    explicacion: "El interactor aplica las reglas del caso de uso y devuelve un resultado al presentador."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál de las tareas anteriores propone registrar las llamadas que hace el presentador a la vista?"
+    opciones: ["La de MVP", "La de MVVM", "La de VIPER"]
+    correcta: 0
+    explicacion: "En la tarea de MVP, la vista de prueba implementa el contrato y guarda las llamadas recibidas."
+tarea_local: "Hacé que las tres variantes de consola muestren un mensaje al fallar y la lista actualizada al guardar. Adaptá la vista de MVP, el render de MVVM y el resultado del caso de uso en VIPER. Para igualar el caso base, dejá la navegación de VIPER para una acción separada. Probá con un título vacío y luego con `\"Comprar yerba\"`."
+resultado_esperado: "Cada ejemplo muestra `Escribí un título` y luego `Tareas: Comprar yerba`."
+resumen:
+  - "En el ejemplo de MVP, el presentador llama a la vista."
+  - "En el de MVVM, la pantalla observa el estado que publica el modelo de vista."
+  - "En el de VIPER, el caso de uso y la navegación tienen responsabilidades separadas."
+  - "Pausá y explicá qué observarías al probar un título vacío en cada ejemplo."
+entrevista:
+  en_30_segundos: "Para comparar patrones, fijo primero el comportamiento que la persona necesita. Después sigo una acción y veo cómo se actualiza la pantalla, dónde está la regla y qué se puede probar por separado. Los ejemplos de MVP, MVVM y VIPER toman decisiones distintas sobre esos límites."
+  trampas:
+    - pregunta: "¿Cuál tiene más clases y por eso escala mejor?"
+      respuesta: "La cantidad de clases no mide qué tan fácil es hacer el cambio que importa. Compararía el manejo de estado, la cantidad de reglas, la navegación y cómo trabaja el equipo."
+  cuando_no: "En una UI con una sola acción local, un estado sencillo puede cubrir la necesidad. Introduciría más piezas cuando aparezcan responsabilidades que puedan cambiar o probarse por separado."
+---
+
+## Concepto
+
+Compará los patrones con el mismo criterio de aceptación. En una pantalla de tareas, tocar Agregar con un título vacío muestra un error. Con un título válido se guarda la tarea. Seguí esas dos acciones en los ejemplos y fijate dónde se expresa el resultado para la pantalla.
+
+## Ejemplo
+
+### MVP
+
+El presentador invoca el modelo y llama a la vista con el contenido o el error.
+
+**Qué verificar en una prueba.** Las llamadas que registra una vista de prueba.
+
+### MVVM
+
+El ViewModel invoca el modelo y publica un estado con tareas y error.
+
+**Qué verificar en una prueba.** El estado que recibe un observador.
+
+### VIPER
+
+El presentador invoca un interactor, interpreta el resultado y actualiza la vista. El ejemplo también navega al detalle tras guardar.
+
+**Qué verificar en una prueba.** La salida del caso de uso y la decisión de pedir navegación.
+
+Abrí los ejemplos en Kotlin para seguir el flujo completo. [MVP](/lecciones/fundamentos-arquitectura-mvp-01/) · [MVVM](/lecciones/fundamentos-arquitectura-mvvm-01/) · [VIPER](/lecciones/fundamentos-arquitectura-viper-01/)

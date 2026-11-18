@@ -1,0 +1,73 @@
+---
+id: fundamentos-poo-composicion-01
+track: fundamentos
+nivel: semi-senior
+modulo: Arquitectura
+titulo: "POO: composición vs. herencia"
+duracion_min: 6
+prerequisitos: [fundamentos-poo-polimorfismo-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué relación describe la composición?"
+    opciones: ["Es un.", "Tiene un.", "Hereda de."]
+    correcta: 1
+    explicacion: "`Tarea` tiene notificadores; no es un notificador."
+  - tipo: opcion_multiple
+    pregunta: "Necesitás tareas con email, con push y con los dos. Con herencia, ¿cuántas subclases de `Tarea` hacen falta?"
+    opciones: ["Una.", "Tres, y crecen con cada canal nuevo.", "Ninguna."]
+    correcta: 1
+    explicacion: "una por combinación. Con composición no hace falta ninguna: se combinan las piezas."
+  - tipo: completar
+    pregunta: "Completá el código."
+    codigo: "Tarea(\"Regar las plantas\", listOf(___()))"
+    respuestas: ["PorPush"]
+    explicacion: "elegís el comportamiento al crear el objeto, sin crear clases nuevas."
+tarea_local: "Agregá un `PorSms` al ejemplo y creá la tarea \"Renovar el DNI\" con los tres canales. Completala."
+resultado_esperado: "La tarea envía los tres avisos con las piezas que recibió."
+salida_esperada: |-
+  Email: Completaste: Renovar el DNI
+  Push: Completaste: Renovar el DNI
+  SMS: Completaste: Renovar el DNI
+resumen:
+  - "La herencia dice es un. La composición dice tiene un."
+  - "Con composición, un objeto recibe su comportamiento en piezas y las usa."
+  - "Combinar comportamientos con herencia multiplica las clases. Con composición, se combinan piezas."
+  - "El consejo clásico es preferir la composición, pero la herencia sigue sirviendo cuando hay una relación es un real."
+entrevista:
+  en_30_segundos: "Prefiero la composición: armo un objeto con piezas que cumplen interfaces, en vez de heredar comportamiento. Es más flexible porque las piezas se combinan y se reemplazan, incluso en los tests, y evita jerarquías rígidas. Uso herencia cuando hay una relación 'es un' real y estable, o cuando el framework la pide."
+  trampas:
+    - pregunta: "¿Entonces la herencia es mala?"
+      respuesta: "No. Es la herramienta correcta cuando la relación \"es un\" es real y estable, y muchas veces el framework la pide: en Android, tu ViewModel hereda de `ViewModel()`. El problema es usarla solo para reutilizar código."
+    - pregunta: "¿Qué es la delegación con by en Kotlin?"
+      respuesta: "Es composición con ayuda del lenguaje. La clase implementa una interfaz y delega en otro objeto todo lo que no sobrescribe:"
+      codigo: arquitectura/Delegacion.kt
+      salida: |-
+        push
+        Push: [Rollito] Completaste: Pagar la luz
+      despues: "`canal` se delega y `enviar` agrega el prefijo. El ejemplo ilustra el patrón Decorator."
+  cuando_no: "Si hay una relación \"es un\" clara y estable, o si el framework espera que heredes. Y para dos clases chicas que no van a cambiar, armar interfaces y piezas puede ser más estructura de la que el problema necesita.\n"
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Composicion.kt?raw'
+
+## Concepto
+
+La herencia dice "**es un**". La composición dice "**tiene un**": en vez de heredar comportamiento, un objeto lo recibe armado en piezas y lo usa. Hay un consejo clásico: *preferí la composición sobre la herencia*.
+
+Pensalo como Lego contra una escultura. Con la escultura, si querés cambiar el brazo, rehacés todo. Con Lego, sacás una pieza y ponés otra.
+
+¿Por qué importa? Imaginate tareas que avisan por email, otras por push y otras por los dos. Con herencia necesitás `TareaConEmail`, `TareaConPush` y `TareaConEmailYPush`. Si sumás SMS, son siete combinaciones. Con composición, la tarea *tiene* una lista de notificadores.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+Imprime:
+
+```text
+Email: Completaste: Pagar la luz
+Push: Completaste: Pagar la luz
+Push: Completaste: Comprar yerba
+```
+
+Una sola clase `Tarea`, y cada tarea elige sus piezas al crearse.

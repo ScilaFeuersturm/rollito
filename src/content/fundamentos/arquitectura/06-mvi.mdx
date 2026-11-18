@@ -1,0 +1,66 @@
+---
+id: fundamentos-arquitectura-mvi-01
+track: fundamentos
+nivel: semi-senior
+modulo: Arquitectura
+titulo: "MVI: de la intención al estado"
+duracion_min: 6
+prerequisitos: [fundamentos-arquitectura-mvvm-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué expresa DescartarError?"
+    opciones: ["Una intención", "El estado de la lista", "Un mensaje para mostrar"]
+    correcta: 0
+    explicacion: "La intención describe qué quiere hacer la persona."
+  - tipo: ordenar
+    pregunta: "Ordená el flujo de MVI."
+    pasos:
+      - "La vista emite la intención."
+      - "El reducer recibe la intención y el estado actual."
+      - "El reducer calcula el siguiente estado."
+      - "La vista dibuja el resultado."
+    explicacion: "La vista envía intenciones y recibe el estado que el modelo produce."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué cambia al descartar el error?"
+    opciones: ["Solo el error", "Todas las tareas", "El título de la última tarea"]
+    correcta: 0
+    explicacion: "La transición limpia el error y conserva la lista."
+tarea_local: "Agregá la intención `VaciarLista`. Aplicala después de agregar una tarea válida y provocar un error con un título vacío. Usá `check` para verificar que la lista quede vacía y el error pase a `null`. Conservá una referencia al estado anterior y verificá que todavía tenga la tarea y el mensaje de error."
+resultado_esperado: "El estado nuevo tiene una lista vacía y un error igual a null. El estado anterior todavía conserva la tarea y el mensaje."
+resumen:
+  - "La intención le da significado a una acción de la persona."
+  - "El modelo procesa esa acción y produce un estado actualizado."
+  - "La vista dibuja el estado que recibe."
+  - "Pausá y explicá qué cambia cuando se descarta un error."
+entrevista:
+  en_30_segundos: "En MVI represento las acciones de la pantalla como intenciones. El modelo procesa esas intenciones y produce el estado que la vista muestra. Si uso un reducer, puedo probar una transición pasando el estado anterior y la intención."
+  trampas:
+    - pregunta: "¿Una intención de MVI es un Intent de Android?"
+      respuesta: "En MVI representa una acción de la pantalla. En Android, Intent es una API de la plataforma que sirve, por ejemplo, para solicitar que se abra una actividad."
+  cuando_no: "Para una tarjeta que solo se expande y se contrae, el estado local puede resolver el comportamiento. Modelar las intenciones por separado aporta más cuando hay varias transiciones relacionadas que querés probar."
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Mvi.kt?raw'
+
+## Concepto
+
+En MVI, la **vista** muestra el estado. La **intención** traduce una interacción en una acción con significado, como agregar una tarea o descartar un error. El **modelo** procesa esas acciones y produce el estado que vuelve a dibujar la vista. El MVI original de Cycle.js usa flujos reactivos. Acá usamos una variante didáctica que representa cada intención como un tipo de Kotlin y calcula las transiciones con un reducer. [Model-View-Intent en Cycle.js](https://cycle.js.org/model-view-intent.html)
+
+## Ejemplo
+
+```text
+Vista → intención tipada → transición en el modelo → nuevo estado → vista
+```
+
+En este ejemplo, `reducir(estado, intencion)` devuelve el siguiente estado. La secuencia agrega una tarea, recibe un título vacío, descarta el error y agrega otra tarea. El orden importa.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Tareas: (vacía)
+Tareas: Comprar yerba
+Tareas: Comprar yerba
+Escribí un título
+Tareas: Comprar yerba
+Tareas: Comprar yerba, Pagar la luz
+```

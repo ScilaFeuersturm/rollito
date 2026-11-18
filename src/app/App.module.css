@@ -56,3 +56,54 @@
 .navLink { font-weight: 700; text-decoration: none; padding: .4rem .2rem; }
 .navLink[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 2px; }
 .badge { font-size: .8rem; font-weight: 650; background: #eaf6eb; color: #20532b; border-radius: 99px; padding: .1rem .5rem; margin-left: .5rem; vertical-align: middle; }
+
+.trackGrid {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+.trackCard {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: #fff;
+}
+
+.trackCard h3 { font-size: 1.4rem; margin: 0; }
+.trackCard > p { margin: .4rem 0 1rem; }
+.trackCard details, .trackCard .trackStatus { margin: auto 0 0; }
+.trackCard summary { cursor: pointer; color: var(--accent); font-weight: 700; padding-block: .3rem; }
+.trackCard details[open] summary { margin-bottom: .65rem; }
+.trackCard .trackStatus { color: #5d4b71; font-weight: 650; }
+.trackCard .level h4 { margin: 0; font-size: 1.1rem; }
+
+@media (min-width: 42rem) {
+  .trackGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.lessonNavigation {
+  border-top: 1px solid var(--line);
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+
+.nextLesson {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid var(--line);
+  border-radius: .8rem;
+  background: #eee4fa;
+  padding: .8rem 1rem;
+  text-decoration: none;
+}
+
+.nextLesson small, .nextLesson strong { display: block; }
+.nextLesson:hover strong { text-decoration: underline; }
+.nextLesson > span:last-child { font-size: 1.4rem; }

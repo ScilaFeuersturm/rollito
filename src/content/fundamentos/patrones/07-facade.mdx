@@ -1,0 +1,58 @@
+---
+id: fundamentos-patrones-facade-01
+track: fundamentos
+nivel: semi-senior
+modulo: Patrones de diseño
+titulo: "Facade: ofrecé una operación sobre varias piezas"
+duracion_min: 6
+prerequisitos: ["fundamentos-patrones-adapter-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué operación usa la pantalla para guardar y actualizar el resumen?"
+    opciones: ["listar", "agregarYVerResumen", "generar"]
+    correcta: 1
+    explicacion: "La fachada coordina los pasos mediante agregarYVerResumen."
+  - tipo: ordenar
+    pregunta: "Ordená el recorrido cuando el título es válido."
+    pasos:
+      - "Validar el título."
+      - "Guardar la tarea."
+      - "Leer la lista actualizada."
+      - "Generar el resumen."
+    explicacion: "El resumen se genera con la lista después del guardado."
+  - tipo: opcion_multiple
+    pregunta: "Si cambia el texto del resumen, ¿qué pieza ajustarías?"
+    opciones: ["El depósito", "El título de la tarea", "ResumenTareas"]
+    correcta: 2
+    explicacion: "ResumenTareas conoce el formato del texto y puede ajustarlo sin cambiar el guardado."
+tarea_local: "Agregá a la fachada una operación `verResumen` que muestre el total sin insertar tareas. Llamala con el depósito vacío y después de agregar `\"Comprar yerba\"`."
+resultado_esperado: "La primera llamada dice `Tareas guardadas: 0` y la segunda dice `Tareas guardadas: 1`."
+resumen:
+  - "Facade ofrece operaciones sencillas sobre varias piezas."
+  - "La pantalla pide un resultado sin coordinar cada paso."
+  - "Pausá y explicá qué detalle queda dentro de la fachada cuando se agrega una tarea."
+entrevista:
+  en_30_segundos: "Una fachada da un punto de entrada para operaciones que requieren varias piezas. Mantengo las responsabilidades en sus clases y reúno la coordinación que necesita el código cliente."
+  trampas:
+    - pregunta: "¿En qué se diferencia de Adapter?"
+      respuesta: "Adapter conecta un contrato esperado con otro existente. Facade ofrece una forma más simple de usar un conjunto de piezas."
+  cuando_no: "Si una operación ya se resuelve con una llamada clara, otra capa puede sumar un salto al leer el código."
+---
+
+import example from '../../../../android-samples/kotlin/patrones/Facade.kt?raw'
+
+## Concepto
+
+Una fachada ofrece una entrada sencilla para usar varias piezas. En la app de tareas, la pantalla puede pedir que se guarde una tarea y se genere un resumen con una sola operación.
+
+## Ejemplo
+
+`TareasFacade` valida el título, usa el depósito para guardar y leer la lista, y le pasa esa lista a `ResumenTareas`. La pantalla recibe un texto listo para mostrar.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Escribí un título
+Tareas guardadas: 1
+Tareas guardadas: 2
+```

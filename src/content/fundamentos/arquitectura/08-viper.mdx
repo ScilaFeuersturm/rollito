@@ -1,0 +1,71 @@
+---
+id: fundamentos-arquitectura-viper-01
+track: fundamentos
+nivel: semi-senior
+modulo: Arquitectura
+titulo: "VIPER: separá el caso de uso de la navegación"
+duracion_min: 7
+prerequisitos: [fundamentos-arquitectura-mvp-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde se valida el título?"
+    opciones: ["En la vista", "En el interactor", "En el router"]
+    correcta: 1
+    explicacion: "Validar el título es parte del caso de uso de agregar una tarea."
+  - tipo: ordenar
+    pregunta: "Ordená lo que pasa cuando se guarda una tarea."
+    pasos:
+      - "La vista reenvía la acción."
+      - "El presentador invoca el caso de uso."
+      - "El interactor devuelve el resultado."
+      - "El presentador pide al router abrir el detalle."
+    explicacion: "El presentador decide cuándo navegar según el resultado y el router sabe cómo hacerlo."
+  - tipo: opcion_multiple
+    pregunta: "Si cambia la forma de abrir el detalle, ¿qué pieza adaptarías?"
+    opciones: ["La entidad", "El router", "El interactor"]
+    correcta: 1
+    explicacion: "El router implementa cómo se abre el detalle."
+tarea_local: 'Agregá al interactor una regla que rechace títulos repetidos después de quitar espacios. Definí un resultado específico y mostrá un mensaje desde la vista. Probá con `"Comprar yerba"`, `" Comprar yerba "` y `"Pagar la luz"`. '
+resultado_esperado: "Se abren los detalles de las tareas uno y dos. El intento repetido muestra un error y la pantalla se mantiene en el mismo lugar."
+resumen:
+  - "La vista envía acciones y presenta el resultado."
+  - "El interactor ejecuta el caso de uso y trabaja con las entidades."
+  - "El presentador coordina la respuesta y el router realiza la navegación."
+  - "Pausá y explicá por qué el interactor puede probarse sin abrir una pantalla."
+entrevista:
+  en_30_segundos: "Con VIPER separo la pantalla, el caso de uso y la navegación. Si alguien agrega una tarea, el presentador invoca al interactor. Cuando el interactor confirma que la guardó, el presentador actualiza la vista y le pide al router que abra el detalle."
+  trampas:
+    - pregunta: "¿Quién decide cuándo navegar?"
+      respuesta: "En este ejemplo, el presentador toma esa decisión según el resultado. El router sabe cómo abrir el destino."
+  cuando_no: "En una pantalla simple, separar todas estas responsabilidades puede agregar varias piezas con poca lógica. Consideraría VIPER cuando los casos de uso y las transiciones entre pantallas ya justifican poder probarlos por separado."
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Viper.kt?raw'
+
+## Concepto
+
+Cuando tocás **Agregar**, primero se verifica si la tarea se puede guardar. Si se guardó, la app abre su detalle. VIPER, descrita originalmente para iOS, separa cinco responsabilidades. [Architecting iOS Apps with VIPER](https://www.objc.io/issues/13-architecture/viper/)
+
+- **View** muestra el resultado y comunica las acciones.
+- **Interactor** ejecuta el caso de uso, valida el título y guarda la tarea.
+- **Presenter** interpreta el resultado y coordina qué mostrar y cuándo navegar.
+- **Entity** representa la tarea con su identificador y título.
+- **Routing** implementa cómo se abre el detalle.
+
+## Ejemplo
+
+El router de consola imprime el destino que se abriría en una app. El interactor devuelve el identificador y el título en un resultado y conserva la entidad dentro del caso de uso.
+
+```text
+Vista → Presentador → Interactor → Entidad
+Vista ← Presentador ← resultado del caso de uso
+          Presentador → Router → Detalle (si se guardó)
+```
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Escribí un título
+Guardaste: Comprar yerba
+Abrir detalle de la tarea 1
+```

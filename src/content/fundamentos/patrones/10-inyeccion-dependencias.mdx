@@ -1,0 +1,57 @@
+---
+id: fundamentos-patrones-inyeccion-dependencias-01
+track: fundamentos
+nivel: semi-senior
+modulo: Patrones de diseño
+titulo: "Inyección de dependencias: armá las piezas desde afuera"
+duracion_min: 6
+prerequisitos: ["fundamentos-solid-inversion-dependencias-01", "fundamentos-patrones-factory-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde se elige qué notificador recibe el recordatorio?"
+    opciones: ["Dentro de avisar", "En el punto donde se arma el recordatorio", "En el título de la tarea"]
+    correcta: 1
+    explicacion: "Quien construye Recordatorio le pasa el notificador que corresponde."
+  - tipo: ordenar
+    pregunta: "Ordená cómo se arma y se usa el recordatorio."
+    pasos:
+      - "Elegir un notificador."
+      - "Pasarlo al constructor."
+      - "Pedir que avise una tarea."
+      - "El recordatorio delega el envío."
+    explicacion: "La dependencia queda conectada antes de usar el recordatorio."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué usarías para verificar el mensaje sin enviar un email?"
+    opciones: ["Otro título", "Un notificador que registre mensajes", "Un segundo constructor sin parámetros"]
+    correcta: 1
+    explicacion: "Un doble que cumple el mismo contrato permite comprobar el mensaje recibido."
+tarea_local: "Creá un notificador por push y pasalo a `Recordatorio`. Después armá un recordatorio con un notificador de prueba que registre dos avisos y verificá sus títulos y su orden."
+resultado_esperado: "La consola imprime el aviso push. El doble registra los dos mensajes en el orden en que se llamaron."
+resumen:
+  - "Inyectar una dependencia es entregarla desde afuera."
+  - "Quien arma la aplicación elige qué implementación conecta."
+  - "Pausá y explicá qué pieza cambiarías en una prueba para evitar el envío real."
+entrevista:
+  en_30_segundos: "Paso las dependencias al objeto que las necesita. Para una dependencia obligatoria, el constructor hace explícito el requisito. El código de ensamblado puede elegir piezas reales o de prueba."
+  trampas:
+    - pregunta: "¿Necesito un framework para inyectar dependencias?"
+      respuesta: "Este ejemplo usa inyección manual. Un contenedor puede ayudar a ensamblar muchos objetos y manejar sus alcances cuando la aplicación crece."
+  cuando_no: "Si una función solo usa un cálculo interno sencillo y estable, puede llamar a ese cálculo directamente."
+---
+
+import example from '../../../../android-samples/kotlin/patrones/InyeccionDependencias.kt?raw'
+
+## Concepto
+
+Un recordatorio necesita un canal de aviso. Con inyección de dependencias, recibe un `Notificador` al construirse. El código que ensambla la app elige y conecta la implementación. Así, el recordatorio puede concentrarse en armar el mensaje.
+
+## Ejemplo
+
+El primer recordatorio usa un notificador que simula email. El segundo usa uno de prueba que registra el mensaje en una lista. La llamada a `check` verifica qué mensaje pidió enviar. El armado se hace manualmente en `main`.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Email: Vence hoy: Pagar la luz
+Avisos registrados: 1
+```

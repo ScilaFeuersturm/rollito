@@ -1,0 +1,53 @@
+---
+id: fundamentos-patrones-repository-01
+track: fundamentos
+nivel: semi-senior
+modulo: Patrones de diseño
+titulo: "Repository: separá el acceso a las tareas"
+duracion_min: 6
+prerequisitos: ["fundamentos-solid-inversion-dependencias-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué devuelve listar en este ejemplo?"
+    opciones: ["Filas SQL", "Objetos Tarea", "Una conexión a la base"]
+    correcta: 1
+    explicacion: "El contrato usa objetos del dominio que el caso de uso puede entender."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué cambiarías para consultar una base local?"
+    opciones: ["La clase MostrarTareas", "El formato de la pantalla", "La implementación del repositorio y su conexión"]
+    correcta: 2
+    explicacion: "El caso de uso sigue usando RepositorioTareas si el nuevo almacenamiento respeta su contrato."
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde decidirías de qué fuente leer si el repositorio tiene acceso a memoria y a disco?"
+    opciones: ["En la implementación del repositorio", "En cada pantalla", "En el título de la tarea"]
+    correcta: 0
+    explicacion: "El repositorio puede coordinar sus fuentes sin trasladar esa decisión al cliente."
+tarea_local: "Creá una implementación `RepositorioDePrueba` que devuelva la tarea `\"Regar las plantas\"`. Pasala a `MostrarTareas` y verificá con `check` que devuelva ese título. Implementá `guardar` de modo que el doble también pueda guardar y listar una tarea nueva."
+resultado_esperado: "Con el repositorio de prueba, el caso de uso muestra `Regar las plantas`. Después de guardar otra tarea, muestra ambos títulos."
+resumen:
+  - "Un repositorio ofrece operaciones sobre los datos del dominio."
+  - "El código cliente puede trabajar con tareas sin conocer su almacenamiento."
+  - "Pausá y explicá qué cambiarías para pasar de memoria a disco."
+entrevista:
+  en_30_segundos: "Un Repository presenta operaciones que tienen sentido para el dominio. El caso de uso depende de ellas y la implementación se ocupa del almacenamiento o de coordinar sus fuentes."
+  trampas:
+    - pregunta: "¿Es lo mismo que un DAO?"
+      respuesta: "Un DAO suele hablar en términos de una fuente de datos. Un repositorio expone operaciones del dominio y puede usar un DAO como una de sus piezas."
+  cuando_no: "Para una consulta sencilla que vive en un solo lugar, sumar una capa que solo reenvía llamadas puede agregar poco valor."
+---
+
+import example from '../../../../android-samples/kotlin/patrones/Repository.kt?raw'
+
+## Concepto
+
+Un repositorio ofrece operaciones para trabajar con datos del dominio. Quien usa `RepositorioTareas` puede guardar y listar tareas mediante ese contrato. La implementación decide cómo acceder a los datos.
+
+## Ejemplo
+
+El caso de uso `MostrarTareas` recibe un repositorio y obtiene títulos de objetos `Tarea`. En la demo, el repositorio guarda en memoria. En una app con varias fuentes, un repositorio puede coordinar sus accesos según la política definida.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Comprar yerba, Pagar la luz
+```

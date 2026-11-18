@@ -1,0 +1,56 @@
+---
+id: fundamentos-patrones-builder-01
+track: fundamentos
+nivel: semi-senior
+modulo: Patrones de diseño
+titulo: "Builder: configurá una tarea por pasos"
+duracion_min: 6
+prerequisitos: ["fundamentos-patrones-factory-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cuándo se crea la tarea?"
+    opciones: ["Al agregar la etiqueta", "Al crear el builder", "Al llamar a construir"]
+    correcta: 2
+    explicacion: "El builder reúne la configuración y crea la tarea durante la llamada a construir."
+  - tipo: ordenar
+    pregunta: "Ordená cómo se prepara la tarea."
+    pasos:
+      - "Dar el título al builder."
+      - "Elegir las opciones."
+      - "Construir y validar la tarea."
+      - "Usar la tarea."
+    explicacion: "El builder reúne los valores antes de hacer la validación final."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pasa si el vencimiento es negativo?"
+    opciones: ["La validación lo rechaza", "Se convierte a cero", "La tarea queda sin título"]
+    correcta: 0
+    explicacion: "La regla del ejemplo admite cero o un número positivo cuando se indica un vencimiento."
+tarea_local: "Construí `\"Pagar la luz\"` con vencimiento cero y sin etiqueta. Usá `check` para verificar el título, el vencimiento y que la etiqueta sea `null`. Después probá `venceEn(-1).construir()`."
+resultado_esperado: "La tarea válida tiene vencimiento cero y etiqueta igual a `null`. El vencimiento negativo provoca una `IllegalArgumentException`."
+resumen:
+  - "Builder permite configurar el objeto por pasos."
+  - "La operación final valida la configuración."
+  - "Pausá y explicá qué harías si una opción solo se permite junto con otra."
+entrevista:
+  en_30_segundos: "Builder concentra el proceso de construcción. Permite definir opciones de a poco y validar su combinación antes de entregar un objeto listo para usar."
+  trampas:
+    - pregunta: "¿Builder y Factory resuelven lo mismo?"
+      respuesta: "Una fábrica puede elegir qué implementación crear. Builder se centra en cómo reunir los valores y completar la construcción."
+  cuando_no: "Cuando toda la configuración se conoce de antemano, en Kotlin pueden alcanzar los argumentos nombrados y los valores por defecto."
+---
+
+import example from '../../../../android-samples/kotlin/patrones/Builder.kt?raw'
+
+## Concepto
+
+Builder permite reunir opciones en pasos antes de construir el objeto. En el ejemplo, una tarea necesita un título y puede recibir una etiqueta y un vencimiento.
+
+## Ejemplo
+
+El builder guarda las opciones. `construir()` valida el título y el vencimiento y devuelve una tarea con propiedades de solo lectura.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Comprar yerba · Compras · faltan 3 días
+```

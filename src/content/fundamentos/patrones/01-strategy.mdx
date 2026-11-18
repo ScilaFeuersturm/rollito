@@ -1,0 +1,54 @@
+---
+id: fundamentos-patrones-strategy-01
+track: fundamentos
+nivel: semi-senior
+modulo: Patrones de diseño
+titulo: "Strategy: intercambiá el criterio de orden"
+duracion_min: 5
+prerequisitos: ["fundamentos-solid-abierto-cerrado-01", "fundamentos-poo-composicion-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué comportamiento cambia en el ejemplo?"
+    opciones: ["Los títulos guardados", "El orden de la lista", "La cantidad de tareas"]
+    correcta: 1
+    explicacion: "Cada estrategia acomoda las mismas tareas según un criterio distinto."
+  - tipo: opcion_multiple
+    pregunta: "¿Quién elige qué criterio usar?"
+    opciones: ["Quien invoca mostrar", "La clase Tarea", "La estrategia de vencimiento"]
+    correcta: 0
+    explicacion: "Quien llama a mostrar pasa el criterio elegido. La pantalla le delega el orden."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué debe devolver un criterio de orden válido?"
+    opciones: ["Solo las tareas que vencen hoy", "Una lista con títulos cambiados", "Las mismas tareas en el orden que define la regla"]
+    correcta: 2
+    explicacion: "Un criterio de orden conserva los elementos y cambia su posición."
+tarea_local: "Agregá `porVencimientoDescendente` y probala con tareas que vencen en uno, dos y tres días. Esperá el orden tres, dos, uno. Verificá también que la lista original conserva su orden."
+resultado_esperado: "El orden nuevo es tres, dos, uno. La lista que se pasó como entrada conserva su orden original."
+resumen:
+  - "Strategy permite intercambiar maneras de resolver el mismo comportamiento."
+  - "La pantalla delega el orden y las estrategias conservan el mismo contrato."
+  - "Pausá y explicá dónde agregarías un criterio para ordenar por prioridad."
+entrevista:
+  en_30_segundos: "Agrupo distintas maneras de resolver una acción bajo el mismo contrato. La pantalla de tareas recibe el criterio de orden y le delega ese trabajo. Así puedo probar cada criterio por separado."
+  trampas:
+    - pregunta: "¿Una estrategia necesita una clase propia?"
+      respuesta: "En Kotlin, una lambda puede cumplir una interfaz funcional. Una clase sirve cuando la estrategia necesita su propia configuración o varias operaciones internas."
+  cuando_no: "Con una regla fija y sin necesidad de elegir otra, una función directa puede alcanzar."
+---
+
+import example from '../../../../android-samples/kotlin/patrones/Strategy.kt?raw'
+
+## Concepto
+
+Strategy encapsula variantes de un mismo comportamiento detrás de un contrato.
+
+## Ejemplo
+
+La pantalla muestra tareas. Puede ordenarlas por título o por vencimiento según lo que elija la persona. Cada estrategia recibe la misma lista y devuelve la lista en el orden pedido.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Comprar yerba, Pagar la luz
+Pagar la luz, Comprar yerba
+```

@@ -1,0 +1,56 @@
+---
+id: fundamentos-arquitectura-modular-01
+track: fundamentos
+nivel: senior
+modulo: Arquitectura
+titulo: "Arquitectura modular: diseñá un límite"
+duracion_min: 6
+prerequisitos: ["fundamentos-arquitectura-hexagonal-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué necesita conocer el módulo Resumen?"
+    opciones: ["El contrato de lectura", "La clase que guarda en memoria", "El framework"]
+    correcta: 0
+    explicacion: "Resumen usa el contrato para obtener títulos. La app conecta la implementación."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué cambio puede quedar dentro de Tareas?"
+    opciones: ["Guardar en una base manteniendo la API", "Eliminar el contrato de lectura", "Cambiar la firma que usa Resumen"]
+    correcta: 0
+    explicacion: "Mantener la API permite que Resumen siga obteniendo los títulos de la misma forma."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué harías si Tareas y Resumen necesitan importarse entre sí?"
+    opciones: ["Revisar responsabilidades y extraer un contrato común", "Duplicar la base de datos", "Agregar otra dependencia circular"]
+    correcta: 0
+    explicacion: "Un contrato compartido puede orientar ambas dependencias hacia una API común."
+tarea_local: "Creá una implementación de `LecturaTareas` que devuelva una lista vacía. Conectala desde `main` y comprobá que Resumen diga `Tareas guardadas: 0` sin modificar esa clase. Dibujá el grafo antes de separarlo en módulos reales."
+resultado_esperado: "Con la implementación vacía, el programa imprime `Tareas guardadas: 0`. La clase Resumen queda igual."
+resumen:
+  - "Un módulo tiene un propósito y expone un contrato."
+  - "Un límite útil permite cambiar detalles sin afectar a quienes consumen la API."
+  - "Un grafo de dependencias ayuda a detectar ciclos."
+  - "Pausá y explicá qué necesitaría conocer un módulo que muestra estadísticas."
+entrevista:
+  en_30_segundos: "Separo módulos por responsabilidad. Defino qué API publican y qué dependencias permito, y ubico el ensamblado en la aplicación. El resultado tiene valor si puedo cambiar o probar una parte con menos impacto en las demás."
+  trampas:
+    - pregunta: "¿Tener muchos módulos garantiza bajo acoplamiento?"
+      respuesta: "El grafo y las APIs muestran cuánto saben unos de otros. Un cambio frecuente que toca todos los módulos es una señal para revisar el corte."
+  cuando_no: "En proyectos chicos, un solo módulo con límites claros puede ser suficiente. Separar módulos agrega configuración, decisiones de visibilidad y mantenimiento."
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/ArquitecturaModular.kt?raw'
+
+## Concepto
+
+Un módulo agrupa código que cumple un propósito y expone una API para que otros lo usen. En la app de ejemplo, **Tareas** administra los títulos y **Resumen** muestra cuántos hay. Resumen puede depender del contrato de lectura. El punto de entrada conecta ese contrato a la implementación. [Guía de modularización de Android](https://developer.android.com/topic/modularization)
+
+## Ejemplo
+
+```text
+app → módulo tareas
+app → módulo resumen → API de lectura
+módulo tareas → API de lectura
+```
+
+El ejemplo en Kotlin reúne las piezas en un archivo para mostrar ese contrato. En un proyecto Gradle, las flechas se vuelven dependencias declaradas entre módulos y se puede controlar qué código queda visible. El ejemplo imprime `Tareas guardadas: 2`.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>

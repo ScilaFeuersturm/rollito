@@ -1,0 +1,55 @@
+---
+id: fundamentos-patrones-singleton-01
+track: fundamentos
+nivel: semi-senior
+modulo: Patrones de diseño
+titulo: "Singleton: compartí una instancia"
+duracion_min: 5
+prerequisitos: ["fundamentos-poo-clases-y-objetos-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué comprueba === en el ejemplo?"
+    opciones: ["Que las reglas tienen el mismo nombre", "Que las referencias apuntan al mismo objeto", "Que los títulos tienen el mismo texto"]
+    correcta: 1
+    explicacion: "El operador comprueba identidad. Las referencias del formulario y la importación apuntan al mismo objeto."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuántas instancias de la política usan el formulario y la importación?"
+    opciones: ["Una compartida", "Una por pantalla", "Una por título"]
+    correcta: 0
+    explicacion: "Las dos referencias salen de la misma declaración object."
+  - tipo: opcion_multiple
+    pregunta: "Dos pantallas necesitan máximos independientes. ¿Qué elegirías?"
+    opciones: ["Modificar el mismo máximo antes de cada validación", "Duplicar la regla en las dos pantallas", "Una política configurable por pantalla"]
+    correcta: 2
+    explicacion: "Con dos instancias configurables, cada pantalla puede usar su máximo sin afectar a la otra."
+tarea_local: "Usá `check` para verificar que la política acepta 50 caracteres y rechaza 51. Creá una clase que reciba el máximo por constructor. Instanciá una política de 20 y otra de 50 y probá ambas con un título de 30 caracteres."
+resultado_esperado: "La política de 20 rechaza el título de 30 caracteres. La de 50 lo acepta."
+resumen:
+  - "Singleton permite compartir una instancia."
+  - "La identidad indica si dos referencias apuntan al mismo objeto."
+  - "Pausá y explicá qué cambiarías si cada pantalla necesita una configuración distinta."
+entrevista:
+  en_30_segundos: "Uso Singleton cuando hay una razón para compartir exactamente una instancia. En Kotlin puedo darle nombre con una declaración de objeto. Si los clientes necesitan configuraciones propias, creo instancias separadas."
+  trampas:
+    - pregunta: "¿Compartir una instancia vuelve seguros los cambios concurrentes?"
+      respuesta: "Kotlin garantiza que la inicialización del objeto sea segura. Las operaciones sobre datos mutables compartidos requieren su propio control."
+  cuando_no: "Para una regla sin estado, una función puede alcanzar. Para datos de una pantalla o sesión, elegí un alcance que coincida con ese ciclo de vida."
+---
+
+import example from '../../../../android-samples/kotlin/patrones/Singleton.kt?raw'
+
+## Concepto
+
+Singleton permite dar acceso a una única instancia. En Kotlin, una declaración `object` crea un objeto con nombre que los clientes pueden usar directamente. Reservá ese alcance para algo que tenga sentido compartir.
+
+## Ejemplo
+
+El formulario y la importación usan `PoliticaTitulos`. El operador `===` comprueba que las dos referencias apuntan al mismo objeto. La política valida títulos sin guardar datos de las pantallas. [Declaraciones de objetos en Kotlin](https://kotlinlang.org/docs/object-declarations.html)
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Misma instancia: true
+Título válido: true
+Título vacío válido: false
+```

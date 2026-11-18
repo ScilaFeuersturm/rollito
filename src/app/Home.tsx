@@ -1,61 +1,81 @@
-import { androidRoadmap } from '../content/android/roadmap'
-import { audioTopics, hasAudio } from '../content/audio'
-import { lessons } from '../content/lessons'
+import { androidSections, architectureSections, type Lesson } from '../content/lessons'
 import type { Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
 import { lessonPath, repasoPath } from './routes'
 
+const androidLessons = androidSections.flatMap(section => section.lessons)
+
+function LessonList({ items, progress }: { items: Lesson[]; progress: Progress }) {
+  return <ul className={styles.lessons}>
+    {items.map(item => <li key={item.id}>
+      <Link href={lessonPath(item.id)}>
+        <strong>{item.titulo}</strong>
+        <span>{Object.hasOwn(progress, item.id) ? 'Completada · ' : ''}{item.duracion_min} min</span>
+      </Link>
+    </li>)}
+  </ul>
+}
+
 export function Home({ progress }: { progress: Progress }) {
-  const architecture = lessons.filter(hasAudio)
-  const androidLessons = lessons.filter(item => item.track === 'android')
   const androidCompleted = androidLessons.filter(item => Object.hasOwn(progress, item.id)).length
 
   return <>
     <section className={styles.hero}>
-      <h1 tabIndex={-1}>Aprendé programación paso a paso</h1>
-      <p>Android moderno de Junior a Senior y la arquitectura que te preguntan en las entrevistas, con ejercicios que podés llevar a tu propia máquina.</p>
+      <h1 tabIndex={-1}>Aprendé tecnología paso a paso</h1>
+      <p>Elegí qué querés aprender o repasar, con lecciones cortas y ejercicios para practicar.</p>
     </section>
-    <section aria-labelledby="track">
-      <h2 id="track">Android moderno</h2>
-      <p>{androidCompleted} de {androidLessons.length} {androidLessons.length === 1 ? 'lección disponible completada' : 'lecciones disponibles completadas'}</p>
-      <div className={styles.roadmap}>
-        {androidRoadmap.map(level => {
-          const available = lessons.filter(item => item.track === 'android' && item.nivel === level.level)
-          return <section className={styles.level} key={level.level} aria-labelledby={level.level}>
-            <h3 id={level.level}>{level.title}</h3>
-            <p>{level.description}</p>
-            <ul className={styles.topics}>
-              {level.topics.map(topic => <li key={topic}>{topic}</li>)}
-            </ul>
-            {available.length > 0 ? <ul className={styles.lessons}>
-              {available.map(item => <li key={item.id}>
-                <Link href={lessonPath(item.id)}>
-                  <strong>{item.titulo}</strong>
-                  <span>{Object.hasOwn(progress, item.id) ? 'Completada · ' : ''}{item.duracion_min} min</span>
-                </Link>
-              </li>)}
-            </ul> : <p className={styles.pending}>Lecciones en preparación</p>}
-          </section>
-        })}
-      </div>
-    </section>
-    <section aria-labelledby="architecture">
-      <h2 id="architecture">Arquitectura</h2>
-      <div className={styles.level}>
-        <p>Los temas que más se preguntan en entrevistas, con la respuesta en 30 segundos, la pregunta trampa y cuándo no conviene cada uno.</p>
-        <ul className={styles.topics}>
-          {audioTopics.map(topic => <li key={topic}>{topic}</li>)}
-        </ul>
-        <ul className={styles.lessons}>
-          {architecture.map(item => <li key={item.id}>
-            <Link href={lessonPath(item.id)}>
-              <strong>{item.titulo}</strong>
-              <span>{Object.hasOwn(progress, item.id) ? 'Completada · ' : ''}{item.duracion_min} min</span>
-            </Link>
-          </li>)}
-        </ul>
-        <p><Link href={repasoPath}>Escuchá el repaso de Arquitectura →</Link></p>
+    <section aria-labelledby="learning-paths">
+      <h2 id="learning-paths">Rutas de aprendizaje</h2>
+      <div className={styles.trackGrid}>
+        <section className={styles.trackCard} aria-labelledby="architecture">
+          <h3 id="architecture">Arquitectura</h3>
+          <p>Recorré POO, SOLID, patrones de diseño y arquitecturas, con preguntas de entrevista y repaso en audio.</p>
+          <details>
+            <summary>Ver lecciones de Arquitectura</summary>
+            <div className={styles.roadmap}>
+              {architectureSections.map(section => <section key={section.id} className={styles.level}
+                aria-labelledby={`architecture-${section.id}`}>
+                <h4 id={`architecture-${section.id}`}>{section.title}</h4>
+                <p>{section.topics}</p>
+                {section.lessons.length > 0
+                  ? <LessonList items={section.lessons} progress={progress} />
+                  : <p className={styles.pending}>Lecciones en preparación</p>}
+              </section>)}
+            </div>
+            <p><Link href={repasoPath}>Escuchá el repaso en audio</Link></p>
+          </details>
+        </section>
+        <section className={styles.trackCard} aria-labelledby="android">
+          <h3 id="android">Android</h3>
+          <p>Aprendé Android moderno de Junior a Senior, desde Kotlin y Compose hasta rendimiento y arquitectura.</p>
+          <details>
+            <summary>Ver recorrido de Android</summary>
+            <p>{androidCompleted} de {androidLessons.length} {androidLessons.length === 1 ? 'lección disponible completada' : 'lecciones disponibles completadas'}</p>
+            <div className={styles.roadmap}>
+              {androidSections.map(level => <section className={styles.level} key={level.level} aria-labelledby={level.level}>
+                  <h4 id={level.level}>{level.title}</h4>
+                  <p>{level.description}</p>
+                  <ul className={styles.topics}>
+                    {level.topics.map(topic => <li key={topic}>{topic}</li>)}
+                  </ul>
+                  {level.lessons.length > 0
+                    ? <LessonList items={level.lessons} progress={progress} />
+                    : <p className={styles.pending}>Lecciones en preparación</p>}
+                </section>)}
+            </div>
+          </details>
+        </section>
+        <section className={styles.trackCard} aria-labelledby="react">
+          <h3 id="react">React</h3>
+          <p>Construí interfaces web con componentes, estado y hooks.</p>
+          <p className={styles.trackStatus}>En preparación</p>
+        </section>
+        <section className={styles.trackCard} aria-labelledby="functional-analysis">
+          <h3 id="functional-analysis">Análisis funcional</h3>
+          <p>Aprendé a relevar necesidades y convertirlas en requisitos, historias de usuario y criterios de aceptación.</p>
+          <p className={styles.trackStatus}>En preparación</p>
+        </section>
       </div>
     </section>
   </>

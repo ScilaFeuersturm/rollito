@@ -1,0 +1,55 @@
+---
+id: fundamentos-solid-responsabilidad-unica-01
+track: fundamentos
+nivel: semi-senior
+modulo: SOLID
+titulo: "S de SOLID: responsabilidad única"
+duracion_min: 5
+prerequisitos: ["fundamentos-poo-composicion-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué cambiarías para traducir el informe?"
+    opciones: ["La regla de conteo", "El formato", "El modelo de tarea"]
+    correcta: 1
+    explicacion: "La traducción cambia el texto. Los totales se calculan de la misma forma."
+  - tipo: ordenar
+    pregunta: "Ordená cómo se genera el informe."
+    pasos:
+      - "Leer las tareas"
+      - "Calcular los totales"
+      - "Formatear el informe"
+      - "Mostrar el resultado"
+    explicacion: "Separar el cálculo del formato permite reutilizar los mismos totales."
+  - tipo: opcion_multiple
+    pregunta: "Si una tarea cancelada pasa a excluirse del total, ¿qué prueba actualizarías?"
+    opciones: ["La prueba de traducción", "La prueba del texto", "La prueba del cálculo"]
+    correcta: 2
+    explicacion: "Excluir una tarea cambia la regla de conteo."
+tarea_local: "Agregá un segundo formato que diga `1/2`. Usá el mismo resultado de `calcularTotales` para mostrar ambos formatos. Esperá dos textos distintos que representen el mismo conteo."
+resultado_esperado: "Los dos textos expresan los mismos totales."
+salida_esperada: |-
+  Completadas: 1 de 2
+  1/2
+resumen:
+  - "Una responsabilidad agrupa decisiones que cambian por la misma razón."
+  - "Contar tareas y redactar un informe pueden cambiar por razones distintas."
+  - "Pausá y explicá qué parte tocarías si el informe cambia de idioma."
+entrevista:
+  en_30_segundos: "Busco razones independientes de cambio. Separo las reglas del cálculo de su presentación si van a evolucionar por motivos distintos."
+  trampas:
+    - pregunta: "¿Una responsabilidad equivale a un método?"
+      respuesta: "Varios métodos pueden cuidar una sola decisión del negocio. Dividir por cantidad de métodos puede dispersar lógica que cambia junta."
+  cuando_no: "Si el texto es parte inseparable de una operación mínima, esperá un caso concreto de variación antes de sumar estructura."
+---
+
+import example from '../../../../android-samples/kotlin/solid/ResponsabilidadUnica.kt?raw'
+
+## Concepto
+
+Preguntate qué decisiones cambian juntas y quién pide esos cambios. En un informe de tareas, una regla define cuáles se cuentan como completadas. Otra decisión define cómo se escribe el informe para quien lo lee.
+
+## Ejemplo
+
+En la primera versión de el ejemplo en Kotlin, un método cuenta y formatea al mismo tiempo. En la segunda, `calcularTotales` devuelve datos y `formatearInforme` arma el texto. Las dos imprimen `Completadas: 1 de 2`. Separarlas permite agregar una versión para otro idioma sin tocar el cálculo.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>

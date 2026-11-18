@@ -1,0 +1,56 @@
+---
+id: fundamentos-patrones-adapter-01
+track: fundamentos
+nivel: semi-senior
+modulo: Patrones de diseño
+titulo: "Adapter: conectá dos contratos"
+duracion_min: 6
+prerequisitos: ["fundamentos-solid-inversion-dependencias-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué contrato debe ofrecer el adaptador a la pantalla?"
+    opciones: ["PendienteExterno", "FuenteTareas", "ServicioExterno"]
+    correcta: 1
+    explicacion: "La pantalla ya trabaja con FuenteTareas. El adaptador implementa ese contrato."
+  - tipo: ordenar
+    pregunta: "Ordená cómo llegan las tareas desde el servicio a la pantalla."
+    pasos:
+      - "La pantalla pide tareas por su contrato."
+      - "El adaptador consulta el servicio."
+      - "El adaptador convierte los pendientes."
+      - "La pantalla muestra los títulos."
+    explicacion: "La conversión ocurre al cruzar el límite con el servicio."
+  - tipo: opcion_multiple
+    pregunta: "El servicio cambia el nombre del campo descripcion. ¿Dónde adaptarías ese cambio?"
+    opciones: ["En el adaptador", "En todas las pantallas", "En el contrato de la pantalla"]
+    correcta: 0
+    explicacion: "El adaptador conoce los campos externos y los convierte a los tipos de la app."
+tarea_local: "Agregá un segundo servicio que devuelva una lista de textos con espacios al comienzo y al final. Escribí un adaptador que quite esos espacios al crear cada `Tarea`. Pasalo a `mostrar`."
+resultado_esperado: "Con `\" Regar las plantas \"` y `\" Llamar al médico \"`, la pantalla imprime `Regar las plantas, Llamar al médico`."
+resumen:
+  - "Un adaptador traduce entre dos contratos existentes."
+  - "La pantalla sigue usando el contrato que ya conoce."
+  - "Pausá y explicá dónde cambiarías la conversión si el servicio cambia un campo."
+entrevista:
+  en_30_segundos: "Cuando una dependencia externa usa otro contrato, implemento el que necesita mi app y traduzco las llamadas o los datos en el límite. Así el cliente puede seguir trabajando con sus propios tipos."
+  trampas:
+    - pregunta: "¿En qué se diferencia de Decorator?"
+      respuesta: "Adapter cambia el contrato que ve el cliente. Decorator conserva el contrato y agrega comportamiento alrededor del objeto que envuelve."
+  cuando_no: "Si ambas piezas ya comparten un contrato y sus datos tienen el mismo significado, podés conectarlas directamente."
+---
+
+import example from '../../../../android-samples/kotlin/patrones/Adapter.kt?raw'
+
+## Concepto
+
+La app sabe mostrar objetos `Tarea`, pero el servicio externo devuelve `PendienteExterno`. Un adaptador implementa el contrato que ya entiende la app y traduce la respuesta externa a sus tipos.
+
+## Ejemplo
+
+`AdaptadorServicio` recibe el servicio, consulta sus pendientes y convierte cada descripción en el título de una tarea. La pantalla usa `FuenteTareas`, el mismo contrato que podría usar con una fuente local.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Comprar yerba, Pagar la luz
+```

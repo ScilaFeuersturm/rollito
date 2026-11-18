@@ -1,0 +1,55 @@
+---
+id: fundamentos-solid-liskov-01
+track: fundamentos
+nivel: semi-senior
+modulo: SOLID
+titulo: "L de SOLID: sustitución de Liskov"
+duracion_min: 6
+prerequisitos: ["fundamentos-poo-polimorfismo-01", "fundamentos-solid-abierto-cerrado-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué expectativa rompe la primera versión?"
+    opciones: ["Que se pueda leer el título", "Que un título válido se pueda usar para renombrar", "Que la tarea tenga un título"]
+    correcta: 1
+    explicacion: "La tarea archivada ofrece la operación, pero la rechaza incluso con títulos válidos."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué contrato necesita una función que solo muestra títulos?"
+    opciones: ["TareaEditable", "TareaArchivada", "TareaLegible"]
+    correcta: 2
+    explicacion: "TareaLegible permite mostrar títulos de tareas activas y archivadas."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué contrato necesita una pantalla que renombra tareas?"
+    opciones: ["TareaEditable", "TareaLegible", "TareaArchivada"]
+    correcta: 0
+    explicacion: "TareaEditable ofrece la operación de renombrar y establece qué puede esperar el código que la usa."
+tarea_local: "Creá una función que acepte `TareaEditable`, renombre con un título válido y verifique el resultado. Probala con una tarea activa. Después pasá una tarea archivada a esa función y observá el error de tipos del compilador. Quitá esa llamada para ejecutar la verificación."
+resultado_esperado: "La verificación pasa para la tarea activa. Si le pasás una tarea archivada a la función, el compilador señala que espera una TareaEditable."
+resumen:
+  - "Sustituir un tipo implica mantener las expectativas de su contrato."
+  - "Un tipo puede ofrecer lectura aunque carezca de edición."
+  - "Pausá y explicá qué contrato usarías para mostrar tareas activas y archivadas juntas."
+entrevista:
+  en_30_segundos: "Si reemplazo una implementación por otra del mismo contrato, el cliente debería poder usarla con las mismas garantías. Cuando algunas tareas se pueden editar y otras solo se pueden leer, expongo esas capacidades en contratos distintos."
+  trampas:
+    - pregunta: "¿Una excepción siempre rompe el principio?"
+      respuesta: "Depende de lo que promete el contrato. Puede admitir rechazar títulos inválidos. Rechazar toda edición contradice un contrato que garantiza editar con un título válido."
+  cuando_no: "Si el dominio permite exactamente los mismos comportamientos para todos los estados de una tarea, una sola representación puede alcanzar."
+---
+
+import example from '../../../../android-samples/kotlin/solid/SustitucionLiskov.kt?raw'
+
+## Concepto
+
+Un subtipo tiene que respetar lo que el código cliente puede esperar del contrato base. Si un contrato permite renombrar una tarea con un título válido, una tarea archivada que siempre rechaza el cambio rompe esa expectativa.
+
+## Ejemplo
+
+En el ejemplo en Kotlin, la primera versión acepta una tarea archivada como editable y falla al renombrarla. En la segunda, las tareas archivadas y activas se pueden leer mediante `TareaLegible`. Las activas ofrecen además el contrato `TareaEditable`.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Una tarea archivada no se puede editar
+Comprar yerba
+Pagar internet
+```

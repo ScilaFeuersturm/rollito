@@ -1,0 +1,57 @@
+---
+id: fundamentos-patrones-observer-01
+track: fundamentos
+nivel: semi-senior
+modulo: Patrones de diseño
+titulo: "Observer: reaccioná a cambios en la lista"
+duracion_min: 6
+prerequisitos: ["fundamentos-arquitectura-mvvm-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pasa cuando agregás una tarea mientras la pantalla observa?"
+    opciones: ["La pantalla recibe la lista actualizada", "La pantalla se suscribe otra vez", "La lista espera que la pantalla pregunte"]
+    correcta: 0
+    explicacion: "La lista notifica a sus observadores activos cada vez que agrega una tarea."
+  - tipo: ordenar
+    pregunta: "Ordená lo que pasa con una pantalla que observa y después se cierra."
+    pasos:
+      - "La pantalla se suscribe."
+      - "La lista agrega una tarea."
+      - "La pantalla recibe la actualización."
+      - "La pantalla cancela su suscripción."
+    explicacion: "La suscripción delimita el período en que la pantalla recibe cambios."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué efecto tiene cancelar la suscripción?"
+    opciones: ["Borra las tareas", "Impide que la lista siga guardando", "Deja de enviar cambios a ese observador"]
+    correcta: 2
+    explicacion: "El estado puede seguir cambiando. Quienes siguen suscriptos reciben las actualizaciones."
+tarea_local: "Sumá un segundo observador. Agregá una tarea, cancelá solo la primera suscripción y agregá otra. En vez de imprimir, registrá en dos listas qué actualizaciones recibió cada observador."
+resultado_esperado: "El primer observador registra una actualización y el segundo registra dos. La segunda actualización contiene ambas tareas."
+resumen:
+  - "Una suscripción conecta cambios con quienes necesitan reaccionar."
+  - "Cancelar la suscripción corta las notificaciones a ese observador."
+  - "Pausá y explicá qué pasa si se cierra la pantalla mientras se siguen agregando tareas."
+entrevista:
+  en_30_segundos: "Uso Observer para notificar cambios a quienes se suscriben. La fuente publica el estado y cada observador decide qué hacer con él. También defino cuándo empieza y termina la suscripción."
+  trampas:
+    - pregunta: "¿Un observador nuevo recibe el estado actual?"
+      respuesta: "Depende del contrato. Este ejemplo avisa desde el próximo cambio. Una API de estado observable puede entregar el último valor al suscribirse."
+  cuando_no: "Si una sola función necesita el resultado de una operación puntual, devolver ese resultado puede ser suficiente."
+---
+
+import example from '../../../../android-samples/kotlin/patrones/Observer.kt?raw'
+
+## Concepto
+
+Observer permite que una pieza se suscriba a los cambios de otra. La lista de tareas publica una actualización al agregar una tarea. Una pantalla observa esos cambios y puede cancelar su suscripción cuando se cierra.
+
+## Ejemplo
+
+En este ejemplo, `observar` devuelve una función de cancelación. La pantalla recibe la primera actualización. La segunda tarea se guarda después de cancelar, así que la pantalla ya no la recibe. Esta versión entrega cambios a partir de la suscripción. En MVVM viste una variante que también entrega el estado actual al suscribirse.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Pantalla: Comprar yerba
+Segunda tarea guardada
+```

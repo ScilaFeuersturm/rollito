@@ -1,0 +1,72 @@
+---
+id: fundamentos-arquitectura-mvc-01
+track: fundamentos
+nivel: junior
+modulo: Arquitectura
+titulo: "MVC: modelo, vista y controlador"
+duracion_min: 5
+prerequisitos: [fundamentos-arquitectura-capas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Quién decide si se permite guardar un título vacío?"
+    opciones: ["La vista", "El controlador", "El modelo"]
+    correcta: 2
+    explicacion: "El modelo aplica la regla. Podés probarla sin abrir la pantalla."
+  - tipo: ordenar
+    pregunta: "Ordená lo que pasa cuando agregás una tarea válida."
+    pasos:
+      - "El controlador recibe el título."
+      - "El modelo lo valida y guarda."
+      - "El controlador obtiene la lista actualizada."
+      - "La vista muestra la lista."
+    explicacion: "El controlador coordina el flujo. El modelo aplica las reglas y la vista muestra el resultado."
+  - tipo: opcion_multiple
+    pregunta: "La vista intenta editar una tarea directamente. ¿Qué componente debería aplicar el cambio?"
+    opciones: ["La vista", "El controlador", "El modelo"]
+    correcta: 2
+    explicacion: "La vista envía la acción al controlador y este le pide al modelo que aplique el cambio según sus reglas."
+tarea_local: "Agregá en el modelo una regla que rechace títulos repetidos después de quitar los espacios de los extremos. Hacé que el controlador distinga un título vacío de uno repetido y que la vista muestre un mensaje para cada caso. Probá con `\"Comprar yerba\"`, `\" \"`, `\" Comprar yerba \"` y `\"Pagar la luz\"`, en ese orden."
+resultado_esperado: "La lista conserva una sola tarea con cada título y muestra un mensaje distinto para cada error."
+salida_esperada: |-
+  Tareas: Comprar yerba
+  Escribí un título
+  Esa tarea ya existe
+  Tareas: Comprar yerba, Pagar la luz
+resumen:
+  - "La vista muestra los datos y los mensajes."
+  - "El controlador recibe la acción y coordina la respuesta."
+  - "El modelo guarda el estado y aplica las reglas."
+  - "En este ejemplo, el controlador pide el nuevo estado y se lo pasa a la vista."
+entrevista:
+  en_30_segundos: "Con MVC separo la presentación, el manejo de las acciones y las reglas del modelo. Si alguien agrega una tarea, el controlador recibe el título y le pide al modelo que lo guarde. Con el resultado, la vista muestra la lista actualizada o un mensaje."
+  trampas:
+    - pregunta: "¿La vista siempre recibe el estado a través del controlador?"
+      respuesta: "Depende de la implementación. En este ejemplo lo recibe del controlador. También hay implementaciones en las que la vista observa al modelo."
+  cuando_no: "Para una pantalla fija sin acciones, un controlador propio puede agregar código sin aportar una responsabilidad clara. Para una pantalla con varias fuentes de estado asíncrono, compararía MVC con una solución que represente explícitamente los estados de carga, contenido y error."
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Mvc.kt?raw'
+
+## Concepto
+
+MVC separa lo que la persona ve, las acciones que puede realizar y los datos con sus reglas. En la pantalla de tareas, la **vista** muestra la lista y los mensajes. El **controlador** recibe la acción de agregar una tarea y coordina la respuesta. El **modelo** guarda las tareas y decide si un título es válido.
+
+## Ejemplo
+
+En esta variante, el controlador le pasa a la vista los datos que tiene que mostrar. La terminal hace de pantalla para que puedas seguir el flujo en Kotlin puro.
+
+```text
+Toque en Agregar → Controlador → Modelo valida y guarda
+                                      ↓
+                  Vista ← Controlador recibe el resultado
+```
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+Al ejecutarlo imprime
+
+```text
+Tareas: Comprar yerba
+Escribí un título
+Tareas: Comprar yerba, Pagar la luz
+```

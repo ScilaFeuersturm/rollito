@@ -1,0 +1,63 @@
+---
+id: fundamentos-arquitectura-hexagonal-01
+track: fundamentos
+nivel: senior
+modulo: Arquitectura
+titulo: "Hexagonal: puertos y adaptadores"
+duracion_min: 6
+prerequisitos: ["fundamentos-arquitectura-clean-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pieza recibe la entrada específica de la terminal?"
+    opciones: ["El adaptador de consola", "El puerto de salida", "El servicio"]
+    correcta: 0
+    explicacion: "El adaptador traduce la entrada de la terminal a una llamada al puerto de entrada."
+  - tipo: ordenar
+    pregunta: "Ordená la entrada de un título válido desde la consola."
+    pasos:
+      - "Adaptar la entrada"
+      - "Invocar el puerto de entrada"
+      - "Validar el título"
+      - "Guardar mediante el puerto de salida"
+    explicacion: "La consola entrega el título al núcleo y el núcleo solicita el guardado mediante un contrato."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué reemplazás para probar sin almacenamiento real?"
+    opciones: ["El adaptador de salida", "La regla del título", "El puerto de entrada"]
+    correcta: 0
+    explicacion: "Un adaptador de salida en memoria implementa el mismo puerto que usaría la base de datos."
+tarea_local: "Agregá una entrada por lote que reciba una lista de títulos y llame al mismo puerto de entrada. Pasale un título vacío y dos válidos. El almacenamiento debe recibir los dos válidos en el mismo orden."
+resultado_esperado: "El almacenamiento recibe únicamente los dos títulos válidos, en el mismo orden en que llegaron."
+resumen:
+  - "Un puerto define una conversación de la aplicación con su entorno."
+  - "Un adaptador conecta esa conversación con una tecnología."
+  - "Distintas entradas pueden usar el mismo caso de uso."
+  - "Pausá y nombrá una entrada y una salida que reemplazarías en una prueba."
+entrevista:
+  en_30_segundos: "Defino la aplicación mediante puertos de entrada y salida. La consola o una API llaman al mismo puerto de entrada. Si la aplicación necesita guardar algo, un adaptador implementa el puerto de salida."
+  trampas:
+    - pregunta: "¿Cuántos lados tiene que tener el hexágono?"
+      respuesta: "El dibujo representa el límite de la aplicación. La cantidad de puertos depende de las conversaciones que tenga con el exterior."
+  cuando_no: "Para un script con una entrada fija y poca lógica, crear varios puertos puede agregar trabajo. Es útil si querés que el núcleo funcione con diferentes entradas, salidas o dobles de prueba."
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Hexagonal.kt?raw'
+
+## Concepto
+
+Un **puerto** describe cómo conversar con la aplicación. Un puerto de entrada ofrece un caso de uso. Un puerto de salida expresa algo que la aplicación necesita del exterior. Un **adaptador** traduce entre ese contrato y una tecnología concreta. [Arquitectura Hexagonal de Alistair Cockburn](https://alistair.cockburn.us/hexagonal-architecture)
+
+## Ejemplo
+
+```text
+Consola → puerto AgregarTarea → ServicioTareas → puerto GuardarTarea → memoria
+```
+
+En el ejemplo en Kotlin, la consola traduce texto a una llamada y el adaptador de memoria guarda el título. Una prueba puede invocar directamente el mismo puerto de entrada.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Escribí un título
+Tarea guardada
+[Comprar yerba]
+```

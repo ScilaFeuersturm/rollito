@@ -1,0 +1,71 @@
+---
+id: fundamentos-arquitectura-mvp-01
+track: fundamentos
+nivel: semi-senior
+modulo: Arquitectura
+titulo: "MVP: probá el presentador sin abrir la pantalla"
+duracion_min: 6
+prerequisitos: [fundamentos-arquitectura-mvc-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Quién rechaza un título vacío?"
+    opciones: ["VistaTareas", "PresentadorTareas", "ModeloTareas"]
+    correcta: 2
+    explicacion: "El modelo aplica la regla. La misma validación sirve desde cualquier pantalla."
+  - tipo: ordenar
+    pregunta: "Ordená lo que pasa cuando tocás Agregar."
+    pasos:
+      - "La vista envía el título."
+      - "El presentador llama al modelo."
+      - "El modelo acepta o rechaza el título."
+      - "El presentador le indica a la vista qué mostrar."
+    explicacion: "El presentador coordina la acción y el modelo decide si el título es válido."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué le pasarías al presentador para comprobar que pidió mostrar un error sin abrir la pantalla?"
+    opciones:
+      - "Una vista que registra las llamadas"
+      - "Otra lista de tareas"
+      - "El título ya validado"
+    correcta: 0
+    explicacion: "Una vista de prueba cumple el mismo contrato y te permite comprobar si recibió la llamada para mostrar el error."
+tarea_local: 'Implementá una `VistaDePrueba` que guarde las tareas que recibe y cuente cuántas veces se llama a `mostrarTituloVacio`. Pasásela al presentador y probá agregar `"Comprar yerba"` y `" "`. Usá dos llamadas a `check` para verificar el resultado.'
+resultado_esperado: 'La última lista recibida tiene solo `"Comprar yerba"` y el contador de errores vale uno.'
+resumen:
+  - "La vista envía las acciones de la persona y muestra lo que le indica el presentador."
+  - "El presentador coordina la respuesta y el modelo aplica las reglas."
+  - "Podés reemplazar la vista real por una que registre las llamadas."
+  - "Pausá y explicá qué parte probarías si la pantalla muestra un error al agregar una tarea válida."
+entrevista:
+  en_30_segundos: "En MVP uso un presentador para coordinar las acciones de la pantalla con el modelo. En la variante de vista pasiva, el presentador decide qué mostrar y llama a operaciones de la vista. Como la vista cumple un contrato, puedo probar esa coordinación sin abrir la interfaz."
+  trampas:
+    - pregunta: "¿Con una interfaz para la vista ya tengo MVP?"
+      respuesta: "La interfaz permite reemplazar la vista. También importa quién coordina las acciones y decide qué mostrar. En este ejemplo, esa responsabilidad queda en el presentador."
+  cuando_no: "Una pantalla informativa con pocas interacciones puede resolverse con menos piezas. Si el equipo ya usa pantallas declarativas, compararía las llamadas directas a la vista con un modelo que expone estado observable. En Android, si el presentador conserva una referencia a una vista, hay que considerar cuánto vive esa referencia."
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Mvp.kt?raw'
+
+## Concepto
+
+En MVP, el **modelo** guarda las tareas y aplica sus reglas. La **vista** recibe las acciones de la persona y muestra el resultado. El **presentador** interpreta esas acciones, conversa con el modelo y le indica a la vista qué mostrar.
+
+En la variante de **vista pasiva**, la vista reenvía el toque en **Agregar** y espera que el presentador le pida mostrar una lista o un error. El presentador conoce el contrato de la vista, así que podés pasarle una pantalla real o una vista de prueba que registre lo que recibió. [Passive View, Martin Fowler](https://martinfowler.com/eaaDev/PassiveScreen.html)
+
+## Ejemplo
+
+En Kotlin, la llamada a `alAgregar` en `main` simula el toque en **Agregar**.
+
+```text
+Vista → alAgregar(título) → Presentador → Modelo
+Vista ← mostrar tareas o error ← Presentador
+```
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+El ejemplo usa la misma regla y produce la misma salida que el de MVC. En ambos hay una clase que coordina la acción. Acá la vista es reemplazable mediante una interfaz con operaciones concretas de la pantalla.
+
+```text
+Tareas: Comprar yerba
+Escribí un título
+Tareas: Comprar yerba, Pagar la luz
+```

@@ -1,0 +1,63 @@
+---
+id: fundamentos-arquitectura-redux-01
+track: fundamentos
+nivel: semi-senior
+modulo: Arquitectura
+titulo: "Flux y Redux: del dispatch al estado compartido"
+duracion_min: 6
+prerequisitos: [fundamentos-arquitectura-mvi-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Quién calcula el nuevo estado?"
+    opciones: ["El selector", "El reducer", "La vista"]
+    correcta: 1
+    explicacion: "El reducer toma el estado actual y una acción para calcular el siguiente estado."
+  - tipo: ordenar
+    pregunta: "Ordená el flujo desde que cambia la búsqueda."
+    pasos:
+      - "Se despacha una acción."
+      - "El store ejecuta el reducer."
+      - "El store guarda el resultado."
+      - "La vista lee lo que necesita con un selector."
+    explicacion: "La acción dispara una actualización y el selector deriva lo que se va a mostrar."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pasa con Pagar la luz al buscar yerba?"
+    opciones: ["Se borra", "Queda en el store pero no se muestra", "Cambia de título"]
+    correcta: 1
+    explicacion: "El selector filtra la lista visible y el store conserva todas las tareas."
+tarea_local: "Agregá la acción `BusquedaLimpiada` y manejala en el reducer. Después de buscar `\"yerba\"`, despachala y verificá con `check` que vuelvan a verse las dos tareas y que la lista guardada conserve su contenido. Probá también una búsqueda que no coincida con ningún título."
+resultado_esperado: "Al limpiar la búsqueda vuelven a verse las dos tareas. Una búsqueda sin coincidencias muestra una lista vacía y las dos tareas siguen guardadas."
+resumen:
+  - "Una acción cuenta qué pasó en la aplicación."
+  - "El store ejecuta el reducer y guarda el resultado."
+  - "Un selector puede calcular la lista visible a partir del estado."
+  - "Pausá y explicá cómo mostrarías todas las tareas al limpiar una búsqueda."
+entrevista:
+  en_30_segundos: "Redux usa un store para el estado compartido. Las vistas despachan acciones y el store usa un reducer para calcular el siguiente estado. Las vistas leen lo que necesitan mediante selectores. Eso permite probar cómo responde el estado a una acción."
+  trampas:
+    - pregunta: "¿Todo el estado tiene que pasar por Redux?"
+      respuesta: "El estado de una interacción local puede quedarse en el componente. Consideraría el store cuando varias partes necesitan leer o actualizar el mismo dato."
+  cuando_no: "Un formulario aislado y una pantalla con datos propios pueden usar estado local. El costo de sumar un store cobra sentido cuando hay estado compartido y transiciones que el equipo necesita seguir."
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Redux.kt?raw'
+
+## Concepto
+
+Flux propone un flujo unidireccional. Las vistas generan acciones, un dispatcher las distribuye y los stores actualizan los datos que consumen las vistas. En Redux, el **store** mantiene el estado compartido y, al recibir una acción, ejecuta un **reducer** que calcula el siguiente estado. Un **selector** lee o deriva la parte que necesita una vista. [Comparación de arquitecturas de André Staltz](https://staltz.com/unidirectional-user-interface-architectures.html) · [Flujo de datos en Redux](https://redux.js.org/tutorials/fundamentals/part-2-concepts-data-flow)
+
+## Ejemplo
+
+```text
+Vista → acción → dispatch en el store → reducer → nuevo estado
+Vista ← selector ← estado del store
+```
+
+El ejemplo en Kotlin simula ese flujo en Kotlin puro. La consola lee el estado después de cada paso que quiere mostrar. El ejemplo agrega dos tareas y después despacha un cambio de búsqueda. El selector muestra solo la tarea que coincide con la búsqueda y el store conserva la lista completa.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+[Comprar yerba, Pagar la luz]
+[Comprar yerba]
+```

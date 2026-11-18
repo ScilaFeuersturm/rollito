@@ -1,0 +1,56 @@
+---
+id: fundamentos-solid-abierto-cerrado-01
+track: fundamentos
+nivel: semi-senior
+modulo: SOLID
+titulo: "O de SOLID: abierto a extensión, cerrado a modificación"
+duracion_min: 5
+prerequisitos: ["fundamentos-solid-responsabilidad-unica-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué sumás para mostrar una casilla?"
+    opciones: ["Una implementación de FormatoTarea", "Una propiedad en el modelo", "Una condición dentro de mostrar"]
+    correcta: 0
+    explicacion: "El contrato permite pasar el nuevo formato sin editar mostrar."
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde elegís el formato?"
+    opciones: ["En el modelo de tarea", "Dentro de mostrar", "Al invocar mostrar"]
+    correcta: 2
+    explicacion: "Al invocar mostrar, elegís qué implementación cumple el contrato."
+  - tipo: opcion_multiple
+    pregunta: "Si cambiás la firma de describir, ¿qué pasa con las implementaciones existentes?"
+    opciones: ["Se actualizan solas", "Hay que adaptar las que usaban la firma anterior", "Se convierten en listas"]
+    correcta: 1
+    explicacion: "Cambiar el contrato puede obligar a modificar a quienes lo implementan."
+tarea_local: "Sumá un formato que devuelva el título en mayúsculas precedido por `TAREA:`. Invocá `mostrar` con ese formato y el de lista. Esperá `TAREA: COMPRAR YERBA` y `- Comprar yerba`."
+resultado_esperado: "El nuevo formato y el de lista funcionan con la misma función mostrar."
+salida_esperada: |-
+  TAREA: COMPRAR YERBA
+  - Comprar yerba
+resumen:
+  - "Primero identificá qué comportamiento suele variar."
+  - "Un contrato permite agregar variantes sin editar la lógica que las usa."
+  - "Pausá y explicá en qué parte agregarías otro formato."
+entrevista:
+  en_30_segundos: "Si una variación aparece seguido, diseño una entrada para añadirla como otra implementación. El código que consume el contrato puede seguir funcionando con las variantes existentes."
+  trampas:
+    - pregunta: "¿Nunca se modifica código que ya existe?"
+      respuesta: "Corregir errores o cambiar un requisito común puede exigir modificarlo. El principio apunta a una dimensión de cambio elegida."
+  cuando_no: "Para dos casos fijos con reglas estables, un `when` puede ser fácil de leer y de mantener."
+---
+
+import example from '../../../../android-samples/kotlin/solid/AbiertoCerrado.kt?raw'
+
+## Concepto
+
+Elegí una variación que aparece seguido y dale un punto de extensión. En [AbiertoCerrado.kt](../android-samples/kotlin/solid/AbiertoCerrado.kt), agregar otro formato a la primera versión requiere editar el `when`. En la segunda, `mostrar` recibe un `FormatoTarea`. Para sumar una casilla de verificación, pasás otra implementación al armar la pantalla.
+
+## Ejemplo
+
+```text
+- Comprar yerba
+- Comprar yerba
+[ ] Comprar yerba
+```
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>

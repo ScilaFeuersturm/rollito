@@ -1,0 +1,60 @@
+---
+id: fundamentos-arquitectura-microservicios-01
+track: fundamentos
+nivel: senior
+modulo: Arquitectura
+titulo: "Monolito vs. microservicios"
+duracion_min: 7
+prerequisitos: ["fundamentos-arquitectura-modular-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dos módulos con un despliegue común pueden formar un monolito modular?"
+    opciones: ["Sí", "Solo si usan dos procesos", "Solo si tienen bases separadas"]
+    correcta: 0
+    explicacion: "El límite del módulo organiza el código y el despliegue define cómo se entrega."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué sabe el cliente si se pierde la respuesta al guardar?"
+    opciones: ["Que se guardó", "Que falló", "Que falta confirmación"]
+    correcta: 2
+    explicacion: "El servidor pudo guardar la tarea antes de que se perdiera la respuesta."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué conviene evaluar antes de separar servicios?"
+    opciones: ["La necesidad de despliegue y escalado independientes", "La longitud de los nombres", "Cuántas carpetas hay"]
+    correcta: 0
+    explicacion: "La autonomía tiene costos. Conviene comprobar si resuelve una necesidad concreta."
+tarea_local: "Agregá `RECHAZADA` al simulador y mostrá `Título inválido` para ese resultado. Verificá que rechazo, guardado confirmado y ausencia de respuesta produzcan tres mensajes distintos. Explicá qué identificador reutilizarías si decidís permitir reintentos de la misma operación."
+resultado_esperado: "Confirmación, rechazo y ausencia de respuesta producen mensajes distintos. Un reintento debe conservar el identificador de la operación original si el servicio lo usa para evitar duplicados."
+resumen:
+  - "Un monolito puede tener módulos y desplegarse como una sola unidad."
+  - "Los servicios ganan autonomía de entrega y agregan comunicación por red."
+  - "Una respuesta perdida deja el resultado sin confirmar."
+  - "Pausá y explicá qué costo operativo aceptarías para desplegar una capacidad por separado."
+entrevista:
+  en_30_segundos: "Empezaría por entender qué necesita evolucionar o desplegarse con independencia. Un monolito modular concentra la operación. Los microservicios permiten separar entregas, a cambio de manejar red, observabilidad y consistencia entre servicios."
+  trampas:
+    - pregunta: "¿Se puede escalar un monolito?"
+      respuesta: "Sí. Puedo desplegar réplicas. Con servicios separados puedo escalar una capacidad específica si ese límite coincide con el cuello de botella."
+  cuando_no: "Para un equipo chico y un dominio que todavía cambia, la separación física puede obligar a coordinar cambios en varios sistemas. Consideraría un servicio cuando hay una necesidad concreta de autonomía y capacidad para operarlo."
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Microservicios.kt?raw'
+
+## Concepto
+
+En un monolito, las capacidades se entregan como una unidad desplegable. Cualquier cantidad de módulos internos puede formar parte de ese despliegue. En una arquitectura de microservicios, se separan capacidades en servicios que pueden desplegarse independientemente. Una llamada remota agrega latencia y fallas parciales. [Microservices, James Lewis y Martin Fowler](https://martinfowler.com/articles/microservices.html)
+
+## Ejemplo
+
+```text
+Monolito modular: cliente → [ tareas → resumen ]     un despliegue
+Servicios:        cliente → servicio tareas ⇄ servicio resumen
+```
+
+En el ejemplo en Kotlin simulamos dos resultados del llamado que guarda una tarea. Si la respuesta se pierde, el cliente queda sin confirmación. Una prueba puede simular cada caso sin levantar servidores.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Tarea confirmada
+Guardado sin confirmar
+```

@@ -4,7 +4,7 @@ import { ExerciseCard } from '../components/exercises/ExerciseCard'
 import { inline } from '../components/inline'
 import { Interview } from '../components/lesson/Interview'
 import { hasAudio } from '../content/audio'
-import { lessons, type Lesson } from '../content/lessons'
+import { lessons, nextLesson, type Lesson } from '../content/lessons'
 import { xpPerLesson } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
@@ -17,6 +17,7 @@ export function LessonPage({ lesson, completed, onComplete }: {
 }) {
   const [solved, setSolved] = useState<number[]>([])
   const { Content } = lesson
+  const next = nextLesson(lesson)
   const tracks = useMemo(() => [{ id: lesson.id, title: lesson.titulo, lines: lesson.resumen }], [lesson])
 
   return <article>
@@ -54,5 +55,11 @@ export function LessonPage({ lesson, completed, onComplete }: {
         Completar lección
       </button>
     </>}
+    <nav className={styles.lessonNavigation} aria-label="Continuar el recorrido">
+      {next ? <Link className={styles.nextLesson} href={lessonPath(next.id)} rel="next">
+        <span><small>Siguiente lección</small><strong>{next.titulo}</strong></span>
+        <span aria-hidden="true">→</span>
+      </Link> : <Link href={homePath}>← Volver al recorrido</Link>}
+    </nav>
   </article>
 }

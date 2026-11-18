@@ -1,0 +1,57 @@
+---
+id: fundamentos-patrones-factory-01
+track: fundamentos
+nivel: semi-senior
+modulo: Patrones de diseño
+titulo: "Factory: elegí qué notificador crear"
+duracion_min: 6
+prerequisitos: ["fundamentos-poo-abstraccion-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde se decide qué implementación se instancia?"
+    opciones: ["En el mensaje", "En la fábrica", "En el método enviar"]
+    correcta: 1
+    explicacion: "La fábrica conoce la lista de canales y sus implementaciones."
+  - tipo: ordenar
+    pregunta: "Ordená el envío de un recordatorio."
+    pasos:
+      - "Elegir un canal."
+      - "Pedir el notificador a la fábrica."
+      - "Recibir un objeto con el contrato Notificador."
+      - "Enviar el mensaje."
+    explicacion: "La fábrica resuelve la creación antes de que el cliente use el objeto."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué conoce el código que envía el recordatorio?"
+    opciones: ["El constructor de PorEmail", "El formato interno de cada canal", "El método enviar del contrato Notificador"]
+    correcta: 2
+    explicacion: "Todas las implementaciones ofrecen enviar a través del mismo contrato."
+tarea_local: "Agregá el canal SMS y su notificador. Hacé que la fábrica lo elija al recibir `Canal.SMS`. Ejecutá el ejemplo para SMS y para email."
+resultado_esperado: "Cada canal imprime su prefijo y el mismo mensaje. El método usado para enviar sigue siendo `enviar`."
+resumen:
+  - "Una fábrica concentra la elección y la construcción de objetos."
+  - "Quien usa el objeto puede trabajar con un contrato común."
+  - "Pausá y explicá dónde agregarías un canal SMS."
+entrevista:
+  en_30_segundos: "Cuando un dato determina qué objeto construir, centralizo esa decisión en una fábrica. Cada implementación cumple el mismo contrato y el cliente la usa de la misma forma."
+  trampas:
+    - pregunta: "¿Una función con un when ya es Factory Method?"
+      respuesta: "Este ejemplo es una fábrica simple. En el patrón Factory Method, una clase define una operación de creación que sus subclases pueden personalizar."
+  cuando_no: "Si hay un único tipo con un constructor sencillo, construirlo directamente puede expresar mejor lo que pasa."
+---
+
+import example from '../../../../android-samples/kotlin/patrones/Factory.kt?raw'
+
+## Concepto
+
+Cuando la persona elige email o push, la app necesita construir el notificador correspondiente. Una fábrica concentra esa decisión y devuelve un objeto que cumple el contrato `Notificador`. Quien envía el recordatorio puede usar el mismo método para ambos canales.
+
+## Ejemplo
+
+Esta variante es una fábrica simple. `crearNotificador` recibe un canal y construye una implementación. La consola simula el envío. Factory Method y Abstract Factory organizan la creación de otras maneras.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+Email: Vence hoy: Pagar la luz
+Push: Vence hoy: Pagar la luz
+```

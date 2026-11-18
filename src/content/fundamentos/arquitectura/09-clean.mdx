@@ -1,0 +1,64 @@
+---
+id: fundamentos-arquitectura-clean-01
+track: fundamentos
+nivel: senior
+modulo: Arquitectura
+titulo: "Clean Architecture y Onion"
+duracion_min: 7
+prerequisitos: ["fundamentos-arquitectura-capas-01"]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Quién define qué necesita el caso de uso para guardar una tarea?"
+    opciones: ["El código interno", "La pantalla", "La base de datos"]
+    correcta: 0
+    explicacion: "El caso de uso declara un contrato según sus propias necesidades."
+  - tipo: ordenar
+    pregunta: "Ordená la ejecución cuando el título es válido."
+    pasos:
+      - "Validar el título"
+      - "Construir la tarea"
+      - "Guardar a través del contrato"
+      - "Confirmar el resultado"
+    explicacion: "El caso de uso aplica la regla antes de llamar al almacenamiento."
+  - tipo: opcion_multiple
+    pregunta: "Si cambiás el almacenamiento, ¿qué pieza implementás?"
+    opciones: ["Un adaptador para el contrato Tareas", "Una entidad", "Una pantalla"]
+    correcta: 0
+    explicacion: "El nuevo adaptador cumple el mismo contrato que espera el caso de uso."
+tarea_local: "Creá otra implementación de `Tareas` que registre cuántas veces se llama a `guardar`. Ejecutá el caso de uso con un título vacío y otro válido. Verificá que el registro tenga una sola llamada y que el título recibido esté sin espacios en los extremos."
+resultado_esperado: "El registro tiene una sola llamada y recibe el título sin espacios en los extremos."
+resumen:
+  - "La dirección de una dependencia de código apunta hacia las reglas internas."
+  - "Un caso de uso puede llamar a un adaptador a través de un contrato que conoce."
+  - "Clean y Onion protegen el dominio de decisiones de infraestructura."
+  - "Pausá y explicá qué cambiarías si reemplazás el almacenamiento en memoria por una base."
+entrevista:
+  en_30_segundos: "Pongo las reglas de negocio y los casos de uso adentro. Si un caso de uso necesita guardar algo, declara un contrato y la infraestructura proporciona la implementación. Así puedo probar la regla con memoria y usar otra implementación cuando ejecuto la aplicación."
+  trampas:
+    - pregunta: "¿Las llamadas siempre van hacia adentro?"
+      respuesta: "La regla se refiere a la dependencia del código. En ejecución, el caso de uso puede pedirle a un adaptador externo que guarde datos usando un contrato interno."
+  cuando_no: "Una aplicación pequeña con reglas estables puede resolver el problema con menos límites. El costo de cada contrato se justifica mejor cuando protege una regla o permite reemplazar una dependencia relevante."
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Clean.kt?raw'
+
+## Concepto
+
+En Clean Architecture el código de los casos de uso depende de reglas y contratos internos. La interfaz, la base de datos y los frameworks quedan afuera y adaptan esos contratos. Onion comparte la dirección de dependencias hacia el dominio. Su explicación pone el modelo de dominio en el centro y la infraestructura en la periferia. Clean distingue explícitamente las reglas de entidades de los casos de uso de la aplicación. [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) · [Onion Architecture](https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/)
+
+## Ejemplo
+
+```text
+Al compilar: TareasEnMemoria → contrato Tareas ← AgregarTarea → Entidad
+Al ejecutar: AgregarTarea → TareasEnMemoria (a través del contrato)
+```
+
+En el ejemplo en Kotlin, el caso de uso recibe un contrato para guardar tareas. El ejemplo reúne las piezas en un archivo. En una app, el punto de entrada conecta las implementaciones externas con los casos de uso. La salida muestra un título rechazado y otro guardado.
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+```text
+false
+true
+[Comprar yerba]
+```

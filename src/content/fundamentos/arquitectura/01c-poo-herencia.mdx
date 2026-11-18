@@ -1,0 +1,66 @@
+---
+id: fundamentos-poo-herencia-01
+track: fundamentos
+nivel: junior
+modulo: Arquitectura
+titulo: "POO: herencia"
+duracion_min: 5
+prerequisitos: [fundamentos-poo-abstraccion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué `Tarea` necesita `open`?"
+    opciones: ["Para que se pueda crear un objeto.", "Porque en Kotlin las clases son finales por defecto y sin `open` no se puede heredar.", "Para que sus propiedades sean públicas."]
+    correcta: 1
+    explicacion: "Kotlin obliga a decidir a propósito qué clases se pueden extender. Si venís de Java, ahí es al revés."
+  - tipo: completar
+    pregunta: "Completá el código."
+    codigo: "class TareaUrgente(titulo: String) : Tarea(___)"
+    respuestas: ["titulo"]
+    explicacion: "la clase hija tiene que pasarle al constructor del padre lo que necesita."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál de estas relaciones justifica usar herencia?"
+    opciones: ["Una `TareaConVencimiento` es una `Tarea`.", "Una `Tarea` tiene un `Notificador`.", "Una `Pantalla` usa un `Servicio`."]
+    correcta: 0
+    explicacion: "la herencia modela \"es un\". \"Tiene un\" y \"usa un\" se resuelven con composición, que viene en la última lección de POO."
+tarea_local: "A partir del ejemplo, creá una `TareaRecurrente` que reciba cada cuántos días se repite y sobrescriba `describir()` usando `super`. Imprimí la descripción de \"Regar las plantas\", que se repite cada 3 días."
+resultado_esperado: "La descripción conserva el título y agrega cada cuántos días se repite."
+salida_esperada: |-
+  Regar las plantas (cada 3 días)
+resumen:
+  - "Con la herencia, una clase hija recibe los datos y el comportamiento de una clase padre."
+  - "La herencia modela una relación es un: una tarea con vencimiento es una tarea."
+  - "En Kotlin las clases son cerradas por defecto: para heredar, el padre tiene que estar marcado como open."
+  - "Con override la hija cambia un comportamiento, y con super reutiliza la versión del padre."
+entrevista:
+  en_30_segundos: "La herencia permite que una clase extienda a otra: recibe sus datos y comportamiento y puede especializarlos. La uso cuando hay una relación 'es un' real y estable. En Kotlin las clases son finales por defecto, así que heredar es una decisión explícita con `open`."
+  trampas:
+    - pregunta: "¿Un cuadrado es un rectángulo?"
+      respuesta: "En geometría sí; en código, muchas veces no. Si `Rectangulo` permite cambiar el ancho y el alto por separado, el código que lo usa espera que poner ancho 5 y alto 4 dé área 20. Un `Cuadrado` que cambia los dos lados a la vez rompe esa expectativa. Una clase hija tiene que poder usarse en cualquier lugar donde se usa al padre sin sorpresas: eso es el principio de sustitución de Liskov, la L de SOLID."
+    - pregunta: "¿Por qué en Kotlin las clases son finales por defecto?"
+      respuesta: "Porque una clase que no fue pensada para ser extendida se rompe fácil: un cambio interno en el padre puede romper a todas las hijas (el problema de la \"clase base frágil\"). Kotlin te obliga a diseñar para la herencia o a prohibirla."
+  cuando_no: "Para reutilizar código entre clases que no tienen una relación \"es un\". Tampoco en jerarquías de muchos niveles, donde para entender una clase tenés que leer cinco. En esos casos, composición.\n"
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Herencia.kt?raw'
+
+## Concepto
+
+Con la herencia, **una clase hija recibe los datos y el comportamiento de una clase padre, y puede especializarlos**. Sirve cuando hay una relación "es un": una tarea con vencimiento *es una* tarea.
+
+Pensalo como los contratos. Un contrato de alquiler *es un* contrato: tiene todas las cláusulas generales (partes, firma, fecha) y agrega las suyas (monto, duración, depósito).
+
+En Kotlin, las clases están **cerradas por defecto**: para poder heredar de una, tiene que estar marcada como `open`, y lo mismo pasa con cada método que se quiera sobrescribir.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+Imprime:
+
+```text
+Comprar yerba
+Pagar la luz (vence el 10/12)
+Pagar la luz
+```
+
+`TareaConVencimiento` hereda `titulo` sin declararlo de nuevo, sobrescribe `describir()` con `override` y reutiliza la versión del padre con `super.describir()`.

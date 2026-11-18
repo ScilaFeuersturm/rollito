@@ -1,0 +1,63 @@
+---
+id: fundamentos-poo-abstraccion-01
+track: fundamentos
+nivel: junior
+modulo: Arquitectura
+titulo: "POO: abstracción e interfaces"
+duracion_min: 5
+prerequisitos: [fundamentos-poo-encapsulamiento-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué sabe `Recordatorio` sobre su notificador?"
+    opciones: ["Que manda emails.", "Solo que tiene un método `enviar`.", "Todo, porque lo crea él mismo."]
+    correcta: 1
+    explicacion: "depende de la interfaz, no de una clase concreta. Por eso le sirve cualquier notificador."
+  - tipo: completar
+    pregunta: "Completá el código."
+    codigo: "class NotificadorSms : ___ {"
+    respuestas: ["Notificador"]
+    explicacion: "con `:` y el nombre de la interfaz, la clase se compromete a cumplir el contrato."
+  - tipo: opcion_multiple
+    pregunta: "Querés agregar avisos por WhatsApp. ¿Qué tenés que cambiar en `Recordatorio`?"
+    opciones: ["Agregar un `if` para WhatsApp.", "Nada: creás `NotificadorWhatsApp` y se lo pasás.", "Copiar la clase y crear `RecordatorioWhatsApp`."]
+    correcta: 1
+    explicacion: "agregar un comportamiento nuevo no obliga a tocar el código que ya funciona."
+tarea_local: "Copiá `Notificador` y `Recordatorio` del ejemplo y creá un `NotificadorFalso` que, en vez de imprimir, guarde cada mensaje en una lista pública `enviados`. Usalo para avisar el vencimiento de \"Pagar la luz\" y de \"Renovar el DNI\", y después imprimí cuántos mensajes se guardaron y cuál fue el primero."
+resultado_esperado: "El notificador falso registra los dos avisos en orden."
+salida_esperada: |-
+  Mensajes guardados: 2
+  Vence hoy: Pagar la luz
+resumen:
+  - "Abstraer es mostrar qué hace algo y esconder cómo lo hace."
+  - "Una interfaz es un contrato: dice qué funciones existen, no cómo funcionan."
+  - "Si una clase depende de una interfaz, le sirve cualquier implementación."
+  - "Agregar una implementación nueva no obliga a tocar el código que la usa."
+  - "Las interfaces permiten reemplazar piezas reales por piezas falsas en los tests."
+entrevista:
+  en_30_segundos: "Abstraer es exponer qué hace un componente y esconder cómo. En Kotlin lo hago con interfaces: el código depende del contrato y no de la implementación, así puedo cambiar la implementación o reemplazarla por una falsa en los tests sin tocar a quien la usa."
+  trampas:
+    - pregunta: "¿Interfaz o clase abstracta?"
+      respuesta: "Una clase puede implementar muchas interfaces, pero heredar de una sola clase. Las interfaces de Kotlin pueden tener métodos con implementación por defecto, pero no guardan estado. Una clase abstracta sí puede tener estado y constructor. Regla práctica: interfaz por defecto, y clase abstracta cuando varias clases muy relacionadas comparten estado o una implementación base."
+  cuando_no: "Una interfaz con una sola implementación que nunca va a cambiar y que no necesitás reemplazar en tests es una indirección de más: un archivo extra para saltar al leer el código. Creala cuando aparezca la segunda implementación o la necesidad de testear.\n"
+---
+
+import example from '../../../../android-samples/kotlin/arquitectura/Abstraccion.kt?raw'
+
+## Concepto
+
+Abstraer es **mostrar qué hace algo y esconder cómo lo hace**. En Kotlin, la herramienta principal es la **interfaz**: un contrato que dice qué funciones existen, sin decir cómo funcionan.
+
+Pensalo como un enchufe. A la pared no le importa si enchufás una heladera o un cargador: solo pide que respetes la forma del enchufe. Y el aparato no sabe si la electricidad viene de una represa o de paneles solares.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{example.trimEnd()}</code></pre>
+
+Imprime:
+
+```text
+Email a ana@example.com: Vence hoy: Pagar la luz
+Push: Vence hoy: Pagar la luz
+```
+
+`Recordatorio` no sabe si manda emails o notificaciones push. Solo sabe que tiene algo con un método `enviar`.
