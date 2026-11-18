@@ -1,0 +1,42 @@
+---
+id: android-junior-permisos-en-tiempo-de-ejecucion-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Permisos en tiempo de ejecución"
+duracion_min: 5
+prerequisitos: [android-junior-accesibilidad-y-foco-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Cuándo conviene pedir el permiso de cámara?"
+    explicacion: "Cuando la persona usa la función que lo necesita, para que entienda el motivo."
+  - tipo: autoevaluacion
+    pregunta: "¿Hace falta pedir `INTERNET` mientras la app está en uso?"
+    explicacion: "No: es un permiso normal y se concede al instalar."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué cambió en Android 13 con las notificaciones?"
+    explicacion: "Mostrarlas requiere el permiso `POST_NOTIFICATIONS`, que se pide mientras la app está en uso."
+tarea_local: "Agregá un botón que pida el permiso de cámara con `rememberLauncherForActivityResult`. Mostrá un mensaje distinto si se concede o se rechaza, y probá rechazarlo dos veces."
+resultado_esperado: "Cada respuesta muestra su mensaje. Después de rechazarlo, la app sigue funcionando y explica cómo habilitarlo desde Ajustes."
+resumen:
+  - "Los permisos normales se conceden al instalar, y los peligrosos se piden mientras la app está en uso."
+  - "Desde Android 13, mostrar notificaciones también requiere permiso."
+  - "Conviene pedir cada permiso en el momento en que se usa la función que lo necesita."
+  - "Si la persona lo rechaza, la app tiene que seguir funcionando."
+entrevista:
+  en_30_segundos: "Pido los permisos peligrosos en contexto, cuando se usa la función, con la Activity Result API. Si la persona los rechaza, la app sigue funcionando y explica cómo habilitarlos, y desde Android 13 trato las notificaciones como un permiso más."
+  trampas:
+    - pregunta: "¿Pedís todos los permisos al abrir la app?"
+      respuesta: "No. Sin contexto, la gente los rechaza, y después el sistema puede dejar de mostrar el diálogo. Se pide uno por vez, cuando hace falta."
+  cuando_no: "Si podés evitar el permiso, mejor: el selector de fotos del sistema permite elegir imágenes sin pedir acceso a toda la galería."
+---
+
+## Concepto
+
+Los permisos **normales** (como `INTERNET`) se conceden al instalar. Los **peligrosos** (cámara, ubicación, contactos) se piden mientras la app está en uso, desde Android 6 (API 23). Desde Android 13 (API 33), mostrar notificaciones también requiere un permiso de ejecución: `POST_NOTIFICATIONS`.
+
+Se piden con `ActivityResultContracts.RequestPermission` (en Compose, a través de `rememberLauncherForActivityResult`). Si la persona ya lo rechazó una vez, `shouldShowRequestPermissionRationale` indica que conviene explicar para qué lo necesitás.
+
+## Ejemplo
+
+La app pide la cámara recién cuando la persona toca "Adjuntar foto", no al abrirse. Si lo rechaza, la app sigue funcionando y el botón explica cómo habilitarlo.

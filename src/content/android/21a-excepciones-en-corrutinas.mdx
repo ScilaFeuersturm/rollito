@@ -1,0 +1,45 @@
+---
+id: android-semi-senior-excepciones-en-corrutinas-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Excepciones en corrutinas"
+duracion_min: 6
+prerequisitos: [android-semi-senior-corrutinas-scopes-y-cancelacion-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "En un `coroutineScope`, falla una de tres corrutinas hijas. ¿Qué pasa con las otras?"
+    explicacion: "Se cancelan, y la excepción sube al padre."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué tiene de peligroso un `runCatching` alrededor de una función `suspend`?"
+    explicacion: "También atrapa la `CancellationException`, así que la corrutina puede seguir corriendo cuando debería haberse cancelado."
+  - tipo: autoevaluacion
+    pregunta: "¿Dónde atrapás la excepción de un `async`?"
+    explicacion: "Al llamar a `await()`, con un `try/catch`."
+tarea_local: "En la JVM, lanzá dos corrutinas dentro de `coroutineScope`: una falla a los 100 ms y la otra imprime a los 500 ms. Repetilo con `supervisorScope` (envolviendo la que falla en un `try/catch` o usando un handler)."
+resultado_esperado: "Con `coroutineScope`, la segunda no llega a imprimir. Con `supervisorScope`, imprime aunque la primera falló."
+resumen:
+  - "En un scope común, una corrutina hija que falla cancela a su padre y a sus hermanas."
+  - "Con supervisor job o supervisor scope, la falla de una hija no afecta a las otras."
+  - "El manejador de excepciones solo atrapa las corrutinas raíz lanzadas con launch."
+  - "La excepción de cancelación nunca se traga: si la atrapás, la relanzás."
+entrevista:
+  en_30_segundos: "Con concurrencia estructurada, una falla en una hija cancela al resto, salvo que use un `supervisorScope` para tareas independientes. Atrapo errores donde puedo responder a ellos, nunca trago `CancellationException`, y uso `CoroutineExceptionHandler` como última red en corrutinas raíz."
+  trampas:
+    - pregunta: "¿Un `CoroutineExceptionHandler` en un `async` atrapa la excepción?"
+      respuesta: "No. `async` guarda la excepción en el `Deferred` y la lanza al llamar a `await()`."
+  cuando_no: "Si las tareas en paralelo dependen unas de otras y todas tienen que salir bien, la cancelación en cascada del scope común es justo lo que querés: un supervisor ahí escondería el problema."
+---
+
+## Concepto
+
+En la concurrencia estructurada, una corrutina hija que falla cancela a su padre y a sus hermanas, porque así funciona un `Job` común. Con **`SupervisorJob`** o **`supervisorScope`**, la falla de una hija no cancela a las demás (`viewModelScope` ya usa un `SupervisorJob`).
+
+Además:
+
+- **`CoroutineExceptionHandler`:** solo atrapa excepciones de corrutinas raíz lanzadas con `launch`. Con `async`, la excepción aparece al llamar a `await()`.
+- **`CancellationException`:** nunca hay que tragarla. Si la atrapás, relanzala: así funciona la cancelación.
+
+## Ejemplo
+
+La pantalla de inicio carga tareas y estadísticas en paralelo dentro de un `supervisorScope`. Si fallan las estadísticas, las tareas se muestran igual y la tarjeta de estadísticas muestra su propio error.

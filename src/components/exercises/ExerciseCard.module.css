@@ -20,3 +20,4 @@
 .success, .retry { margin-bottom: 0; padding: .65rem; border-radius: .5rem; }
 .success { background: #eaf6eb; color: #20532b; }
 .retry { background: #fff0dc; color: #693d0a; }
+.hint { color: #5d4b71; margin: 0 0 .25rem; }

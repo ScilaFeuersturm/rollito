@@ -1,0 +1,48 @@
+---
+id: android-senior-fugas-de-memoria-y-leakcanary-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Fugas de memoria y LeakCanary"
+duracion_min: 6
+prerequisitos: [android-senior-jank-anr-y-profiling-de-memoria-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué guardar una Activity en un singleton es una fuga?"
+    explicacion: "El singleton vive toda la app y no deja que se libere la Activity destruida, con todas sus vistas."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué tiene que hacer un Fragment con su binding en `onDestroyView`?"
+    explicacion: "Ponerlo en `null`, porque la vista se destruye pero el Fragment puede seguir vivo."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué muestra LeakCanary?"
+    explicacion: "La cadena de referencias que retiene el objeto que debería haberse liberado."
+tarea_local: "Agregá LeakCanary como dependencia de debug a un proyecto. Provocá una fuga guardando la Activity en un `object`, rotá la pantalla y leé el reporte."
+resultado_esperado: "LeakCanary avisa con una notificación y muestra la cadena desde el `object` hasta la Activity. Al quitar la referencia, la fuga desaparece."
+resumen:
+  - "Hay una fuga cuando un objeto sigue referenciado después de que terminó su ciclo de vida."
+  - "Las causas típicas son singletons que guardan una Activity, listeners sin desregistrar y bindings que no se liberan."
+  - "LeakCanary detecta en debug los objetos que no se liberaron y muestra quién los retiene."
+  - "Atar el trabajo y las referencias al ciclo de vida correcto evita la mayoría de las fugas."
+entrevista:
+  en_30_segundos: "Prevengo fugas atando cada referencia y cada corrutina al ciclo de vida correcto: nada de Activities en singletons, listeners que se desregistran y bindings liberados en `onDestroyView`. Uso LeakCanary en debug y el profiler de memoria para confirmar con un heap dump."
+  trampas:
+    - pregunta: "¿Con un recolector de basura puede haber fugas?"
+      respuesta: "Sí. El recolector solo libera lo que no está referenciado. Si algo de larga vida apunta a un objeto, ese objeto no se libera."
+  cuando_no: "LeakCanary no va en el build de producción: es una herramienta de debug y agrega costo."
+---
+
+## Concepto
+
+Hay una fuga cuando un objeto sigue referenciado después de que terminó su ciclo de vida y el recolector no puede liberarlo. Las causas típicas en Android:
+
+- Un singleton o un campo estático que guarda una Activity, o su `Context`.
+- Listeners que no se desregistran.
+- Clases internas o lambdas que retienen la Activity.
+- Corrutinas lanzadas en `GlobalScope` que capturan vistas.
+- El binding de un Fragment que no se libera en `onDestroyView`.
+
+**LeakCanary**, en builds de debug, vigila Activities, Fragments y ViewModels destruidos y, si siguen vivos, muestra la cadena de referencias que los retiene.
+
+## Ejemplo
+
+Un `GestorDeSincronizacion` singleton recibe un listener de la pantalla de tareas y nunca lo suelta. Cada vez que se abre y se cierra la pantalla, queda una Activity vieja en memoria. LeakCanary muestra la cadena: singleton → lista de listeners → lambda → Activity.

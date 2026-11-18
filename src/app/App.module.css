@@ -119,6 +119,7 @@
 }
 .practiceLinks a { display: inline-block; padding-block: .3rem; font-weight: 650; }
 .practiceQuestions { display: grid; gap: 1rem; padding-inline-start: 1.6rem; }
+.practiceQuestions > li { min-width: 0; }
 .practiceQuestions h2 { font-size: 1.25rem; margin: 0; }
 .practiceQuestions summary { cursor: pointer; color: var(--accent); font-weight: 700; }
 .practiceQuestions details p { margin-bottom: 0; }

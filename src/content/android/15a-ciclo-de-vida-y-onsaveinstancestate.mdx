@@ -1,0 +1,47 @@
+---
+id: android-junior-ciclo-de-vida-y-onsaveinstancestate-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Ciclo de vida de la Activity y onSaveInstanceState"
+duracion_min: 5
+prerequisitos: [android-junior-activity-recreacion-y-estado-local-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué callbacks se llaman al abrir una Activity?"
+    explicacion: "`onCreate`, `onStart` y `onResume`, en ese orden."
+  - tipo: autoevaluacion
+    pregunta: "¿Guardarías la lista completa de tareas en el `Bundle`?"
+    explicacion: "No. El `Bundle` es para datos chicos de la UI: si es muy grande, la app puede fallar con `TransactionTooLargeException`. Los datos se recargan de su fuente."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué hace `rememberSaveable` que no hace `remember`?"
+    explicacion: "Sobrevive a la recreación de la Activity y a la muerte del proceso, porque guarda el valor en el estado guardado."
+tarea_local: "Agregá un log en cada callback del ciclo de vida de una Activity. Abrila, mandá la app al fondo, volvé y rotá la pantalla."
+resultado_esperado: "En Logcat ves la secuencia de cada caso, y que al rotar se llama a `onDestroy` y después de nuevo a `onCreate`."
+resumen:
+  - "Al abrirse, una Activity pasa por on create, on start y on resume."
+  - "Al rotar la pantalla, la Activity se destruye y se vuelve a crear."
+  - "El estado chico de la interfaz se guarda en un Bundle con on save instance state."
+  - "En Compose, remember saveable usa ese mismo mecanismo."
+entrevista:
+  en_30_segundos: "La Activity se recrea en cada cambio de configuración. El estado de la pantalla vive en el ViewModel, el estado chico de la UI se guarda con `onSaveInstanceState` o `rememberSaveable` para sobrevivir también a la muerte del proceso, y los datos se recargan desde su fuente."
+  trampas:
+    - pregunta: "¿`onDestroy` siempre se llama?"
+      respuesta: "No está garantizado: si el sistema mata el proceso, puede no llamarse. Lo importante se guarda antes, por ejemplo en `onStop`."
+  cuando_no: "No hace falta guardar en el `Bundle` lo que ya vive en el ViewModel y se puede recalcular."
+---
+
+## Concepto
+
+Una Activity pasa por estos estados:
+
+- **Al abrirse:** `onCreate` → `onStart` → `onResume`.
+- **Al ir al inicio del teléfono:** `onPause` → `onStop`.
+- **Al volver:** `onRestart` → `onStart` → `onResume`.
+- **Al rotar la pantalla:** se destruye y se recrea (`onPause`, `onStop`, `onDestroy` y de nuevo `onCreate`, `onStart`, `onResume`).
+
+Para que el estado de la UI sobreviva a esa recreación, y también a que el sistema mate el proceso en segundo plano, se guarda en un `Bundle` con `onSaveInstanceState`. En Compose, `rememberSaveable` usa ese mismo mecanismo.
+
+## Ejemplo
+
+El texto que la persona está escribiendo en el campo "Nueva tarea" se guarda en el `Bundle`. La lista de tareas no: se vuelve a leer del repositorio.

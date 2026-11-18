@@ -1,0 +1,50 @@
+---
+id: android-semi-senior-operadores-de-flow-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Operadores de Flow: flujos fríos y calientes"
+duracion_min: 6
+prerequisitos: [android-semi-senior-flow-stateflow-y-sharedflow-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué operador cancela la búsqueda anterior cuando llega una consulta nueva?"
+    explicacion: "`flatMapLatest`."
+  - tipo: autoevaluacion
+    pregunta: "Dos personas recolectan un `flow { }` que llama a la API. ¿Cuántas llamadas hay?"
+    explicacion: "Dos, porque es frío. Para compartir una sola llamada se convierte con `stateIn` o `shareIn`."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué diferencia hay entre `combine` y `zip`?"
+    explicacion: "`combine` emite cada vez que cualquiera cambia, con el último valor del otro. `zip` empareja los valores de a uno."
+tarea_local: "En la JVM, con kotlinx-coroutines, emití \"y\", \"ye\", \"yer\" con 100 ms entre cada uno, una pausa de 500 ms, y \"yerba\". Aplicale `debounce(300)` e imprimí lo que llega."
+resultado_esperado: "Se imprimen solo \"yer\" y \"yerba\". Es el mismo comportamiento que la kata de debounce de la Parte 3."
+resumen:
+  - "Un flujo frío se ejecuta de nuevo para cada recolector, y uno caliente existe aunque nadie lo escuche."
+  - "State in y share in convierten un flujo frío en caliente, para compartir el trabajo."
+  - "Flat map latest cancela el trabajo anterior cuando llega un valor nuevo."
+  - "Combine junta el último valor de varios flujos, y debounce espera una pausa antes de emitir."
+entrevista:
+  en_30_segundos: "Distingo flujos fríos y calientes: los repositorios exponen flujos fríos y el ViewModel los convierte en `StateFlow` con `stateIn`. Para búsquedas uso `debounce`, `distinctUntilChanged` y `flatMapLatest`, y para juntar filtros con datos, `combine`."
+  trampas:
+    - pregunta: "¿Hace falta `distinctUntilChanged` después de un `StateFlow`?"
+      respuesta: "No: `StateFlow` ya ignora un valor igual al actual."
+  cuando_no: "Una cadena de diez operadores que nadie entiende es peor que dos pasos con nombre: conviene extraer funciones o propiedades intermedias."
+---
+
+## Concepto
+
+- **Flujo frío** (`flow { }`): se ejecuta de nuevo para cada recolector, y solo cuando alguien recolecta.
+- **Flujo caliente** (`StateFlow` y `SharedFlow`): existe aunque nadie lo escuche. `stateIn` y `shareIn` convierten un frío en caliente.
+
+Operadores clave:
+
+- **`map` y `filter`:** transforman o filtran cada valor.
+- **`combine`:** emite con el último valor de cada flujo cada vez que cualquiera cambia.
+- **`flatMapLatest`:** cancela el flujo anterior cuando llega un valor nuevo.
+- **`debounce`:** espera una pausa antes de emitir.
+- **`distinctUntilChanged`:** saltea valores repetidos.
+- **`catch`:** atrapa errores de lo que viene antes en la cadena.
+
+## Ejemplo
+
+El buscador de tareas hace `consulta.debounce(300).distinctUntilChanged().flatMapLatest { repo.buscar(it) }`: espera que la persona deje de tipear, no repite búsquedas iguales y cancela la búsqueda vieja si llega una nueva. El filtro y la lista se juntan con `combine`.

@@ -11,6 +11,8 @@ const exerciseSchema = z.discriminatedUnion('tipo', [
     .refine(({ opciones, correcta }) => correcta < opciones.length, 'La respuesta debe apuntar a una opción existente.'),
   z.object({ ...prompt, tipo: z.literal('completar'), codigo: z.string().includes('___'), respuestas: z.array(z.string().trim().min(1)).min(1) }),
   z.object({ ...prompt, tipo: z.literal('ordenar'), pasos: lines }),
+  // Pregunta abierta: se responde en voz alta y después se compara con la respuesta modelo (explicacion).
+  z.object({ ...prompt, tipo: z.literal('autoevaluacion') }),
 ])
 
 const text = z.string().trim().min(1)

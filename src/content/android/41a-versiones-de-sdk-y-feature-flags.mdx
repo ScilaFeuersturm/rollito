@@ -1,0 +1,46 @@
+---
+id: android-senior-versiones-de-sdk-y-feature-flags-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "compileSdk, minSdk, targetSdk y feature flags"
+duracion_min: 5
+prerequisitos: [android-senior-entregas-observabilidad-y-recuperacion-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué cambia al subir el `targetSdk`?"
+    explicacion: "Se activan los cambios de comportamiento de esa versión del sistema, así que hay que probar la app de nuevo."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué pasa si llamás a una API de Android 12 en un dispositivo con Android 10?"
+    explicacion: "La app falla en ejecución. Hay que chequear la versión o usar una alternativa de compatibilidad."
+  - tipo: autoevaluacion
+    pregunta: "¿Para qué sirve un feature flag remoto?"
+    explicacion: "Para apagar una función que falla, o liberarla de a poco, sin esperar una versión nueva."
+tarea_local: "Mirá el `build.gradle.kts` de un proyecto y anotá sus tres valores de SDK. Agregá una función que use una API más nueva que el `minSdk` y protegela con un chequeo de versión."
+resultado_esperado: "El proyecto compila y lint no marca la llamada nueva como insegura."
+resumen:
+  - "Compile SDK define qué APIs podés usar al compilar."
+  - "Min SDK es la versión más vieja en la que se puede instalar la app."
+  - "Target SDK define con qué comportamiento del sistema corre la app, y Google Play exige mantenerlo actualizado."
+  - "Los feature flags permiten activar o apagar funciones sin publicar otra versión."
+entrevista:
+  en_30_segundos: "Compilo contra la última versión, elijo `minSdk` según los datos de dispositivos de las personas usuarias y subo `targetSdk` cada año, revisando los cambios de comportamiento. Las funciones riesgosas salen detrás de feature flags, con entrega gradual y forma de apagarlas."
+  trampas:
+    - pregunta: "¿`targetSdk` y `compileSdk` son lo mismo?"
+      respuesta: "No. `compileSdk` afecta el build: qué APIs ves. `targetSdk` afecta la ejecución: qué comportamientos nuevos del sistema aceptás."
+  cuando_no: "Los flags que nunca se borran se vuelven deuda: código muerto y combinaciones imposibles de probar. Cada flag necesita una fecha para limpiarlo."
+---
+
+## Concepto
+
+- **`compileSdk`:** contra qué versión de las APIs compilás. Define qué APIs podés usar en el código.
+- **`minSdk`:** la versión más vieja en la que se puede instalar la app.
+- **`targetSdk`:** con qué comportamiento del sistema declarás que fue probada la app. Al subirlo se activan cambios de comportamiento nuevos, y Google Play exige mantenerlo actualizado.
+
+Para usar una API más nueva que el `minSdk`, se chequea `Build.VERSION.SDK_INT` o se usa una librería de compatibilidad de AndroidX.
+
+Los **feature flags** permiten activar o desactivar una función sin publicar otra versión: sirven para entregas graduales, pruebas A/B y apagar algo que falla.
+
+## Ejemplo
+
+El color dinámico se activa solo si `SDK_INT >= 31`. Una pantalla nueva de estadísticas sale apagada detrás de un flag y se prende para el 10 % de las personas.

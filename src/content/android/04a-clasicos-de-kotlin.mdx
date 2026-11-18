@@ -1,0 +1,46 @@
+---
+id: android-junior-clasicos-de-kotlin-01
+track: android
+nivel: junior
+modulo: "Kotlin"
+titulo: "Clásicos de Kotlin: val, lateinit, lazy, object y companion object"
+duracion_min: 5
+prerequisitos: [android-kotlin-extensiones-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Se puede usar `lateinit` con un `Int`?"
+    explicacion: "No: solo con tipos no primitivos. Para un `Int` se usa un valor inicial o `Delegates.notNull()`."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué diferencia hay entre `lateinit` y `lazy`?"
+    explicacion: "`lateinit var` se inicializa desde afuera, cuando vos decidís. `val ... by lazy` se inicializa solo, la primera vez que se lee."
+  - tipo: autoevaluacion
+    pregunta: "Una lista declarada con `val`, ¿se puede modificar?"
+    explicacion: "Si es una `MutableList`, sí: `val` impide reasignar la referencia, no cambiar el contenido."
+tarea_local: "Escribí una clase con una propiedad `lateinit var` y otra `by lazy` que imprima un mensaje cuando se inicializa. Leé la propiedad `lazy` dos veces, y leé la `lateinit` antes de asignarla."
+resultado_esperado: "El mensaje de `lazy` aparece una sola vez. Leer la `lateinit` sin inicializar lanza `UninitializedPropertyAccessException`."
+resumen:
+  - "Val no se puede reasignar y var sí. Const val es una constante que se conoce al compilar."
+  - "Lateinit promete inicializar más tarde una propiedad no nula, y solo sirve para var de tipos no primitivos."
+  - "By lazy inicializa un val la primera vez que se usa."
+  - "Object declara un singleton, y companion object agrupa los miembros que se usan desde la clase."
+entrevista:
+  en_30_segundos: "Uso `val` por defecto y `var` solo cuando hace falta. `lateinit` es para propiedades que inicializa el framework, como un binding, y `lazy` para valores costosos que tal vez no se usen. `companion object` reemplaza a los `static` de Java, pero es un objeto real."
+  trampas:
+    - pregunta: "¿`val` hace que un objeto sea inmutable?"
+      respuesta: "No. Solo impide reasignar la referencia. Si el objeto es mutable, se puede cambiar su contenido."
+  cuando_no: "`lateinit` puede esconder errores de inicialización: si el valor puede faltar de verdad, un tipo nulable (`String?`) lo deja explícito."
+---
+
+## Concepto
+
+- **`val` y `var`:** `val` es una referencia que no se puede reasignar, y `var` sí se puede. `const val` es una constante que se conoce al compilar: solo para tipos primitivos y `String`, en el nivel superior o dentro de un `object`.
+- **`lateinit var`:** promete que una propiedad no nula se va a inicializar más tarde. Solo sirve para `var` de tipos no primitivos. Si se lee antes de inicializarla, lanza `UninitializedPropertyAccessException`.
+- **`by lazy`:** inicializa un `val` la primera vez que se usa. Por defecto es seguro entre hilos.
+- **`object`:** declara un singleton.
+- **`companion object`:** agrupa miembros que se usan desde la clase, sin una instancia (como los `static` de Java). Es un objeto de verdad, así que puede implementar interfaces.
+
+## Ejemplo
+
+- Un `binding` que se crea en `onCreate` puede ser `lateinit var`.
+- Un formateador de fechas costoso que no siempre se usa conviene como `val formateador by lazy { ... }`.
+- `Tarea.desdeTexto("...")` puede ser una función de fábrica dentro del `companion object`.

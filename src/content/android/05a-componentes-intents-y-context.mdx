@@ -1,0 +1,53 @@
+---
+id: android-junior-componentes-intents-y-context-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Componentes de Android, Intents y Context"
+duracion_min: 6
+prerequisitos: [android-vistas-arbol-xml-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué Intent usás para abrir una pantalla de tu propia app?"
+    explicacion: "Uno explícito, que nombra la clase de destino."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué no guardar el `Context` de una Activity en un singleton?"
+    explicacion: "El singleton vive toda la app y retiene la Activity después de que se destruye: es una fuga de memoria. Si hace falta un contexto de larga vida, se usa el de la Application."
+  - tipo: autoevaluacion
+    pregunta: "¿Cuáles son los cuatro componentes de Android?"
+    explicacion: "Activity, Service, BroadcastReceiver y ContentProvider."
+tarea_local: "En un proyecto, agregá un botón \"Compartir\" que mande el título de una tarea con un Intent implícito `ACTION_SEND` de tipo `text/plain`."
+resultado_esperado: "Al tocarlo aparece el selector del sistema con las apps que pueden recibir texto."
+resumen:
+  - "Los cuatro componentes de Android son Activity, Service, BroadcastReceiver y ContentProvider."
+  - "Un intent explícito nombra la pantalla de destino, y uno implícito describe una acción para que el sistema elija la app."
+  - "El contexto da acceso a recursos y servicios, y no hay que retener el de una Activity en objetos de larga vida."
+  - "Un Fragment es una parte de interfaz reutilizable, con su propio ciclo de vida, dentro de una Activity."
+entrevista:
+  en_30_segundos: "Android tiene cuatro componentes: Activity, Service, BroadcastReceiver y ContentProvider. Se comunican con Intents, explícitos dentro de la app e implícitos para delegar una acción en otra. Cuido qué `Context` uso: el de la Activity para la UI y el de la Application para lo que vive más."
+  trampas:
+    - pregunta: "¿Activity o Fragment?"
+      respuesta: "No compiten: el Fragment vive dentro de una Activity. Hoy, con Compose y Navigation, es común una sola Activity con pantallas composables, y Fragments en apps con vistas XML."
+  cuando_no: "Para algo puramente interno, no hace falta un Intent implícito ni exponer un componente en el manifest: exportar componentes sin necesidad es un riesgo de seguridad."
+---
+
+## Concepto
+
+Android tiene cuatro componentes principales:
+
+- **Activity:** una pantalla.
+- **Service:** trabajo sin interfaz.
+- **BroadcastReceiver:** responde a eventos del sistema o de otras apps.
+- **ContentProvider:** comparte datos con otras apps.
+
+Se declaran en el `AndroidManifest.xml` (los receivers también se pueden registrar desde el código).
+
+Un **Intent** es un mensaje para arrancar un componente. Es **explícito** cuando nombra la clase de destino, e **implícito** cuando describe una acción (`ACTION_VIEW`, `ACTION_SEND`) y el sistema elige qué app la atiende.
+
+**`Context`** es el acceso a los recursos y servicios del sistema. El de la Application vive toda la app; el de una Activity, lo que vive esa pantalla.
+
+Un **Fragment** es una porción de interfaz reutilizable, con su propio ciclo de vida, dentro de una Activity.
+
+## Ejemplo
+
+Para abrir el detalle de una tarea dentro de la app se usa un Intent explícito (o la navegación). Para compartirla por WhatsApp o mail, un Intent implícito con `ACTION_SEND`, y el sistema muestra las apps disponibles.

@@ -2,7 +2,7 @@ import { androidSections, architectureSections, type Lesson } from '../content/l
 import type { Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
-import { interviewPath, lessonPath, repasoPath } from './routes'
+import { interviewPath, lessonPath, practicePath, repasoPath } from './routes'
 
 const androidLessons = androidSections.flatMap(section => section.lessons)
 
@@ -54,6 +54,14 @@ export function Home({ progress }: { progress: Progress }) {
             <ul className={styles.practiceLinks}>
               {androidSections.map(level => <li key={level.level}>
                 <Link href={interviewPath(level.level)}>{level.title}</Link>
+              </li>)}
+            </ul>
+          </nav>
+          <nav aria-labelledby="android-code-practice">
+            <h4 id="android-code-practice" className={styles.practiceHeading}>Práctica de código</h4>
+            <ul className={styles.practiceLinks}>
+              {androidSections.map(level => <li key={level.level}>
+                <Link href={practicePath(level.level)}>{level.title}</Link>
               </li>)}
             </ul>
           </nav>

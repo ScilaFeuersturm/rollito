@@ -1,0 +1,41 @@
+---
+id: android-semi-senior-livedata-vs-stateflow-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "LiveData vs. StateFlow"
+duracion_min: 5
+prerequisitos: [android-semi-senior-flow-stateflow-y-sharedflow-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Cuál de los dos se puede testear sin Android?"
+    explicacion: "StateFlow: es Kotlin puro."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué LiveData no necesita `repeatOnLifecycle`?"
+    explicacion: "Porque `observe` ya está atado al ciclo de vida de quien observa."
+  - tipo: autoevaluacion
+    pregunta: "¿Usarías un estado para mostrar un mensaje una sola vez, por ejemplo \"Tarea guardada\"?"
+    explicacion: "Hay que tener cuidado: un estado se vuelve a mostrar al recrear la pantalla. Lo recomendado es modelarlo en el estado y marcarlo como consumido cuando se muestra."
+tarea_local: "Tomá un ViewModel con `MutableLiveData` y migralo a `MutableStateFlow` con su valor inicial. En la UI, reemplazá `observe` por `collectAsStateWithLifecycle`."
+resultado_esperado: "La pantalla se comporta igual, y podés escribir un test de JVM para el ViewModel sin `InstantTaskExecutorRule`."
+resumen:
+  - "LiveData es de Android y respeta el ciclo de vida sola."
+  - "StateFlow es de Kotlin, exige un valor inicial y tiene todos los operadores de Flow."
+  - "Para que StateFlow respete el ciclo de vida, la interfaz lo recolecta con collect as state with lifecycle."
+  - "En proyectos nuevos con corrutinas se suele elegir StateFlow."
+entrevista:
+  en_30_segundos: "En proyectos nuevos uso StateFlow: es Kotlin puro, se testea en la JVM y tiene los operadores de Flow. Lo recolecto respetando el ciclo de vida. LiveData sigue siendo válido en código existente, y migro de a una pantalla cuando conviene."
+  trampas:
+    - pregunta: "¿`SingleLiveEvent` es una buena forma de mandar eventos?"
+      respuesta: "Es un parche conocido con problemas (eventos perdidos o duplicados con varios observadores). Hoy se recomienda modelar el evento en el estado y marcarlo como consumido."
+  cuando_no: "Migrar una app grande que funciona bien con LiveData solo por moda no aporta valor. Se migra cuando se toca la pantalla."
+---
+
+## Concepto
+
+- **LiveData:** es de Android y respeta el ciclo de vida sola: `observe(owner)` deja de notificar cuando la pantalla no se ve. Se actualiza con `setValue` (en el hilo principal) o `postValue`.
+- **StateFlow:** es de Kotlin y no depende de Android, así que se testea en la JVM pura. Exige un valor inicial, ignora valores repetidos y tiene todos los operadores de Flow. Para respetar el ciclo de vida se recolecta con `collectAsStateWithLifecycle` o `repeatOnLifecycle`.
+
+## Ejemplo
+
+Un ViewModel viejo expone `LiveData<List<Tarea>>`. Al migrar a Compose y corrutinas, pasa a exponer un `StateFlow<EstadoTareas>`, armado con `combine` y `stateIn` a partir del repositorio, y la UI lo recolecta respetando el ciclo de vida.

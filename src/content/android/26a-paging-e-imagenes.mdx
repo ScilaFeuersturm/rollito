@@ -1,0 +1,41 @@
+---
+id: android-semi-senior-paging-e-imagenes-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Paging 3 y carga de imágenes"
+duracion_min: 6
+prerequisitos: [android-semi-senior-room-migraciones-y-repositorios-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué no traer las 10.000 tareas de una vez?"
+    explicacion: "Por memoria, red y tiempo de carga: se ven pocas por vez."
+  - tipo: autoevaluacion
+    pregunta: "¿Para qué sirve `cachedIn(viewModelScope)`?"
+    explicacion: "Para que las páginas cargadas sobrevivan a la recreación de la pantalla y no se vuelvan a pedir."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué pasa si cargás una foto de 4000 px en una miniatura de 64 dp sin reducirla?"
+    explicacion: "Ocupa mucha memoria sin necesidad y puede provocar trabas o un `OutOfMemoryError`."
+tarea_local: "Implementá un `PagingSource` que devuelva números de a 20, con una demora simulada, y mostralo en una `LazyColumn` con un indicador de \"cargando más\" al final."
+resultado_esperado: "Al hacer scroll se cargan páginas nuevas y se ve el indicador mientras llegan."
+resumen:
+  - "Paging carga listas grandes de a páginas, a medida que hace falta."
+  - "Un paging source carga una página, y cached in conserva las páginas al recrear la pantalla."
+  - "Una librería de imágenes resuelve la caché, cancela cargas y reduce cada imagen a su tamaño en pantalla."
+  - "Cargar imágenes a resolución completa en miniaturas gasta memoria y puede trabar la lista."
+entrevista:
+  en_30_segundos: "Para listas grandes uso Paging 3, con `cachedIn` en el ViewModel y `RemoteMediator` si combino red y base local. Las imágenes las carga Coil, que cachea, cancela lo que sale de pantalla y reduce cada imagen al tamaño en que se muestra."
+  trampas:
+    - pregunta: "¿Paging resuelve que la lista se trabe al hacer scroll?"
+      respuesta: "No necesariamente. Resuelve cuántos datos se cargan, no lo caro que es cada fila. Si cada elemento recompone de más o carga imágenes enormes, se sigue trabando."
+  cuando_no: "Para una lista de 50 elementos, Paging suma complejidad (estados de carga, tests) sin beneficio: alcanza con cargar todo."
+---
+
+## Concepto
+
+- **Paging 3** carga listas grandes de a páginas. Un `PagingSource` sabe cargar una página a partir de una clave, y un `Pager` expone un `Flow<PagingData>`. En el ViewModel se hace `cachedIn(viewModelScope)`, y en Compose se recolecta con `collectAsLazyPagingItems()`. Para combinar red y base local, está `RemoteMediator`.
+- **Imágenes:** una librería como **Coil** (Kotlin y corrutinas, con `AsyncImage` para Compose) o Glide resuelve la caché en memoria y en disco, cancela las cargas de elementos que salen de pantalla y reduce la imagen al tamaño en que se muestra.
+
+## Ejemplo
+
+El historial de 10.000 tareas completadas se carga de a 30 a medida que la persona hace scroll. Las fotos adjuntas se cargan con Coil al tamaño de la miniatura, no a la resolución original.

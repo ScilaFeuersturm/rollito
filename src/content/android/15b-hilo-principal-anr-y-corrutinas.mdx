@@ -1,0 +1,42 @@
+---
+id: android-junior-hilo-principal-anr-y-corrutinas-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Hilo principal, ANR y primeras corrutinas"
+duracion_min: 5
+prerequisitos: [android-junior-activity-recreacion-y-estado-local-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué pasa si una consulta pesada a la base corre en el hilo principal?"
+    explicacion: "La interfaz se congela, y si tarda demasiado aparece un ANR."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué significa que una función sea `suspend`?"
+    explicacion: "Que puede pausarse sin bloquear el hilo y seguir después, por ejemplo cuando llega la respuesta de la red."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué `viewModelScope`?"
+    explicacion: "Porque cancela solo sus corrutinas cuando el ViewModel se destruye, y así no queda trabajo huérfano."
+tarea_local: "En un ViewModel, simulá una carga lenta con `delay(2000)` dentro de `viewModelScope.launch` y mostrá un indicador de carga mientras tanto. Después reemplazalo por `Thread.sleep(2000)` en el hilo principal y compará."
+resultado_esperado: "Con `delay` la UI sigue respondiendo y se ve la carga. Con `Thread.sleep` la pantalla se congela dos segundos."
+resumen:
+  - "La interfaz vive en el hilo principal, y bloquearlo congela la app."
+  - "Si la app no responde en unos cinco segundos, el sistema muestra un error de aplicación que no responde."
+  - "Una función suspend puede pausarse sin bloquear el hilo."
+  - "Desde un ViewModel, las corrutinas se lanzan con view model scope, que las cancela cuando ya no hacen falta."
+entrevista:
+  en_30_segundos: "Nunca bloqueo el hilo principal: la red y la base de datos van en corrutinas lanzadas desde `viewModelScope`, y el trabajo pesado se mueve con `withContext(Dispatchers.IO)`. Así la UI sigue respondiendo y el trabajo se cancela solo si la pantalla se cierra."
+  trampas:
+    - pregunta: "¿Una corrutina es un hilo?"
+      respuesta: "No. Muchas corrutinas pueden correr sobre pocos hilos. Suspender una corrutina libera el hilo para otras."
+  cuando_no: "`GlobalScope` no está atado a ningún ciclo de vida, así que el trabajo puede quedar corriendo después de que la pantalla se cerró. Casi nunca es la opción correcta."
+---
+
+## Concepto
+
+La interfaz se dibuja y responde a los toques en el **hilo principal**. Si lo bloqueás, la app se congela, y si no responde a un toque en unos 5 segundos, el sistema muestra un **ANR** ("La app no responde"). Hacer una llamada de red en el hilo principal directamente lanza `NetworkOnMainThreadException`.
+
+Las **corrutinas** permiten escribir trabajo asincrónico como código secuencial. Una función `suspend` puede pausarse sin bloquear el hilo. Desde un ViewModel se lanza con `viewModelScope.launch`, y el trabajo pesado se mueve con `withContext(Dispatchers.IO)`.
+
+## Ejemplo
+
+Al abrir la pantalla, el ViewModel lanza una corrutina que trae las tareas de la API. Mientras espera, el hilo principal sigue libre y se ve un indicador de carga.

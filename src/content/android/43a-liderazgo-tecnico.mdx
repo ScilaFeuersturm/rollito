@@ -1,0 +1,47 @@
+---
+id: android-senior-liderazgo-tecnico-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Liderazgo técnico: code review, decisiones y deuda"
+duracion_min: 6
+prerequisitos: [android-senior-entrevista-integradora-de-diseno-android-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué mirás primero en un code review?"
+    explicacion: "Que el cambio resuelva el problema correcto y que el diseño sea razonable. Los detalles de estilo los resuelve el lint."
+  - tipo: autoevaluacion
+    pregunta: "¿Cómo negociás tiempo para la deuda técnica con producto?"
+    explicacion: "Con impacto concreto: bugs, tiempo de entrega o riesgo. Y proponiendo pagarla de a poco, junto al trabajo de producto."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué tiene un ADR?"
+    explicacion: "El contexto, la decisión, las alternativas consideradas y sus consecuencias."
+tarea_local: "Escribí un ADR de una página sobre una decisión de Rollito, por ejemplo \"prerender estático en vez de SPA\", con contexto, opciones, decisión y consecuencias. Prepará también una historia STAR de un problema técnico que hayas resuelto."
+resultado_esperado: "Un documento que alguien nuevo en el equipo pueda leer para entender por qué se tomó la decisión, y una historia que puedas contar en dos minutos."
+resumen:
+  - "En senior se evalúa cómo hacés crecer al equipo y al código, no solo lo que programás."
+  - "Un buen code review mira primero si el diseño resuelve el problema correcto, y enseña con el tono."
+  - "Las decisiones técnicas se registran con su contexto, sus opciones y sus consecuencias."
+  - "En las preguntas de comportamiento se responde con situación, tarea, acción y resultado."
+entrevista:
+  en_30_segundos: "Mi rol es que el equipo entregue bien sostenidamente: reviso PRs enfocándome en el diseño, documento las decisiones importantes con su contexto, hago visible la deuda técnica con impacto concreto y acompaño a quienes recién empiezan."
+  trampas:
+    - pregunta: "Contame de un desacuerdo técnico con alguien del equipo."
+      respuesta: "Elegí un caso real y mostrá cómo lo resolvieron con datos o con una prueba acotada, no por jerarquía. Contá qué aprendiste, aunque no se haya hecho lo que vos proponías."
+  cuando_no: "Un ADR para cada decisión menor es burocracia. Se registran las decisiones difíciles de revertir o que afectan a varios equipos."
+---
+
+## Concepto
+
+En Senior se evalúa cómo hacés crecer al equipo y al código, no solo lo que programás:
+
+- **Code review:** revisar diseño, legibilidad, errores y tests, con un tono que enseña. Los PRs tienen que ser chicos.
+- **Decisiones técnicas:** registrarlas, por ejemplo en ADRs (*Architecture Decision Records*), con el contexto, las opciones y los trade-offs.
+- **Deuda técnica:** hacerla visible y negociarla con producto en términos de impacto.
+- **Mentoría:** acompañar a otras personas del equipo.
+
+En entrevistas de comportamiento se responde con el formato **STAR**: Situación, Tarea, Acción y Resultado.
+
+## Ejemplo
+
+"Situación: el build tardaba 12 minutos. Tarea: bajarlo sin frenar las entregas. Acción: medí con Build Analyzer, separé dos módulos y propuse un ADR para pasar de `api` a `implementation`. Resultado: el build bajó a 5 minutos y el equipo adoptó el ADR como estándar."

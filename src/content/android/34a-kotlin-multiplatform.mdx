@@ -1,0 +1,40 @@
+---
+id: android-senior-kotlin-multiplatform-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "Kotlin Multiplatform: cuándo sí y cuándo no"
+duracion_min: 5
+prerequisitos: [android-senior-modularizacion-gradle-y-limites-del-dominio-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué se comparte primero en un proyecto KMP?"
+    explicacion: "La lógica de negocio, los modelos y la capa de datos: es lo que más se duplica y lo que menos depende de la plataforma."
+  - tipo: autoevaluacion
+    pregunta: "¿Para qué sirven `expect` y `actual`?"
+    explicacion: "Para declarar una API en común e implementarla distinto en cada plataforma."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué hace falta del equipo de iOS para que KMP funcione?"
+    explicacion: "Que acepte consumir y mantener código Kotlin. Sin ese acuerdo, el código compartido termina abandonado."
+tarea_local: "Creá un proyecto de ejemplo con el asistente de Kotlin Multiplatform y mové una función de validación al módulo compartido. Llamala desde Android."
+resultado_esperado: "La app Android usa la función del módulo compartido, y el mismo módulo compila también para el target de iOS (o el de JVM)."
+resumen:
+  - "Kotlin Multiplatform permite compartir código entre Android, iOS y otras plataformas."
+  - "Lo típico es compartir la lógica, los modelos y los datos, y dejar la interfaz nativa."
+  - "Con expect y actual se declara algo en común y se implementa en cada plataforma."
+  - "Funciona si los dos equipos aceptan mantener el código compartido."
+entrevista:
+  en_30_segundos: "Usaría KMP para compartir la lógica de negocio y la capa de datos entre Android e iOS, empezando por un módulo chico y de bajo riesgo. Lo decido con el equipo de iOS, porque el costo real está en el tooling, el build y quién mantiene el código compartido."
+  trampas:
+    - pregunta: "¿KMP es lo mismo que Flutter o React Native?"
+      respuesta: "No. KMP comparte lógica escrita en Kotlin y permite mantener la interfaz nativa. Flutter y React Native comparten la interfaz con su propio motor de render o puente."
+  cuando_no: "Si solo hay app Android, o si el equipo de iOS no se suma, compartir código suma complejidad sin beneficio."
+---
+
+## Concepto
+
+**Kotlin Multiplatform (KMP)** permite compartir código entre Android, iOS y otras plataformas. Lo típico es compartir la lógica de negocio, los modelos, la red (con Ktor) y la persistencia, y dejar la interfaz nativa en cada plataforma. Con `expect` y `actual` se declara algo en común y se implementa por plataforma. **Compose Multiplatform** permite compartir también la interfaz.
+
+## Ejemplo
+
+Las reglas de validación de tareas y el cliente de la API viven en un módulo compartido. Android usa Compose e iOS usa SwiftUI, y las dos llaman al mismo código Kotlin.

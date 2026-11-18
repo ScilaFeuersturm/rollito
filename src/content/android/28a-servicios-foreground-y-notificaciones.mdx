@@ -1,0 +1,44 @@
+---
+id: android-semi-senior-servicios-foreground-y-notificaciones-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Servicios, foreground services y notificaciones"
+duracion_min: 6
+prerequisitos: [android-semi-senior-trabajo-diferido-y-datos-offline-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "Sincronizar las tareas una vez por día: ¿Service o WorkManager?"
+    explicacion: "WorkManager: es diferible, sobrevive a reinicios y respeta las restricciones del sistema."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué exige un foreground service?"
+    explicacion: "Una notificación visible y, desde Android 14, declarar su tipo."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué pasa con una notificación sin canal en Android 8 o superior?"
+    explicacion: "No se muestra."
+tarea_local: "Creá un canal de notificaciones y mostrá una notificación al completar una tarea. Pedí `POST_NOTIFICATIONS` si el dispositivo es Android 13 o superior."
+resultado_esperado: "La notificación aparece. En Ajustes de la app se ve el canal con el nombre que le diste, y la persona puede silenciarlo por separado."
+resumen:
+  - "Un servicio hace trabajo sin interfaz, y desde Android 8 los de segundo plano están muy limitados."
+  - "Un foreground service muestra una notificación fija y, desde Android 14, declara su tipo."
+  - "WorkManager es para trabajo que se puede postergar pero tiene que terminarse."
+  - "Las notificaciones necesitan un canal, y desde Android 13 también un permiso."
+entrevista:
+  en_30_segundos: "Elijo según quién espera el trabajo: si la persona lo está viendo, foreground service con su tipo declarado; si se puede postergar pero tiene que terminarse, WorkManager. Las notificaciones van con canales pensados para que la persona controle qué recibe."
+  trampas:
+    - pregunta: "¿WorkManager sirve para un trabajo exacto a las 9:00?"
+      respuesta: "No garantiza la hora exacta: el sistema puede agrupar o demorar el trabajo para cuidar la batería. Para algo exacto, como una alarma, se usa `AlarmManager`, con sus restricciones."
+  cuando_no: "Un foreground service para algo que puede esperar molesta a la persona con una notificación fija y gasta batería: va en WorkManager."
+---
+
+## Concepto
+
+Un **Service** hace trabajo sin interfaz. Desde Android 8 (API 26), el sistema limita fuerte los servicios en segundo plano. Para trabajo que la persona está esperando (reproducir música, una descarga que sigue en curso), se usa un **foreground service**, que muestra una notificación fija. Desde Android 14 (API 34), además, tiene que declarar su `foregroundServiceType`.
+
+Para trabajo que se puede postergar pero tiene que terminarse (sincronizar, subir un archivo), lo indicado es **WorkManager**.
+
+Las notificaciones necesitan un **canal** desde Android 8, y el permiso `POST_NOTIFICATIONS` desde Android 13.
+
+## Ejemplo
+
+Subir las fotos adjuntas a las tareas va con WorkManager, con restricción de red y reintentos. Un cronómetro de concentración que la persona ve correr en la notificación es un foreground service.

@@ -1,0 +1,42 @@
+---
+id: android-senior-r8-tamano-y-app-bundles-01
+track: android
+nivel: senior
+modulo: "Android avanzado"
+titulo: "R8, tamaño de la app y App Bundles"
+duracion_min: 5
+prerequisitos: [android-senior-arranque-y-baseline-profiles-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué una app puede andar en debug y fallar en release con R8?"
+    explicacion: "Porque R8 eliminó o renombró código que se usa por reflexión y no tenía regla keep."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué ventaja tiene subir un App Bundle en vez de un APK universal?"
+    explicacion: "Play arma APKs a medida de cada dispositivo, y la descarga es más chica."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué necesitás para leer los stack traces de una app ofuscada?"
+    explicacion: "El archivo de mapping de ese build."
+tarea_local: "En un proyecto, activá `isMinifyEnabled` y `isShrinkResources` en release. Compará el tamaño del APK con el analizador de Android Studio (Build → Analyze APK)."
+resultado_esperado: "El APK de release es más chico. En el analizador se ven los nombres de clases ofuscados y menos recursos."
+resumen:
+  - "R8 elimina código sin usar, acorta nombres y optimiza el build de release."
+  - "Lo que se usa por reflexión necesita reglas keep para que R8 no lo rompa."
+  - "El App Bundle permite que Google Play arme APKs a medida de cada dispositivo."
+  - "Para leer los errores de una app ofuscada hace falta el archivo de mapping de ese build."
+entrevista:
+  en_30_segundos: "En release activo R8 con shrinking de recursos, mantengo reglas keep mínimas y prefiero librerías sin reflexión. Publico App Bundles, subo el mapping de cada versión y vigilo el tamaño de la app como una métrica más."
+  trampas:
+    - pregunta: "¿R8 hace que la app sea segura contra la ingeniería inversa?"
+      respuesta: "No. La ofuscación la hace más difícil, pero no imposible. Los secretos no pueden vivir en el APK."
+  cuando_no: "En debug no conviene activar R8: el build tarda más y depurar se vuelve incómodo. Lo que sí conviene es probar el build de release antes de publicar."
+---
+
+## Concepto
+
+**R8** hace tres cosas en el build de release: elimina el código que no se usa (shrinking), acorta los nombres (ofuscación) y optimiza. Con `isShrinkResources = true` también elimina los recursos sin usar (requiere `isMinifyEnabled = true`). Lo que se usa por reflexión necesita **reglas keep**, o R8 lo borra o lo renombra.
+
+El **Android App Bundle** (`.aab`) permite que Google Play genere APKs a medida de cada dispositivo (densidad, ABI e idioma), así cada persona descarga menos. Es obligatorio para apps nuevas en Play desde agosto de 2021.
+
+## Ejemplo
+
+Después de activar R8, la app en release falla al parsear una respuesta: una clase que se lee por reflexión quedó renombrada. Se arregla con una regla keep (o usando una librería de serialización sin reflexión).

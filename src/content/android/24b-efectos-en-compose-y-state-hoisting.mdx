@@ -1,0 +1,47 @@
+---
+id: android-semi-senior-efectos-en-compose-y-state-hoisting-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Efectos en Compose y state hoisting"
+duracion_min: 6
+prerequisitos: [android-semi-senior-ui-unidireccional-y-pruebas-de-estado-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué efecto usás para lanzar una animación de scroll al tocar un botón?"
+    explicacion: "`rememberCoroutineScope`, porque se lanza desde un callback y no al entrar en pantalla."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué pasa si la clave de un `LaunchedEffect` cambia?"
+    explicacion: "Se cancela la corrutina anterior y arranca una nueva."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué ganás con un `CampoTitulo(valor, alCambiar)` en vez de uno con estado propio?"
+    explicacion: "Se reutiliza, se prueba fácil y el dueño del estado decide qué pasa con cada cambio."
+tarea_local: "Armá una lista larga con un botón \"Volver arriba\" que aparezca solo cuando el primer elemento ya no se ve. Calculá la visibilidad con `derivedStateOf` y hacé el scroll con `rememberCoroutineScope`."
+resultado_esperado: "El botón aparece y desaparece en el punto justo, y al tocarlo la lista vuelve al principio con animación."
+resumen:
+  - "Un composable puede ejecutarse muchas veces, así que no debería tener efectos secundarios sueltos."
+  - "Launched effect lanza una corrutina atada a una clave, y disposable effect limpia lo que se registra."
+  - "Derived state of evita recomposiciones cuando un valor derivado cambia menos que su origen."
+  - "Subir el estado deja composables sin estado, reutilizables y fáciles de probar."
+entrevista:
+  en_30_segundos: "Mantengo los composables sin efectos sueltos: uso `LaunchedEffect` con claves explícitas, `DisposableEffect` para lo que hay que limpiar y `rememberCoroutineScope` para acciones del usuario. Subo el estado al dueño correcto y uso `derivedStateOf` cuando un valor cambia mucho menos que su origen."
+  trampas:
+    - pregunta: "¿`LaunchedEffect(Unit)` es lo mismo que `onCreate`?"
+      respuesta: "Se parece, pero corre cuando el composable entra en la composición, que puede pasar muchas veces (por ejemplo, al volver de otra pantalla de la navegación). Lo que tiene que pasar una sola vez va en el ViewModel."
+  cuando_no: "`derivedStateOf` tiene un costo propio: si el valor derivado cambia tan seguido como su origen, no ahorra nada."
+---
+
+## Concepto
+
+Una función composable se puede ejecutar muchas veces, así que no debería tener efectos secundarios sueltos. Para eso están los **efectos**:
+
+- **`LaunchedEffect(clave)`:** lanza una corrutina al entrar en pantalla, la reinicia si cambia la clave y la cancela al salir.
+- **`DisposableEffect`:** registra algo y lo limpia en `onDispose`.
+- **`rememberCoroutineScope`:** lanza corrutinas desde un callback, como un clic.
+- **`derivedStateOf`:** evita recomponer cuando un valor derivado cambia menos seguido que su origen.
+
+**State hoisting** es subir el estado: el composable recibe `valor` y `alCambiar`, en vez de guardarlo adentro. Así queda sin estado, reutilizable y fácil de probar.
+
+## Ejemplo
+
+`LaunchedEffect(tareaId)` carga el detalle cada vez que cambia el id. Un botón "Volver arriba" usa `derivedStateOf { estadoLista.firstVisibleItemIndex > 0 }` para recomponer solo cuando cambia de visible a oculto, no en cada píxel de scroll.

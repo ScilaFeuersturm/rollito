@@ -27,6 +27,7 @@ export function ExerciseCard({ exercise, onSolved }: { exercise: Exercise; onSol
   function check() {
     const correct = exercise.tipo === 'opcion_multiple' ? choice === exercise.correcta :
       exercise.tipo === 'completar' ? exercise.respuestas.includes(answer.trim()) :
+      exercise.tipo === 'autoevaluacion' ? true :
       order.every((step, index) => step === index)
     setResult(correct)
     if (correct) onSolved()
@@ -36,6 +37,7 @@ export function ExerciseCard({ exercise, onSolved }: { exercise: Exercise; onSol
     <form className={styles.card} onSubmit={event => { event.preventDefault(); check() }}>
       <fieldset disabled={result === true}>
         <legend>{inline(exercise.pregunta)}</legend>
+        {exercise.tipo === 'autoevaluacion' && <p className={styles.hint}>Respondé en voz alta y después compará con la respuesta modelo.</p>}
         {exercise.tipo === 'opcion_multiple' && exercise.opciones.map((option, index) =>
           <label className={styles.option} key={index}>
             <input type="radio" name={id} checked={choice === index}
@@ -61,9 +63,9 @@ export function ExerciseCard({ exercise, onSolved }: { exercise: Exercise; onSol
           </li>)}
         </ol>}
       </fieldset>
-      {result !== true && <button className={styles.check} disabled={!ready}>Verificar</button>}
+      {result !== true && <button className={styles.check} disabled={!ready}>{exercise.tipo === 'autoevaluacion' ? 'Ver respuesta' : 'Verificar'}</button>}
       <div role="status">{result !== undefined && <p className={result ? styles.success : styles.retry}>
-        <strong>{result ? '¡Bien!' : 'Casi. Mirá esto…'}</strong> {inline(exercise.explicacion)}
+        <strong>{exercise.tipo === 'autoevaluacion' ? 'Respuesta modelo.' : result ? '¡Bien!' : 'Casi. Mirá esto…'}</strong> {inline(exercise.explicacion)}
       </p>}</div>
     </form>
   )

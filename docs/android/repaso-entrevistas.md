@@ -1,6 +1,6 @@
 # Android · Lo que faltaba para preparar entrevistas, por nivel
 
-**Estado:** borradores para revisar. Todavía no están maquetados.
+**Estado:** aprobado y publicado. Las lecciones están intercaladas en `src/content/android/` (archivos `04a-`, `05a-`, `15a-`, `15b-`, `16b-`, `21a-`, `22a-`, `22b-`, `24b-`, `26a-`, `28a-`, `34a-`, `37a-`, `38a-`, `41a-` y `43a-`), con ejercicios de autoevaluación. Las preguntas se sumaron a `src/content/android/interview-practice.ts`, y la práctica de código está en `/practica/android/<nivel>/`, con los datos en `src/content/android/katas.ts`.
 
 Salen de revisar el contenido contra las preguntas más comunes de cada nivel. Hay tres partes:
 
@@ -882,7 +882,7 @@ En Senior el código en vivo suele combinarse con preguntas de diseño: la Parte
 
 ### 8. Caché LRU
 
-**Enunciado.** Implementá una caché de capacidad fija que, al llenarse, descarte el elemento usado hace más tiempo (*least recently used*). Leer un elemento cuenta como uso.
+**Enunciado.** Implementá una caché de capacidad fija que, al llenarse, descarte el elemento usado hace más tiempo (en inglés, least recently used). Leer un elemento cuenta como uso.
 
 **Ejemplo.** Con capacidad 2: guardás `a` y `b`, leés `a` y guardás `c` → quedan `[a, c]` (se descartó `b`).
 
