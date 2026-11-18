@@ -324,3 +324,24 @@ En un proyecto Compose, armá una fila que reciba si la tarea está completada y
 **Pregunta trampa.** ¿Un cambio de estado vuelve a dibujar toda la pantalla? Compose puede limitar el trabajo a las partes afectadas. Recomposición, layout y dibujo son fases distintas.
 
 **Cuándo elevar el estado.** Si otra parte de la pantalla necesita el mismo dato o lo puede cambiar, ubicalo en un dueño común y pasá a cada componente los valores y eventos que necesita.
+
+## Temas agregados desde requisitos de búsquedas laborales
+
+Temas que suelen pedir las búsquedas de Android, ubicados por nivel. Algunos ya tenían lección y se amplían. Para los que no tenían, quedan planificadas lecciones nuevas, que pasan por borrador antes de maquetarse.
+
+| Tema pedido | Nivel | Dónde se cubre |
+| --- | --- | --- |
+| Kotlin con MVVM y Repository, nociones de Clean y separación de capas | Semi Senior | Amplía 24 y 26. **Nueva:** MVVM, Repository y casos de uso, nociones de Clean en Android. |
+| Ciclo de vida de Android y ViewModel | Junior → Semi Senior | 15 (Activity) y 23 (Fragment y ViewModel). **Nueva:** ciclo de vida y colección segura de StateFlow en Compose (`collectAsStateWithLifecycle`, `repeatOnLifecycle`). |
+| Jetpack Compose y Material Design 3, estado con StateFlow | Junior | **Nueva:** Material 3 en Compose: tema, colores, tipografía y componentes. El estado con StateFlow va en la lección de ciclo de vida. |
+| Coroutines y Flow (StateFlow y SharedFlow) | Semi Senior | Ya cubierto en 21 y 22. |
+| Navigation, deep links y back stack | Junior → Semi Senior | 14 y 29. **Nueva:** Navigation Compose y back stack (`popUpTo`, `launchSingleTop`, volver con resultado). |
+| APIs REST con Retrofit y OkHttp, serialización (Kotlinx Serialization, Moshi) | Semi Senior | 25. **Nueva:** OkHttp y serialización: interceptores, timeouts y JSON. |
+| Estados de carga y error, fallos de red, tratamiento seguro de datos | Semi Senior | 18, 24 y 25 (carga y errores). **Nueva:** datos sensibles: tokens, almacenamiento seguro y logs. Senior profundiza en 42. |
+| Inyección de dependencias con Hilt o Dagger, scopes y ciclo de vida | Semi Senior | 27. **Nueva:** Dagger debajo de Hilt: componentes, `@Provides` vs. `@Binds` y scopes. |
+| Gradle con Kotlin DSL y modularización | Semi Senior → Senior | **Nueva (Semi Senior):** Gradle con Kotlin DSL y version catalogs. La modularización sigue en 34 (Senior). |
+| Tests unitarios y de UI: JUnit, MockK o Mockito, Espresso, Compose Testing | Semi Senior | 30 y 40. **Nuevas:** tests unitarios con JUnit y MockK (y la diferencia con Mockito), y tests de UI con Compose Testing y Espresso. |
+| Git, PRs e integración continua | Junior → Semi Senior | **Nuevas:** Git y pull requests en equipo (Junior), y qué corre la CI en cada PR (Semi Senior). |
+| Firebase Crashlytics u otras herramientas de monitoreo | Semi Senior → Senior | **Nueva (Semi Senior):** Crashlytics: crashes, no fatales y logs sin datos personales. Senior sigue en 41. |
+
+En total: 13 lecciones nuevas (2 Junior y 11 Semi Senior).
