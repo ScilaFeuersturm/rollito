@@ -1,3 +1,5 @@
+package arquitectura.poo.clases
+
 class Tarea(val titulo: String) {
     var completada = false
 

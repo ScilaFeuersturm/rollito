@@ -1,3 +1,5 @@
+package arquitectura.capas
+
 // Capa de datos: sabe dónde y cómo se guardan las tareas.
 class TareaRepositorio {
     private val tareas = mutableListOf("Comprar yerba", "Pagar la luz")

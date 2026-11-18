@@ -1,3 +1,5 @@
+package arquitectura.poo.igualdad
+
 class TareaComun(val titulo: String)
 
 data class TareaDeDatos(val titulo: String)
