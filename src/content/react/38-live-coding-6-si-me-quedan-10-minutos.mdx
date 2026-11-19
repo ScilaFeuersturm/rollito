@@ -1,0 +1,50 @@
+---
+id: react-semi-senior-live-coding-6-si-me-quedan-10-minutos-01
+track: react
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding React 6: si me quedan 10 minutos"
+duracion_min: 5
+prerequisitos: [react-semi-senior-live-coding-5-tests-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Te quedan 10 minutos y la app funciona. ¿Qué mejora tiene más valor para mostrar?"
+    opciones: ["Animaciones en la lista.", "Elegir una o dos mejoras y justificarlas (por ejemplo, reemplazar el hook por TanStack Query para tener caché y reintentos, o MSW para los tests) y nombrar el resto como pendientes priorizados.", "Pasar todo a Redux."]
+    correcta: 1
+    explicacion: "En esos minutos se evalúa cómo priorizás. Una mejora bien justificada vale más que tres a medias."
+  - tipo: autoevaluacion
+    pregunta: "Armá en voz alta tu respuesta de 30 segundos a \"si tuvieras más tiempo, ¿qué mejorarías?\", con tres mejoras en orden de prioridad."
+    explicacion: "Ejemplo: \"Primero, TanStack Query en lugar del hook: caché al volver del detalle a la lista, deduplicación y reintentos. Segundo, MSW para los tests, con handlers reutilizables. Tercero, validar con Zod en vez de la guardia a mano. Dejaría la virtualización para cuando la lista crezca de verdad.\""
+tarea_local: "En `react-samples/live-coding`, elegí una mejora e implementala. La más corta: reemplazá `useRecurso` en la lista por `useQuery` de TanStack Query (ya está instalado en el proyecto) y verificá que los tests sigan pasando."
+resultado_esperado: "La lista funciona igual, ahora con caché: al volver del detalle no aparece \"Cargando tareas…\" otra vez."
+resumen:
+  - "Con el tiempo extra se muestra criterio: una o dos mejoras justificadas."
+  - "TanStack Query suma caché, deduplicación y reintentos."
+  - "MSW hace los tests de red más realistas y reutilizables."
+  - "Zod valida los datos de la API con un esquema."
+entrevista:
+  en_30_segundos: "Con diez minutos más, reemplazaría el hook por TanStack Query para tener caché al volver a la lista y reintentos automáticos, y pasaría los tests a MSW. Después validaría la API con Zod. La virtualización y la paginación las dejaría para cuando el volumen lo justifique."
+  trampas:
+    - pregunta: "¿Por qué no usaste Redux?"
+      respuesta: "Porque no hay estado global de la interfaz que lo justifique: los datos son del servidor, y para eso está TanStack Query. Sumar Redux acá sería complejidad sin beneficio."
+  cuando_no: "No uses los últimos minutos para refactorizar algo que funciona sin que te lo pidan: podés romperlo frente a quien te evalúa."
+---
+
+## Concepto
+
+**El cierre.** Cuando la app cumple el enunciado, suelen preguntar "¿qué mejorarías?". Es para ver cómo priorizás.
+
+**Mejoras posibles, con su justificación:**
+
+1. **TanStack Query** en lugar del hook: caché (al volver del detalle no se vuelve a cargar), deduplicación y reintentos. Lección Senior 23.
+2. **MSW** para los tests: intercepta la red con handlers reutilizables, más realista que simular `fetch`.
+3. **Zod** para validar la API con un esquema, en vez de la guardia a mano.
+4. **Accesibilidad:** probar con teclado y lector de pantalla, y mover el foco al título del detalle al navegar. Lección Senior 30.
+5. **Virtualización** si la lista puede crecer mucho. Con 20 tareas no hace falta: decilo.
+6. **Error boundary** alrededor de cada pantalla. Lección Senior 27.
+
+## Ejemplo
+
+Cómo sonaría el cierre:
+
+> "Quedó funcionando: lista con carga, error con reintento y vacío, detalle con su 404, rutas y tests de cada estado. Con diez minutos más, cambiaría el hook por TanStack Query, porque la caché mejora la experiencia al volver a la lista y me ahorra mantener la cancelación a mano. Lo que no haría todavía es virtualizar: con este volumen no se justifica."

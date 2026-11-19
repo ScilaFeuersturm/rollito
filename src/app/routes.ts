@@ -10,6 +10,7 @@ export type Route =
   | { name: 'simulacro-funcional' }
   | { name: 'simulacro'; level: (typeof androidRoadmap)[number] }
   | { name: 'flashcards' }
+  | { name: 'flashcards-react' }
   | { name: 'simulacro-react'; level: (typeof reactSections)[number] }
   | { name: 'practica-react'; level: (typeof reactSections)[number] }
   | { name: 'practica'; level: (typeof androidRoadmap)[number] }
@@ -23,6 +24,7 @@ export const repasoPath = '/repaso/'
 export const functionalRepasoPath = '/repaso/funcional/'
 export const functionalInterviewPath = '/simulacro/funcional/'
 export const flashcardsPath = '/flashcards/android/'
+export const reactFlashcardsPath = '/flashcards/react/'
 export const reactInterviewPath = (level: string) => `/simulacro/react/${level}/`
 export const reactPracticePath = (level: string) => `/practica/react/${level}/`
 // Niveles de React que ya tienen simulacro y práctica de código.
@@ -44,6 +46,7 @@ export function matchRoute(pathname: string): Route {
   if (path + '/' === functionalRepasoPath) return { name: 'repaso-funcional' }
   if (path + '/' === functionalInterviewPath) return { name: 'simulacro-funcional' }
   if (path + '/' === flashcardsPath) return { name: 'flashcards' }
+  if (path + '/' === reactFlashcardsPath) return { name: 'flashcards-react' }
   const reactInterviewLevel = reactPracticeLevels.find(item => path + '/' === reactInterviewPath(item.level))
   if (reactInterviewLevel) return { name: 'simulacro-react', level: reactInterviewLevel }
   const reactPracticeLevel = reactPracticeLevels.find(item => path + '/' === reactPracticePath(item.level))
@@ -64,6 +67,7 @@ export function pageTitle(route: Route) {
     case 'repaso-funcional': return 'Repaso de Análisis funcional · Rollito'
     case 'simulacro-funcional': return 'Simulacro Analista Funcional Trainee · Rollito'
     case 'flashcards': return 'Ronda relámpago Android · Rollito'
+    case 'flashcards-react': return 'Ronda relámpago React · Rollito'
     case 'simulacro-react': return `Simulacro React · ${route.level.title} · Rollito`
     case 'practica-react': return `Práctica de código React · ${route.level.title} · Rollito`
     case 'simulacro': return `Simulacro Android · ${route.level.title} · Rollito`
@@ -83,6 +87,7 @@ export const prerenderPaths = [
   functionalRepasoPath,
   functionalInterviewPath,
   flashcardsPath,
+  reactFlashcardsPath,
   ...reactPracticeLevels.map(item => reactInterviewPath(item.level)),
   ...reactPracticeLevels.map(item => reactPracticePath(item.level)),
   privadoPath,

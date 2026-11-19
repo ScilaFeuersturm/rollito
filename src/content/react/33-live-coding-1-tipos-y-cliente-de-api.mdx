@@ -1,0 +1,57 @@
+---
+id: react-semi-senior-live-coding-1-tipos-y-cliente-de-api-01
+track: react
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding React 1: requisitos, tipos y cliente de API"
+duracion_min: 7
+prerequisitos: [react-semi-senior-performance-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pasa con `fetch` si el servidor responde 404?"
+    opciones: ["Rechaza la promesa con un error.", "Resuelve normalmente: `fetch` solo rechaza ante fallas de red. Hay que revisar `respuesta.ok` (o `status`) y tratar el 404 como un error vos.", "Devuelve `null`."]
+    correcta: 1
+    explicacion: "Es la trampa más común de un live coding de React. Por eso `pedir` revisa `respuesta.ok` y clasifica 4xx y 5xx."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué `esTareaDto` revisa los tipos si ya hay un `type TareaDto`?"
+    opciones: ["Por costumbre.", "Porque los tipos de TypeScript desaparecen al compilar: no validan lo que llega de la red. Si la API manda otra forma, sin esa revisión el error aparece lejos, en la pantalla.", "Porque fetch lo exige."]
+    correcta: 1
+    explicacion: "En un proyecto real se usa Zod para validar; en un live coding, una función de guardia alcanza y se explica en una frase."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué `pedir` vuelve a lanzar el error tal cual si `signal.aborted` es verdadero?"
+    explicacion: "Porque una cancelación no es una falla de red: pasa cuando la persona se fue de la pantalla o cambió de tarea. Si se clasificara como \"sin conexión\", se mostraría un error falso."
+tarea_local: "En tu proyecto de Vite, copiá `react-samples/live-coding/api.ts` y probá `obtenerTareas()` desde la consola del navegador. Después cambiá la URL por una que dé 404 y mirá qué falla devuelve."
+resultado_esperado: "Con la URL correcta obtenés 20 tareas con `titulo` y `completada`. Con la URL rota, un `ErrorDeApi` con `{ tipo: 'cliente', codigo: 404 }`."
+resumen:
+  - "Antes de escribir, aclarás el alcance y contás el plan."
+  - "El DTO refleja el JSON; el modelo, lo que usa la app."
+  - "Fetch no rechaza ante un 404 o un 500: hay que revisar ok."
+  - "Lo que llega de la red se valida en tiempo de ejecución."
+  - "Una cancelación no es una falla de red."
+entrevista:
+  en_30_segundos: "Defino un tipo para el JSON y otro para la app, y un cliente que valida lo que llega y clasifica las fallas: sin conexión, 4xx, 5xx y formato inválido. Reviso `response.ok` porque `fetch` no rechaza ante un 404, y no trato una cancelación como error."
+  trampas:
+    - pregunta: "¿Por qué no usar `any` para la respuesta y seguir?"
+      respuesta: "Porque esconde los errores de formato hasta que algo explota en la pantalla. Con `unknown` y una guardia (o Zod), el error aparece en el lugar correcto, con un mensaje claro."
+  cuando_no: "Si te dicen que la API es confiable y el tiempo es corto, mencioná la validación y dejala para el final: el tiempo se usa mejor en que la lista funcione."
+---
+
+import api from '../../../react-samples/live-coding/api.ts?raw'
+
+## Concepto
+
+**El enunciado:** *"Mostrá una lista desde una API REST, con loading, error con reintento y estado vacío; al tocar un ítem, andá al detalle."* Es el mismo del live coding de Android, resuelto con React y TypeScript. El código completo está en `react-samples/live-coding/` y tiene 5 tests en verde.
+
+**Paso 1: tipos y cliente de la API.** Todo lo demás depende de esto.
+
+> "Antes de arrancar: ¿la lista es paginada? ¿tiene que andar offline? ¿cuánto tiempo tengo? Voy de adentro hacia afuera: tipos y cliente de la API, un hook de datos, las pantallas, el routing y un test."
+
+> "Separo el DTO, que es la forma del JSON, del modelo que usa la app, y valido lo que llega, porque TypeScript no valida en tiempo de ejecución."
+
+> "`fetch` no rechaza ante un 404, así que reviso `ok` y clasifico la falla: sin conexión, error del cliente, del servidor o de formato."
+
+## Ejemplo
+
+`react-samples/live-coding/api.ts`:
+
+<pre><code className="language-tsx">{api.trimEnd()}</code></pre>

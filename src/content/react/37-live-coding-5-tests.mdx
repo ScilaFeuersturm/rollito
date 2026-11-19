@@ -1,0 +1,54 @@
+---
+id: react-semi-senior-live-coding-5-tests-01
+track: react
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding React 5: tests con fetch simulado"
+duracion_min: 6
+prerequisitos: [react-semi-senior-live-coding-4-rutas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué los tests simulan `fetch` en vez de pedirle a la API real?"
+    opciones: ["Porque la API real no existe.", "Para que sean rápidos, deterministas y puedan probar casos difíciles de reproducir: sin conexión, 500, JSON con otra forma, 404.", "Porque Testing Library no permite red."]
+    correcta: 1
+    explicacion: "En proyectos grandes se usa MSW, que intercepta los pedidos de red con handlers reutilizables; en un live coding, `vi.stubGlobal('fetch', ...)` alcanza."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué se usa `findByRole` y no `getByRole` para esperar la lista?"
+    opciones: ["Es lo mismo.", "Porque la lista aparece después de que se resuelve el pedido: `findBy` espera (y falla si no aparece), mientras que `getBy` busca en ese instante.", "Porque `getByRole` no existe."]
+    correcta: 1
+    explicacion: "Regla práctica: `getBy` para lo que ya está, `findBy` para lo asincrónico y `queryBy` para verificar que algo no está."
+  - tipo: autoevaluacion
+    pregunta: "Nombrá los cinco casos que cubren los tests del proyecto."
+    explicacion: "Carga y navegación al detalle; sin conexión con reintento exitoso; lista vacía; un 500 y un JSON con otra forma (clasificación de fallas); y un detalle inexistente (404). Cubren los estados que pide el enunciado."
+tarea_local: "Corré `npx vitest run react-samples/live-coding`. Después agregá un test: la API tarda, la persona entra a un detalle y vuelve a la lista antes de que llegue la respuesta."
+resultado_esperado: "Los 5 tests pasan. El nuevo verifica que la respuesta vieja no rompe nada gracias a la cancelación del hook."
+resumen:
+  - "Los tests buscan por rol, actúan y verifican lo visible."
+  - "Fetch se simula para probar sin red y con casos difíciles."
+  - "Find by espera lo asincrónico; get by busca en el momento."
+  - "Se cubren carga, error con reintento, vacío, clasificación de fallas y no encontrado."
+entrevista:
+  en_30_segundos: "Testeo con Testing Library desde el punto de vista de la persona: busco por rol, actúo y verifico lo visible, con `findBy` para lo asincrónico. Simulo `fetch` para cubrir carga, sin conexión con reintento, vacío, errores del servidor y de formato, y un 404. En un proyecto grande usaría MSW."
+  trampas:
+    - pregunta: "¿Por qué no testear el hook directamente, revisando su estado?"
+      respuesta: "Se puede con `renderHook`, pero los tests de la pantalla prueban lo que importa (lo que ve la persona) y sobreviven a un refactor del hook. Testeo el hook aparte solo si tiene lógica compleja propia."
+  cuando_no: "Si quedan cinco minutos, escribí un solo test con el caso feliz y el de error: muestra más criterio que cinco tests a medias."
+---
+
+import tests from '../../../react-samples/live-coding/App.test.tsx?raw'
+
+## Concepto
+
+**Paso 5: tests.** Si llegás, cerrá con tests de los estados que pide el enunciado. Corren con `npx vitest run react-samples/live-coding`.
+
+> "Testeo desde el punto de vista de la persona: busco por rol, hago clic y verifico lo que se ve."
+
+> "Simulo `fetch` para probar los casos difíciles: sin conexión, un 500, una forma inesperada y un 404."
+
+> "Uso `findBy` para lo que llega después del pedido."
+
+## Ejemplo
+
+`react-samples/live-coding/App.test.tsx`:
+
+<pre><code className="language-tsx">{tests.trimEnd()}</code></pre>

@@ -2,7 +2,7 @@ import { androidSections, architectureSections, claudeCodeModules, functionalLes
 import type { Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
-import { flashcardsPath, functionalInterviewPath, functionalRepasoPath, interviewPath, reactInterviewPath, reactPracticeLevels, reactPracticePath, lessonPath, practicePath, repasoPath } from './routes'
+import { flashcardsPath, reactFlashcardsPath, functionalInterviewPath, functionalRepasoPath, interviewPath, reactInterviewPath, reactPracticeLevels, reactPracticePath, lessonPath, practicePath, repasoPath } from './routes'
 
 const androidLessons = androidSections.flatMap(section => section.lessons)
 
@@ -90,6 +90,7 @@ export function Home({ progress }: { progress: Progress }) {
             <h4 id="react-interviews" className={styles.practiceHeading}>Simulacros de entrevista</h4>
             <ul className={styles.practiceLinks}>
               {reactPracticeLevels.map(level => <li key={level.level}><Link href={reactInterviewPath(level.level)}>{level.title}</Link></li>)}
+              <li><Link href={reactFlashcardsPath}>Ronda relámpago (40 preguntas)</Link></li>
             </ul>
           </nav>
           <nav aria-labelledby="react-code-practice">

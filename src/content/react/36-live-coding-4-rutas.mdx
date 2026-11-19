@@ -1,0 +1,52 @@
+---
+id: react-semi-senior-live-coding-4-rutas-01
+track: react
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding React 4: rutas y página no encontrada"
+duracion_min: 5
+prerequisitos: [react-semi-senior-live-coding-3-pantallas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué `App` exporta aparte un componente `Rutas`?"
+    opciones: ["Por estilo.", "Para poder usar las mismas rutas con `BrowserRouter` en la app y con `MemoryRouter` en los tests, donde se elige la ruta inicial con `initialEntries`.", "Porque React Router lo exige."]
+    correcta: 1
+    explicacion: "Separar el router de las rutas es lo que permite testear cada pantalla abriendo directamente su URL."
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve la ruta `path=\"*\"`?"
+    opciones: ["Para todas las rutas de la app.", "Atrapa cualquier URL que no coincida con las otras y muestra una página de no encontrado, en vez de una pantalla en blanco.", "Para las imágenes."]
+    correcta: 1
+    explicacion: "Va al final del `<Routes>` por claridad, aunque React Router elige la ruta más específica."
+  - tipo: autoevaluacion
+    pregunta: "En producción, al recargar `/tareas/2` aparece un 404 del servidor. ¿Por qué y cómo se arregla?"
+    explicacion: "Porque el servidor busca un archivo en esa ruta y no existe: la ruta la maneja React en el navegador. Se configura el hosting para que devuelva `index.html` en cualquier ruta, o se prerenderizan las páginas, como hace Rollito."
+tarea_local: "Agregá una ruta `/acerca` con un texto y un link a ella desde la lista. Después escribí un test que la abra con `initialEntries={['/acerca']}`."
+resultado_esperado: "La ruta funciona con `<Link>` sin recargar, y el test la abre directamente."
+resumen:
+  - "Las rutas se separan del router para poder testearlas."
+  - "En la app se usa browser router; en los tests, memory router."
+  - "La ruta con asterisco muestra una página de no encontrado."
+  - "El hosting tiene que devolver la app en cualquier ruta, o prerenderizarlas."
+entrevista:
+  en_30_segundos: "Defino las rutas en un componente aparte para usarlas con `BrowserRouter` en la app y con `MemoryRouter` en los tests. Tres rutas: lista, detalle con `:id` y una comodín de no encontrado. Y tengo en cuenta que el hosting tiene que servir la app en cualquier URL."
+  trampas:
+    - pregunta: "¿Qué diferencia hay entre `MemoryRouter` y `BrowserRouter`?"
+      respuesta: "`BrowserRouter` usa la URL real del navegador (la History API). `MemoryRouter` guarda la ubicación en memoria: no cambia la barra de direcciones, ideal para tests y ejemplos."
+  cuando_no: "Si la app tiene una sola pantalla, no hace falta un router: alcanza con estado."
+---
+
+import app from '../../../react-samples/live-coding/App.tsx?raw'
+
+## Concepto
+
+**Paso 4: las rutas.** Tres rutas: la lista, el detalle con `:id` y una de no encontrado.
+
+> "Separo las rutas del router: en la app uso `BrowserRouter` y en los tests `MemoryRouter`, abriendo la URL que quiero probar."
+
+> "Agrego una ruta comodín para las URLs que no existen."
+
+## Ejemplo
+
+`react-samples/live-coding/App.tsx`:
+
+<pre><code className="language-tsx">{app.trimEnd()}</code></pre>

@@ -1,0 +1,55 @@
+---
+id: react-semi-senior-live-coding-3-pantallas-01
+track: react
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding React 3: la lista y el detalle"
+duracion_min: 6
+prerequisitos: [react-semi-senior-live-coding-2-hook-de-datos-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué el `switch` sobre `estado.tipo` es mejor que varios `if` sueltos?"
+    opciones: ["Es más corto.", "Con una unión discriminada, TypeScript sabe qué hay en cada caso (en `listo` existen los datos, en `error` la falla) y avisa si falta alguno.", "Porque React lo exige."]
+    correcta: 1
+    explicacion: "El estado vacío va dentro de `listo`: los datos llegaron bien, pero la lista está vacía."
+  - tipo: opcion_multiple
+    pregunta: "`useParams().id` vale `\"2\"`. ¿Qué cuidado hay que tener?"
+    opciones: ["Ninguno.", "Los parámetros de la URL llegan como texto: hay que convertirlos (`Number(...)`) y validar el resultado, porque `/tareas/abc` da `NaN`.", "Hay que decodificarlo con base64."]
+    correcta: 1
+    explicacion: "Por eso `DetalleTarea` revisa `Number.isInteger(id)` antes de mostrar nada."
+  - tipo: autoevaluacion
+    pregunta: "¿Para qué tienen `role=\"status\"` y `role=\"alert\"` los mensajes de carga y de error?"
+    explicacion: "Para que un lector de pantalla anuncie el cambio, y para que los tests los encuentren igual que una persona: por su rol. Además, el botón Reintentar es un `<button>` real, accesible con teclado."
+tarea_local: "En `Pantallas.tsx`, agregá a la lista un contador \"N pendientes\" calculado a partir de los datos, sin agregar estado nuevo."
+resultado_esperado: "El contador se calcula al dibujar (`datos.filter(t => !t.completada).length`), sin `useState` ni `useEffect`."
+resumen:
+  - "La lista cubre cargando, error con reintento, vacío y contenido."
+  - "El estado vacío va dentro de listo."
+  - "Los parámetros de la URL llegan como texto y se validan."
+  - "Un 404 en el detalle se muestra como no encontrado, no como error genérico."
+  - "Status y alert hacen que los cambios se anuncien y se puedan testear por rol."
+entrevista:
+  en_30_segundos: "Cada pantalla hace un `switch` sobre el estado del hook: cargando, error con reintento, vacío o contenido. El detalle convierte y valida el id de la URL y trata el 404 como \"no encontrado\". Uso roles de status y alert para la accesibilidad y para los tests."
+  trampas:
+    - pregunta: "¿Por qué el link de cada tarea usa `<Link>` y no `<a href>`?"
+      respuesta: "Porque `<Link>` navega sin recargar la página: React Router cambia la URL y dibuja la ruta nueva conservando el estado de la app. Un `<a href>` común recarga todo."
+  cuando_no: "Si piden \"solo la lista\", no armes el detalle: mencioná cómo agregarías la ruta y seguí con los tests."
+---
+
+import pantallas from '../../../react-samples/live-coding/Pantallas.tsx?raw'
+
+## Concepto
+
+**Pasos 3 y 4: las pantallas.** Con el hook resuelto, cada pantalla es un `switch` sobre el estado.
+
+> "La lista hace un `switch` sobre el estado: cargando, error con reintento y, dentro de listo, vacío o contenido. TypeScript me obliga a cubrir todos."
+
+> "Los mensajes tienen `role` de status y alert, así se anuncian y los puedo encontrar en los tests por rol."
+
+> "El detalle lee el id de la URL, que llega como texto: lo convierto y lo valido. Un 404 lo muestro como 'no encontramos esa tarea', no como un error genérico."
+
+## Ejemplo
+
+`react-samples/live-coding/Pantallas.tsx`:
+
+<pre><code className="language-tsx">{pantallas.trimEnd()}</code></pre>

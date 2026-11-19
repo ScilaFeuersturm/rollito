@@ -1,6 +1,6 @@
 # React · De Junior a Semi Senior
 
-**Estado:** publicados los tres niveles en `src/content/react/`: Junior (8 lecciones), Semi Senior (11) y Senior (13, archivos `20-` a `32-`). Simulacros de 12 preguntas por nivel (`interview-practice.ts`, en `/simulacro/react/<nivel>/`) y práctica de código (`katas.ts`, en `/practica/react/<nivel>/`). Todos los ejemplos están en `react-samples/` con su test (incluidas las katas Senior en `katas/katas-senior.test.tsx`). Próximo: live coding guiado y flashcards.
+**Estado:** completo y publicado, a la par del recorrido Android. Junior (8 lecciones), Semi Senior (11 + 6 de live coding guiado, archivos `33-` a `38-`) y Senior (13, archivos `20-` a `32-`). Simulacros de 12 preguntas por nivel (`/simulacro/react/<nivel>/`), práctica de código con 9 katas (`/practica/react/<nivel>/`) y ronda relámpago de 40 preguntas (`/flashcards/react/`). Todo el código está en `react-samples/` con tests: los ejemplos de cada lección, las katas y el proyecto del live coding (`react-samples/live-coding/`). Los borradores de abajo quedan como referencia.
 
 Cada lección sigue el formato habitual: concepto con analogía, ejemplo, ejercicios de autoevaluación, tarea para tu máquina, resumen y "cómo contarlo en una entrevista". El ejemplo de cada lección es un `App.tsx` de `react-samples/` que TypeScript y un test verifican. En la app se ve como código, con un botón **Probar en vivo** que abre Sandpack para editarlo y ver el resultado.
 

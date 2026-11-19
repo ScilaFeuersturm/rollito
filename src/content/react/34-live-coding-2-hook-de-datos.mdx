@@ -1,0 +1,54 @@
+---
+id: react-semi-senior-live-coding-2-hook-de-datos-01
+track: react
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding React 2: un hook de datos con cancelación y reintento"
+duracion_min: 6
+prerequisitos: [react-semi-senior-live-coding-1-tipos-y-cliente-de-api-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace la limpieza del efecto (`return () => control.abort()`)?"
+    opciones: ["Nada importante.", "Cancela el pedido anterior si cambian las dependencias o se desmonta el componente: evita que una respuesta vieja pise a una nueva (race condition) y que se actualice un componente que ya no está.", "Reintenta el pedido."]
+    correcta: 1
+    explicacion: "Es la diferencia entre un `useEffect` de juguete y uno de producción. Decilo en voz alta."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo funciona el reintento?"
+    opciones: ["Recargando la página.", "Con un contador `intento` en las dependencias del efecto: `reintentar` lo incrementa y el efecto vuelve a correr.", "Llamando a `cargar` desde el botón."]
+    correcta: 1
+    explicacion: "Así el reintento pasa por el mismo camino que la primera carga: mismo estado de carga, misma cancelación, mismo manejo de errores."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué el estado es una unión discriminada (`cargando`, `error`, `listo`) y no tres booleanos?"
+    explicacion: "Porque con booleanos se pueden dar combinaciones imposibles (cargando y con error a la vez) y el componente tiene que adivinar. Con la unión, TypeScript obliga a manejar cada caso, y en `listo` los datos siempre existen."
+tarea_local: "Abrí `react-samples/live-coding/useRecurso.ts`, sacá el `return () => control.abort()` y corré los tests con `npx vitest run react-samples/live-coding`."
+resultado_esperado: "Los tests siguen pasando: son casos de un solo pedido. Pensá qué test agregarías para que se note la falta de cancelación (pista: cambiar de detalle antes de que llegue la respuesta)."
+resumen:
+  - "El estado del pedido es una unión discriminada: cargando, error o listo."
+  - "La limpieza del efecto aborta el pedido anterior."
+  - "Abortar evita que una respuesta vieja pise a una nueva."
+  - "El reintento suma un contador a las dependencias del efecto."
+entrevista:
+  en_30_segundos: "Armo un hook que recibe la función de carga y devuelve un estado discriminado y un `reintentar`. En el efecto creo un `AbortController` y en la limpieza lo aborto, así no hay race conditions ni actualizaciones de componentes desmontados. El reintento es un contador en las dependencias."
+  trampas:
+    - pregunta: "¿Por qué no usar TanStack Query directamente?"
+      respuesta: "En un proyecto real lo usaría: resuelve caché, deduplicación y reintentos. En un live coding conviene mostrar que entendés el mecanismo, y mencionar que en producción lo reemplazaría por TanStack Query."
+  cuando_no: "Si el entrevistador te deja usar librerías, `useQuery` de TanStack Query reemplaza este hook en tres líneas: decí por qué lo elegís."
+---
+
+import hook from '../../../react-samples/live-coding/useRecurso.ts?raw'
+
+## Concepto
+
+**Paso 2: el hook de datos.** Concentra la parte difícil (carga, error, cancelación y reintento) en un solo lugar, y las pantallas quedan simples.
+
+> "Hago un hook genérico que recibe una función de carga. El estado es una unión discriminada: cargando, error o listo, así no hay combinaciones imposibles."
+
+> "En la limpieza del efecto aborto el pedido: si la persona cambia de pantalla o de tarea, la respuesta vieja no pisa a la nueva."
+
+> "Para reintentar, sumo un contador a las dependencias: el efecto vuelve a correr por el mismo camino."
+
+## Ejemplo
+
+`react-samples/live-coding/useRecurso.ts`:
+
+<pre><code className="language-tsx">{hook.trimEnd()}</code></pre>
