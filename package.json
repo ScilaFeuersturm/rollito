@@ -9,6 +9,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@codesandbox/sandpack-react": "^2.20.0",
     "@mdx-js/react": "^3.1.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
@@ -16,9 +17,12 @@
   },
   "devDependencies": {
     "@mdx-js/rollup": "^3.1.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.3.0",
+    "jsdom": "^31.0.1",
     "remark-frontmatter": "^5.0.0",
     "remark-mdx-frontmatter": "^6.0.0",
     "typescript": "^7.0.2",
