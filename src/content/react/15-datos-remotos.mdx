@@ -1,0 +1,53 @@
+---
+id: react-semi-senior-datos-remotos-01
+track: react
+nivel: semi-senior
+modulo: "React"
+titulo: "Datos remotos: carga, error y reintento"
+duracion_min: 6
+prerequisitos: [react-semi-senior-estado-global-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué un tipo con alternativas en vez de `cargando` y `error` como booleanos?"
+    explicacion: "Porque los booleanos permiten estados imposibles (cargando y con error a la vez) y obligan a recordar resetearlos. Con alternativas, TypeScript obliga a contemplar cada caso."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué pasa si el componente se desmonta antes de que llegue la respuesta y no hay limpieza?"
+    explicacion: "Se intenta actualizar el estado de un componente que ya no está. Con un filtro que cambia rápido, una respuesta vieja puede pisar a la nueva."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué agrega TanStack Query frente a hacerlo a mano?"
+    explicacion: "Caché compartida, reintentos, eliminación de pedidos duplicados, datos actualizados al volver a la pestaña y estados de carga listos para usar."
+tarea_local: "Consumí una API pública con `fetch` (por ejemplo JSONPlaceholder) mostrando los tres estados. Simulá un error cambiando la URL por una que no existe y verificá el reintento. Si te animás, repetilo con TanStack Query y compará cuánto código te ahorra."
+resultado_esperado: "Se ven los tres estados, y un error HTTP (por ejemplo un 404) se muestra como error. Ojo: `fetch` no rechaza la promesa ante un 404, así que hay que revisar `response.ok`."
+resumen:
+  - "Todo pedido de datos tiene al menos tres estados: cargando, error y listo."
+  - "Conviene modelarlos como un tipo con alternativas, no como varios booleanos sueltos."
+  - "Un buen error explica qué pasó y permite reintentar."
+  - "En proyectos reales, TanStack Query resuelve caché, reintentos y pedidos duplicados."
+entrevista:
+  en_30_segundos: "Modelo los datos remotos con un tipo de alternativas (cargando, error y listo), muestro un error con reintento y descarto respuestas viejas. En proyectos reales uso TanStack Query, que además resuelve caché, reintentos, deduplicación y revalidación."
+  trampas:
+    - pregunta: "¿`fetch` rechaza la promesa si el servidor responde 404 o 500?"
+      respuesta: "No. Solo rechaza si falla la red. Un 404 o un 500 llegan como respuesta normal: hay que revisar `response.ok` o el código de estado y tratarlo como error."
+  cuando_no: "Para un dato que se pide una vez y no se comparte, un efecto simple alcanza. TanStack Query se paga solo cuando hay varios pedidos, datos compartidos o necesidad de caché."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/15-datos-remotos/App.tsx?raw'
+
+## Concepto
+
+Todo pedido de datos tiene al menos tres estados: **cargando, error y listo**. Conviene modelarlos como un **tipo con alternativas** en vez de varios booleanos sueltos (`cargando`, `hayError`), que permiten combinaciones imposibles como "cargando y con error a la vez".
+
+Además:
+
+- Mostrar un estado de carga accesible (`role="status"`) y un error con acción para **reintentar**.
+- Descartar respuestas viejas si el pedido cambia o el componente se desmonta (la *race condition* de R9).
+- En proyectos reales, **TanStack Query** resuelve todo esto más caché, reintentos automáticos y pedidos duplicados.
+
+Pensalo como el seguimiento de un envío: "en preparación", "en camino", "entregado" o "no se pudo entregar, reprogramar". Nunca dos a la vez.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+La API simulada falla la primera vez. Se ve "Cargando…", después el error con el botón Reintentar y, al reintentar, la lista. El tipo `Estado` hace imposible tener tareas y error al mismo tiempo.

@@ -1,0 +1,51 @@
+---
+id: react-semi-senior-context-01
+track: react
+nivel: semi-senior
+modulo: "React"
+titulo: "Context"
+duracion_min: 6
+prerequisitos: [react-semi-senior-hooks-propios-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué problema resuelve Context?"
+    explicacion: "El *prop drilling*: pasar un dato a través de varios componentes intermedios que no lo usan, solo para que llegue abajo."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué pasa con los componentes que leen un contexto cuando cambia su valor?"
+    explicacion: "Se vuelven a dibujar todos, aunque solo usen una parte del valor."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué devuelve `useContext` si no hay ningún proveedor arriba?"
+    explicacion: "El valor por defecto que se pasó a `createContext`."
+tarea_local: "Creá un `UsuarioContext` con el nombre de la persona conectada y mostralo en un encabezado y en un pie de página, que estén en distintas ramas del árbol. Agregá un botón para cambiar de usuario."
+resultado_esperado: "El encabezado y el pie muestran el mismo nombre y se actualizan juntos, sin que ningún componente intermedio reciba el nombre por props."
+resumen:
+  - "Context pasa un dato a todo un subárbol sin pasarlo por props en cada nivel."
+  - "Un componente lo provee y los descendientes lo leen con use context."
+  - "Cuando cambia el valor, se vuelven a dibujar todos los componentes que lo leen."
+  - "Es ideal para datos que usa mucha gente y cambian poco, como el tema o el usuario."
+entrevista:
+  en_30_segundos: "Uso Context para datos transversales que cambian poco, como tema, idioma o sesión, y así evito el prop drilling. Separo contextos por responsabilidad y cuido que el valor no cambie de referencia en cada dibujo, porque todos los consumidores se vuelven a dibujar."
+  trampas:
+    - pregunta: "¿Context reemplaza a Redux?"
+      respuesta: "No exactamente. Context es un mecanismo para pasar datos, no una herramienta de manejo de estado. Combinado con `useReducer` alcanza para muchas apps, pero las librerías de estado agregan suscripciones selectivas, herramientas de depuración y mejor rendimiento cuando el estado cambia seguido."
+  cuando_no: "Si el dato solo baja uno o dos niveles, pasarlo por props es más simple y explícito. Y un contexto con datos que cambian muchas veces por segundo vuelve a dibujar media app."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/13-context/App.tsx?raw'
+
+## Concepto
+
+Context permite que un componente **pase un dato a todo su subárbol sin pasarlo por props** en cada nivel, evitando el *prop drilling*. Se crea con `createContext(valorPorDefecto)`, un componente de arriba lo provee y cualquier descendiente lo lee con `useContext`.
+
+- Desde React 19, el contexto se usa directamente como proveedor: `<TemaContext value={tema}>` (antes, `<TemaContext.Provider>`).
+- Cuando cambia el valor, **se vuelven a dibujar todos los componentes que lo leen**. Por eso conviene separar contextos por tema y no meter en uno solo datos que cambian seguido.
+- Es ideal para datos que usa mucha gente y cambian poco: tema, idioma o usuario conectado.
+
+Pensalo como la música ambiente de un local: suena para todos los que están adentro, sin que haya que pasarle un parlante a cada persona.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+`TarjetaDeTarea` lee el tema sin que `ListaDeTareas` lo reciba ni lo pase. Al cambiar el tema, las dos tarjetas se actualizan.

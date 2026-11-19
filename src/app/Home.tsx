@@ -2,7 +2,7 @@ import { androidSections, architectureSections, claudeCodeModules, functionalLes
 import type { Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
-import { flashcardsPath, functionalInterviewPath, functionalRepasoPath, interviewPath, lessonPath, practicePath, repasoPath } from './routes'
+import { flashcardsPath, functionalInterviewPath, functionalRepasoPath, interviewPath, reactInterviewPath, reactPracticeLevels, reactPracticePath, lessonPath, practicePath, repasoPath } from './routes'
 
 const androidLessons = androidSections.flatMap(section => section.lessons)
 
@@ -86,6 +86,18 @@ export function Home({ progress }: { progress: Progress }) {
         <section className={styles.trackCard} aria-labelledby="react">
           <h3 id="react">React</h3>
           <p>Construí interfaces web con componentes, estado y hooks, con ejemplos que podés editar en vivo.</p>
+          <nav aria-labelledby="react-interviews">
+            <h4 id="react-interviews" className={styles.practiceHeading}>Simulacros de entrevista</h4>
+            <ul className={styles.practiceLinks}>
+              {reactPracticeLevels.map(level => <li key={level.level}><Link href={reactInterviewPath(level.level)}>{level.title}</Link></li>)}
+            </ul>
+          </nav>
+          <nav aria-labelledby="react-code-practice">
+            <h4 id="react-code-practice" className={styles.practiceHeading}>Práctica de código</h4>
+            <ul className={styles.practiceLinks}>
+              {reactPracticeLevels.map(level => <li key={level.level}><Link href={reactPracticePath(level.level)}>{level.title}</Link></li>)}
+            </ul>
+          </nav>
           <details>
             <summary>Ver lecciones de React</summary>
             <div className={styles.roadmap}>

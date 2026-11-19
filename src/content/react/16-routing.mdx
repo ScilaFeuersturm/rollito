@@ -1,0 +1,55 @@
+---
+id: react-semi-senior-routing-01
+track: react
+nivel: semi-senior
+modulo: "React"
+titulo: "Routing con React Router"
+duracion_min: 6
+prerequisitos: [react-semi-senior-datos-remotos-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué `<Link>` y no un `<a href>` común?"
+    explicacion: "`<Link>` cambia la URL y muestra la nueva ruta sin recargar la página, así que se conserva el estado de la app. Un `<a>` común recarga todo."
+  - tipo: autoevaluacion
+    pregunta: "¿Cómo leés el `id` de `/tareas/:id`?"
+    explicacion: "Con `useParams()`, que devuelve un objeto con `id`. Llega como texto, así que si es un número hay que convertirlo."
+  - tipo: autoevaluacion
+    pregunta: "Al recargar `/tareas/2` en producción aparece un 404. ¿Por qué?"
+    explicacion: "El servidor busca un archivo en esa ruta y no existe. Hay que configurarlo para que devuelva la app en cualquier ruta, o prerenderizar las páginas."
+tarea_local: "En tu proyecto de Vite, instalá React Router y armá tres rutas (`/`, `/tareas/:id` y una ruta `*` de página no encontrada) dentro de un layout con encabezado y `<Outlet>`. Después de \"guardar\" en el detalle, navegá a la lista con `useNavigate`."
+resultado_esperado: "El encabezado se mantiene al navegar, una URL inventada muestra la página no encontrada y guardar te devuelve a la lista."
+resumen:
+  - "En una aplicación de una sola página, el router decide qué mostrar según la URL, sin recargar."
+  - "Routes y Route declaran las rutas, y Link navega sin recargar la página."
+  - "Use params lee los parámetros de la URL, y use navigate navega desde el código."
+  - "El servidor tiene que devolver la app en cualquier ruta, o recargar una ruta interna da un error."
+entrevista:
+  en_30_segundos: "Uso React Router con rutas declarativas, layouts con `Outlet` para las anidadas, `useParams` para los parámetros y `useNavigate` para navegar después de una acción. Cuido la ruta de no encontrada y la configuración del servidor para que los enlaces profundos funcionen al recargar."
+  trampas:
+    - pregunta: "¿Qué es *code splitting* por ruta y por qué importa?"
+      respuesta: "Cargar el código de cada pantalla recién cuando se visita (con `lazy` y `Suspense`, o con la carga perezosa del router), así la primera carga descarga menos JavaScript. Es una mejora de rendimiento clásica en apps con muchas pantallas."
+  cuando_no: "Si la app es una sola pantalla con pestañas que no necesitan URL propia, un estado alcanza. El router se justifica cuando las vistas tienen que poder compartirse, guardarse o abrirse directo."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/16-routing/App.tsx?raw'
+
+## Concepto
+
+En una *single page application* hay una sola página HTML, y el **router** decide qué componentes mostrar según la URL, sin recargar. Con **React Router** (en este ejemplo, la versión 8):
+
+- **`<Routes>` y `<Route path element>`** declaran qué componente va con cada ruta.
+- **`<Link to>`** navega sin recargar la página.
+- **`useParams`** lee los parámetros de la URL (`/tareas/:id` → `id`).
+- **`useNavigate`** navega desde código, por ejemplo después de guardar.
+- **`<Outlet>`** marca dónde se dibujan las rutas anidadas dentro de un layout.
+
+En una app real se usa `BrowserRouter` (o un router de datos con `createBrowserRouter`). Y el servidor tiene que devolver la app para cualquier ruta: si no, al recargar `/tareas/2` aparece un 404.
+
+Pensalo como el índice de un libro: cada capítulo tiene su número de página, y podés ir directo a uno sin leer los anteriores.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} dependencies={{ 'react-router': '8.5.2' }} />
+
+*En la app, el editor en vivo carga React Router como dependencia.* La lista enlaza al detalle; el detalle lee el `id` de la URL y muestra un mensaje si la tarea no existe.

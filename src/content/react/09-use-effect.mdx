@@ -1,0 +1,53 @@
+---
+id: react-semi-senior-use-effect-01
+track: react
+nivel: semi-senior
+modulo: "React"
+titulo: "useEffect: sincronizar con el exterior"
+duracion_min: 7
+prerequisitos: [react-junior-formularios-controlados-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Cuándo corre un efecto con `[]` como dependencias?"
+    explicacion: "Una vez, después del primer dibujo. En desarrollo con modo estricto corre dos veces (montar, desmontar, montar) para revelar limpiezas faltantes."
+  - tipo: autoevaluacion
+    pregunta: "¿Para qué sirve la función de limpieza?"
+    explicacion: "Para deshacer lo que hizo el efecto antes de que vuelva a correr o al desmontar: cancelar un temporizador, desuscribirse o descartar una respuesta que ya no sirve."
+  - tipo: autoevaluacion
+    pregunta: "¿Usarías un efecto para calcular `pendientes` a partir de `tareas`?"
+    explicacion: "No. Se calcula directamente al dibujar. Un efecto que copia un dato en otro estado agrega un dibujo extra y dos fuentes de verdad."
+tarea_local: "Hacé un componente que muestre un reloj que se actualiza cada segundo, con `setInterval` dentro de un `useEffect`. Agregá un botón que lo oculte. Probalo primero sin limpieza y después con `clearInterval` en la limpieza."
+resultado_esperado: "Sin limpieza, aparece en la consola un aviso o el intervalo sigue corriendo después de ocultar el reloj. Con limpieza, el intervalo se detiene al desmontar."
+resumen:
+  - "Use effect sincroniza un componente con algo de afuera de React, y corre después de dibujar."
+  - "El array de dependencias dice cuándo vuelve a correr, y tiene que incluir todo lo que el efecto usa."
+  - "La función de limpieza deshace lo que hizo el efecto antes de volver a correr o al desmontar."
+  - "Lo que se calcula a partir de otros datos no necesita un efecto."
+entrevista:
+  en_30_segundos: "Uso `useEffect` para sincronizar con sistemas externos: APIs, suscripciones o temporizadores. Declaro todas las dependencias, siempre limpio lo que el efecto deja abierto y evito efectos para datos derivados o para lógica que corresponde a un evento. Para pedidos de datos, en proyectos grandes prefiero una librería como TanStack Query."
+  trampas:
+    - pregunta: "¿Por qué mi efecto corre dos veces en desarrollo?"
+      respuesta: "Por el modo estricto: React monta, desmonta y vuelve a montar el componente a propósito para que se note si falta la limpieza. En producción corre una vez. La solución no es apagar el modo estricto, sino escribir bien la limpieza."
+  cuando_no: "Si algo pasa por una acción de la persona, como enviar un formulario, va en el manejador del evento, no en un efecto que mira un estado."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/09-use-effect/App.tsx?raw'
+
+## Concepto
+
+`useEffect` sirve para **sincronizar un componente con algo de afuera de React**: un pedido a una API, un temporizador, una suscripción o el título de la página. Corre **después** de que React dibuja.
+
+- **Dependencias:** el array del final dice cuándo volver a correr. `[]` corre una vez al montar; `[filtro]`, cada vez que cambia `filtro`. Hay que incluir todo lo que el efecto usa.
+- **Limpieza:** la función que devuelve el efecto se ejecuta antes de volver a correrlo y al desmontar. Ahí se cancela lo que quedó pendiente.
+- **Modo estricto:** en desarrollo, React monta, desmonta y vuelve a montar cada componente para que se note si falta la limpieza.
+
+Muchas cosas **no necesitan un efecto**: un dato que se calcula a partir de otros se calcula al dibujar, y lo que responde a un clic va en el manejador del evento.
+
+Pensalo como el piloto automático de un avión: cada vez que cambia el rumbo indicado, corrige el avión para que coincida; si se apaga, suelta los controles.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+Cada vez que cambia `soloPendientes`, el efecto pide las tareas otra vez. Si la persona cambia el filtro antes de que llegue la respuesta anterior, la limpieza marca `ignorar` y esa respuesta vieja se descarta: así se evita una *race condition*.

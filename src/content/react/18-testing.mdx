@@ -1,0 +1,59 @@
+---
+id: react-semi-senior-testing-01
+track: react
+nivel: semi-senior
+modulo: "React"
+titulo: "Testing con Testing Library"
+duracion_min: 6
+prerequisitos: [react-semi-senior-typescript-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué buscar por rol y no por clase de CSS?"
+    explicacion: "Porque el rol con su nombre es lo que percibe una persona (y un lector de pantalla). Una clase puede cambiar en un refactor sin que cambie el comportamiento."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué usás para esperar un elemento que aparece después de un pedido?"
+    explicacion: "`findBy...`, que devuelve una promesa y reintenta hasta que aparece o se vence el tiempo."
+  - tipo: autoevaluacion
+    pregunta: "¿Cómo verificás que un mensaje de error *no* está en pantalla?"
+    explicacion: "Con `queryBy...` y comprobando que sea `null`. `getBy...` fallaría al no encontrarlo."
+tarea_local: "Escribí tests para el formulario de R8: que muestre el error con el título vacío, que agregue una tarea válida y que limpie el campo. Usá solo búsquedas por rol y por label."
+resultado_esperado: "Los tests pasan, y si cambiás el texto de un botón, falla el test que lo usa: señal de que el test mira lo que ve la persona."
+resumen:
+  - "Testing Library propone testear como una persona usa la app, buscando lo que se ve en pantalla."
+  - "Conviene buscar por rol y por label, y usar el test id solo como último recurso."
+  - "Get by falla si no encuentra, query by devuelve null y find by espera lo asincrónico."
+  - "Un test se arma en tres pasos: preparar, actuar y verificar."
+entrevista:
+  en_30_segundos: "Testeo con Testing Library desde el punto de vista de la persona: busco por rol y label, actúo y verifico lo visible, no el estado interno. Uso `findBy` para lo asincrónico y MSW para simular la API, y los reducers y la lógica pura los testeo como funciones comunes."
+  trampas:
+    - pregunta: "¿`fireEvent` o `userEvent`?"
+      respuesta: "`userEvent` simula la interacción completa (foco, teclas, clic) y es más realista, por eso se recomienda. `fireEvent` dispara un solo evento: es más simple y alcanza para casos básicos, como en este ejemplo."
+  cuando_no: "Testear detalles de implementación (cuántas veces se llamó un setter, el valor de un estado) hace tests frágiles que fallan al refactorizar sin que haya un bug."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/18-testing/App.tsx?raw'
+import test from '../../../react-samples/18-testing/App.test.tsx?raw'
+
+## Concepto
+
+**Testing Library** propone testear como usa la app una persona: buscar elementos por lo que se ve y actuar sobre ellos, sin mirar el estado interno. Así los tests no se rompen al refactorizar.
+
+- **Prioridad de búsqueda:** `getByRole` (con su nombre accesible), `getByLabelText`, `getByText` y, como último recurso, `getByTestId`.
+- **`getBy`** falla si no encuentra el elemento; **`queryBy`** devuelve `null` (sirve para verificar que algo *no* está); **`findBy`** espera, para lo asincrónico.
+- **Estructura:** preparar, actuar y verificar.
+- Se corre con **Vitest** o Jest. Para simular la API se usa **MSW**, que intercepta los pedidos de red.
+
+Pensalo como probar un auto manejándolo, no desarmando el motor: si llega a destino, frena y dobla bien, funciona, aunque por dentro cambien piezas.
+
+## Ejemplo
+
+El componente:
+
+<ReactPlayground code={ejemplo} />
+
+Y su test, el mismo que corre este proyecto:
+
+<pre><code className="language-tsx">{test.trimEnd()}</code></pre>
+
+

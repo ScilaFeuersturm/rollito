@@ -1,0 +1,55 @@
+---
+id: react-semi-senior-typescript-01
+track: react
+nivel: semi-senior
+modulo: "React"
+titulo: "TypeScript con React"
+duracion_min: 6
+prerequisitos: [react-semi-senior-routing-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué tipo usás para `children`?"
+    explicacion: "`ReactNode`, que acepta elementos, texto, números, listas, `null` y más."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué `useState<Tarea[]>([])` y no solo `useState([])`?"
+    explicacion: "Porque de un array vacío TypeScript no puede inferir de qué es, y lo tipa como `never[]`: después no deja agregar tareas."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué ventaja tiene `unknown` sobre `any`?"
+    explicacion: "Con `unknown`, TypeScript obliga a verificar el tipo antes de usar el valor. Con `any`, deja hacer cualquier cosa y los errores aparecen en ejecución."
+tarea_local: "Tipá la respuesta de una API con un `type` y una función que valide que el JSON recibido tiene la forma esperada antes de usarlo (podés probar con una librería como Zod). Después cambiá un campo en la respuesta simulada."
+resultado_esperado: "Con datos bien formados, todo funciona con tipos completos. Con el campo cambiado, la validación lo detecta y muestra un error claro, en vez de fallar más adelante."
+resumen:
+  - "TypeScript atrapa errores antes de ejecutar, como props que faltan o tipos equivocados."
+  - "Las props se tipan con un type, y children es React node."
+  - "Las uniones discriminadas modelan estados con alternativas, y los genéricos sirven para componentes reutilizables."
+  - "Conviene evitar any, porque apaga la verificación."
+entrevista:
+  en_30_segundos: "Tipo props, estado y eventos, modelo los estados con uniones discriminadas y uso genéricos en componentes reutilizables. Evito `any`, y los datos que vienen de afuera los valido en tiempo de ejecución, porque los tipos de TypeScript desaparecen al compilar."
+  trampas:
+    - pregunta: "¿TypeScript valida los datos que llegan de una API?"
+      respuesta: "No. Los tipos solo existen al compilar. Si la API manda otra forma, TypeScript no se entera: hay que validar en tiempo de ejecución, por ejemplo con Zod."
+  cuando_no: "Tipos excesivamente ingeniosos, que nadie del equipo entiende, cuestan más de lo que protegen. Tipos simples y claros, y genéricos solo donde hacen falta."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/17-typescript/App.tsx?raw'
+
+## Concepto
+
+TypeScript atrapa errores antes de ejecutar: props que faltan, tipos equivocados o casos sin contemplar. Lo más usado en React:
+
+- **Props:** un `type` con cada prop. Las opcionales llevan `?`, y `children` es `ReactNode`.
+- **Estado:** `useState<Tarea[]>([])` cuando el valor inicial no alcanza para inferir el tipo.
+- **Eventos:** `ChangeEvent<HTMLInputElement>` o `FormEvent<HTMLFormElement>`.
+- **Uniones discriminadas** para estados con alternativas, como en R15.
+- **Genéricos** para componentes reutilizables con cualquier tipo de dato.
+
+Conviene evitar `any`, que apaga la verificación. Si un tipo es realmente desconocido, `unknown` obliga a revisarlo antes de usarlo.
+
+Pensalo como el control de equipaje en un aeropuerto: revisa antes de subir, así los problemas no aparecen en pleno vuelo.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+`Lista` es genérica: sirve para tareas, usuarios o lo que sea, y TypeScript verifica que `clave` y `mostrar` reciban el tipo correcto. `prioridad` solo acepta `'alta'` o `'baja'`.

@@ -1,6 +1,6 @@
 # React · De Junior a Semi Senior
 
-**Estado:** las 8 lecciones Junior están aprobadas y publicadas en `src/content/react/`. Las 11 lecciones Semi Senior, los simulacros y la práctica de código están más abajo, en borrador para revisar.
+**Estado:** publicadas las 8 lecciones Junior y las 11 Semi Senior en `src/content/react/`, más los simulacros (`src/content/react/interview-practice.ts`, en `/simulacro/react/<nivel>/`) y la práctica de código (`src/content/react/katas.ts`, en `/practica/react/<nivel>/`). Los borradores de abajo quedan como referencia. Próximo: nivel Senior, live coding guiado y flashcards.
 
 Cada lección sigue el formato habitual: concepto con analogía, ejemplo, ejercicios de autoevaluación, tarea para tu máquina, resumen y "cómo contarlo en una entrevista". El ejemplo de cada lección es un `App.tsx` de `react-samples/` que TypeScript y un test verifican. En la app se ve como código, con un botón **Probar en vivo** que abre Sandpack para editarlo y ver el resultado.
 
@@ -584,7 +584,7 @@ Agregá al formulario del ejemplo un campo de fecha de vencimiento obligatorio, 
 
 ---
 
-# Semi Senior · Borradores para revisar
+# Semi Senior (publicado; borrador de referencia)
 
 | # | Lección | Ejemplo | Min |
 | --- | --- | --- | --- |

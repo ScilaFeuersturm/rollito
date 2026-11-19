@@ -1,0 +1,52 @@
+---
+id: react-semi-senior-estado-global-01
+track: react
+nivel: semi-senior
+modulo: "React"
+titulo: "Estado global con useReducer y Context"
+duracion_min: 7
+prerequisitos: [react-semi-senior-context-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué es un reducer?"
+    explicacion: "Una función pura que recibe el estado actual y una acción, y devuelve el estado nuevo, sin modificar el anterior."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué ventaja tiene despachar acciones frente a varios `setState` sueltos?"
+    explicacion: "Toda la lógica de cambios queda en un solo lugar, cada cambio tiene un nombre y el reducer se puede testear como una función común."
+  - tipo: autoevaluacion
+    pregunta: "¿Guardarías las respuestas de la API en el estado global?"
+    explicacion: "Mejor no a mano. Para datos del servidor conviene una librería como TanStack Query, que maneja caché, reintentos y datos desactualizados."
+tarea_local: "Al ejemplo, sumale una acción `borrar` y otra `limpiarHechas`. Escribí tests del reducer solo, sin dibujar componentes: llamalo con un estado y una acción y verificá el resultado."
+resultado_esperado: "Los tests del reducer pasan sin usar Testing Library, porque es una función común."
+resumen:
+  - "Use reducer centraliza la lógica de cambios: se despachan acciones y un reducer devuelve el estado nuevo."
+  - "Un reducer es una función pura que se puede testear sin interfaz."
+  - "Combinado con context, el estado queda disponible para toda la app."
+  - "Los datos del servidor se manejan mejor con una librería como TanStack Query."
+entrevista:
+  en_30_segundos: "Separo el estado del servidor del estado de la interfaz. Para el del servidor uso TanStack Query; para el de la interfaz compartido, `useReducer` con Context en apps chicas, o Redux Toolkit o Zustand cuando crece y hacen falta suscripciones selectivas y herramientas de depuración."
+  trampas:
+    - pregunta: "¿Redux o Zustand?"
+      respuesta: "Depende. Redux Toolkit da estructura, convenciones y DevTools potentes, y conviene en equipos grandes. Zustand es más liviano y con menos código repetitivo. Lo importante es justificar la elección según el tamaño del equipo y la complejidad del estado."
+  cuando_no: "Poner todo en un estado global, incluso lo que usa un solo componente, hace que todo dependa de todo. El estado vive lo más cerca posible de donde se usa."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/14-estado-global/App.tsx?raw'
+
+## Concepto
+
+Cuando muchas partes de la app leen y cambian el mismo estado, conviene centralizarlo.
+
+- **`useReducer`** ordena la lógica: en vez de llamar a varios setters, se **despachan acciones** (`{ tipo: 'agregar', titulo }`), y una función pura, el **reducer**, recibe el estado y la acción y devuelve el estado nuevo.
+- Combinado con **Context**, el estado y la función `despachar` quedan disponibles para toda la app.
+
+En apps grandes se suele usar una librería: **Redux Toolkit** (el patrón reducer con herramientas), **Zustand** (más liviano) u otras. Y un consejo importante: los **datos del servidor** (lo que viene de una API) se manejan mejor con una librería de *server state* como **TanStack Query**, que resuelve caché, reintentos y actualización.
+
+Pensalo como la caja de un restaurante: los mozos no cambian la cuenta a mano; le pasan un pedido a la caja ("agregar un café") y la caja actualiza la cuenta con reglas claras.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+`Contador` y `Lista` leen el mismo estado. Los cambios pasan siempre por el reducer, así que la lógica está en un solo lugar y se puede testear sin interfaz. El hook `useTareasGlobales` avisa con un error claro si alguien lo usa fuera del proveedor.

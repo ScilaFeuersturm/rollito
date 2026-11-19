@@ -1,0 +1,53 @@
+---
+id: react-semi-senior-performance-01
+track: react
+nivel: semi-senior
+modulo: "React"
+titulo: "Performance"
+duracion_min: 7
+prerequisitos: [react-semi-senior-testing-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué hacés antes de optimizar?"
+    explicacion: "Medir: reproducir el problema y usar el Profiler para encontrar qué componente tarda y por qué se dibuja."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué resuelve `useDeferredValue`?"
+    explicacion: "Que una parte cara de la interfaz use una versión del valor que puede quedar un paso atrás, para que lo urgente, como escribir, responda al instante."
+  - tipo: autoevaluacion
+    pregunta: "¿Cuándo virtualizarías una lista?"
+    explicacion: "Cuando tiene cientos o miles de elementos visibles en scroll: se dibuja solo lo que entra en pantalla y unos pocos de margen."
+tarea_local: "En tu proyecto, cargá una página pesada con `lazy` y `Suspense` y mirá en la pestaña Network que su archivo se descarga recién al visitarla. Después mostrá una lista de 10.000 elementos con y sin virtualización y comparalas en el Profiler."
+resultado_esperado: "El archivo de la página aparece en Network recién al navegar. La lista virtualizada se dibuja en una fracción del tiempo y hace scroll fluido."
+resumen:
+  - "Antes de optimizar hay que medir, con el Profiler de React o las herramientas del navegador."
+  - "Mantener el estado abajo y memorizar componentes caros evita dibujar de más."
+  - "Use deferred value y use transition priorizan que la interfaz responda al instante."
+  - "Code splitting carga menos al inicio, y la virtualización dibuja solo lo visible en listas largas."
+entrevista:
+  en_30_segundos: "Primero mido con el Profiler. Después ataco la causa: estado demasiado arriba, dibujos innecesarios (`memo` con props estables, o el React Compiler), trabajo pesado que bloquea (`useDeferredValue` o `useTransition`), bundles grandes (code splitting) y listas largas (virtualización)."
+  trampas:
+    - pregunta: "¿Que un componente se vuelva a dibujar es un problema?"
+      respuesta: "No necesariamente: dibujar es barato y React solo toca el DOM donde hay cambios. Es un problema cuando el componente es caro o se dibuja muchísimas veces, y eso se confirma midiendo."
+  cuando_no: "Optimizar sin un problema medido llena el código de `memo` y hooks de memorización que lo hacen más difícil de mantener, a cambio de una mejora que nadie nota."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/19-performance/App.tsx?raw'
+
+## Concepto
+
+La regla número uno: **medir antes de optimizar**, con el Profiler de React DevTools o las herramientas del navegador. Las técnicas más comunes:
+
+- **No dibujar de más:** estado lo más abajo posible, `memo` en componentes caros, con `useMemo` y `useCallback` para mantener las props estables (R10). El React Compiler automatiza buena parte.
+- **Priorizar la respuesta:** `useDeferredValue` y `useTransition` permiten que la interfaz responda al instante mientras el trabajo pesado queda en segundo plano.
+- **Cargar menos:** *code splitting* con `lazy` y `Suspense` para no descargar todo al inicio.
+- **Listas largas:** virtualización (por ejemplo con TanStack Virtual), que dibuja solo lo visible.
+- **Keys estables**, para no recrear elementos (R6).
+
+Pensalo como un restaurante en hora pico: no conviene que el mozo espere a que salga un plato complicado para tomar el pedido de la mesa siguiente; primero atiende y la cocina trabaja de fondo.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+El campo usa `busqueda`, que se actualiza en cada tecla; la lista usa `busquedaDiferida`. Si filtrar 5000 tareas es lento, React prioriza el campo y actualiza la lista apenas puede. `memo` evita dibujar la lista si su prop no cambió.

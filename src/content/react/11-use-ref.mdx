@@ -1,0 +1,52 @@
+---
+id: react-semi-senior-use-ref-01
+track: react
+nivel: semi-senior
+modulo: "React"
+titulo: "useRef"
+duracion_min: 5
+prerequisitos: [react-semi-senior-use-memo-y-use-callback-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué diferencia hay entre una ref y un estado?"
+    explicacion: "Cambiar un estado provoca un nuevo dibujo; cambiar `ref.current`, no. Lo que se muestra en pantalla va en el estado."
+  - tipo: autoevaluacion
+    pregunta: "¿Cuándo está disponible `campo.current` apuntando al input?"
+    explicacion: "Después de que React dibuja y conecta el elemento: en un efecto o en un manejador de eventos. Durante el primer dibujo todavía es `null`."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué no mostrar `clics.current` en el JSX?"
+    explicacion: "Porque al cambiar no provoca un nuevo dibujo, así que la pantalla quedaría desactualizada."
+tarea_local: "Armá un cronómetro con botones Iniciar y Detener. Guardá el id del `setInterval` en una ref y los segundos en un estado."
+resultado_esperado: "Detener corta el intervalo correcto aunque hayas iniciado y detenido varias veces, y los segundos se ven actualizados."
+resumen:
+  - "Use ref guarda un valor que sobrevive entre dibujos sin provocar uno nuevo al cambiar."
+  - "Sirve para acceder a elementos del DOM, como enfocar un campo."
+  - "También sirve para guardar valores que no se muestran, como el id de un temporizador."
+  - "Lo que se muestra en pantalla va en el estado, no en una ref."
+entrevista:
+  en_30_segundos: "Uso `useRef` para acceder al DOM, como enfocar o medir un elemento, y para guardar valores mutables que no afectan lo que se ve, como el id de un temporizador. Lo que se muestra va en el estado, porque cambiar una ref no vuelve a dibujar."
+  trampas:
+    - pregunta: "¿Hace falta `forwardRef` para pasar una ref a un componente propio?"
+      respuesta: "Ya no desde React 19: los componentes de función reciben `ref` como una prop común. `forwardRef` sigue funcionando y aparece en código anterior."
+  cuando_no: "Manipular el DOM a mano con refs para cosas que React puede declarar (agregar clases, mostrar u ocultar) rompe el modelo: React y el DOM quedan desincronizados."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/11-use-ref/App.tsx?raw'
+
+## Concepto
+
+`useRef` guarda un valor que **sobrevive entre dibujos pero no provoca un nuevo dibujo al cambiar**. Se lee y se escribe en `ref.current`. Tiene dos usos:
+
+- **Acceder a un elemento del DOM**, pasándole la ref con `ref={campo}`: enfocar un campo, medir un elemento o hacer scroll.
+- **Guardar un valor mutable** que no se muestra: el id de un temporizador o un contador interno.
+
+No conviene leer ni escribir refs mientras el componente se dibuja (salvo para inicializarlas), porque React no se entera de esos cambios. Desde React 19, un componente de función puede recibir `ref` como una prop común.
+
+Pensalo como un cajón de escritorio: guardás algo ahí, sigue estando cuando volvés, pero cambiar lo que hay adentro no hace que nadie se entere.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+`campo` apunta al input y permite enfocarlo. `clics` cuenta sin volver a dibujar: el número solo se lee cuando se toca el segundo botón.

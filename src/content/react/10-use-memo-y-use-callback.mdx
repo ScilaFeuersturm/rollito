@@ -1,0 +1,52 @@
+---
+id: react-semi-senior-use-memo-y-use-callback-01
+track: react
+nivel: semi-senior
+modulo: "React"
+titulo: "useMemo y useCallback"
+duracion_min: 6
+prerequisitos: [react-semi-senior-use-effect-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué diferencia hay entre `useMemo` y `useCallback`?"
+    explicacion: "`useMemo` guarda el resultado de una función; `useCallback` guarda la función misma. `useCallback(fn, deps)` equivale a `useMemo(() => fn, deps)`."
+  - tipo: autoevaluacion
+    pregunta: "¿Sirve `useCallback` si el hijo no está envuelto en `memo`?"
+    explicacion: "En general no: el hijo se vuelve a dibujar igual cuando se dibuja el padre. Sirve si la función es dependencia de un efecto o de otro `useMemo`."
+  - tipo: autoevaluacion
+    pregunta: "¿Conviene envolver cada cálculo en `useMemo`?"
+    explicacion: "No. Tiene su propio costo y complica el código. Se usa cuando se midió un problema o cuando hace falta una referencia estable."
+tarea_local: "Instalá React DevTools en tu navegador y abrí el Profiler sobre una lista de 200 elementos con un botón que cambia algo no relacionado. Grabá un clic sin `memo` ni `useCallback`, y después con los dos."
+resultado_esperado: "En la primera grabación todas las filas se vuelven a dibujar. En la segunda, el Profiler muestra que las filas no se dibujaron."
+resumen:
+  - "En cada dibujo se repiten los cálculos y se vuelven a crear las funciones."
+  - "Use memo guarda el resultado de un cálculo, y use callback guarda la misma función entre dibujos."
+  - "Sirven para cálculos costosos, para props de hijos memorizados y para dependencias de efectos."
+  - "Fuera de esos casos agregan complejidad sin beneficio: primero se mide."
+entrevista:
+  en_30_segundos: "`useMemo` memoriza un valor y `useCallback` una función, para mantener referencias estables entre dibujos. Los uso con hijos envueltos en `memo`, con cálculos caros o con dependencias de efectos, siempre después de medir con el Profiler. El React Compiler automatiza buena parte de esto."
+  trampas:
+    - pregunta: "¿`useMemo` garantiza que el cálculo no se repita nunca?"
+      respuesta: "No. Es una optimización: React puede descartar el valor guardado y recalcularlo. El código tiene que funcionar bien aunque se recalcule."
+  cuando_no: "Envolver todo \"por las dudas\" hace el código más difícil de leer y puede ser más lento que no memorizar nada."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/10-use-memo-y-use-callback/App.tsx?raw'
+
+## Concepto
+
+En cada dibujo, el código del componente se vuelve a ejecutar: los cálculos se repiten y las funciones se vuelven a crear.
+
+- **`useMemo(() => calculo, [deps])`** guarda el **resultado** de un cálculo y solo lo recalcula si cambian sus dependencias.
+- **`useCallback(fn, [deps])`** guarda la **misma función** entre dibujos.
+
+Sirven en tres casos: un cálculo realmente costoso, una prop que va a un hijo envuelto en `memo` (que solo se vuelve a dibujar si sus props cambian) y una dependencia de un efecto. Fuera de esos casos, agregan complejidad sin beneficio. El React Compiler puede aplicar esta memorización automáticamente.
+
+Pensalo como anotar el resultado de una cuenta larga en un papel: si los números no cambiaron, mirás el papel en vez de volver a hacerla.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+Cambiar el modo oscuro vuelve a dibujar `App`, pero `visibles` no se recalcula (sus dependencias no cambiaron) y las `Fila`, envueltas en `memo`, no se vuelven a dibujar, porque `alBorrar` es la misma función gracias a `useCallback`.

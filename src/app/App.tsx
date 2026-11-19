@@ -15,9 +15,12 @@ import { Privado } from './Privado'
 import { Repaso } from './Repaso'
 import { interviewPractice } from '../content/android/interview-practice'
 import { flashcards } from '../content/android/flashcards'
+import { katas, katasIntro } from '../content/android/katas'
+import { reactInterview } from '../content/react/interview-practice'
+import { reactKatas } from '../content/react/katas'
 import { functionalInterview } from '../content/funcional/interview-practice'
 import { Link, usePathname } from './router'
-import { cuentaPath, homePath, matchRoute, pageTitle, repasoPath } from './routes'
+import { cuentaPath, homePath, interviewPath, matchRoute, pageTitle, reactInterviewPath, repasoPath } from './routes'
 
 // Marca local de "en este navegador hay una sesión": así Firebase solo se descarga si hace falta.
 const marcaDeSesion = 'rollito.sesion'
@@ -31,7 +34,7 @@ function marcarSesion(activa: boolean) {
 const servicio = () => import('../cuenta/servicio')
 
 // Rutas que solo ven los miembros. La landing, la cuenta y el 404 son públicas; admin se controla adentro.
-const rutasDeContenido = new Set(['flashcards', 'leccion', 'repaso', 'repaso-funcional', 'simulacro', 'simulacro-funcional', 'practica', 'privado'])
+const rutasDeContenido = new Set(['flashcards', 'simulacro-react', 'practica-react', 'leccion', 'repaso', 'repaso-funcional', 'simulacro', 'simulacro-funcional', 'practica', 'privado'])
 const esContenido = (nombre: string) => rutasDeContenido.has(nombre)
 
 function Cargando() {
@@ -156,7 +159,16 @@ export function App({ url }: { url: string }) {
         {route.name === 'flashcards' && <InterviewPractice area="Android" title="Ronda relámpago" questions={flashcards} />}
         {route.name === 'simulacro-funcional' && <InterviewPractice area="Análisis funcional"
           title="Simulacro Analista Funcional Trainee" questions={functionalInterview} />}
-        {route.name === 'practica' && <CodePractice key={route.level.level} level={route.level} />}
+        {route.name === 'practica' && <CodePractice key={route.level.level} area="Android" titulo={`Práctica de código ${route.level.title}`}
+          descripcion="Ejercicios de Kotlin como los de una entrevista en vivo." intro={katasIntro[route.level.level]}
+          items={katas[route.level.level]} lenguaje="kotlin"
+          siguiente={{ href: interviewPath(route.level.level), texto: `Seguí con el simulacro de entrevista ${route.level.title}` }} />}
+        {route.name === 'simulacro-react' && <InterviewPractice key={route.level.level} area="React"
+          title={`Simulacro ${route.level.title}`} questions={reactInterview[route.level.level as 'junior' | 'semi-senior']} />}
+        {route.name === 'practica-react' && <CodePractice key={route.level.level} area="React" titulo={`Práctica de código ${route.level.title}`}
+          descripcion="Ejercicios de React y TypeScript como los de una entrevista en vivo. Las soluciones tienen tests en react-samples/katas."
+          items={reactKatas[route.level.level as 'junior' | 'semi-senior']} lenguaje="tsx"
+          siguiente={{ href: reactInterviewPath(route.level.level), texto: `Seguí con el simulacro de entrevista ${route.level.title}` }} />}
         {route.name === 'repaso' && <Repaso progress={progress} />}
         {route.name === 'repaso-funcional' && <Repaso key="funcional" kind="funcional" progress={progress} />}
         {route.name === 'privado' && <Privado />}

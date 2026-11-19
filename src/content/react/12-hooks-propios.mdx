@@ -1,0 +1,51 @@
+---
+id: react-semi-senior-hooks-propios-01
+track: react
+nivel: semi-senior
+modulo: "React"
+titulo: "Hooks propios"
+duracion_min: 5
+prerequisitos: [react-semi-senior-use-ref-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué el nombre tiene que empezar con `use`?"
+    explicacion: "Es la convención que usan React y sus herramientas (como el linter) para saber que es un hook y verificar las reglas."
+  - tipo: autoevaluacion
+    pregunta: "Dos componentes usan `useTareas`. ¿Comparten las mismas tareas?"
+    explicacion: "No: cada uno tiene su propio estado. Para compartirlo, el estado tiene que subir a un padre común o a un contexto."
+  - tipo: autoevaluacion
+    pregunta: "¿Se puede llamar a un hook dentro de un `if`?"
+    explicacion: "No. React identifica cada hook por el orden en que se llama, así que el orden tiene que ser el mismo en cada dibujo."
+tarea_local: "Escribí un hook `useAlternar(inicial)` que devuelva el valor y una función para invertirlo. Usalo en dos componentes distintos: un menú desplegable y un interruptor de modo oscuro."
+resultado_esperado: "Cada componente maneja su propio valor de forma independiente, con el mismo hook."
+resumen:
+  - "Un hook propio es una función que empieza con use y usa otros hooks adentro."
+  - "Sirve para extraer lógica con estado y reutilizarla en varios componentes."
+  - "Se comparte la lógica, no el estado: cada componente tiene su propia copia."
+  - "Los hooks se llaman siempre en el nivel superior, nunca dentro de condiciones ni bucles."
+entrevista:
+  en_30_segundos: "Extraigo lógica con estado a hooks propios cuando se repite o cuando ensucia el componente: carga de datos, formularios o suscripciones. Cada componente que lo usa tiene su propio estado, y respeto las reglas de los hooks, con el linter de React activo."
+  trampas:
+    - pregunta: "¿Por qué los hooks no pueden ir dentro de un `if`?"
+      respuesta: "Porque React guarda el estado de cada hook según el orden de las llamadas. Si un `if` saltea un hook en un dibujo, el orden cambia y React le asigna a cada hook el estado de otro."
+  cuando_no: "Si la lógica no usa hooks, alcanza con una función común. Y un hook usado una sola vez, que solo mueve código de lugar, no siempre aporta claridad."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/12-hooks-propios/App.tsx?raw'
+
+## Concepto
+
+Un **hook propio** es una función cuyo nombre empieza con `use` y que usa otros hooks adentro. Sirve para **extraer lógica con estado y reutilizarla** en varios componentes.
+
+Lo que se comparte es la **lógica**, no el estado: cada componente que llama al hook tiene su propia copia del estado.
+
+Cumple las **reglas de los hooks**: se llaman siempre en el nivel superior del componente o de otro hook, nunca dentro de un `if`, un bucle o una función común.
+
+Pensalo como una receta guardada: cada vez que la usás, cocinás tu propia porción; no compartís el plato con quien usó la misma receta.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+`useTareas` encapsula el estado, la acción `alternar` y el cálculo de `pendientes`. El componente queda corto y la lógica se puede testear y reutilizar.
