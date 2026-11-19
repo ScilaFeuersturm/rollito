@@ -1,0 +1,92 @@
+---
+id: android-semi-senior-puente-de-mvp-a-mvvm-con-corrutinas-y-flow-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Puente: de MVP a MVVM con corrutinas y Flow"
+duracion_min: 7
+prerequisitos: [android-semi-senior-fragment-viewmodel-y-restauracion-01, android-semi-senior-livedata-vs-stateflow-01, android-semi-senior-tipos-sellados-y-estados-de-pantalla-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "En MVP, ¿por qué un Presenter con referencia a la Activity podía causar una fuga de memoria?"
+    opciones: ["Porque el Presenter usaba demasiados hilos.", "Porque si el Presenter (o una tarea en curso) vivía más que la Activity, la seguía referenciando y el garbage collector no podía liberarla.", "Porque las interfaces de Java ocupan más memoria que las de Kotlin."]
+    correcta: 1
+    explicacion: "Al rotar, la Activity vieja se destruye. Si algo que vive más (un Presenter retenido, un `AsyncTask` con callback) la sigue apuntando, queda en memoria con todo su árbol de vistas."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué no hay que guardar un `Context` de Activity en un ViewModel?"
+    opciones: ["Porque el ViewModel vive más que la Activity: al rotar la retiene y se produce la misma fuga que en MVP.", "Porque el ViewModel no puede recibir parámetros.", "No hay problema: el ViewModel libera el `Context` solo al rotar."]
+    correcta: 0
+    explicacion: "El ViewModel sobrevive a la rotación justamente porque no depende de la Activity. Si necesitás recursos, resolvelos en la UI o usá el contexto de aplicación."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué te da `StateFlow` que `LiveData` no te da, y qué tenés que hacer vos a cambio?"
+    opciones: ["Es Kotlin puro, tiene operadores de `Flow` y se testea con `runTest`; a cambio, lo colectás respetando el ciclo de vida (`collectAsStateWithLifecycle` o `repeatOnLifecycle`).", "Conoce el ciclo de vida solo y además es más rápido; no tenés que hacer nada extra.", "Permite valores nulos; a cambio, no se puede usar en Compose."]
+    correcta: 0
+    explicacion: "`LiveData` se pausa sola cuando la vista no está activa. `StateFlow` no conoce el ciclo de vida, así que esa parte queda a tu cargo."
+  - tipo: autoevaluacion
+    pregunta: "Traducí a MVVM este Presenter: `view.showLoading()`, después `repo.obtenerTareas(callback)`, y en el callback `hideLoading()` + `showTareas(t)` o `hideLoading()` + `showError()`. ¿Qué reemplaza a cada parte?"
+    explicacion: "`showLoading()` → `_estado.value = Cargando`. El callback → una función `suspend` dentro de `viewModelScope.launch` (si el repo es viejo, se envuelve con `suspendCancellableCoroutine`). Éxito → `Contenido(t)`, error → `Error(...)`. `hideLoading()` desaparece: con un solo estado, pasar a `Contenido` o `Error` ya implica que no está cargando. Ese olvido era un bug típico de MVP."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué hace `viewModelScope` cuando se destruye el ViewModel?"
+    explicacion: "Cancela todas las corrutinas que lanzó. Pasa en `onCleared()`, cuando la pantalla se va de verdad, no al rotar."
+tarea_local: "En Android Studio, armá `TareasViewModel` con un repositorio falso que espera un segundo (`delay(1000)`) y falla una de cada dos veces. Mostrá los tres estados en Compose con un botón Reintentar y rotá el emulador mientras está cargando."
+resultado_esperado: "Al rotar no se reinicia la carga (el `init` no se vuelve a ejecutar) y el botón Reintentar vuelve a pedir los datos."
+resumen:
+  - "El view model expone estado y no conoce a la vista."
+  - "Un estado de pantalla sellado evita combinaciones imposibles, como cargando y con error a la vez."
+  - "El scope del view model cancela solo el trabajo pendiente cuando se destruye."
+  - "Sobrevive a la rotación, pero no a la muerte del proceso."
+  - "Se expone un state flow de solo lectura, nunca el mutable."
+entrevista:
+  en_30_segundos: "Lo que cambia es la dirección de la dependencia. En MVP el Presenter le daba órdenes a la vista por una interfaz, así que la conocía y había que soltarla en cada rotación. En MVVM el ViewModel expone un estado observable, en general un `StateFlow` con un `UiState` sellado, y la vista lo dibuja. Como no tiene referencia a la vista, sobrevive a la rotación sin fugas, y su `viewModelScope` cancela el trabajo pendiente cuando se destruye. Además lo testeo sin mockear vistas: llamo una función y verifico el estado."
+  trampas:
+    - pregunta: "¿El ViewModel sobrevive a la muerte del proceso?"
+      respuesta: "No. Sobrevive a los cambios de configuración porque lo retiene el `ViewModelStore`. Si el sistema mata el proceso en segundo plano, se pierde: lo mínimo para restaurar va en `SavedStateHandle` y los datos, en persistencia."
+    - pregunta: "¿Por qué el ejemplo atrapa `IOException` y no `Exception`?"
+      respuesta: "Porque `catch (e: Exception)` también atrapa `CancellationException`, y eso rompe la cancelación de la corrutina. Si atrapás `Exception`, relanzá la de cancelación."
+  cuando_no: "En una pantalla trivial sin lógica, por ejemplo un texto fijo de ayuda, un ViewModel es ceremonia de más."
+---
+
+## Concepto
+
+**Qué problema resuelve.** En MVP había tres peleas constantes: el Presenter se perdía al rotar, la referencia a la vista causaba fugas y las tareas en segundo plano había que cortarlas a mano en `onDestroy`. MVVM con `ViewModel`, corrutinas y `StateFlow` resuelve las tres con piezas que ya conocen el ciclo de vida.
+
+**Antes vs. ahora.**
+
+- `presenter.attach(view)` / `detach()` → la vista observa `estado`. El ViewModel no la conoce.
+- `view.showLoading()`, `view.showError()` → un solo `UiState` sellado con todos los casos.
+- `AsyncTask` + cancelar en `onDestroy` → `viewModelScope.launch`, que se cancela solo en `onCleared`.
+- Presenter recreado (o retenido con trucos) al rotar → `ViewModel` retenido por el `ViewModelStore`.
+
+El ViewModel **expone estado** y **recibe eventos**. La vista no recibe órdenes como `showLoading()`: dibuja lo que dice el estado. Por eso el estado se modela como un tipo sellado, y la pantalla nunca puede estar cargando y con error a la vez.
+
+## Ejemplo
+
+```kotlin
+sealed interface TareasUiState {
+    data object Cargando : TareasUiState
+    data class Contenido(val tareas: List<Tarea>) : TareasUiState
+    data class Error(val mensaje: String) : TareasUiState
+}
+
+class TareasViewModel(private val repo: TareasRepository) : ViewModel() {
+    private val _estado = MutableStateFlow<TareasUiState>(TareasUiState.Cargando)
+    val estado: StateFlow<TareasUiState> = _estado.asStateFlow()
+
+    init { cargar() }
+
+    fun cargar() {
+        viewModelScope.launch {
+            _estado.value = TareasUiState.Cargando
+            _estado.value = try {
+                TareasUiState.Contenido(repo.obtenerTareas())
+            } catch (e: IOException) {
+                TareasUiState.Error("No hay conexión")
+            }
+        }
+    }
+}
+```
+
+En la pantalla se colecta con `val estado by viewModel.estado.collectAsStateWithLifecycle()` y un `when (estado)` dibuja cada caso. `obtenerTareas()` es `suspend`, y el repositorio usa `withContext(Dispatchers.IO)` cuando hace falta: el ViewModel no sabe de hilos.
+
+*El código usa librerías de Android, así que no se compila en `android-samples`. Probalo en Android Studio con la tarea de abajo.*

@@ -1,0 +1,70 @@
+---
+id: android-semi-senior-code-review-de-ia-1-login-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Code review de IA 1: un login"
+duracion_min: 6
+prerequisitos: [android-semi-senior-revisar-codigo-generado-por-ia-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "Antes de mirar las otras preguntas: ¿cuántos de los seis problemas del snippet encontrás? Decilos en voz alta y después compará."
+    explicacion: "(1) `SesionManager` guarda un `Context` en un singleton: si es de Activity, la retiene para siempre (fuga). (2) `Log.d` imprime el token: queda en Logcat y en reportes de errores. (3) El token va en `SharedPreferences` sin cifrar. (4) `estado` es un `MutableStateFlow` público: cualquiera puede cambiarlo desde afuera. (5) `GlobalScope.launch`: no se cancela con la pantalla. (6) Solo contempla el camino feliz: sin `try/catch`, sin chequear `isSuccessful` y con `body()!!`, así que un 401 o la falta de red cierran la app."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué tiene de malo `lateinit var context: Context` dentro de un `object`?"
+    opciones: ["Nada, es la forma recomendada de tener el contexto a mano.", "El `object` vive lo que el proceso. Si le asignan una Activity, la retiene después de destruida, con todo su árbol de vistas.", "`lateinit` no se puede usar con `Context`."]
+    correcta: 1
+    explicacion: "Si un singleton necesita un contexto, recibe el de aplicación (`applicationContext`) o, mejor, se inyecta con Hilt usando `@ApplicationContext`."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo corregirías el guardado del token?"
+    opciones: ["Guardarlo en un archivo de texto en vez de `SharedPreferences`.", "No loguearlo nunca y guardarlo cifrado, con una clave que vive en el Android Keystore.", "Guardarlo en una variable estática para no tocar el disco."]
+    correcta: 1
+    explicacion: "La idea es que el token no quede legible ni en logs ni en disco. La herramienta concreta (DataStore con cifrado propio, Keystore) depende del proyecto; verificá en developer.android.com el estado de EncryptedSharedPreferences, que fue deprecada."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo debería exponer el estado el ViewModel?"
+    opciones: ["`val estado = MutableStateFlow(...)` público, como está.", "`private val _estado = MutableStateFlow(...)` y `val estado: StateFlow<LoginState> = _estado.asStateFlow()`.", "Con una variable `var estado: LoginState` pública."]
+    correcta: 1
+    explicacion: "Solo el ViewModel cambia el estado; la UI lo lee. Es el flujo unidireccional."
+tarea_local: "En Android Studio, reescribí el snippet corregido: `viewModelScope`, `try/catch` que distinga `IOException` de `HttpException`, estado privado expuesto como `StateFlow`, y un `SesionRepository` inyectado que no conozca ningún `Context` de Activity."
+resultado_esperado: "El ViewModel compila, maneja error de red y credenciales inválidas con estados distintos, y en Logcat no aparece el token."
+resumen:
+  - "Un singleton que guarda un contexto de Activity produce una fuga de memoria."
+  - "Los tokens no se loguean ni se guardan en texto plano."
+  - "El estado mutable queda privado dentro del view model."
+  - "Global scope no tiene dueño: se usa el scope del view model."
+  - "Un login tiene que manejar error de red y credenciales inválidas."
+---
+
+## Concepto
+
+Le pediste a la IA: *"Hacé el ViewModel del login y guardá el token cuando sale bien"*. Te devolvió el código de abajo. Compila y, con usuario y clave correctos, funciona.
+
+Hacé el review como si fuera el PR de alguien del equipo. Hay **seis problemas**: de ciclo de vida, de seguridad, de diseño del estado y de manejo de errores. Buscalos antes de abrir las respuestas.
+
+## Ejemplo
+
+```kotlin
+object SesionManager {
+    lateinit var context: Context
+
+    fun guardarToken(token: String) {
+        Log.d("Sesion", "Token guardado: $token")
+        context.getSharedPreferences("sesion", Context.MODE_PRIVATE)
+            .edit().putString("token", token).apply()
+    }
+}
+
+class LoginViewModel(private val api: AuthApi) : ViewModel() {
+    val estado = MutableStateFlow<LoginState>(LoginState.Inicial)
+
+    fun login(usuario: String, clave: String) {
+        GlobalScope.launch {
+            val respuesta = api.login(usuario, clave)
+            SesionManager.guardarToken(respuesta.body()!!.token)
+            estado.value = LoginState.Exito
+        }
+    }
+}
+```
+
+*Pista:* recorré el checklist de la lección anterior: qué pide, ciclo de vida, hilos, errores, seguridad y dependencias.

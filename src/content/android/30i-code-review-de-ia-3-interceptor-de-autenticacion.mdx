@@ -1,0 +1,75 @@
+---
+id: android-semi-senior-code-review-de-ia-3-interceptor-de-autenticacion-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Code review de IA 3: un interceptor de autenticación"
+duracion_min: 7
+prerequisitos: [android-semi-senior-code-review-de-ia-2-lista-de-productos-01, android-semi-senior-okhttp-y-serializacion-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Cuántos de los seis problemas encontrás? Decilos en voz alta y después compará."
+    explicacion: "(1) `API_KEY` hardcodeada: cualquier secreto dentro del APK se puede extraer decompilándolo. (2) `HttpLoggingInterceptor` con `Level.BODY` sin chequear `BuildConfig.DEBUG`: en release loguea tokens y datos personales. (3) `hostnameVerifier { _, _ -> true }` desactiva la verificación del certificado: queda expuesto a un ataque de intermediario (MITM). (4) No cierra la primera respuesta antes de reintentar: pierde la conexión y, según la versión de OkHttp, lanza `IllegalStateException`. (5) Si llegan varios 401 a la vez, cada pedido refresca el token por su cuenta: hace falta sincronizar el refresh, y OkHttp ya tiene `Authenticator` para este caso. (6) Compila pero no hace lo pedido: si el refresh falla, `nuevo` es `null` y reintenta con `Bearer null`, en vez de cerrar la sesión."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué no alcanza con poner la API key en `BuildConfig` o en `local.properties` para que sea secreta?"
+    opciones: ["Sí alcanza: `BuildConfig` está cifrado.", "Porque igual termina dentro del APK, y el APK se puede decompilar. Lo que es secreto de verdad se queda en el backend.", "Porque `local.properties` se sube al repo."]
+    correcta: 1
+    explicacion: "`local.properties` sirve para no commitear la clave, pero no la protege en el APK. Para claves sensibles, el backend hace de intermediario o se emiten tokens de corta duración por usuario."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué herramienta de OkHttp está pensada para reaccionar a un 401 y reintentar con credenciales nuevas?"
+    opciones: ["`Authenticator`: se llama solo ante un 401, devuelve el pedido con el token nuevo (o `null` para rendirse) y OkHttp maneja el reintento.", "`CookieJar`.", "`EventListener`."]
+    correcta: 0
+    explicacion: "Con `Authenticator`, el interceptor solo agrega el header y la lógica de refresh queda separada. Igual hay que sincronizar para que varios 401 simultáneos hagan un único refresh."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo dejás el logging de red sin exponer datos?"
+    opciones: ["`Level.BODY` siempre, pero borrando los logs cada tanto.", "Agregar el interceptor de logging solo si `BuildConfig.DEBUG`, y además ocultar el header `Authorization` con `redactHeader`.", "Usar `Level.HEADERS` en release."]
+    correcta: 1
+    explicacion: "En release, nada de cuerpos ni headers con credenciales. Aun en debug conviene ocultar `Authorization`, porque los logs de debug también se comparten."
+tarea_local: "En Android Studio, reescribí el cliente: interceptor que solo agrega el header, `Authenticator` con un `synchronized` (o `Mutex`) que refresque una sola vez y devuelva `null` si falla, logging solo en debug con `redactHeader(\"Authorization\")` y sin `hostnameVerifier`. Probalo con MockWebServer devolviendo un 401 y después un 200."
+resultado_esperado: "El test hace un solo refresh, el segundo pedido lleva el token nuevo y, si el refresh falla, no hay reintento con `Bearer null`."
+resumen:
+  - "Cualquier secreto dentro del APK se puede extraer."
+  - "El logging del cuerpo va solo en debug y con el header de autorización oculto."
+  - "Nunca se desactiva la verificación de certificados ni de hostname."
+  - "Para reaccionar a un 401, OkHttp tiene authenticator; el refresh se sincroniza."
+  - "Si el refresh falla, se cierra la sesión: no se reintenta con un token nulo."
+---
+
+## Concepto
+
+Le pediste a la IA: *"Agregá a OkHttp un interceptor que mande el token y lo refresque si vence"*. Te dio esto. Compila, y en una prueba rápida con un solo pedido parece andar.
+
+Este snippet se parece a código real de autenticación, por eso hay que revisarlo con lupa. Hay **seis problemas**, de seguridad, de manejo de recursos, de concurrencia y uno que **compila pero no hace lo que se pidió**.
+
+## Ejemplo
+
+```kotlin
+private const val API_KEY = "sk_live_51H8xQ_EJEMPLO"
+
+class AuthInterceptor(private val sesion: Sesion) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val pedido = chain.request().newBuilder()
+            .header("Authorization", "Bearer ${sesion.token}")
+            .header("X-Api-Key", API_KEY)
+            .build()
+        val respuesta = chain.proceed(pedido)
+        if (respuesta.code == 401) {
+            val nuevo: String? = runBlocking { sesion.refrescarToken() }
+            return chain.proceed(
+                pedido.newBuilder().header("Authorization", "Bearer $nuevo").build()
+            )
+        }
+        return respuesta
+    }
+}
+
+val cliente = OkHttpClient.Builder()
+    .addInterceptor(AuthInterceptor(sesion))
+    .addInterceptor(HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    })
+    .hostnameVerifier { _, _ -> true }
+    .build()
+```
+
+*Pista:* pensá qué pasa con diez pedidos en paralelo cuando vence el token, y qué pasa si el refresh también falla.

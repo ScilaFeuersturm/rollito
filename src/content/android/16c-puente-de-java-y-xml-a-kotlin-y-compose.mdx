@@ -1,0 +1,81 @@
+---
+id: android-junior-puente-de-java-y-xml-a-kotlin-y-compose-01
+track: android
+nivel: junior
+modulo: "Fundamentos de Android"
+titulo: "Puente: de Java y XML a Kotlin y Compose"
+duracion_min: 6
+prerequisitos: [android-vistas-estado-compose-01, android-junior-listas-keys-y-objetos-reciclados-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué cambia en la forma de pensar al pasar del sistema de vistas a Compose?"
+    opciones: ["Nada: Compose es otra sintaxis para el mismo XML.", "Dejás de mutar vistas (`setText`) y describís la pantalla para un estado; cuando el estado cambia, Compose recompone lo que lo lee.", "Compose redibuja toda la pantalla en cada cambio, por eso es más simple."]
+    correcta: 1
+    explicacion: "La interfaz pasa a ser una función del estado. Y no se redibuja todo: solo se vuelven a ejecutar los composables que leen el estado que cambió."
+  - tipo: opcion_multiple
+    pregunta: "En un `LazyColumn` sin `key`, la persona marca como favorita la tercera tarea (estado guardado con `remember` en el ítem). Llega una tarea nueva al principio. ¿Qué pasa?"
+    opciones: ["La favorita sigue siendo la misma tarea.", "La marca queda en la tercera posición, que ahora es otra tarea.", "Compose lanza una excepción por falta de `key`."]
+    correcta: 1
+    explicacion: "Sin `key`, Compose identifica los ítems por posición. Con `key = { it.id }` el estado sigue a la tarea. Mejor aún: si \"favorita\" es un dato de negocio, va en el modelo o en el ViewModel."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué cumple en `LazyColumn` el papel que antes cumplía `DiffUtil` en el `RecyclerView`?"
+    opciones: ["El `Modifier`.", "La `key` de cada ítem.", "El `remember`."]
+    correcta: 1
+    explicacion: "La `key` le da identidad a cada ítem, para que Compose sepa cuál se movió, cuál es nuevo y cuál se fue."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué te da una `data class` que en Java escribías a mano o con Lombok?"
+    explicacion: "`equals`, `hashCode`, `toString`, `copy` y la desestructuración (`componentN`)."
+tarea_local: "En Android Studio, creá un proyecto nuevo con la plantilla Empty Activity (ya viene con Compose). Pegá `ListaDeTareas` con cinco tareas fijas y mostrá un `Toast` con el `id` en el `onClick`."
+resultado_esperado: "La lista se ve, hace scroll y al tocar una tarea aparece su `id`."
+resumen:
+  - "La interfaz es una función del estado: cambiás el estado, no la vista."
+  - "Compose recompone solo lo que lee el estado que cambió."
+  - "Lazy column reemplaza al recycler view y a su adapter."
+  - "La key le da identidad a cada ítem de la lista."
+  - "En Kotlin, que un dato pueda faltar se dice en el tipo."
+entrevista:
+  en_30_segundos: "Con vistas, la UI es un árbol de objetos que voy mutando: busco el `TextView` y le cambio el texto. Con Compose describo cómo se ve la pantalla para un estado, y cuando el estado cambia, el framework recompone solo lo que depende de él. Se eliminan los errores de pantallas desincronizadas y desaparece el código de `Adapter` y `ViewHolder`. Igual sigo pensando en identidad, con `key` en las listas, y en dónde vive el estado."
+  trampas:
+    - pregunta: "¿Recomponer es redibujar toda la pantalla?"
+      respuesta: "No. Compose vuelve a ejecutar solo los composables que leen el estado que cambió, y puede saltear los que reciben los mismos parámetros."
+    - pregunta: "Traduje un archivo de Java a Kotlin y quedó lleno de `!!`. ¿Está bien?"
+      respuesta: "Es una señal de alarma. `!!` dice \"confío en que no es null\" y, si me equivoco, vuelve el `NullPointerException`. Si un valor puede faltar, se modela con `?` y se decide qué mostrar con `?:`."
+  cuando_no: "No hace falta migrar una app entera a Compose de una vez: se puede convivir con XML (`ComposeView` y `AndroidView`) y migrar pantalla por pantalla."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Llegás con un modelo mental de vistas que se mutan y de Java con `null` por todos lados. Esta lección conecta cada pieza vieja con la nueva, para que el código de Compose no parezca magia.
+
+**Antes vs. ahora.**
+
+- `findViewById` + `textView.setText(...)` → una función `@Composable` que recibe datos y los dibuja.
+- `RecyclerView` + `Adapter` + `ViewHolder` + `DiffUtil` → `LazyColumn` con `key`.
+- Un POJO con getters, `equals` y `hashCode` a mano → una `data class`.
+- `if (tarea != null)` en cada lugar → el tipo dice si puede faltar (`String?`) y el compilador te obliga a decidir.
+
+En Compose, la UI es una función del estado: **UI = f(estado)**. No guardás referencias a vistas ni las actualizás. Cambiás el estado y Compose vuelve a ejecutar (recompone) lo que lo lee. `LazyColumn` compone solo lo visible, como el reciclado de antes, y la `key` le da identidad a cada ítem.
+
+## Ejemplo
+
+```kotlin
+data class Tarea(val id: Long, val titulo: String, val nota: String? = null)
+
+@Composable
+fun ListaDeTareas(tareas: List<Tarea>, onClick: (Long) -> Unit) {
+    LazyColumn {
+        items(tareas, key = { it.id }) { tarea ->
+            Text(
+                text = tarea.titulo,
+                modifier = Modifier
+                    .clickable { onClick(tarea.id) }
+                    .padding(16.dp),
+            )
+        }
+    }
+}
+```
+
+La función no sabe de dónde vienen las tareas ni qué pasa al tocarlas: recibe datos y avisa con un callback. Es lo mismo que hacías con la vista pasiva de MVP, pero sin interfaz `View`.
+
+*El código usa Compose, así que no se compila en `android-samples`. Probalo en Android Studio con la tarea de abajo.*

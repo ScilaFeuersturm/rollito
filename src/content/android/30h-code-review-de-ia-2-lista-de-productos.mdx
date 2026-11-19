@@ -1,0 +1,79 @@
+---
+id: android-semi-senior-code-review-de-ia-2-lista-de-productos-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Code review de IA 2: una lista de productos"
+duracion_min: 6
+prerequisitos: [android-semi-senior-code-review-de-ia-1-login-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Cuántos de los seis problemas encontrás? Decilos en voz alta y después compará."
+    explicacion: "(1) La red se ejecuta en el hilo principal: `viewModelScope` usa `Dispatchers.Main`, así que `readText()` lanza `NetworkOnMainThreadException`. (2) La URL es `http://`: desde Android 9 el tráfico sin cifrar está bloqueado por defecto y, además, viaja legible. (3) No hay manejo de errores: sin red o con un JSON inválido, la app se cierra. (4) Los eventos de una sola vez van en un `StateFlow`: al rotar, el error se vuelve a mostrar. (5) `lifecycleScope.launch { collect }` sin `repeatOnLifecycle`: sigue colectando en segundo plano y muestra `Toast` con la app minimizada. (6) `items(productos)` sin `key`: al reordenar o insertar, el estado de cada fila se mezcla. Extra: `collectAsState` en vez de `collectAsStateWithLifecycle`, y los dos `MutableStateFlow` públicos."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué `URL(...).readText()` dentro de `viewModelScope.launch` hace que la app se cierre?"
+    opciones: ["Porque `viewModelScope` corre en `Dispatchers.Main`, y Android no permite hacer red en el hilo principal (`NetworkOnMainThreadException`).", "Porque `readText()` no existe en Android.", "Porque `viewModelScope` no permite funciones bloqueantes."]
+    correcta: 0
+    explicacion: "Lanzar una corrutina no la manda a otro hilo. Hace falta `withContext(Dispatchers.IO)` o, mejor, usar Retrofit con funciones `suspend`, que ya cambian de hilo solas."
+  - tipo: opcion_multiple
+    pregunta: "El error se muestra en un `Toast`. La persona rota la pantalla y el `Toast` aparece otra vez. ¿Por qué?"
+    opciones: ["Porque el `Toast` tiene un bug en Compose.", "Porque `StateFlow` guarda el último valor y se lo entrega a cada nuevo colector, incluida la Activity recreada.", "Porque `lifecycleScope` repite los eventos."]
+    correcta: 1
+    explicacion: "`StateFlow` es para estado, no para eventos de una sola vez. Las opciones son un `Channel` con `receiveAsFlow()`, un `SharedFlow` sin replay o, como recomienda la guía de Android, modelar el mensaje como parte del estado y marcarlo como consumido. Se ve a fondo en el Bloque 3."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué cambia `repeatOnLifecycle(Lifecycle.State.STARTED)` respecto de un `collect` directo en `lifecycleScope`?"
+    opciones: ["Nada, es solo otra sintaxis.", "Colecta solo mientras la Activity está al menos en `STARTED`: al ir a segundo plano cancela la colección y al volver la reinicia.", "Hace que el flow emita más rápido."]
+    correcta: 1
+    explicacion: "`lifecycleScope` se cancela recién en `onDestroy`. Sin `repeatOnLifecycle`, la colección sigue con la app en segundo plano. En Compose, `collectAsStateWithLifecycle()` hace lo mismo."
+tarea_local: "En Android Studio, corregí el snippet: Retrofit con `suspend` (o `withContext(Dispatchers.IO)`), `https`, `try/catch` con un estado de error, `items(productos, key = { it.id })`, `collectAsStateWithLifecycle()` y el evento de error con `Channel` + `repeatOnLifecycle`. Rotá el emulador con el error visible."
+resultado_esperado: "La lista carga sin cerrarse, el error se muestra una sola vez aunque rotes y, con la app minimizada, no aparecen mensajes."
+resumen:
+  - "Lanzar una corrutina en el scope del view model no la saca del hilo principal."
+  - "Desde Android 9, el tráfico http sin cifrar está bloqueado por defecto."
+  - "State flow repite el último valor: no sirve para eventos de una sola vez."
+  - "Sin repeat on lifecycle, la colección sigue con la app en segundo plano."
+  - "Las listas con datos que cambian necesitan key."
+---
+
+## Concepto
+
+Le pediste a la IA: *"Mostrá la lista de productos de la API y un mensaje si falla"*. Te dio esto. Compila, pero en el emulador se cierra al abrir la pantalla.
+
+Esta vez los problemas son de **hilos, ciclo de vida, eventos y listas**. Son **seis**. Antes de abrir las respuestas, pensá también qué pasa al rotar y al minimizar la app.
+
+## Ejemplo
+
+```kotlin
+class ProductosViewModel : ViewModel() {
+    val productos = MutableStateFlow(emptyList<Producto>())
+    val errores = MutableStateFlow<String?>(null)
+
+    init {
+        viewModelScope.launch {
+            val json = URL("http://api.tienda.com/productos").readText()
+            productos.value = Json.decodeFromString<List<Producto>>(json)
+        }
+    }
+}
+
+class ProductosActivity : ComponentActivity() {
+    private val viewModel: ProductosViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycleScope.launch {
+            viewModel.errores.collect { msg ->
+                if (msg != null) Toast.makeText(this@ProductosActivity, msg, Toast.LENGTH_SHORT).show()
+            }
+        }
+        setContent {
+            val productos by viewModel.productos.collectAsState()
+            LazyColumn {
+                items(productos) { producto -> FilaProducto(producto) }
+            }
+        }
+    }
+}
+```
+
+*Pista:* preguntate en qué hilo corre cada línea y qué pasa con cada colector cuando la Activity se recrea o se va a segundo plano.

@@ -2,3 +2,6 @@ node_modules/
 dist/
 .DS_Store
 dist-ssr/
+
+# Preparación personal de entrevistas (no se publica)
+privado/

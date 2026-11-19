@@ -132,6 +132,11 @@ export const interviewPractice: Record<AndroidLevel, readonly Question[]> = {
       prompt: "¿Cómo manejás un 401 en la capa de red?",
       answer: "Con un `Authenticator` de OkHttp que renueva el token y reintenta una vez. Si la renovación falla, se cierra la sesión.",
     },
+    {
+      topic: "Uso de IA",
+      prompt: "¿Usás IA para programar? ¿Cómo?",
+      answer: "Sí, para código repetitivo, borradores de tests y explorar APIs. Lo reviso como el PR de alguien que no conoce el proyecto: ciclo de vida, hilos, errores y seguridad, y verifico en la documentación lo que cambia rápido. Uso solo herramientas aprobadas y nunca pego secretos, datos de clientes ni código que la política no permita.",
+    },
   ],
   senior: [
     {

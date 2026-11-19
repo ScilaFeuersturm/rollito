@@ -1,0 +1,74 @@
+---
+id: android-semi-senior-ia-y-confidencialidad-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Qué no pegar nunca en un asistente de IA"
+duracion_min: 5
+prerequisitos: [android-semi-senior-revisar-codigo-generado-por-ia-01, android-semi-senior-datos-sensibles-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Querés que la IA te ayude con un crash. El stack trace incluye el email y el DNI de un cliente. ¿Qué hacés?"
+    opciones: ["Lo pego tal cual: la herramienta es privada.", "Saco o reemplazo los datos personales (`usuario@ejemplo.com`, `00000000`) y pego solo lo necesario para reproducir el error.", "No uso IA nunca para crashes."]
+    correcta: 1
+    explicacion: "Para entender un crash, la IA necesita la estructura del error, no los datos reales del cliente. Anonimizar y recortar es la práctica estándar."
+  - tipo: opcion_multiple
+    pregunta: "Pegaste por error un token de producción en un chat con un asistente. ¿Qué es lo primero?"
+    opciones: ["Borrar el chat y listo.", "Avisar según el procedimiento de la empresa y rotar (revocar) el token: hay que darlo por filtrado.", "Esperar a ver si alguien lo usa."]
+    correcta: 1
+    explicacion: "Borrar el chat no garantiza que el dato no haya quedado registrado. Un secreto expuesto se rota, igual que si lo hubieras commiteado en un repo público."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál de estas cosas suele estar bien compartir con un asistente aprobado por la empresa?"
+    opciones: ["Un ejemplo mínimo con nombres genéricos que reproduce el problema.", "El archivo `local.properties` con las claves de firma.", "Un export de la base de usuarios para que arme queries."]
+    correcta: 0
+    explicacion: "Un ejemplo mínimo y genérico resuelve casi todas las dudas técnicas sin exponer nada. Las claves y los datos de usuarios no se comparten nunca."
+  - tipo: autoevaluacion
+    pregunta: "Nombrá las cuatro categorías que no se pegan nunca en un asistente."
+    explicacion: "(1) Secretos: tokens, API keys, contraseñas, claves de firma, `google-services.json` con datos sensibles. (2) Datos personales de clientes o usuarios: emails, documentos, ubicaciones, datos financieros, logs que los contengan. (3) Código propietario, cuando la política de la empresa no lo permite o la herramienta no está aprobada. (4) Información interna: URLs y endpoints internos, arquitectura de seguridad, incidentes, datos de negocio no públicos."
+tarea_local: "Buscá (o pedí) la política de uso de IA de tu empresa o de un cliente y anotá tres cosas: qué herramientas están aprobadas, si se puede pegar código propio y qué pasa con los datos que se envían (si se usan para entrenar)."
+resultado_esperado: "Una nota corta con las tres respuestas. Si no existe la política, eso también es una respuesta: en la duda, no se pega código propietario ni datos."
+resumen:
+  - "Nunca se pegan secretos, datos personales ni información interna."
+  - "El código propietario se comparte solo si la política lo permite y la herramienta está aprobada."
+  - "Un ejemplo mínimo con nombres genéricos resuelve casi todas las dudas."
+  - "Un secreto expuesto se da por filtrado y se rota."
+entrevista:
+  en_30_segundos: "Antes de usar un asistente me fijo qué permite la política de la empresa y qué herramientas están aprobadas, por ejemplo planes empresariales que no entrenan con nuestros datos. Nunca pego secretos, datos de clientes ni información interna, y cuando pido ayuda armo un ejemplo mínimo con nombres genéricos. Si alguna vez se expusiera un secreto, se rota: lo trato como cualquier filtración."
+  trampas:
+    - pregunta: "Si la herramienta es de pago y \"no entrena con tus datos\", ¿se puede pegar cualquier cosa?"
+      respuesta: "No. Que no entrene no significa que no guarde registros ni que la política de la empresa lo permita. Secretos y datos personales no se pegan en ninguna herramienta."
+    - pregunta: "¿Y los repos con el asistente integrado en el IDE, que leen todo el proyecto?"
+      respuesta: "Hay que revisar qué archivos envían como contexto y excluir los sensibles (`local.properties`, keystores, configuraciones con credenciales). Muchas herramientas permiten configurar exclusiones; si la empresa no la aprobó, no se usa con ese repo."
+  cuando_no: "En un proyecto personal o de código abierto, sin secretos ni datos de terceros, las restricciones son mucho menores. Igual, los secretos van siempre fuera del código."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Lo que pegás en un asistente sale de tu máquina: viaja a un servicio de terceros, puede quedar en registros y, según el plan, usarse para entrenar. Un token en el prompt es tan grave como un token en un repo público.
+
+**Antes vs. ahora.** El riesgo no es nuevo: pegar código de la empresa en un foro o en un pastebin público siempre estuvo mal. Lo que cambió es que ahora se hace muchas veces por día, como algo natural y desde el IDE. Por eso conviene tener la regla automatizada en la cabeza.
+
+**Nunca se pega:**
+
+1. **Secretos:** tokens, API keys, contraseñas, claves de firma, credenciales de servicios.
+2. **Datos personales** de clientes o usuarios, incluidos logs y stack traces que los contengan.
+3. **Código propietario**, si la política no lo permite o la herramienta no está aprobada.
+4. **Información interna:** endpoints internos, arquitectura de seguridad, incidentes, datos de negocio.
+
+**Cómo pedir ayuda igual:** armá un ejemplo mínimo que reproduzca el problema, con nombres genéricos (`Usuario`, `api.example.com`) y valores falsos. Casi siempre alcanza, y además te obliga a entender mejor el problema.
+
+## Ejemplo
+
+Tenés un error al parsear la respuesta del login. En vez de pegar la respuesta real:
+
+```text
+{"user":"nombre.apellido@empresa.com","token":"eyJhbGciOi...","doc":"30123456"}
+```
+
+pegás una versión con la misma forma y datos falsos:
+
+```text
+{"user":"usuario@ejemplo.com","token":"TOKEN_FALSO","doc":"00000000"}
+```
+
+La IA ve el mismo problema (por ejemplo, que `doc` llega como `String` y tu DTO espera `Long`) sin que salga ningún dato real.

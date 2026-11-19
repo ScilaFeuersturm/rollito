@@ -1,0 +1,76 @@
+---
+id: android-semi-senior-revisar-codigo-generado-por-ia-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Revisá el código que genera la IA"
+duracion_min: 6
+prerequisitos: [android-semi-senior-puente-de-mvp-a-mvvm-con-corrutinas-y-flow-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "La IA te da una función que compila y el test que también generó pasa. ¿Qué te falta?"
+    opciones: ["Nada: si compila y el test pasa, está bien.", "Revisar si el test verifica lo que pide el requisito y no solo lo que hace el código, y mirar los casos borde (errores, vacío, cancelación).", "Pedirle a la IA que confirme que está bien."]
+    correcta: 1
+    explicacion: "Un test generado junto con el código suele confirmar lo que el código hace, no lo que tendría que hacer. Si los dos comparten el mismo error, el test pasa igual."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál de estos problemas es más típico del código generado que del escrito por una persona?"
+    opciones: ["Usar una API que no existe o que está deprecada, con mucha seguridad.", "Errores de tipeo en los nombres de variables.", "Archivos sin formatear."]
+    correcta: 0
+    explicacion: "El modelo predice código plausible según lo que vio al entrenarse. Puede mezclar versiones de una librería o inventar una función que suena bien. Lo que cambia rápido (Navigation, Compose, Gradle) se verifica en la documentación."
+  - tipo: opcion_multiple
+    pregunta: "La IA sugiere `GlobalScope.launch` para una carga de datos desde el ViewModel. ¿Qué respondés en el code review?"
+    opciones: ["Está bien: `GlobalScope` es más rápido.", "Cambiarlo por `viewModelScope`: `GlobalScope` no se cancela con la pantalla, así que el trabajo sigue y puede escribir en un estado que nadie mira.", "Cambiarlo por `runBlocking` para que sea más seguro."]
+    correcta: 1
+    explicacion: "`GlobalScope` rompe la concurrencia estructurada: la corrutina no tiene dueño y vive mientras viva el proceso."
+  - tipo: autoevaluacion
+    pregunta: "Nombrá en voz alta las seis cosas que revisás siempre en código generado por IA, en el orden de la lección."
+    explicacion: "(1) Que haga lo que se pidió, con casos borde. (2) Ciclo de vida: scopes y quién retiene a quién. (3) Hilos: nada bloqueante en el hilo principal. (4) Errores: red, parseo, cancelación. (5) Seguridad: secretos, logs, datos sensibles, validaciones. (6) Dependencias y licencias: que la API exista y esté vigente, y que no copie código con una licencia incompatible."
+tarea_local: "En Android Studio, pedile a un asistente de IA (el que permita tu empresa, o uno personal con un proyecto de prueba) un ViewModel que cargue una lista desde Retrofit. Revisalo con los seis puntos de la lección y anotá qué cambiaste y por qué."
+resultado_esperado: "Una lista de al menos tres correcciones justificadas, por ejemplo scope, manejo de errores y estado mutable expuesto, y la versión final compilando."
+resumen:
+  - "Que compile no quiere decir que haga lo que se pidió."
+  - "Revisá siempre ciclo de vida, hilos, errores y seguridad."
+  - "La IA puede usar APIs inventadas o deprecadas con total seguridad."
+  - "Un test generado junto con el código puede compartir su mismo error."
+  - "Vos firmás el pull request: la responsabilidad no se delega."
+entrevista:
+  en_30_segundos: "Sí, uso asistentes de IA, sobre todo para código repetitivo, primeros borradores de tests, explorar una API que no conozco y como segunda opinión en un review. Lo trato como el código de alguien que no conoce el proyecto: lo leo entero y reviso ciclo de vida, hilos, manejo de errores y seguridad antes de commitearlo, y lo que cambia rápido lo verifico en la documentación oficial. Uso solo las herramientas que aprueba la empresa y nunca pego secretos, datos de clientes ni código que la política no permita. Si sale en mi PR, la responsabilidad es mía."
+  trampas:
+    - pregunta: "Si la IA escribe el código y los tests, ¿quién es responsable de un bug en producción?"
+      respuesta: "La persona que lo commiteó y quien lo aprobó en el review, igual que con cualquier código. La IA es una herramienta; no firma el PR."
+    - pregunta: "¿Para qué no usarías IA?"
+      respuesta: "Para decisiones que necesitan contexto que la IA no tiene: diseño de seguridad, criptografía propia o requisitos de negocio ambiguos. Tampoco con código o datos que la política de la empresa no permite compartir. En esos casos, la puedo usar para explorar ideas, pero la decisión y la implementación son mías."
+  cuando_no: "Si revisar y corregir lo generado te lleva más que escribirlo, como en un cambio chico en código que conocés bien, escribilo directamente."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Un asistente de IA escribe código plausible a gran velocidad. Plausible no es lo mismo que correcto: el modelo no conoce tu proyecto ni tus reglas de negocio, y no sabe en qué versión de cada librería estás. El riesgo está en el código que **compila, parece razonable y está mal**.
+
+**Antes vs. ahora.** Antes copiabas de Stack Overflow y la respuesta tenía fecha, votos y comentarios que te avisaban si estaba vieja. Lo generado llega sin nada de eso y adaptado a tu caso, así que parece más confiable de lo que es.
+
+Revisalo como el PR de alguien que no conoce el proyecto, con seis preguntas:
+
+1. **¿Hace lo que se pidió?** Incluye casos borde: lista vacía, sin red, doble toque, datos nulos.
+2. **Ciclo de vida.** `GlobalScope`, un `Context` de Activity guardado en un singleton o en el ViewModel, o un `collect` sin `repeatOnLifecycle`.
+3. **Hilos.** Red o disco en el hilo principal, o `runBlocking` en la UI.
+4. **Errores.** Solo el camino feliz, `!!`, `catch (e: Exception)` que se traga la cancelación, fallas de red no clasificadas.
+5. **Seguridad.** Tokens hardcodeados o logueados, datos sensibles en `SharedPreferences` sin cifrar, verificación TLS desactivada, logging del cuerpo de las respuestas en release.
+6. **Dependencias y licencias.** ¿La API existe y está vigente? ¿Sumó una librería que nadie pidió? ¿Copió un fragmento reconocible de código con licencia incompatible?
+
+## Ejemplo
+
+Le pedís a la IA "cargá el perfil del usuario" y te da esto:
+
+```kotlin
+fun cargarPerfil() {
+    GlobalScope.launch {
+        val perfil = api.perfil()!!
+        _estado.value = PerfilUiState.Contenido(perfil)
+    }
+}
+```
+
+Compila y en el emulador con wifi anda. En el review encontrás tres de los seis puntos: `GlobalScope` (ciclo de vida), `!!` sin manejo de errores (si no hay red, la app se cierra) y nada de estado de carga (no hace todo lo que se pidió). La versión corregida usa `viewModelScope`, clasifica la falla y emite `Cargando` antes de pedir los datos.
+
+Las próximas lecciones son tres code reviews para practicar: cada una tiene un snippet "generado por IA" con seis problemas escondidos.

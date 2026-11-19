@@ -1,0 +1,86 @@
+---
+id: android-semi-senior-puente-de-herramientas-hilt-ksp-kts-y-serializacion-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Puente: de Dagger, Gson y Groovy a Hilt, KSP y KTS"
+duracion_min: 6
+prerequisitos: [android-semi-senior-dagger-debajo-de-hilt-01, android-semi-senior-okhttp-y-serializacion-01, android-semi-senior-gradle-kotlin-dsl-y-version-catalogs-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Con Gson, el JSON `{\"id\": 1}` y `data class TareaDto(val id: Long, val titulo: String)`. ¿Qué vale `titulo` y cuándo te enterás?"
+    opciones: ["Gson lanza un error al parsear porque falta el campo.", "Vale `null` aunque el tipo sea `String`, y te enterás más tarde, con un `NullPointerException` lejos del parseo.", "Vale `\"\"` porque Gson usa un valor vacío."]
+    correcta: 1
+    explicacion: "Gson instancia la clase sin llamar al constructor y llena los campos por reflexión, así que se saltea las garantías de nulabilidad de Kotlin."
+  - tipo: opcion_multiple
+    pregunta: "Con Gson, `data class TareaDto(val id: Long, val titulo: String = \"Sin título\")` recibe `{\"id\": 1}`. ¿Y con Kotlinx Serialization?"
+    opciones: ["Gson: `\"Sin título\"`. Kotlinx: `\"Sin título\"`.", "Gson: `null`. Kotlinx: `\"Sin título\"`.", "Gson: `null`. Kotlinx: error por campo faltante."]
+    correcta: 1
+    explicacion: "Gson no ejecuta el constructor, así que no aplica el valor por defecto. El serializador que genera Kotlinx Serialization sí lo aplica."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué relación hay entre Hilt y Dagger?"
+    opciones: ["Hilt reemplazó a Dagger, que quedó deprecado.", "Hilt es Dagger con componentes predefinidos atados al ciclo de vida de Android.", "Hilt hace la inyección por reflexión en tiempo de ejecución."]
+    correcta: 1
+    explicacion: "Debajo sigue siendo Dagger, que genera el grafo en compilación. Hilt elimina el código repetido de armar componentes e inyectar en cada Activity."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué KSP es más rápido que kapt?"
+    explicacion: "kapt genera stubs de Java para poder correr los procesadores de anotaciones de Java. KSP lee el código Kotlin directamente y se saltea ese paso."
+tarea_local: "En Android Studio, abrí `gradle/libs.versions.toml` de un proyecto nuevo y seguí una dependencia desde `[versions]` hasta su uso en `build.gradle.kts` (Ctrl+clic). Después agregá el plugin de Kotlinx Serialization y, en un test unitario, parseá `{\"id\":1,\"titulo\":\"Comprar yerba\"}` a `TareaDto`."
+resultado_esperado: "El test pasa con `completa == false`. Si sacás `titulo` del JSON, falla con `MissingFieldException`."
+resumen:
+  - "Hilt es Dagger con componentes atados al ciclo de vida de Android."
+  - "Kotlinx Serialization respeta los valores por defecto y la nulabilidad de Kotlin."
+  - "Gson usa reflexión, no conoce Kotlin y puede dejar null en un campo no nulable."
+  - "Kotlin DSL y el catálogo de versiones dan tipos y un solo lugar para las versiones."
+  - "KSP reemplaza a kapt y compila más rápido."
+entrevista:
+  en_30_segundos: "Las tres migraciones siguen la misma lógica: pasar errores de ejecución a compilación y dejar de escribir código repetitivo. Hilt es Dagger con componentes ya atados al ciclo de vida. Kotlinx Serialization genera el serializador en compilación y respeta la nulabilidad, a diferencia de Gson. Kotlin DSL y el version catalog dan tipos y centralizan versiones, y KSP reemplaza a kapt porque no necesita generar stubs de Java."
+  trampas:
+    - pregunta: "¿Por qué elegirías Kotlinx Serialization en vez de Gson en un proyecto nuevo?"
+      respuesta: "Gson usa reflexión y no conoce Kotlin: puede dejar `null` en un campo no nulable e ignora los valores por defecto. Kotlinx Serialization genera el código en compilación, respeta nulabilidad y valores por defecto, se lleva mejor con R8 y sirve para KMP. Moshi también es buena opción si el equipo ya la usa. Gson lo dejaría solo en código existente y lo migraría de a poco."
+    - pregunta: "¿Conviene mezclar `kapt` y `ksp` en el mismo módulo?"
+      respuesta: "Se puede durante una migración, pero mientras quede un solo procesador con kapt seguís pagando el costo de los stubs. El objetivo es pasar todo a KSP; verificá en developer.android.com qué versión de cada librería lo soporta."
+  cuando_no: "No migres Gson, Groovy o Dagger en el mismo PR que una feature. Son cambios de infraestructura: van separados y con tests que cubran el parseo y la inyección."
+---
+
+## Concepto
+
+**Qué problema resuelve.** El proyecto de hoy se configura distinto, aunque las ideas sean las mismas: inyección generada en compilación, JSON a objetos y scripts de build. Esta lección te da el mapa para que un `build.gradle.kts` con `ksp(...)` y `@HiltViewModel` no te tome por sorpresa.
+
+**Antes vs. ahora.**
+
+- `@Component` + `inject(this)` en cada Activity → `@HiltAndroidApp`, `@AndroidEntryPoint` y `@HiltViewModel`. Se mantiene que Dagger genera el grafo en compilación.
+- `@SerializedName` + Gson por reflexión → `@Serializable`, con un plugin del compilador. Se mantiene el DTO separado del modelo de dominio.
+- `build.gradle` en Groovy y versiones sueltas → `build.gradle.kts` + `gradle/libs.versions.toml`.
+- `kapt` → `ksp`: el procesador sigue generando código, pero sin los stubs de Java.
+
+Son tres cambios con la misma lógica: **pasar errores de ejecución a compilación** y **dejar de escribir código repetitivo**.
+
+## Ejemplo
+
+```kotlin
+// build.gradle.kts del módulo app
+plugins {
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
+}
+dependencies {
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+}
+```
+
+```kotlin
+@Serializable
+data class TareaDto(val id: Long, val titulo: String, val completa: Boolean = false)
+
+@HiltViewModel
+class TareasViewModel @Inject constructor(
+    private val repo: TareasRepository,
+) : ViewModel()
+```
+
+Si el JSON no trae `completa`, Kotlinx usa el `false` por defecto. Si no trae `titulo`, que no tiene valor por defecto, falla **al parsear**, con un error claro, y no después con un `NullPointerException` en la UI.
+
+*Los nombres de los alias (`libs.plugins.hilt`, etc.) dependen de cómo estén declarados en tu `libs.versions.toml`.*

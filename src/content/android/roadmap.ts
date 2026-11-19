@@ -9,7 +9,7 @@ export const androidRoadmap = [
     level: 'semi-senior',
     title: 'Semi Senior',
     description: 'Separá la lógica de la interfaz y manejá datos, errores y pruebas en una app.',
-    topics: ['Genéricos y tipos sellados', 'Corrutinas, StateFlow y SharedFlow', 'Ciclo de vida, ViewModel y estado restaurable', 'MVVM, Repository y nociones de Clean', 'Navigation, deep links y back stack', 'Retrofit, OkHttp y serialización', 'Carga, errores de red y datos sensibles', 'Room y caché', 'Hilt o Dagger: scopes y ciclo de vida', 'Gradle con Kotlin DSL', 'JUnit, MockK, Espresso y Compose Testing', 'CI en cada PR y Crashlytics'],
+    topics: ['Genéricos y tipos sellados', 'Corrutinas, StateFlow y SharedFlow', 'Ciclo de vida, ViewModel y estado restaurable', 'MVVM, Repository y nociones de Clean', 'Navigation, deep links y back stack', 'Retrofit, OkHttp y serialización', 'Carga, errores de red y datos sensibles', 'Room y caché', 'Hilt o Dagger: scopes y ciclo de vida', 'Gradle con Kotlin DSL', 'JUnit, MockK, Espresso y Compose Testing', 'CI en cada PR y Crashlytics', 'Uso de IA con revisión crítica'],
   },
   {
     level: 'senior',
