@@ -1,0 +1,55 @@
+---
+id: react-trainee-responsive-01
+track: react
+nivel: trainee
+modulo: "HTML y CSS"
+titulo: "Responsive: mobile first y media queries"
+duracion_min: 6
+prerequisitos: [react-trainee-grid-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué significa \"mobile first\"?"
+    opciones: ["Hacer solo la versión de celular.", "Escribir primero los estilos para pantallas chicas y agregar con `@media (min-width: …)` lo que cambia en las grandes. El celular carga lo mínimo.", "Que el celular tiene prioridad en el servidor."]
+    correcta: 1
+    explicacion: "En el ejemplo, por defecto las tarjetas van en columna y desde 700px pasan a fila."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué verifica el test de esta lección en el celular y en el escritorio?"
+    opciones: ["Lo mismo en los dos.", "En el celular (Pixel 7, 412px de ancho), que las tarjetas queden una debajo de la otra; en el escritorio (más de 700px), que queden en fila.", "Solo el color."]
+    correcta: 1
+    explicacion: "Es el mismo test corriendo en los dos proyectos de Playwright: cada uno comprueba lo que corresponde a su ancho."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué conviene usar `rem` en vez de `px` para los tamaños de letra?"
+    explicacion: "Porque `rem` es relativo al tamaño de letra que eligió la persona en el navegador o el sistema: si lo agranda por baja visión, todo crece en proporción. Con `px` fijos, ese ajuste se ignora."
+tarea_local: "En el editor en vivo, cambiá el corte de 700px a 1000px y achicá la vista previa. Después agregá una regla para que, en pantallas anchas, el título sea más grande."
+resultado_esperado: "Las tarjetas pasan a fila recién desde 1000px, y el título cambia de tamaño con el ancho."
+resumen:
+  - "La meta viewport es la base del responsive."
+  - "Mobile first: estilos para el celular y media queries para pantallas grandes."
+  - "Min width en la media query aplica desde ese ancho para arriba."
+  - "Las unidades flexibles y rem respetan el tamaño de letra elegido por la persona."
+entrevista:
+  en_30_segundos: "Trabajo mobile first: estilos base para el celular y media queries con `min-width` para lo que cambia en pantallas grandes, con unidades flexibles y `rem` para el texto. Lo pruebo en el navegador en modo celular y, si puedo, en dispositivos reales."
+  trampas:
+    - pregunta: "¿Alcanza con probar achicando la ventana del navegador?"
+      respuesta: "Para una primera revisión, sí. Pero el celular real tiene otras cosas: el teclado que tapa la pantalla, la barra del navegador que cambia de tamaño, el toque en vez del mouse (no hay `hover`) y la fuente grande del sistema."
+  cuando_no: "Si un componente tiene que adaptarse al espacio de su contenedor (no al de la pantalla), las container queries (`@container`) son más precisas que las media queries."
+---
+
+import { HtmlPlayground } from '../../components/lesson/HtmlPlayground'
+import html from '../../../react-samples/trainee/09-responsive/index.html?raw'
+import css from '../../../react-samples/trainee/09-responsive/styles.css?raw'
+
+## Concepto
+
+**Qué problema resuelve.** La misma página se ve en un celular de 360px y en un monitor de 1920px. Tiene que funcionar en los dos.
+
+- **Viewport:** la meta de la primera lección, sin la cual nada de esto funciona.
+- **Mobile first:** estilos base para el celular y `@media (min-width: …)` para pantallas más grandes.
+- **Unidades flexibles:** `%`, `rem`, `fr`, y evitar anchos fijos grandes.
+- **Imágenes:** `max-width: 100%` para que no se desborden.
+
+## Ejemplo
+
+<HtmlPlayground html={html} css={css} />
+
+El mismo test corre en escritorio y en celular, y verifica la disposición que corresponde a cada ancho. Verificado en un navegador real con Playwright (escritorio y celular) y con axe, incluido el contraste de colores.

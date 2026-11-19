@@ -1,0 +1,60 @@
+---
+id: react-trainee-como-funciona-una-pagina-01
+track: react
+nivel: trainee
+modulo: "HTML y CSS"
+titulo: "Cómo funciona una página: HTML, CSS y JavaScript"
+duracion_min: 5
+prerequisitos: []
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace cada uno: HTML, CSS y JavaScript?"
+    opciones: ["Los tres hacen lo mismo.", "HTML dice qué es cada cosa (estructura y significado), CSS cómo se ve y JavaScript cómo se comporta. React es JavaScript que genera el HTML.", "HTML es para el servidor y CSS para el celular."]
+    correcta: 1
+    explicacion: "Pensalo como una casa: HTML son las paredes y los ambientes, CSS la pintura y los muebles, JavaScript la electricidad."
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve `<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">`?"
+    opciones: ["Para el SEO.", "Para que el celular use su ancho real. Sin esa línea, muestra la página achicada como si fuera una pantalla de escritorio, y el responsive no funciona.", "Para cargar más rápido."]
+    correcta: 1
+    explicacion: "Es una línea que no puede faltar en ninguna página."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué le faltaba a la primera versión del ejemplo de esta lección, según axe?"
+    explicacion: "Un `<main>`: el contenido estaba suelto en el `<body>`, fuera de cualquier región (landmark). Axe lo marcó en el test, y se corrigió. Sin `<main>`, quien usa lector de pantalla no puede saltar directo al contenido."
+tarea_local: "Creá una carpeta con un `index.html` y un `styles.css` como los del ejemplo y abrí el HTML en el navegador. Después sacá la línea del viewport, abrí las herramientas de desarrollo en modo celular y mirá la diferencia."
+resultado_esperado: "Sin la línea del viewport, en modo celular la página se ve chiquita, como un escritorio achicado."
+resumen:
+  - "HTML es la estructura, CSS la presentación y JavaScript el comportamiento."
+  - "El navegador convierte el HTML en un árbol llamado DOM."
+  - "La meta viewport hace que el celular use su ancho real."
+  - "El contenido principal va dentro de main."
+entrevista:
+  en_30_segundos: "Una página tiene tres capas: HTML para la estructura y el significado, CSS para la presentación y JavaScript para el comportamiento. El navegador arma el DOM a partir del HTML, y React no es otra cosa que JavaScript que genera y actualiza ese DOM."
+  trampas:
+    - pregunta: "¿El atributo `lang=\"es\"` es importante?"
+      respuesta: "Sí: le dice al lector de pantalla con qué pronunciación leer y al navegador cómo traducir o separar palabras. Una página sin `lang` se lee con la voz del idioma del sistema, que puede ser otro."
+  cuando_no: "Si la página la genera un framework (Vite, Next.js), no escribís el `<head>` a mano todas las veces, pero conviene revisar que tenga el viewport, el idioma y el título."
+---
+
+import { HtmlPlayground } from '../../components/lesson/HtmlPlayground'
+import html from '../../../react-samples/trainee/01-estructura/index.html?raw'
+import css from '../../../react-samples/trainee/01-estructura/styles.css?raw'
+
+## Concepto
+
+**Qué problema resuelve.** React genera HTML. Si no entendés qué HTML genera ni cómo lo pinta el CSS, React se vuelve magia y los errores, misterios.
+
+**Las tres capas de una página:**
+
+- **HTML:** la estructura y el significado: títulos, párrafos, botones, formularios.
+- **CSS:** la presentación: colores, tamaños, posiciones.
+- **JavaScript:** el comportamiento: responder a un clic, pedir datos.
+
+**La estructura mínima:** `<!DOCTYPE html>`, `<html lang="es">`, un `<head>` (codificación, viewport, título, estilos) y un `<body>` con el contenido, dentro de un `<main>`.
+
+El navegador lee el HTML y arma el **DOM**, un árbol de objetos. CSS y JavaScript trabajan sobre ese árbol, y React también.
+
+## Ejemplo
+
+<HtmlPlayground html={html} css={css} />
+
+La primera versión de este ejemplo no tenía `<main>`, y axe lo detectó en el test. Verificado en un navegador real con Playwright (escritorio y celular) y con axe, incluido el contraste de colores.

@@ -1,0 +1,55 @@
+---
+id: react-trainee-links-imagenes-y-listas-01
+track: react
+nivel: trainee
+modulo: "HTML y CSS"
+titulo: "Links, imágenes y listas"
+duracion_min: 5
+prerequisitos: [react-trainee-html-semantico-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve el atributo `alt` de una imagen?"
+    opciones: ["Para el tamaño.", "Describe la imagen para quien no la ve (lector de pantalla) o si no carga. Una imagen decorativa lleva `alt=\"\"` vacío, para que el lector la saltee.", "Para el título de la pestaña."]
+    correcta: 1
+    explicacion: "Verificado: el test encuentra la imagen por su nombre accesible, que sale del `alt`."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué texto conviene para un link?"
+    opciones: ["\"Hacé clic acá\".", "Uno que diga adónde lleva, como \"el artículo sobre el mate\": quien navega por la lista de links del lector de pantalla los escucha sin contexto.", "La URL completa."]
+    correcta: 1
+    explicacion: "Diez links que dicen \"acá\" son imposibles de distinguir."
+  - tipo: opcion_multiple
+    pregunta: "¿`<ul>` u `<ol>`?"
+    opciones: ["Son iguales.", "`<ol>` cuando el orden importa (pasos de una receta); `<ul>` cuando no (ingredientes).", "`<ul>` es más moderna."]
+    correcta: 1
+    explicacion: "El lector de pantalla anuncia la cantidad de elementos y, en `<ol>`, el número de cada uno."
+tarea_local: "Escribí la receta de algo que sepas cocinar con una imagen (con `alt`), la lista de ingredientes, los pasos en orden y un link a la fuente."
+resultado_esperado: "Una página con `ul` para los ingredientes, `ol` para los pasos, una imagen con `alt` descriptivo y un link que dice adónde lleva."
+resumen:
+  - "Alt describe la imagen; una decorativa lleva alt vacío."
+  - "Ancho y alto en la imagen evitan que la página salte al cargar."
+  - "El texto del link dice adónde lleva."
+  - "Ol cuando el orden importa, ul cuando no."
+entrevista:
+  en_30_segundos: "En imágenes siempre pongo `alt` (vacío si es decorativa) y dimensiones; en links, un texto que diga adónde llevan; y uso `ol` o `ul` según importe el orden. Son detalles chicos que hacen la página accesible."
+  trampas:
+    - pregunta: "¿Un `alt` tiene que empezar con \"Imagen de…\"?"
+      respuesta: "No: el lector ya anuncia que es una imagen. Se describe lo importante: \"Un mate visto desde arriba\", no \"Imagen de un mate\"."
+  cuando_no: "Si una imagen tiene mucho texto o datos (un gráfico), el `alt` no alcanza: el contenido tiene que estar también en el texto de la página."
+---
+
+import { HtmlPlayground } from '../../components/lesson/HtmlPlayground'
+import html from '../../../react-samples/trainee/03-links-imagenes-y-listas/index.html?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Tres elementos que aparecen en casi todas las páginas, con detalles que hacen la diferencia.
+
+- **Links:** `<a href="...">texto que dice adónde lleva</a>`.
+- **Imágenes:** `<img src="..." alt="descripción" width height>`. Con `width` y `height`, la página no "salta" cuando la imagen carga.
+- **Listas:** `<ul>` sin orden, `<ol>` con orden, cada elemento en un `<li>`.
+
+## Ejemplo
+
+<HtmlPlayground html={html} />
+
+Verificado en un navegador real con Playwright (escritorio y celular) y con axe, incluido el contraste de colores.

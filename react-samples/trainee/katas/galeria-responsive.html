@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Galería</title>
+    <style>
+      body { margin: 0; padding: 1rem; font-family: system-ui, sans-serif; }
+      .galeria {
+        display: grid;
+        /* tantas columnas como entren, de al menos 160px cada una: sin media queries */
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+        list-style: none;
+        padding: 0;
+      }
+      .galeria li { padding: 2rem 1rem; background: #eee4fa; border-radius: .5rem; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Galería</h1>
+      <ul class="galeria">
+        <li>Uno</li><li>Dos</li><li>Tres</li><li>Cuatro</li><li>Cinco</li><li>Seis</li>
+      </ul>
+    </main>
+  </body>
+</html>

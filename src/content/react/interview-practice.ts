@@ -2,9 +2,23 @@
 
 type Question = { topic: string; prompt: string; answer: string }
 
-export type ReactLevel = 'junior' | 'semi-senior' | 'senior'
+export type ReactLevel = 'trainee' | 'junior' | 'semi-senior' | 'senior'
 
 export const reactInterview: Record<ReactLevel, readonly Question[]> = {
+  'trainee': [
+    { topic: "Pregunta 1", prompt: "¿Qué hace cada capa: HTML, CSS y JavaScript?", answer: "HTML da la estructura y el significado, CSS la presentación y JavaScript el comportamiento. React es JavaScript que genera el HTML." },
+    { topic: "Pregunta 2", prompt: "¿Para qué sirve la meta viewport?", answer: "Para que el celular use su ancho real. Sin ella, muestra la página achicada como un escritorio y el responsive no funciona." },
+    { topic: "Pregunta 3", prompt: "¿Por qué usar `<button>` y no un `<div>` con clic?", answer: "Porque el botón se enfoca con Tab, se activa con Enter y Espacio y el lector de pantalla lo anuncia como botón." },
+    { topic: "Pregunta 4", prompt: "¿Qué son los landmarks y qué etiquetas los crean?", answer: "Regiones a las que el lector de pantalla puede saltar: header, nav, main, footer (y section con título)." },
+    { topic: "Pregunta 5", prompt: "¿Para qué sirve el `alt` de una imagen?", answer: "Describe la imagen para quien no la ve. Si es decorativa, va vacío." },
+    { topic: "Pregunta 6", prompt: "¿Cómo se asocia un label a un campo?", answer: "Con `for` igual al `id` del campo, o envolviendo el campo con el label." },
+    { topic: "Pregunta 7", prompt: "¿Qué gana: `.tarea p` o `.vencida`?", answer: "`.tarea p`, porque es más específico (una clase y una etiqueta contra una clase), aunque `.vencida` esté después." },
+    { topic: "Pregunta 8", prompt: "¿Qué hace `box-sizing: border-box`?", answer: "Hace que el ancho incluya padding y borde, así la caja mide lo que dice el `width`." },
+    { topic: "Pregunta 9", prompt: "¿Cómo centrás algo en los dos ejes con Flexbox?", answer: "En el contenedor: `display: flex; justify-content: center; align-items: center;`." },
+    { topic: "Pregunta 10", prompt: "¿Flexbox o Grid?", answer: "Flexbox para una dimensión (fila o columna); Grid para dos (filas y columnas a la vez). Se combinan." },
+    { topic: "Pregunta 11", prompt: "¿Qué es mobile first?", answer: "Escribir los estilos para el celular primero y agregar con `@media (min-width: …)` lo que cambia en pantallas grandes." },
+    { topic: "Pregunta 12", prompt: "¿Qué cambia al pasar de HTML a JSX?", answer: "`class` → `className`, `for` → `htmlFor`, etiquetas siempre cerradas, `style` como objeto y eventos en camelCase con funciones." },
+  ],
   'junior': [
     { topic: "Pregunta 1", prompt: "¿Qué es React y qué problema resuelve?", answer: "Una librería para construir interfaces con componentes. Describís cómo se ve la interfaz según el estado, y React se encarga de actualizar el DOM cuando el estado cambia, en vez de manipularlo a mano." },
     { topic: "Pregunta 2", prompt: "¿Qué es JSX?", answer: "Una sintaxis para escribir algo parecido a HTML dentro de JavaScript, que se compila a llamadas a funciones de React. Usa `className`, expresiones entre llaves y un solo elemento raíz." },

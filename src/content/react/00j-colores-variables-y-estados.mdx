@@ -1,0 +1,55 @@
+---
+id: react-trainee-colores-variables-y-estados-01
+track: react
+nivel: trainee
+modulo: "HTML y CSS"
+titulo: "Colores con contraste, variables y estados"
+duracion_min: 5
+prerequisitos: [react-trainee-responsive-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirven las variables de CSS (`--acento: #533494`)?"
+    opciones: ["Para nada, son decorativas.", "Para definir un valor una vez y usarlo en todos lados con `var(--acento)`: si cambia la marca o se agrega un modo oscuro, se cambia en un solo lugar.", "Para hacer cálculos matemáticos."]
+    correcta: 1
+    explicacion: "Verificado: el fondo calculado del botón es `rgb(83, 52, 148)`, el valor de `--acento`."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre `:focus` y `:focus-visible`?"
+    opciones: ["Ninguna.", "`:focus-visible` muestra el contorno cuando se llega con el teclado, y no al hacer clic con el mouse. Así no se \"molesta\" a quien usa el mouse y no se le quita la guía a quien usa el teclado.", "`:focus-visible` es solo para celulares."]
+    correcta: 1
+    explicacion: "Verificado: al llegar con Tab, el contorno es `solid`. Nunca se saca el contorno de foco sin poner otro."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué contraste mínimo pide WCAG AA para el texto normal y cómo lo verificás?"
+    explicacion: "4,5:1 para el texto normal y 3:1 para el texto grande. Se verifica con las herramientas del navegador (el selector de color muestra la relación), con Lighthouse o con axe, como en los tests de este nivel, que corren el chequeo de contraste en un navegador real."
+tarea_local: "En el editor en vivo, cambiá `--acento` por un violeta muy clarito (por ejemplo, `#c9b8e8`) y mirá el contraste del texto blanco con las herramientas del navegador."
+resultado_esperado: "El contraste baja muchísimo y deja de cumplir AA: el texto blanco casi no se lee. Por eso el test de axe incluye el contraste."
+resumen:
+  - "Las variables de CSS definen un valor una vez y se usan en todos lados."
+  - "El texto necesita contraste suficiente con el fondo."
+  - "Focus visible muestra el foco al usar el teclado."
+  - "Nunca se saca el contorno de foco sin poner otro."
+entrevista:
+  en_30_segundos: "Defino los colores como variables de CSS, verifico que el texto cumpla el contraste de WCAG AA y diseño todos los estados: hover, foco visible con teclado, activo y deshabilitado. Nunca saco el contorno de foco sin reemplazarlo."
+  trampas:
+    - pregunta: "En el celular, ¿funciona `:hover`?"
+      respuesta: "No como en la computadora: no hay mouse encima. Por eso nada importante puede depender del hover (por ejemplo, un menú que solo aparece al pasar el mouse)."
+  cuando_no: "Si el proyecto usa un sistema de diseño (como Material 3 en Android o uno propio), los colores ya vienen como tokens con contraste revisado: se usan esos y no colores sueltos."
+---
+
+import { HtmlPlayground } from '../../components/lesson/HtmlPlayground'
+import html from '../../../react-samples/trainee/10-colores-variables-y-estados/index.html?raw'
+import css from '../../../react-samples/trainee/10-colores-variables-y-estados/styles.css?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Un buen diseño se ve bien, se lee bien y se usa bien con el mouse y con el teclado.
+
+- **Variables:** `:root { --acento: #533494; }` y `color: var(--acento)`.
+- **Contraste:** texto y fondo con suficiente diferencia (WCAG AA: 4,5:1 para texto normal).
+- **Estados:** `:hover` (mouse encima), `:focus-visible` (foco con teclado), `:active` (presionado), `:disabled`.
+- **Nunca** `outline: none` sin poner otro indicador de foco.
+
+## Ejemplo
+
+<HtmlPlayground html={html} css={css} />
+
+El test comprueba el color de la variable, el cambio al pasar el mouse (en escritorio) y el contorno al llegar con Tab; axe verifica el contraste. Verificado en un navegador real con Playwright (escritorio y celular) y con axe, incluido el contraste de colores.

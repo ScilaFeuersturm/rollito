@@ -1,0 +1,60 @@
+---
+id: react-trainee-flexbox-01
+track: react
+nivel: trainee
+modulo: "HTML y CSS"
+titulo: "Flexbox: alinear en una dirección"
+duracion_min: 6
+prerequisitos: [react-trainee-modelo-de-caja-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `justify-content: space-between` en un contenedor flex en fila?"
+    opciones: ["Centra todo.", "Pone el primer elemento al principio, el último al final y reparte el espacio sobrante entre ellos. En el ejemplo: logo a la izquierda, menú a la derecha.", "Agrega márgenes iguales."]
+    correcta: 1
+    explicacion: "`justify-content` trabaja en el eje principal (horizontal en una fila); `align-items`, en el cruzado."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo centrás algo en los dos ejes?"
+    opciones: ["Con `margin: auto` en todos lados, siempre.", "`display: flex; justify-content: center; align-items: center;` en el contenedor (que tiene que tener alto).", "Con `text-align: center`."]
+    correcta: 1
+    explicacion: "Verificado: el test mide que el centro del mensaje coincide con el centro del contenedor, con menos de 1px de diferencia."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué cambia `flex-direction: column`?"
+    explicacion: "Los elementos se apilan en vertical, y los ejes se dan vuelta: `justify-content` pasa a trabajar en vertical y `align-items` en horizontal. Es la base del responsive \"mobile first\" de la lección siguiente."
+tarea_local: "En el editor en vivo, cambiá `justify-content` del `.centrado` por `flex-end` y `align-items` por `flex-start`. Después agregá un cuarto link al menú y probá `flex-wrap: wrap` con la ventana angosta."
+resultado_esperado: "El mensaje se va arriba a la derecha; con `flex-wrap`, los links pasan a otra línea cuando no entran."
+resumen:
+  - "Flexbox alinea elementos en una fila o una columna."
+  - "Justify content trabaja en el eje principal; align items en el cruzado."
+  - "Gap separa los elementos."
+  - "Centrar en los dos ejes es justify y align en center."
+entrevista:
+  en_30_segundos: "Uso Flexbox para alinear en una dirección: barras de navegación, botones en fila, centrar. Configuro el contenedor con `flex-direction`, `justify-content`, `align-items` y `gap`, y uso `flex: 1` en los hijos para repartir el espacio."
+  trampas:
+    - pregunta: "¿Flexbox o Grid?"
+      respuesta: "Flexbox para una dimensión (una fila o una columna, el contenido manda); Grid para dos dimensiones (filas y columnas a la vez, el diseño manda). Se combinan: una grilla de tarjetas con Grid, y adentro de cada tarjeta, Flexbox."
+  cuando_no: "Para una grilla de tarjetas que tienen que quedar alineadas en filas y columnas, Grid es más simple que Flexbox con `wrap`."
+---
+
+import { HtmlPlayground } from '../../components/lesson/HtmlPlayground'
+import html from '../../../react-samples/trainee/07-flexbox/index.html?raw'
+import css from '../../../react-samples/trainee/07-flexbox/styles.css?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Alinear elementos en una fila o una columna, repartir espacio y centrar, sin trucos.
+
+En el **contenedor**: `display: flex` y después:
+
+- `flex-direction`: `row` (por defecto) o `column`.
+- `justify-content`: en el eje principal (`flex-start`, `center`, `space-between`…).
+- `align-items`: en el eje cruzado (`stretch`, `center`, `flex-start`…).
+- `gap`: el espacio entre elementos.
+- `flex-wrap: wrap`: que pasen a la línea siguiente si no entran.
+
+En los **hijos**: `flex: 1` para que se repartan el espacio.
+
+## Ejemplo
+
+<HtmlPlayground html={html} css={css} />
+
+El test mide que los links del menú están en la misma fila, que el logo queda a la izquierda y que el mensaje está centrado en los dos ejes. Verificado en un navegador real con Playwright (escritorio y celular) y con axe, incluido el contraste de colores.

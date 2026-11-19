@@ -171,8 +171,8 @@ export function App({ url }: { url: string }) {
         {route.name === 'simulacro-react' && <InterviewPractice key={route.level.level} area="React"
           title={`Simulacro ${route.level.title}`} questions={reactInterview[route.level.level as ReactLevel]} />}
         {route.name === 'practica-react' && <CodePractice key={route.level.level} area="React" titulo={`Práctica de código ${route.level.title}`}
-          descripcion="Ejercicios de React y TypeScript como los de una entrevista en vivo. Las soluciones tienen tests en react-samples/katas."
-          items={reactKatas[route.level.level as ReactLevel]} lenguaje="tsx"
+          descripcion={route.level.level === 'trainee' ? 'Ejercicios de HTML y CSS. Las soluciones están verificadas en un navegador real (accesibilidad y layout).' : 'Ejercicios de React y TypeScript como los de una entrevista en vivo. Las soluciones tienen tests en react-samples/katas.'}
+          items={reactKatas[route.level.level as ReactLevel]} lenguaje={route.level.level === 'trainee' ? 'html' : 'tsx'}
           siguiente={{ href: reactInterviewPath(route.level.level), texto: `Seguí con el simulacro de entrevista ${route.level.title}` }} />}
         {route.name === 'repaso' && <Repaso progress={progress} />}
         {route.name === 'repaso-funcional' && <Repaso key="funcional" kind="funcional" progress={progress} />}

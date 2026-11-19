@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  padding: 1rem;
+  font-family: system-ui, sans-serif;
+}
+
+/* Mobile first: por defecto, una tarjeta debajo de la otra (pensado para el celular) */
+.tarjetas {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tarjeta {
+  padding: 1rem;
+  border: 1px solid #ded4e8;
+  border-radius: .5rem;
+}
+
+/* Desde 700px de ancho (tablet y escritorio): las tarjetas en fila */
+@media (min-width: 700px) {
+  .tarjetas {
+    flex-direction: row;
+  }
+
+  .tarjeta {
+    flex: 1;  /* las tres se reparten el ancho por igual */
+  }
+}

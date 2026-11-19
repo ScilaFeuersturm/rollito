@@ -1,0 +1,27 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+/* La barra: logo a la izquierda, menú a la derecha, alineados al centro verticalmente */
+.barra {
+  display: flex;
+  justify-content: space-between;  /* eje principal (horizontal) */
+  align-items: center;             /* eje cruzado (vertical) */
+  padding: 0 16px;
+}
+
+/* El menú: sus links en fila, separados por 16px */
+.menu {
+  display: flex;
+  gap: 16px;
+}
+
+/* El truco clásico: centrar algo en los dos ejes */
+.centrado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  background: #eee4fa;
+}

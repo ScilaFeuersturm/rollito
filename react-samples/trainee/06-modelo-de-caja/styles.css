@@ -1,0 +1,16 @@
+.caja {
+  width: 200px;
+  padding: 20px;          /* espacio de adentro, entre el contenido y el borde */
+  border: 2px solid #533494;
+  margin: 16px 0;         /* espacio de afuera, entre esta caja y las demás */
+}
+
+/* Por defecto: width es solo el contenido. Ancho total = 200 + 20*2 + 2*2 = 244px */
+.contenido {
+  box-sizing: content-box;
+}
+
+/* border-box: width incluye padding y borde. Ancho total = 200px */
+.borde {
+  box-sizing: border-box;
+}

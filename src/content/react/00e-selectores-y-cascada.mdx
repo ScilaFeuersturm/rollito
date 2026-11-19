@@ -1,0 +1,56 @@
+---
+id: react-trainee-selectores-y-cascada-01
+track: react
+nivel: trainee
+modulo: "HTML y CSS"
+titulo: "CSS: selectores, especificidad y cascada"
+duracion_min: 6
+prerequisitos: [react-trainee-formularios-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Un párrafo dentro de `.tarea` tiene la clase `.vencida`. Hay reglas para `.tarea p` (violeta) y `.vencida` (rojo), en ese orden. ¿De qué color se ve?"
+    opciones: ["Rojo, porque `.vencida` está después.", "Violeta: `.tarea p` es más específico (una clase y una etiqueta) que `.vencida` (solo una clase), y la especificidad gana antes que el orden.", "Negro."]
+    correcta: 1
+    explicacion: "Verificado en el navegador: el color calculado es `rgb(83, 52, 148)`, el violeta."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué gana: un id o tres clases?"
+    opciones: ["Tres clases.", "El id: la especificidad se compara por niveles (ids, después clases, después etiquetas), y un id le gana a cualquier cantidad de clases.", "Empatan."]
+    correcta: 1
+    explicacion: "Por eso conviene estilar con clases y evitar ids en el CSS: un id es difícil de \"pisar\" después."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué es la cascada?"
+    explicacion: "El orden en que se decide qué regla se aplica cuando varias apuntan al mismo elemento: primero importa el origen e `!important`, después la especificidad y, a igual especificidad, gana la que está más abajo. Además, algunas propiedades (como el color y la fuente) se heredan de los padres."
+tarea_local: "En el editor en vivo, agregá al final del CSS una regla `.tarea .vencida { color: red; }` y mirá qué pasa con el párrafo vencido. Calculá su especificidad."
+resultado_esperado: "Ahora el párrafo se ve rojo: `.tarea .vencida` (0,2,0) le gana a `.tarea p` (0,1,1)."
+resumen:
+  - "Los selectores apuntan por etiqueta, clase, id, posición o estado."
+  - "La especificidad se compara por niveles: ids, clases y etiquetas."
+  - "A igual especificidad, gana la regla de más abajo."
+  - "Conviene estilar con clases y evitar ids en el CSS."
+entrevista:
+  en_30_segundos: "Cuando una regla no se aplica, reviso la especificidad: se compara por ids, clases y etiquetas, y a igual especificidad gana la última. Estilo con clases, evito ids e `!important`, y uso las herramientas del navegador para ver qué regla está ganando."
+  trampas:
+    - pregunta: "¿`!important` resuelve los problemas de especificidad?"
+      respuesta: "Los esconde: después hace falta otro `!important` para pisarlo, y el CSS se vuelve imposible de mantener. Se usa solo en casos muy puntuales, como utilidades que tienen que ganar siempre."
+  cuando_no: "En React, con CSS Modules (como Rollito) o herramientas como Tailwind, los problemas de especificidad aparecen mucho menos, pero entender la cascada sigue siendo clave para depurar."
+---
+
+import { HtmlPlayground } from '../../components/lesson/HtmlPlayground'
+import html from '../../../react-samples/trainee/05-selectores-y-cascada/index.html?raw'
+import css from '../../../react-samples/trainee/05-selectores-y-cascada/styles.css?raw'
+
+## Concepto
+
+**Qué problema resuelve.** "Cambié el color y no pasa nada" es la frustración número uno con CSS. Casi siempre es especificidad.
+
+**Selectores básicos:** `p` (etiqueta), `.tarea` (clase), `#destacado` (id), `.tarea p` (descendiente), `button:hover` (estado).
+
+**Especificidad** (ids, clases, etiquetas): `p` = 0,0,1 · `.vencida` = 0,1,0 · `.tarea p` = 0,1,1 · `#destacado` = 1,0,0.
+
+**Cascada:** a igual especificidad, gana la regla de más abajo. Algunas propiedades se heredan.
+
+## Ejemplo
+
+<HtmlPlayground html={html} css={css} />
+
+El test mide el color calculado de cada párrafo en el navegador: gris, violeta, violeta (`.tarea p` le gana a `.vencida`) y verde (el id). Verificado en un navegador real con Playwright (escritorio y celular) y con axe, incluido el contraste de colores.

@@ -1,0 +1,64 @@
+---
+id: react-trainee-html-semantico-01
+track: react
+nivel: trainee
+modulo: "HTML y CSS"
+titulo: "HTML semántico: cada cosa con su etiqueta"
+duracion_min: 6
+prerequisitos: [react-trainee-como-funciona-una-pagina-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué usar `<button>` y no un `<div>` con un clic?"
+    opciones: ["Por estilo.", "Porque `<button>` ya se enfoca con Tab, se activa con Enter y Espacio y el lector de pantalla lo anuncia como botón. Un `div` no hace nada de eso.", "Porque los div no admiten texto."]
+    correcta: 1
+    explicacion: "Elegir la etiqueta correcta da accesibilidad gratis."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué etiqueta va para la navegación principal del sitio?"
+    opciones: ["`<div class=\"nav\">`", "`<nav>`: crea una región (landmark) de navegación a la que el lector de pantalla puede saltar.", "`<menu>`"]
+    correcta: 1
+    explicacion: "Verificado: el test encuentra exactamente un banner (`header`), una navegación, un main y un contentinfo (`footer`)."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuántos `<h1>` conviene que tenga una página?"
+    opciones: ["Todos los que quieras.", "Uno, el título principal; después `h2` para las secciones y `h3` para lo de adentro, sin saltear niveles.", "Ninguno."]
+    correcta: 1
+    explicacion: "La jerarquía de títulos es como el índice de un libro: el lector de pantalla la usa para navegar."
+tarea_local: "Tomá una página que hayas armado (o la portada de un sitio que uses) y escribí qué etiqueta semántica le corresponde a cada parte. ¿Cuántos `div` podrías reemplazar?"
+resultado_esperado: "Un esquema con header, nav, main, sections y footer, y varios `div` reemplazados por la etiqueta que corresponde."
+resumen:
+  - "El HTML semántico dice qué es cada cosa, no cómo se ve."
+  - "Header, nav, main, section, article y footer crean regiones."
+  - "Un solo h1 por página, y los títulos sin saltear niveles."
+  - "Button para acciones y a para ir a otro lugar."
+entrevista:
+  en_30_segundos: "Uso HTML semántico: header, nav, main, section, article y footer para la estructura, una jerarquía de títulos ordenada, button para acciones y links para navegar. Así el lector de pantalla y los buscadores entienden la página, y la accesibilidad viene casi sola."
+  trampas:
+    - pregunta: "¿Un link con `onclick` que no lleva a ningún lado está bien?"
+      respuesta: "No: si hace una acción y no navega, es un botón. Un `<a>` sin `href` no se enfoca con Tab, y el lector lo anuncia como link, lo que confunde."
+  cuando_no: "Los `div` siguen sirviendo para agrupar cosas solo por diseño, cuando no hay una etiqueta con significado."
+---
+
+import { HtmlPlayground } from '../../components/lesson/HtmlPlayground'
+import html from '../../../react-samples/trainee/02-semantica/index.html?raw'
+
+## Concepto
+
+**Qué problema resuelve.** El HTML no es solo para que "se vea": dice **qué es** cada cosa. Eso lo usan el lector de pantalla, los buscadores y el propio navegador.
+
+**Las etiquetas de estructura:**
+
+- `<header>`: encabezado del sitio (logo, navegación).
+- `<nav>`: navegación.
+- `<main>`: el contenido principal (uno por página).
+- `<section>`: una sección temática, con su título.
+- `<article>`: algo independiente (una tarea, una publicación).
+- `<footer>`: el pie.
+
+**Títulos:** un `h1`, después `h2`, `h3`, sin saltear niveles.
+
+**Controles:** `<button>` para acciones, `<a href>` para ir a otro lugar.
+
+## Ejemplo
+
+<HtmlPlayground html={html} />
+
+El test verifica que cada etiqueta crea su región: un banner, una navegación, un main y un contentinfo, más un solo `h1`. Verificado en un navegador real con Playwright (escritorio y celular) y con axe, incluido el contraste de colores.

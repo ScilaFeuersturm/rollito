@@ -1,0 +1,60 @@
+---
+id: react-trainee-grid-01
+track: react
+nivel: trainee
+modulo: "HTML y CSS"
+titulo: "Grid: filas y columnas"
+duracion_min: 6
+prerequisitos: [react-trainee-flexbox-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `grid-template-columns: repeat(3, 1fr)`?"
+    opciones: ["Tres filas.", "Tres columnas de igual ancho: `1fr` es \"una fracción del espacio disponible\".", "Tres elementos y nada más."]
+    correcta: 1
+    explicacion: "Si hay más de tres elementos, Grid crea filas nuevas solo. Verificado: las tres primeras tarjetas están a la misma altura y la cuarta, más abajo."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `grid-column: span 2` en un elemento?"
+    opciones: ["Lo duplica.", "Hace que ocupe dos columnas. En el ejemplo, la cuarta tarjeta mide dos columnas más el espacio del `gap`.", "Lo mueve a la columna 2."]
+    correcta: 1
+    explicacion: "Verificado: el ancho de la tarjeta destacada es el de dos columnas más 12px de gap."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué hace `repeat(auto-fit, minmax(160px, 1fr))`?"
+    explicacion: "Pone tantas columnas como entren, cada una de al menos 160px y repartiendo el sobrante. Es una grilla responsive sin media queries: en el celular quedan dos columnas y en una pantalla ancha, seis o más. Es la kata \"Galería responsive\" de este nivel."
+tarea_local: "En el editor en vivo, cambiá la grilla a `repeat(auto-fit, minmax(160px, 1fr))` y achicá y agrandá la vista previa. Fijate cuántas columnas quedan."
+resultado_esperado: "La cantidad de columnas cambia sola con el ancho, sin ninguna media query."
+resumen:
+  - "Grid organiza en filas y columnas a la vez."
+  - "Grid template columns define las columnas."
+  - "Fr es una fracción del espacio disponible."
+  - "Span hace que un elemento ocupe varias columnas."
+  - "Auto fit con minmax arma una grilla responsive sin media queries."
+entrevista:
+  en_30_segundos: "Uso Grid para diseños en dos dimensiones: defino las columnas con `grid-template-columns` (muchas veces con `fr`), separo con `gap` y hago que algunos elementos ocupen varias celdas con `span`. Para grillas responsive, `repeat(auto-fit, minmax(…, 1fr))` evita media queries."
+  trampas:
+    - pregunta: "¿Grid reemplaza a Flexbox?"
+      respuesta: "No: se complementan. Grid para la estructura en dos dimensiones; Flexbox para alinear en una sola dirección, muchas veces dentro de cada celda."
+  cuando_no: "Para una fila de botones o un menú, Grid es más de lo necesario: Flexbox alcanza."
+---
+
+import { HtmlPlayground } from '../../components/lesson/HtmlPlayground'
+import html from '../../../react-samples/trainee/08-grid/index.html?raw'
+import css from '../../../react-samples/trainee/08-grid/styles.css?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Diseños en dos dimensiones: tableros de tarjetas, galerías, el layout de una página entera.
+
+En el **contenedor**: `display: grid` y después:
+
+- `grid-template-columns`: las columnas (`repeat(3, 1fr)`, `200px 1fr`…).
+- `gap`: el espacio entre celdas.
+
+En los **hijos**: `grid-column: span 2` para ocupar varias columnas.
+
+**La unidad `fr`:** una fracción del espacio que sobra.
+
+## Ejemplo
+
+<HtmlPlayground html={html} css={css} />
+
+El test mide la grilla: tres tarjetas en la primera fila y la cuarta en la segunda, con el ancho de dos columnas más el gap. Verificado en un navegador real con Playwright (escritorio y celular) y con axe, incluido el contraste de colores.

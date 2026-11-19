@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tablero de tareas</title>
+  </head>
+  <body>
+    <header>
+      <p>Rollito</p>
+      <nav aria-label="Principal">
+        <a href="#pendientes">Pendientes</a>
+        <a href="#hechas">Hechas</a>
+      </nav>
+    </header>
+
+    <main>
+      <h1>Tablero de tareas</h1>
+
+      <section id="pendientes" aria-labelledby="titulo-pendientes">
+        <h2 id="titulo-pendientes">Pendientes</h2>
+        <article>
+          <h3>Pagar la luz</h3>
+          <p>Vence el viernes.</p>
+          <!-- Un botón de verdad: se enfoca con Tab y se activa con Enter o Espacio -->
+          <button type="button">Completar</button>
+        </article>
+      </section>
+
+      <section id="hechas" aria-labelledby="titulo-hechas">
+        <h2 id="titulo-hechas">Hechas</h2>
+        <article>
+          <h3>Comprar yerba</h3>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <p>Hecho por el equipo de Taller Fichín</p>
+    </footer>
+  </body>
+</html>

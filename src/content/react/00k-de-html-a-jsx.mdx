@@ -1,0 +1,61 @@
+---
+id: react-trainee-de-html-a-jsx-01
+track: react
+nivel: trainee
+modulo: "HTML y CSS"
+titulo: "De HTML a JSX: el puente a React"
+duracion_min: 5
+prerequisitos: [react-trainee-colores-variables-y-estados-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo se escribe `<label for=\"titulo\">` en JSX?"
+    opciones: ["Igual.", "`<label htmlFor=\"titulo\">`: `for` y `class` son palabras reservadas de JavaScript, así que en JSX son `htmlFor` y `className`.", "`<label to=\"titulo\">`"]
+    correcta: 1
+    explicacion: "Verificado: en el test, `getByLabelText('Título')` encuentra el campo, porque `htmlFor` se convierte en `for` en el DOM."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo se pasa un estilo en línea en JSX?"
+    opciones: ["`style=\"padding: 16px\"`", "Como un objeto con las propiedades en camelCase: `style={{ padding: 16, fontFamily: 'system-ui' }}`.", "No se puede."]
+    correcta: 1
+    explicacion: "Las llaves de afuera son \"acá va JavaScript\" y las de adentro, el objeto."
+  - tipo: autoevaluacion
+    pregunta: "Nombrá cuatro diferencias entre HTML y JSX."
+    explicacion: "`class` pasa a ser `className`; `for` pasa a ser `htmlFor`; las etiquetas sin cierre llevan `/>` (`<input />`); `style` es un objeto en camelCase; los eventos van en camelCase y reciben funciones (`onClick={...}`); y los valores de JavaScript van entre llaves (`maxLength={60}`)."
+tarea_local: "Tomá el HTML del formulario de contacto (la kata de este nivel) y pasalo a un componente de React en el editor en vivo, cambiando todo lo que haga falta."
+resultado_esperado: "El formulario funciona igual en React, con `className`, `htmlFor`, etiquetas cerradas y el `onSubmit` como función."
+resumen:
+  - "JSX es casi HTML, dentro de JavaScript."
+  - "Class es class name y for es html for."
+  - "Toda etiqueta se cierra, y style es un objeto."
+  - "Los eventos van en camel case y reciben funciones."
+  - "React genera el mismo HTML: la semántica y la accesibilidad siguen valiendo."
+entrevista:
+  en_30_segundos: "JSX es HTML dentro de JavaScript, con pocas diferencias: `className`, `htmlFor`, etiquetas siempre cerradas, `style` como objeto, eventos en camelCase que reciben funciones y expresiones entre llaves. Todo lo de HTML semántico y accesibilidad vale igual, porque React genera ese mismo HTML."
+  trampas:
+    - pregunta: "¿JSX es HTML?"
+      respuesta: "No: es una sintaxis que se compila a llamadas a funciones de React (`jsx('label', …)`), que después generan el DOM. Por eso tiene las reglas de JavaScript, como no poder usar `class`."
+  cuando_no: "Para una página estática sin interacción (una landing simple), HTML y CSS alcanzan: no hace falta React."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/trainee/11-de-html-a-jsx/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Ya sabés HTML. JSX es casi lo mismo, con unas pocas diferencias porque vive dentro de JavaScript.
+
+- `class` → `className`
+- `for` → `htmlFor`
+- `<input>` → `<input />` (toda etiqueta se cierra)
+- `style="padding: 16px"` → `style={{ padding: 16 }}`
+- `onclick="..."` → `onClick={funcion}`
+- valores de JavaScript entre llaves: `maxLength={60}`
+
+Lo que aprendiste en este nivel (semántica, labels, accesibilidad, CSS) vale igual en React: **React genera ese mismo HTML**.
+
+## Ejemplo
+
+El formulario de la lección de formularios, en JSX:
+
+<ReactPlayground code={ejemplo} />
+
+El test verifica que `htmlFor` asocia el label (se encuentra el campo por su nombre) y que `className` llega al DOM como `class`. Desde acá, seguí con la lección Junior **JSX**.

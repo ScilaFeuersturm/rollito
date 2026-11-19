@@ -1,0 +1,18 @@
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);  /* tres columnas de igual ancho */
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+}
+
+.tarjeta {
+  padding: 16px;
+  border: 1px solid #ded4e8;
+  border-radius: 8px;
+}
+
+/* La cuarta tarjeta ocupa dos columnas de la segunda fila */
+.destacada {
+  grid-column: span 2;
+}

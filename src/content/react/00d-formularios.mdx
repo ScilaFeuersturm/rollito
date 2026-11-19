@@ -1,0 +1,56 @@
+---
+id: react-trainee-formularios-01
+track: react
+nivel: trainee
+modulo: "HTML y CSS"
+titulo: "Formularios: label, tipos de campo y validación"
+duracion_min: 6
+prerequisitos: [react-trainee-links-imagenes-y-listas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo se asocia un `<label>` a su campo?"
+    opciones: ["Poniéndolo al lado.", "Con `for` igual al `id` del campo, o envolviendo el campo con el label. Así, tocar el texto enfoca el campo y el lector de pantalla lee el nombre.", "Con un `placeholder`."]
+    correcta: 1
+    explicacion: "Verificado: en el test, tocar el texto \"Es urgente\" marca el checkbox."
+  - tipo: opcion_multiple
+    pregunta: "¿Alcanza con un `placeholder` en lugar de un label?"
+    opciones: ["Sí.", "No: desaparece cuando escribís, suele tener poco contraste y no siempre lo lee el lector de pantalla. El label va siempre.", "Solo en el celular."]
+    correcta: 1
+    explicacion: "El placeholder puede dar un ejemplo (\"nombre@mail.com\"), pero no reemplaza al label."
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirven `type=\"email\"` o `type=\"date\"`?"
+    opciones: ["Para nada.", "El navegador valida el formato y, en el celular, muestra el teclado o el selector adecuado (con @, o un calendario).", "Para enviar más rápido."]
+    correcta: 1
+    explicacion: "La validación del navegador ayuda a la persona, pero el servidor siempre valida de nuevo (como viste en Testing con la contraseña de Rollito)."
+tarea_local: "Armá un formulario de registro con nombre, mail, contraseña, fecha de nacimiento y un checkbox de términos, todos con label y el tipo correcto. Probalo en el celular."
+resultado_esperado: "Cada campo se enfoca al tocar su label, y en el celular aparece el teclado adecuado para el mail y un calendario para la fecha."
+resumen:
+  - "Cada campo lleva un label asociado con for e id."
+  - "El placeholder no reemplaza al label."
+  - "El tipo del campo ayuda a validar y muestra el teclado correcto."
+  - "La validación del navegador ayuda, pero el servidor valida de nuevo."
+entrevista:
+  en_30_segundos: "Cada campo tiene su label asociado, uso el tipo de campo correcto para que el navegador valide y el celular muestre el teclado adecuado, y no reemplazo labels por placeholders. La validación del navegador es para la experiencia; el servidor siempre valida de nuevo."
+  trampas:
+    - pregunta: "¿`required` en el HTML protege al servidor?"
+      respuesta: "No: cualquiera puede mandar el pedido sin pasar por el formulario. Es ayuda para la persona; la validación real va en el servidor."
+  cuando_no: "En formularios con lógica compleja (campos que dependen de otros, validación al escribir), React suma control; para un formulario simple, el HTML nativo alcanza."
+---
+
+import { HtmlPlayground } from '../../components/lesson/HtmlPlayground'
+import html from '../../../react-samples/trainee/04-formularios/index.html?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Los formularios son donde la persona te da datos. Un formulario mal hecho frustra y excluye.
+
+- **`<label>`** para cada campo: con `for`/`id` o envolviendo el campo.
+- **Tipos:** `text`, `email`, `password`, `number`, `date`, `checkbox`, más `<select>` y `<textarea>`.
+- **Validación del navegador:** `required`, `maxlength`, `min`, `pattern`.
+- **Botón:** `<button type="submit">` envía el formulario.
+
+## Ejemplo
+
+<HtmlPlayground html={html} />
+
+En React, este mismo formulario se escribe casi igual (lo ves en la última lección de este nivel). Verificado en un navegador real con Playwright (escritorio y celular) y con axe, incluido el contraste de colores.

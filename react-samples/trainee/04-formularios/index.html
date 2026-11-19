@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nueva tarea</title>
+  </head>
+  <body>
+    <main>
+      <h1>Nueva tarea</h1>
+      <form>
+        <!-- for apunta al id del campo: tocar el texto enfoca el campo y el lector de pantalla lo lee -->
+        <label for="titulo">Título</label>
+        <input id="titulo" name="titulo" type="text" required maxlength="60" />
+
+        <label for="vence">Vence</label>
+        <input id="vence" name="vence" type="date" />
+
+        <label for="prioridad">Prioridad</label>
+        <select id="prioridad" name="prioridad">
+          <option value="alta">Alta</option>
+          <option value="media" selected>Media</option>
+          <option value="baja">Baja</option>
+        </select>
+
+        <!-- Un checkbox con el label envolviéndolo también queda asociado -->
+        <label><input type="checkbox" name="urgente" /> Es urgente</label>
+
+        <button type="submit">Guardar</button>
+      </form>
+    </main>
+  </body>
+</html>

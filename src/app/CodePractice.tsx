@@ -11,7 +11,7 @@ type Props = {
   descripcion: string
   intro?: string
   items: readonly Kata[]
-  lenguaje: 'kotlin' | 'tsx'
+  lenguaje: 'kotlin' | 'tsx' | 'html'
   siguiente?: { href: string; texto: string }
 }
 

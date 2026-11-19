@@ -1,0 +1,57 @@
+---
+id: react-trainee-modelo-de-caja-01
+track: react
+nivel: trainee
+modulo: "HTML y CSS"
+titulo: "El modelo de caja: margin, border, padding y box-sizing"
+duracion_min: 5
+prerequisitos: [react-trainee-selectores-y-cascada-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Una caja tiene `width: 200px`, `padding: 20px` y `border: 2px`, con el `box-sizing` por defecto. ¿Cuánto mide de ancho?"
+    opciones: ["200px.", "244px: el `width` es solo el contenido, y se suman 20px de padding y 2px de borde a cada lado.", "222px."]
+    correcta: 1
+    explicacion: "Verificado en el navegador: la caja con `content-box` mide 244px y la de `border-box`, 200px."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `box-sizing: border-box`?"
+    opciones: ["Agrega un borde.", "Hace que el `width` incluya el padding y el borde: la caja mide lo que dice el `width`. Por eso casi todos los proyectos lo aplican a todo.", "Saca el margen."]
+    correcta: 1
+    explicacion: "Una línea habitual al principio del CSS: `*, *::before, *::after { box-sizing: border-box; }`."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre `margin` y `padding`?"
+    opciones: ["Ninguna.", "El padding es el espacio de adentro (entre el contenido y el borde, se pinta con el fondo); el margin, el de afuera (entre la caja y las demás).", "El margin es solo vertical."]
+    correcta: 1
+    explicacion: "Si querés que el fondo de un botón sea más grande, es padding; si querés separarlo de otro botón, es margin (o `gap` en un contenedor flex o grid)."
+tarea_local: "En el editor en vivo, cambiá el padding de las cajas a 40px y predecí cuánto va a medir cada una antes de mirar."
+resultado_esperado: "La de `content-box` pasa a medir 284px (200 + 80 + 4); la de `border-box` sigue en 200px y su contenido se achica."
+resumen:
+  - "Todo elemento es una caja: contenido, padding, borde y margen."
+  - "Por defecto, el ancho es solo el contenido."
+  - "Con border box, el ancho incluye padding y borde."
+  - "El padding es el espacio de adentro; el margin, el de afuera."
+entrevista:
+  en_30_segundos: "Todo elemento es una caja con contenido, padding, borde y margen. Aplico `box-sizing: border-box` a todo para que el ancho declarado sea el real, uso padding para el espacio interno y gap o margin para separar elementos."
+  trampas:
+    - pregunta: "Dos párrafos con `margin: 16px` uno debajo del otro, ¿quedan separados por 32px?"
+      respuesta: "No: los márgenes verticales entre bloques se \"colapsan\" y queda el mayor, 16px. Es un comportamiento clásico de CSS que no pasa dentro de flex o grid."
+  cuando_no: "Dentro de un contenedor flex o grid, para separar elementos conviene `gap` en vez de márgenes en cada hijo."
+---
+
+import { HtmlPlayground } from '../../components/lesson/HtmlPlayground'
+import html from '../../../react-samples/trainee/06-modelo-de-caja/index.html?raw'
+import css from '../../../react-samples/trainee/06-modelo-de-caja/styles.css?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Todo elemento es una caja. Entender cómo se mide evita los clásicos "¿por qué se me desborda?".
+
+De adentro hacia afuera: **contenido → padding → border → margin**.
+
+- **`box-sizing: content-box`** (por defecto): `width` = solo el contenido.
+- **`box-sizing: border-box`**: `width` = contenido + padding + borde. Mucho más predecible.
+
+## Ejemplo
+
+<HtmlPlayground html={html} css={css} />
+
+El test mide las dos cajas: 244px y 200px. Verificado en un navegador real con Playwright (escritorio y celular) y con axe, incluido el contraste de colores.

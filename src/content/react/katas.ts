@@ -1,6 +1,14 @@
 // Práctica de código en vivo de React. Las soluciones se leen de react-samples/katas/, que tiene tests.
 const fuentes = import.meta.glob<string>('../../../react-samples/katas/*.{ts,tsx}', { query: '?raw', import: 'default', eager: true })
 
+const fuentesHtml = import.meta.glob<string>('../../../react-samples/trainee/katas/*.html', { query: '?raw', import: 'default', eager: true })
+
+function fuenteHtml(archivo: string) {
+  const codigo = fuentesHtml[`../../../react-samples/trainee/katas/${archivo}`]
+  if (codigo === undefined) throw new Error(`No existe react-samples/trainee/katas/${archivo}`)
+  return codigo.trimEnd()
+}
+
 function fuente(archivo: string) {
   const codigo = fuentes[`../../../react-samples/katas/${archivo}`]
   if (codigo === undefined) throw new Error(`No existe react-samples/katas/${archivo}`)
@@ -9,7 +17,12 @@ function fuente(archivo: string) {
 
 export interface KataReact { titulo: string; enunciado: string; pista: string; codigo: string }
 
-export const reactKatas: Record<'junior' | 'semi-senior' | 'senior', readonly KataReact[]> = {
+export const reactKatas: Record<'trainee' | 'junior' | 'semi-senior' | 'senior', readonly KataReact[]> = {
+  'trainee': [
+    { titulo: "Formulario de contacto accesible", enunciado: "Armá un formulario de contacto con nombre, mail y mensaje, todos obligatorios, y un botón para enviar. Cada campo tiene que tener su label.", pista: "Un `label` con `for` por campo, `type=\"email\"` para el mail, `textarea` para el mensaje y `autocomplete` para que el navegador ayude a completar.", codigo: fuenteHtml("formulario-de-contacto.html") },
+    { titulo: "Centrar una tarjeta en la pantalla", enunciado: "Mostrá una tarjeta centrada en el medio exacto de la pantalla, en cualquier tamaño.", pista: "Flexbox en el `body`, con `min-height: 100vh`, `justify-content: center` y `align-items: center`.", codigo: fuenteHtml("centrar-una-tarjeta.html") },
+    { titulo: "Galería responsive sin media queries", enunciado: "Armá una galería que muestre tantas columnas como entren, de al menos 160px cada una, sin escribir media queries.", pista: "Grid con `grid-template-columns: repeat(auto-fit, minmax(160px, 1fr))`.", codigo: fuenteHtml("galeria-responsive.html") },
+  ],
   'junior': [
     { titulo: "Contador con límites", enunciado: "Un contador con botones Sumar, Restar y Reiniciar, que no baja de 0 ni pasa de un máximo que llega por props. Los botones se deshabilitan en los límites.", pista: "Un `useState` para el valor, la forma con función del setter y `disabled` según el valor.", codigo: fuente("Contador.tsx") },
     { titulo: "Lista de tareas", enunciado: "El clásico: un formulario para agregar tareas (sin aceptar títulos vacíos), la lista y un botón para borrar cada una. Si no hay tareas, un mensaje.", pista: "Un estado para la lista y otro para el campo controlado. Cada tarea necesita un id para la key y para borrarla.", codigo: fuente("ListaDeTareas.tsx") },
