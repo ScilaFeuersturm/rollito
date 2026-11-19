@@ -82,13 +82,12 @@ function SinSesion() {
   return <section className={styles.hero}>
     <h1 tabIndex={-1}>Tu cuenta</h1>
     <p>Entrá con tu cuenta de Taller Fichín. Tu progreso se guarda en la cuenta y lo ves en cualquier dispositivo.</p>
-    <p role="tablist" aria-label="Opciones de cuenta">
+    <div className={styles.opciones} role="group" aria-label="¿Qué querés hacer?">
       {(['entrar', 'registrarme', 'recuperar'] as const).map(opcion =>
-        <button key={opcion} type="button" role="tab" aria-selected={modo === opcion} className={styles.navLink}
-          onClick={() => setModo(opcion)} style={{ background: 'none', border: 0, cursor: 'pointer', textDecoration: modo === opcion ? 'underline' : 'none' }}>
+        <button key={opcion} type="button" className={styles.opcion} aria-pressed={modo === opcion} onClick={() => setModo(opcion)}>
           {opcion === 'entrar' ? 'Entrar' : opcion === 'registrarme' ? 'Tengo un código' : 'Olvidé mi contraseña'}
         </button>)}
-    </p>
+    </div>
     <form className={styles.form} onSubmit={alEnviar} key={modo}>
       {modo === 'registrarme' && <>
         <label>Código de invitación<input name="codigo" autoCapitalize="none" spellCheck={false} required /></label>
@@ -130,7 +129,7 @@ function SinInvitacion({ cuenta, alCambiarCuenta, alSalir }: { cuenta: DatosCuen
       <button className={styles.primary} disabled={enviando}>{enviando ? 'Un momento…' : 'Usar el código'}</button>
     </form>
     {error && <p role="alert">{error}</p>}
-    <p><button type="button" className={styles.navLink} style={{ background: 'none', border: 0, cursor: 'pointer' }} onClick={() => void alSalir()}>Salir</button></p>
+    <p><button type="button" className={styles.secundario} onClick={() => void alSalir()}>Salir</button></p>
   </section>
 }
 

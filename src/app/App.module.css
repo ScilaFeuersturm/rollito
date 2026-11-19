@@ -132,3 +132,13 @@
 .task blockquote { margin: 1rem 0; padding-left: 1rem; border-left: 4px solid var(--accent); }
 
 .cta { display: inline-block; text-decoration: none; }
+
+/* Selector de opciones de la pantalla de cuenta: botones con borde; la opción elegida va rellena. */
+.opciones { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+.opcion, .secundario {
+  font: inherit; font-weight: 700; cursor: pointer;
+  border: 2px solid var(--accent); border-radius: 99px; padding: .45rem 1rem;
+  background: #fff; color: var(--accent);
+}
+.opcion:hover, .secundario:hover { background: #f0e9f8; }
+.opcion[aria-pressed='true'] { background: var(--accent); color: #fff; }
