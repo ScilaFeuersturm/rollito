@@ -1,0 +1,59 @@
+---
+id: testing-senior-testing-en-produccion-01
+track: testing
+nivel: senior
+modulo: "Estrategia de calidad"
+titulo: "Testing en producción: feature flags, canary y monitoreo"
+duracion_min: 6
+prerequisitos: [testing-senior-cobertura-y-mutation-testing-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es un canary release?"
+    opciones: ["Un lanzamiento con un pájaro de mascota.", "Liberar la versión nueva primero a un porcentaje chico de usuarios, mirar los indicadores (errores, crashes, tiempos) y ampliar solo si están bien.", "Probar en el entorno de desarrollo."]
+    correcta: 1
+    explicacion: "En mobile, Google Play y App Store permiten liberaciones graduales con este mismo fin."
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve un feature flag en testing?"
+    opciones: ["Para esconder bugs.", "Para separar el deploy de la activación: el código llega a producción apagado, se prende para el equipo o para un grupo, y si algo falla se apaga sin otro deploy.", "Para decorar la app."]
+    correcta: 1
+    explicacion: "Lo viste en el recorrido Android (lección de versiones de SDK y feature flags)."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué es un test sintético y cuál hizo Rollito durante su construcción?"
+    explicacion: "Un test que corre periódicamente contra producción simulando a una persona (por ejemplo, abrir la landing y una lección) para detectar caídas antes que la gente. Rollito lo hizo después de cada deploy: verificar que la landing, la cuenta y las lecciones nuevas respondieran, y que el deploy de Render quedara live."
+tarea_local: "Para una app que conozcas, diseñá cómo liberarías una funcionalidad riesgosa: con qué flag, a qué porcentaje primero, qué indicadores mirarías y qué umbral te haría apagarla."
+resultado_esperado: "Un plan de liberación con flag, porcentajes, indicadores y un criterio claro de rollback."
+resumen:
+  - "Producción tiene casos que ningún entorno de prueba reproduce."
+  - "Los feature flags separan el deploy de la activación."
+  - "Un canary libera primero a pocos usuarios y mira los indicadores."
+  - "Los tests sintéticos vigilan producción periódicamente."
+  - "Hay que poder volver atrás en minutos."
+entrevista:
+  en_30_segundos: "Complemento las pruebas previas con prácticas en producción: feature flags para separar el deploy de la activación, liberaciones graduales con indicadores claros, monitoreo con alertas, tests sintéticos periódicos y rollback rápido. No reemplaza al testing previo: reduce el riesgo de lo que se escapa."
+  trampas:
+    - pregunta: "¿Testing en producción significa probar con usuarios reales en vez de testear antes?"
+      respuesta: "No. Significa que, además de testear antes, se libera de forma que si algo se escapa afecte a pocos, se detecte rápido y se pueda deshacer. Probar en producción \"en vez de\" es pasarle el riesgo a la gente."
+  cuando_no: "Para cambios que no se pueden deshacer (migraciones de datos destructivas, cobros), los flags y el canary no alcanzan: esos cambios necesitan pruebas previas exhaustivas y un plan de recuperación."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Por más que se pruebe antes, producción tiene datos, dispositivos y combinaciones que ningún entorno de prueba reproduce. "Testing en producción" no es probar en vez de antes: es **reducir el riesgo** cuando el software ya está afuera.
+
+- **Feature flags:** el código sale apagado y se prende de a poco.
+- **Canary y liberación gradual:** primero a un porcentaje chico.
+- **Monitoreo y alertas:** errores, crashes, tiempos, conversión.
+- **Tests sintéticos:** pruebas automáticas periódicas contra producción.
+- **Rollback rápido:** poder volver atrás en minutos.
+
+## Ejemplo
+
+Lo que aprendió Rollito sobre esto, en un caso real: durante seis commits seguidos, el deploy falló y producción siguió mostrando la versión vieja, mientras se creía que todo estaba publicado.
+
+Desde entonces, después de cada push:
+
+1. Se verifica que el deploy en Render quede **live**.
+2. Se prueba que las páginas nuevas respondan (un test sintético mínimo).
+3. Se reproduce antes el build desde un clon limpio, igual que el servidor.
+
+La lección: "pasó en mi máquina" no es lo mismo que "está en producción". Mirar producción también es testing.

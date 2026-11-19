@@ -1,0 +1,72 @@
+---
+id: testing-semi-senior-localizadores-y-aserciones-01
+track: testing
+nivel: semi-senior
+modulo: "Automatización"
+titulo: "Localizadores y aserciones que esperan solas"
+duracion_min: 6
+prerequisitos: [testing-semi-senior-primer-test-con-playwright-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué localizador recomienda Playwright primero?"
+    opciones: ["Un selector CSS como `.btn-primary`.", "`getByRole` con el nombre accesible (por ejemplo, `getByRole('button', { name: 'Entrar' })`): es como encuentra el elemento una persona y no se rompe si cambia el CSS.", "Un XPath."]
+    correcta: 1
+    explicacion: "Después: `getByLabel`, `getByText` y, como último recurso, `getByTestId`."
+  - tipo: opcion_multiple
+    pregunta: "Trampa. `getByRole('button', { name: 'Entrar' })` falla con \"strict mode violation: resolved to 2 elements\". ¿Qué pasó?"
+    opciones: ["Playwright tiene un bug.", "Hay dos botones \"Entrar\" en la pantalla, y Playwright se niega a adivinar cuál querés. Se acota el localizador, por ejemplo al grupo de opciones.", "El botón no existe."]
+    correcta: 1
+    explicacion: "Pasó de verdad al escribir los tests de Rollito: la opción \"Entrar\" y el botón de enviar el formulario se llaman igual. La solución fue `getByRole('group', { name: '¿Qué querés hacer?' }).getByRole('button', ...)`."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `await expect(locator).toBeVisible()`?"
+    opciones: ["Revisa una sola vez y falla si no está.", "Reintenta automáticamente hasta que el elemento esté visible o se cumpla el tiempo límite (5 segundos por defecto). Por eso no hacen falta esperas fijas.", "Hace visible el elemento."]
+    correcta: 1
+    explicacion: "Son las aserciones \"web-first\": esperan solas lo que la app tarda en cargar."
+tarea_local: "Abrí `npx playwright codegen http://localhost:4173` con el sitio corriendo (`npm run preview`), navegá por la landing y la cuenta, y mirá qué localizadores genera. Cambiá los que no sean por rol o por label."
+resultado_esperado: "Una lista de localizadores donde casi todos son `getByRole` o `getByLabel`, y entendés por qué los otros son más frágiles."
+resumen:
+  - "Se prefieren los localizadores por rol y nombre accesible."
+  - "El modo estricto falla si un localizador encuentra varios elementos."
+  - "Las aserciones web first reintentan hasta que se cumplen."
+  - "Una pantalla accesible es más fácil de testear."
+entrevista:
+  en_30_segundos: "Localizo por rol y nombre accesible, como lo haría un lector de pantalla, y uso test ids solo como último recurso. Aprovecho el modo estricto, que me avisa cuando un localizador es ambiguo, y las aserciones web-first, que esperan solas, así no uso esperas fijas."
+  trampas:
+    - pregunta: "¿Por qué no usar `page.waitForTimeout(2000)` para esperar que cargue?"
+      respuesta: "Porque es lento cuando la app es rápida e insuficiente cuando es lenta: es la causa número uno de tests inestables. Se espera una condición concreta, con una aserción web-first."
+  cuando_no: "Si un componente no tiene texto ni rol útil (por ejemplo, un canvas o un gráfico), un `data-testid` es razonable: es mejor que un selector CSS frágil."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Los tests E2E se rompen por dos motivos típicos: localizadores frágiles (que dependen del CSS o de la estructura) y esperas mal hechas. Playwright resuelve las dos.
+
+**Localizadores, en orden de preferencia:**
+
+1. `getByRole('button', { name: 'Entrar' })`
+2. `getByLabel('Nombre')`
+3. `getByText('limitada al equipo')`
+4. `getByTestId('contenedor')`, si no hay otra forma.
+
+**Modo estricto:** si un localizador encuentra varios elementos y le pedís una acción, falla en vez de elegir uno al azar.
+
+**Aserciones web-first:** `toBeVisible`, `toHaveText` o `toHaveURL` reintentan hasta que se cumplan.
+
+## Ejemplo
+
+El caso real de Rollito. Primero:
+
+```ts
+page.getByRole('button', { name: 'Entrar', exact: true })
+// Error: strict mode violation: ... resolved to 2 elements:
+//   1) <button aria-pressed="true">Entrar</button>  (la opción)
+//   2) <button>Entrar</button>                       (enviar el formulario)
+```
+
+Después, acotado al grupo de opciones:
+
+```ts
+page.getByRole('group', { name: '¿Qué querés hacer?' }).getByRole('button', { name: 'Entrar', exact: true })
+```
+
+El grupo tiene ese nombre porque el componente usa `role="group"` con `aria-label`: un localizador por rol funciona bien cuando la pantalla es accesible.

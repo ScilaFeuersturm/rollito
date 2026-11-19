@@ -19,6 +19,7 @@ import { katas, katasIntro } from '../content/android/katas'
 import { reactInterview, type ReactLevel } from '../content/react/interview-practice'
 import { reactKatas } from '../content/react/katas'
 import { reactFlashcards } from '../content/react/flashcards'
+import { testingInterview, type TestingLevel } from '../content/testing/interview-practice'
 import { functionalInterview } from '../content/funcional/interview-practice'
 import { Link, usePathname } from './router'
 import { cuentaPath, homePath, interviewPath, matchRoute, pageTitle, reactInterviewPath, repasoPath } from './routes'
@@ -35,7 +36,7 @@ function marcarSesion(activa: boolean) {
 const servicio = () => import('../cuenta/servicio')
 
 // Rutas que solo ven los miembros. La landing, la cuenta y el 404 son públicas; admin se controla adentro.
-const rutasDeContenido = new Set(['flashcards', 'flashcards-react', 'simulacro-react', 'practica-react', 'leccion', 'repaso', 'repaso-funcional', 'simulacro', 'simulacro-funcional', 'practica', 'privado'])
+const rutasDeContenido = new Set(['flashcards', 'flashcards-react', 'simulacro-testing', 'simulacro-react', 'practica-react', 'leccion', 'repaso', 'repaso-funcional', 'simulacro', 'simulacro-funcional', 'practica', 'privado'])
 const esContenido = (nombre: string) => rutasDeContenido.has(nombre)
 
 function Cargando() {
@@ -165,6 +166,8 @@ export function App({ url }: { url: string }) {
           items={katas[route.level.level]} lenguaje="kotlin"
           siguiente={{ href: interviewPath(route.level.level), texto: `Seguí con el simulacro de entrevista ${route.level.title}` }} />}
         {route.name === 'flashcards-react' && <InterviewPractice area="React" title="Ronda relámpago" questions={reactFlashcards} />}
+        {route.name === 'simulacro-testing' && <InterviewPractice key={route.level.level} area="Testing"
+          title={`Simulacro ${route.level.title}`} questions={testingInterview[route.level.level as TestingLevel]} />}
         {route.name === 'simulacro-react' && <InterviewPractice key={route.level.level} area="React"
           title={`Simulacro ${route.level.title}`} questions={reactInterview[route.level.level as ReactLevel]} />}
         {route.name === 'practica-react' && <CodePractice key={route.level.level} area="React" titulo={`Práctica de código ${route.level.title}`}

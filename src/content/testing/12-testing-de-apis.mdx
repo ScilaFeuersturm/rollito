@@ -1,0 +1,57 @@
+---
+id: testing-semi-senior-testing-de-apis-01
+track: testing
+nivel: semi-senior
+modulo: "Automatización"
+titulo: "Testing de APIs"
+duracion_min: 6
+prerequisitos: [testing-semi-senior-piramide-de-testing-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué verificás en un test de API, además de que responda 200?"
+    opciones: ["Nada más.", "El código de estado de cada caso, la forma de la respuesta (el contrato), los casos negativos (datos inválidos, sin permisos, recursos inexistentes) y los tiempos de respuesta.", "El color de la respuesta."]
+    correcta: 1
+    explicacion: "Los casos negativos suelen encontrar más bugs que el camino feliz: ¿qué pasa sin token, con un id que no existe o con un campo de más?"
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué probar la API directamente si ya se prueba desde la pantalla?"
+    opciones: ["No hace falta.", "Porque la pantalla esconde casos: cualquiera puede llamar a la API sin pasar por el formulario. La seguridad y las validaciones tienen que probarse donde se aplican, en el servidor.", "Porque es más lindo."]
+    correcta: 1
+    explicacion: "Es la misma lección de la contraseña de Rollito: el `minLength` del formulario no protege a la API."
+  - tipo: autoevaluacion
+    pregunta: "Nombrá cinco casos negativos para un endpoint `POST /tareas`."
+    explicacion: "Sin autenticación (401); con un token de otra persona o sin permiso (403); con el cuerpo vacío o sin un campo obligatorio (400); con un tipo incorrecto, como un número en el título (400); con un campo de más que no debería aceptarse; y con un título demasiado largo."
+tarea_local: "Con Postman, Bruno o `curl`, probá la API pública `https://jsonplaceholder.typicode.com/todos/1` y después `/todos/999999` y `/no-existe`. Anotá el código de estado y la forma de cada respuesta."
+resultado_esperado: "200 con una tarea; 404 con un objeto vacío; 404 en la ruta inexistente. Y una observación: esa API devuelve `{}` en el 404, algo que tu cliente tiene que contemplar."
+resumen:
+  - "La API se prueba directamente: es la frontera real del sistema."
+  - "Se verifican el código de estado, la forma de la respuesta y los tiempos."
+  - "Los casos negativos suelen encontrar más bugs que el camino feliz."
+  - "Lo que valida la pantalla, la API lo tiene que validar de nuevo."
+entrevista:
+  en_30_segundos: "Pruebo las APIs directamente, porque son la frontera real: verifico códigos de estado, forma de la respuesta y tiempos, y sobre todo casos negativos (sin autenticación, sin permisos, datos inválidos, recursos inexistentes). Exploro con Postman y automatizo en código, dentro de la CI."
+  trampas:
+    - pregunta: "¿Un 200 con un mensaje de error en el cuerpo está bien?"
+      respuesta: "Es un mal diseño: los clientes y los monitoreos se guían por el código de estado. Un error tiene que devolver un 4xx o 5xx, con un cuerpo que explique el problema."
+  cuando_no: "Si la API es de un tercero y no la controlás, no la pruebes a fondo en cada build: probá tu integración con respuestas simuladas, y tené un test de contrato aparte, programado."
+---
+
+## Concepto
+
+**Qué problema resuelve.** La API es la frontera real del sistema: todo lo que la pantalla valida, la API lo tiene que validar de nuevo. Probarla directamente es más rápido y estable que hacerlo desde la UI.
+
+- **Camino feliz:** código de estado y forma de la respuesta.
+- **Casos negativos:** sin autenticación, sin permisos, datos inválidos, recursos inexistentes.
+- **Contrato:** que la forma de la respuesta no cambie sin aviso.
+- **Herramientas:** Postman o Bruno para explorar; código (Vitest, Playwright `request`, REST Assured) para automatizar.
+
+## Ejemplo
+
+Rollito no tiene una API propia, pero sus reglas de Firestore funcionan como una: deciden quién puede leer y escribir qué. Están probadas como una API, con casos negativos, contra el emulador (`firebase/reglas.emulador.mjs`):
+
+- Un código ya usado no sirve para otra persona.
+- Nadie lee ni escribe el progreso de otra persona.
+- Una cuenta sin invitación no puede guardar progreso.
+- Nadie se puede nombrar admin desde la app.
+- Un nombre vacío no se acepta (el caso que apareció con el bug del registro).
+
+De 21 casos, la mayoría son negativos: así se prueba la seguridad.

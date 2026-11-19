@@ -2,7 +2,7 @@ import { androidSections, architectureSections, claudeCodeModules, testingSectio
 import type { Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
-import { flashcardsPath, reactFlashcardsPath, functionalInterviewPath, functionalRepasoPath, interviewPath, reactInterviewPath, reactPracticeLevels, reactPracticePath, lessonPath, practicePath, repasoPath } from './routes'
+import { flashcardsPath, reactFlashcardsPath, testingInterviewPath, functionalInterviewPath, functionalRepasoPath, interviewPath, reactInterviewPath, reactPracticeLevels, reactPracticePath, lessonPath, practicePath, repasoPath } from './routes'
 
 const androidLessons = androidSections.flatMap(section => section.lessons)
 
@@ -116,6 +116,12 @@ export function Home({ progress }: { progress: Progress }) {
         <section className={styles.trackCard} aria-labelledby="testing">
           <h3 id="testing">Testing</h3>
           <p>Testing manual y automatizado: diseño de casos, reporte de bugs, Playwright, APIs, CI y estrategia de calidad.</p>
+          <nav aria-labelledby="testing-interviews">
+            <h4 id="testing-interviews" className={styles.practiceHeading}>Simulacros de entrevista</h4>
+            <ul className={styles.practiceLinks}>
+              {testingSections.map(level => <li key={level.level}><Link href={testingInterviewPath(level.level)}>{level.title}</Link></li>)}
+            </ul>
+          </nav>
           <details>
             <summary>Ver lecciones de Testing</summary>
             <div className={styles.roadmap}>

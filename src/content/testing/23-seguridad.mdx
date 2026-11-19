@@ -1,0 +1,61 @@
+---
+id: testing-senior-seguridad-01
+track: testing
+nivel: senior
+modulo: "Estrategia de calidad"
+titulo: "Testing de seguridad: OWASP y lo básico que todo QA prueba"
+duracion_min: 7
+prerequisitos: [testing-senior-performance-con-k6-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es el control de acceso roto (el primero del OWASP Top 10)?"
+    opciones: ["Una contraseña débil.", "Que alguien pueda ver o hacer cosas que no le corresponden: leer datos de otra persona cambiando un id en la URL, o usar funciones de admin sin serlo.", "Que el servidor esté caído."]
+    correcta: 1
+    explicacion: "Es el riesgo que más cubren las pruebas de reglas de Rollito: nadie lee el progreso ajeno ni se nombra admin."
+  - tipo: opcion_multiple
+    pregunta: "Probás `/api/tareas/15` con tu sesión y anda. ¿Qué probás después?"
+    opciones: ["Nada más.", "`/api/tareas/16`, que es de otra persona: si te la devuelve, hay un IDOR (referencia directa insegura a un objeto). También sin sesión y con la sesión de alguien sin permisos.", "La misma URL más rápido."]
+    correcta: 1
+    explicacion: "Es una de las pruebas de seguridad más simples y que más bugs graves encuentra."
+  - tipo: autoevaluacion
+    pregunta: "Nombrá cinco pruebas de seguridad que un QA puede hacer sin herramientas especiales."
+    explicacion: "Cambiar ids en URLs y pedidos (IDOR); usar funciones sin sesión o con un rol sin permisos; meter HTML o scripts en los campos de texto (XSS); revisar que los mensajes de error no revelen información (por ejemplo, si un mail existe); y verificar que la sesión se cierre de verdad al salir y no queden datos sensibles en el navegador."
+tarea_local: "En una app de prueba (nunca en una real sin permiso), probá: cambiar un id en la URL de un recurso tuyo, usar una función sin sesión y escribir `<b>hola</b>` en un campo de texto. Anotá qué pasa en cada caso."
+resultado_esperado: "Tres observaciones. Si alguna muestra datos de otra persona o interpreta el HTML, encontraste un bug de seguridad para reportar."
+resumen:
+  - "Muchos problemas graves de seguridad se encuentran con pruebas simples."
+  - "El control de acceso roto es el riesgo más común: probá ids ajenos y roles sin permiso."
+  - "Los campos de texto se prueban con HTML y scripts."
+  - "Los mensajes de error no tienen que revelar información."
+  - "Nunca se prueba seguridad en sistemas ajenos sin autorización."
+entrevista:
+  en_30_segundos: "En cada funcionalidad pruebo lo básico de seguridad: control de acceso (ids ajenos, sin sesión, roles sin permisos), entradas con HTML o scripts, mensajes de error que no revelen información y sesiones que se cierren de verdad. Uso el OWASP Top 10 como guía y herramientas como ZAP, y coordino con especialistas para pruebas más profundas."
+  trampas:
+    - pregunta: "Si la pantalla no muestra el botón de admin, ¿la función está protegida?"
+      respuesta: "No: esconder un botón no es seguridad. La protección tiene que estar en el servidor (o en las reglas, como en Rollito). Se prueba llamando a la función directamente, sin pasar por la pantalla."
+  cuando_no: "Las pruebas de penetración profundas (explotar vulnerabilidades, encadenar ataques) las hacen especialistas con autorización explícita: como QA, se detecta y se reporta, no se explota."
+---
+
+## Concepto
+
+**Qué problema resuelve.** La seguridad no es solo de especialistas: muchos de los problemas más graves se encuentran con pruebas simples, si se piensan.
+
+**OWASP Top 10** es la lista de referencia de los riesgos más comunes en aplicaciones web (verificá la edición vigente). Algunos que todo QA puede probar:
+
+- **Control de acceso roto:** ver o hacer lo que no te corresponde (IDOR, funciones de admin).
+- **Inyección y XSS:** datos que se ejecutan como código.
+- **Fallas de autenticación:** sesiones que no expiran, recuperación de contraseña que revela información.
+- **Configuración insegura:** mensajes de error con detalles internos, secretos expuestos.
+
+**Herramientas:** OWASP ZAP o Burp Suite para analizar y modificar el tráfico.
+
+## Ejemplo
+
+Las pruebas de seguridad reales de Rollito, en las reglas de Firestore (21 casos contra el emulador): un código usado no sirve dos veces, nadie lee ni escribe el progreso ajeno, una cuenta sin invitación no guarda nada y nadie se nombra admin.
+
+Y dos pruebas más que se hicieron:
+
+- **XSS:** la lección Senior de seguridad de React verifica con un test que el texto se escapa y que React 19 bloquea los `href="javascript:…"`.
+- **Enumeración de cuentas:** "Olvidé mi contraseña" muestra el mismo mensaje exista o no el mail, para no revelar quién tiene cuenta.
+
+Y un hallazgo pendiente: la contraseña de 8 caracteres se valida en la app, pero Firebase acepta 6; hay que configurar la política también en el servidor.

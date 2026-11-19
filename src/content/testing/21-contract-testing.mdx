@@ -1,0 +1,57 @@
+---
+id: testing-senior-contract-testing-01
+track: testing
+nivel: senior
+modulo: "Estrategia de calidad"
+titulo: "Contract testing: que el frontend y el backend no se rompan entre sí"
+duracion_min: 6
+prerequisitos: [testing-senior-estrategia-y-shift-left-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué problema resuelve el contract testing?"
+    opciones: ["La velocidad del backend.", "Que un cambio en una API rompa a sus consumidores sin que nadie se entere hasta producción. Cada lado se prueba contra un contrato compartido, sin levantar todo el sistema.", "El diseño visual."]
+    correcta: 1
+    explicacion: "Es una alternativa a los tests E2E entre servicios, que son lentos y frágiles."
+  - tipo: opcion_multiple
+    pregunta: "En el enfoque \"guiado por el consumidor\" (por ejemplo, con Pact), ¿quién define el contrato?"
+    opciones: ["El backend, siempre.", "Los consumidores (por ejemplo, la app): sus tests registran qué pedidos hacen y qué respuestas necesitan, y el proveedor verifica que puede cumplirlos.", "Un documento que nadie actualiza."]
+    correcta: 1
+    explicacion: "Así el backend sabe exactamente qué campos usa cada cliente y puede cambiar el resto con tranquilidad."
+  - tipo: autoevaluacion
+    pregunta: "El backend quiere renombrar `title` por `titulo` en `/todos`. ¿Qué pasaría con un contract test y qué pasaría sin él?"
+    explicacion: "Con contract testing, la verificación del proveedor falla antes de desplegar, porque el contrato de la app dice que usa `title`: se coordina el cambio (por ejemplo, mandar los dos campos un tiempo). Sin él, la app recibe el JSON nuevo y falla en producción; en el live coding, la guardia `esTareaDto` lo convertiría en \"Algo salió mal\" para todos."
+tarea_local: "Para el endpoint `/todos/:id` del live coding, escribí el contrato en palabras: qué pedido hace la app, qué campos necesita en la respuesta (con sus tipos) y qué pasa con un id inexistente."
+resultado_esperado: "Un contrato con el pedido, los tres campos que usa la app con sus tipos, y el caso 404."
+resumen:
+  - "El contract testing evita que un cambio de la API rompa a sus consumidores."
+  - "Cada lado se prueba contra un contrato compartido, sin levantar todo el sistema."
+  - "En el enfoque guiado por el consumidor, la app define qué necesita."
+  - "El proveedor verifica que cumple los contratos antes de desplegar."
+entrevista:
+  en_30_segundos: "Cuando hay varios servicios o una app y su backend que evolucionan por separado, uso contract testing: los consumidores registran qué pedidos hacen y qué campos necesitan, y el proveedor verifica en su CI que cumple esos contratos. Así un cambio incompatible falla antes de desplegar, sin depender de E2E lentos entre servicios."
+  trampas:
+    - pregunta: "¿El contract testing reemplaza los tests de la API?"
+      respuesta: "No: verifica la forma de la comunicación (campos, tipos, códigos), no la lógica de negocio. El backend sigue necesitando sus propios tests funcionales."
+  cuando_no: "Si un mismo equipo controla la app y el backend, despliegan juntos y son pocos endpoints, un esquema compartido y tests de integración pueden alcanzar sin la infraestructura de Pact."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Una app y su backend evolucionan por separado. Los tests de cada lado pasan, pero juntos se rompen: un campo renombrado, un tipo que cambió, un campo que dejó de venir.
+
+- **Contrato:** qué pedidos hace el consumidor y qué respuestas espera.
+- **Lado del consumidor:** sus tests corren contra un servidor simulado que registra el contrato.
+- **Lado del proveedor:** el backend verifica que cumple todos los contratos de sus consumidores.
+- **Herramientas:** Pact es la más conocida; también hay enfoques con esquemas (OpenAPI) compartidos.
+
+## Ejemplo
+
+En el live coding de Android y de React, el contrato está implícito en el DTO:
+
+```ts
+type TareaDto = { id: number; title: string; completed: boolean }
+```
+
+Y la guardia `esTareaDto` lo verifica en tiempo de ejecución: si el backend cambia la forma, la app muestra un error controlado en vez de romperse. Eso protege a la persona, pero el problema se descubre en producción.
+
+Con contract testing, ese mismo contrato se comparte con el backend, y un cambio incompatible falla en **su** CI, antes de desplegar.

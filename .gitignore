@@ -8,3 +8,7 @@ dist-ssr/
 
 # Logs del emulador de Firebase
 *-debug.log
+
+# Resultados de Playwright
+test-results/
+playwright-report/

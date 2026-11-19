@@ -1,0 +1,67 @@
+---
+id: testing-semi-senior-tests-inestables-01
+track: testing
+nivel: semi-senior
+modulo: "Automatización"
+titulo: "Tests inestables (flaky): causas y cómo evitarlos"
+duracion_min: 6
+prerequisitos: [testing-semi-senior-datos-de-prueba-y-red-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es un test inestable (flaky)?"
+    opciones: ["Un test lento.", "Uno que a veces pasa y a veces falla sin que cambie el código. Hace que el equipo deje de confiar en la CI.", "Un test con muchas aserciones."]
+    correcta: 1
+    explicacion: "El daño principal es de confianza: si los tests fallan \"porque sí\", la gente reintenta hasta que pasan y deja de mirar las fallas reales."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál es la causa más común?"
+    opciones: ["El navegador.", "Esperas mal hechas: esperar un tiempo fijo en vez de una condición, o actuar antes de que la app esté lista. Le siguen los datos compartidos entre tests y las dependencias externas.", "Los colores."]
+    correcta: 1
+    explicacion: "Las aserciones web-first de Playwright y el aislamiento de datos eliminan la mayoría."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `trace: 'on-first-retry'` en la configuración de Rollito?"
+    opciones: ["Desactiva los reintentos.", "Si un test falla y se reintenta, guarda una traza (capturas, red, consola, cada paso) para investigar por qué falló, con `npx playwright show-trace`.", "Hace los tests más rápidos."]
+    correcta: 1
+    explicacion: "Los reintentos (`retries: 2` en la CI) ayudan a que una falla rara no frene el trabajo, pero el test inestable se investiga igual: la traza es la evidencia."
+tarea_local: "Corré `npx playwright test --repeat-each=10` en Rollito. Después agregá a propósito un `await page.waitForTimeout(50)` antes de una aserción con `getByText`, y cambiala por una que use `isVisible()` sin esperar. Mirá si se vuelve inestable."
+resultado_esperado: "Con las aserciones web-first, las 120 corridas pasan. Con la verificación sin espera, alguna corrida puede fallar: es un test inestable creado a propósito."
+resumen:
+  - "Un test inestable pasa o falla sin que cambie el código."
+  - "La causa más común son las esperas fijas en vez de condiciones."
+  - "Le siguen los datos compartidos y los servicios externos."
+  - "Los reintentos ayudan, pero el test se investiga igual, con la traza."
+entrevista:
+  en_30_segundos: "Un test inestable destruye la confianza en la CI, así que lo trato como un bug. Los evito con aserciones que esperan condiciones, datos aislados por test y servicios externos simulados. Si aparece uno, lo investigo con la traza de Playwright y, si no se arregla enseguida, lo pongo en cuarentena con un responsable."
+  trampas:
+    - pregunta: "¿Subir los reintentos a 5 resuelve los tests inestables?"
+      respuesta: "Esconde el problema: la CI tarda más, el bug real (que puede estar en la app y no en el test) sigue ahí y la próxima falla de verdad también se reintenta. Los reintentos son un colchón, no una solución."
+  cuando_no: "No metas en cuarentena un test que falla siempre: eso no es inestabilidad, es un bug (en el test o en la app) que hay que arreglar."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Un test que falla de vez en cuando es peor que no tenerlo: entrena al equipo a ignorar las fallas.
+
+**Causas típicas y cómo evitarlas:**
+
+- **Esperas fijas** (`waitForTimeout`) → esperar condiciones con aserciones web-first.
+- **Datos compartidos** entre tests → cada test prepara los suyos.
+- **Servicios externos** → simularlos o usar un emulador.
+- **Orden de ejecución** → los tests no dependen unos de otros.
+- **Animaciones y tiempos** → esperar el estado final, no el intermedio.
+
+**Cuando aparece uno:** se investiga con la traza, se arregla o se pone en cuarentena (se marca y se excluye temporalmente) con un responsable.
+
+## Ejemplo
+
+La configuración de Rollito para la CI:
+
+```ts
+retries: process.env.CI ? 2 : 0,      // en tu máquina, sin reintentos: querés ver la falla
+use: { trace: 'on-first-retry' },     // si se reintenta, queda la traza para investigar
+```
+
+Y una práctica para detectarlos antes de mergear: correr el test nuevo muchas veces seguidas.
+
+```text
+npx playwright test e2e/sitio.e2e.ts --repeat-each=20
+```

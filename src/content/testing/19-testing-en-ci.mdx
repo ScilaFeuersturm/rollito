@@ -1,0 +1,77 @@
+---
+id: testing-semi-senior-testing-en-ci-01
+track: testing
+nivel: semi-senior
+modulo: "Automatización"
+titulo: "Testing en la CI: qué corre en cada PR"
+duracion_min: 6
+prerequisitos: [testing-semi-senior-automatizacion-mobile-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿En qué orden conviene correr las pruebas en la CI?"
+    opciones: ["Primero los E2E, que son los más importantes.", "De lo más rápido a lo más lento: lint y tipos, tests unitarios, build y después los E2E. Si algo rápido falla, no se gasta tiempo en lo lento.", "Todo en paralelo, sin orden."]
+    correcta: 1
+    explicacion: "Es el mismo orden del script `build` de Rollito: primero `tsc`, después el build."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `npx playwright install --with-deps chromium` en una CI?"
+    opciones: ["Nada.", "Instala el navegador y las librerías del sistema que necesita, en la máquina de la CI, que arranca vacía.", "Actualiza Playwright."]
+    correcta: 1
+    explicacion: "En tu máquina lo hacés una vez; en la CI, en cada corrida (o se cachea)."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué se guarda como artefacto cuando fallan los E2E en la CI y para qué?"
+    explicacion: "El reporte de Playwright y las trazas (`playwright-report/`, `test-results/`): permiten ver qué pasó en la máquina de la CI, con capturas, red y consola de cada paso, sin tener que reproducirlo en la propia máquina."
+tarea_local: "Escribí el workflow de CI para un proyecto tuyo, con los pasos en orden de rápido a lento. Si usás GitHub, subilo en una rama y abrí un PR para verlo correr."
+resultado_esperado: "Un workflow que instala, corre lint y tests, construye y corre los E2E, y guarda el reporte si algo falla."
+resumen:
+  - "La CI corre las pruebas en cada PR; si fallan, no se mergea."
+  - "Se ordenan de lo más rápido a lo más lento."
+  - "En la CI hay que instalar el navegador de Playwright."
+  - "Si fallan los E2E, se guardan el reporte y las trazas como artefactos."
+entrevista:
+  en_30_segundos: "Configuro la CI para que en cada PR corra lint y tipos, tests unitarios, build y E2E, de lo más rápido a lo más lento, y que bloquee el merge si algo falla. En la CI los E2E se reintentan una o dos veces y, si fallan, guardo el reporte y las trazas como artefactos para investigar."
+  trampas:
+    - pregunta: "¿Los E2E tienen que correr en cada PR?"
+      respuesta: "Los críticos, sí, si son rápidos. Si la suite E2E es grande, se puede correr un subconjunto en cada PR y la suite completa en la rama principal o cada noche, siempre que alguien mire los resultados."
+  cuando_no: "Si la suite completa tarda mucho, no la pongas toda en cada PR: el equipo empieza a esquivar la CI. Mejor un subconjunto crítico rápido y el resto programado."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Las pruebas sirven si corren siempre, no cuando alguien se acuerda. La CI las corre en cada PR, y si fallan, no se mergea.
+
+**Un pipeline típico, de rápido a lento:**
+
+1. Instalar dependencias (`npm ci`).
+2. Lint y tipos.
+3. Tests unitarios (`npm test`).
+4. Build (`npm run build`).
+5. E2E (`npx playwright test`), con el navegador instalado.
+6. Si algo falla: guardar el reporte y las trazas como artefactos.
+
+## Ejemplo
+
+Un workflow de GitHub Actions para Rollito (de referencia; verificá las versiones vigentes de cada `action` antes de usarlo):
+
+```yaml
+name: CI
+on: [pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-playwright
+          path: playwright-report/
+```
+
+Hoy Rollito corre estas pruebas a mano antes de cada push (y Render vuelve a construir el sitio); con este workflow pasarían a correr solas en cada PR.

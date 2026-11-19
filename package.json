@@ -7,6 +7,7 @@
     "build": "tsc --noEmit && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.js",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:e2e": "npm run build && playwright test",
     "privado": "node scripts/cifrar-privado.js",
     "test:reglas": "npx -y firebase-tools@15.37.0 emulators:exec --only firestore --project demo-rollito \"node --test firebase/reglas.emulador.mjs\""
   },
@@ -19,9 +20,11 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@firebase/rules-unit-testing": "^6.0.0",
     "@hookform/resolvers": "^7.0.7",
     "@mdx-js/rollup": "^3.1.1",
+    "@playwright/test": "^1.65.1",
     "@tanstack/react-query": "^5.108.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",

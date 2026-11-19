@@ -1,0 +1,76 @@
+---
+id: testing-senior-performance-con-k6-01
+track: testing
+nivel: senior
+modulo: "Estrategia de calidad"
+titulo: "Testing de performance con k6"
+duracion_min: 6
+prerequisitos: [testing-senior-contract-testing-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre una prueba de carga y una de estrés?"
+    opciones: ["Son lo mismo.", "La de carga simula el uso esperado (por ejemplo, 200 usuarios a la vez) para ver si cumple los objetivos; la de estrés sube la carga hasta que el sistema falla, para saber dónde y cómo se rompe.", "La de estrés es más corta."]
+    correcta: 1
+    explicacion: "También están la de picos (subidas bruscas) y la de resistencia (carga sostenida por horas, para detectar fugas)."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué se mira el percentil 95 del tiempo de respuesta y no el promedio?"
+    opciones: ["Porque es más chico.", "Porque el promedio esconde a quienes la pasan mal: con un p95 de 800 ms, el 5% de los pedidos tarda más que eso. Los objetivos se expresan en percentiles.", "Porque k6 no calcula promedios."]
+    correcta: 1
+    explicacion: "Un promedio de 200 ms puede convivir con un 5% de pedidos de 5 segundos."
+  - tipo: autoevaluacion
+    pregunta: "¿Contra qué entorno corrés una prueba de carga?"
+    explicacion: "Contra uno de prueba lo más parecido posible a producción, nunca contra producción sin coordinarlo (podés tirar el servicio o generar costos), y nunca contra servicios de terceros sin permiso: para ellos, una prueba de carga no autorizada es indistinguible de un ataque."
+tarea_local: "Instalá k6 y escribí un script que pegue a una API que controles (o a un servidor local), con un threshold de p95. Corrélo con 10 usuarios virtuales durante 30 segundos y leé el resumen."
+resultado_esperado: "El resumen de k6 con el p95, la tasa de errores y si se cumplieron los thresholds."
+resumen:
+  - "La prueba de carga simula el uso esperado; la de estrés busca el límite."
+  - "Los objetivos se miden en percentiles, no en promedios."
+  - "K6 define los objetivos como thresholds que hacen fallar la prueba."
+  - "Nunca se hace carga contra producción ni contra terceros sin permiso."
+entrevista:
+  en_30_segundos: "Defino objetivos de performance en percentiles (por ejemplo, p95 menor a 500 ms con la carga esperada) y los verifico con k6, con thresholds que hacen fallar la prueba. Corro pruebas de carga, de estrés para conocer el límite y de resistencia para fugas, siempre contra un entorno de prueba representativo y coordinado."
+  trampas:
+    - pregunta: "La prueba de carga dio bien en staging. ¿Producción va a aguantar?"
+      respuesta: "No necesariamente: staging suele tener menos datos, otra infraestructura y sin el tráfico real de otros servicios. Por eso se complementa con monitoreo en producción y, si se puede, con liberaciones graduales."
+  cuando_no: "Para una herramienta interna de diez usuarios, una prueba de carga formal suele no justificarse: alcanza con medir los tiempos de las operaciones más pesadas."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Una funcionalidad puede andar perfecto con una persona y caerse con cien. Las pruebas de performance responden: ¿cuánto aguanta y qué tan rápido responde bajo carga?
+
+- **Carga:** el uso esperado, contra objetivos (por ejemplo, p95 menor a 500 ms con 200 usuarios).
+- **Estrés:** subir hasta romper, para conocer el límite.
+- **Picos y resistencia:** subidas bruscas y carga sostenida.
+- **Métricas:** percentiles de tiempo de respuesta (p95, p99), tasa de errores y pedidos por segundo.
+
+**k6** escribe las pruebas en JavaScript y define los objetivos como `thresholds` que hacen fallar la prueba.
+
+## Ejemplo
+
+Un script de k6 de referencia (verificá la sintaxis vigente en la documentación de k6). Ojo: corrélo contra un entorno tuyo, no contra un servicio de terceros.
+
+```js
+import http from 'k6/http'
+import { check, sleep } from 'k6'
+
+export const options = {
+  stages: [
+    { duration: '1m', target: 50 },   // sube a 50 usuarios virtuales
+    { duration: '3m', target: 50 },   // los mantiene
+    { duration: '1m', target: 0 },    // baja
+  ],
+  thresholds: {
+    http_req_duration: ['p(95)<500'], // el 95% responde en menos de 500 ms
+    http_req_failed: ['rate<0.01'],   // menos del 1% de errores
+  },
+}
+
+export default function () {
+  const respuesta = http.get('https://staging.ejemplo.com/api/tareas')
+  check(respuesta, { 'responde 200': r => r.status === 200 })
+  sleep(1)
+}
+```
+
+Para el frontend, el equivalente es medir en el navegador: Lighthouse y las Core Web Vitals (LCP, INP, CLS).

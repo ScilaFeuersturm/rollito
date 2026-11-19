@@ -1,0 +1,60 @@
+---
+id: testing-senior-accesibilidad-01
+track: testing
+nivel: senior
+modulo: "Estrategia de calidad"
+titulo: "Testing de accesibilidad: automático y manual"
+duracion_min: 6
+prerequisitos: [testing-senior-seguridad-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué porcentaje de los problemas de accesibilidad detecta una herramienta automática como axe?"
+    opciones: ["Todos.", "Una parte: los que se pueden verificar con reglas (contraste, labels faltantes, roles inválidos). Otros necesitan una persona: si el orden del foco tiene sentido, si los textos se entienden o si se puede usar con lector de pantalla.", "Ninguno."]
+    correcta: 1
+    explicacion: "Por eso se combinan: axe en la CI para lo automático, y pruebas manuales con teclado y lector de pantalla."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué verifica el test de accesibilidad de Rollito?"
+    opciones: ["El rendimiento.", "Que la landing no tenga violaciones que axe pueda detectar, en escritorio y en celular. Corre con los demás E2E.", "Que el sitio se vea lindo."]
+    correcta: 1
+    explicacion: "Pasó en verde desde el primer intento, pero eso no significa que la landing sea accesible del todo: solo que no tiene los problemas que axe sabe detectar."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué probás a mano en una pantalla, en 10 minutos?"
+    explicacion: "Recorrerla solo con el teclado (Tab, Shift+Tab, Enter, Espacio, Escape): que se llegue a todo, en orden lógico y con el foco visible. Usarla con un lector de pantalla (NVDA o Narrador en Windows, VoiceOver en macOS, TalkBack en Android). Hacer zoom al 200% y con fuente grande. Y revisar que nada dependa solo del color."
+tarea_local: "Recorré la pantalla de cuenta de Rollito solo con el teclado y después con el lector de pantalla de tu sistema. Anotá todo lo que te cueste o no se entienda."
+resultado_esperado: "Una lista de observaciones de uso real, que complementa lo que verifica axe."
+resumen:
+  - "La accesibilidad se prueba con herramientas automáticas y a mano."
+  - "Axe detecta lo que se verifica con reglas; el resto necesita una persona."
+  - "A mano: teclado, lector de pantalla, zoom y fuente grande."
+  - "La referencia es WCAG, y el objetivo habitual es el nivel AA."
+entrevista:
+  en_30_segundos: "Combino dos capas: axe en la CI para lo que se detecta con reglas (contraste, labels, roles), y pruebas manuales con teclado, lector de pantalla y zoom para lo que las reglas no ven. Tomo WCAG AA como referencia y trato los problemas de accesibilidad como bugs, con su severidad."
+  trampas:
+    - pregunta: "Si axe no encuentra violaciones, ¿la pantalla es accesible?"
+      respuesta: "No: solo no tiene los problemas que axe sabe detectar. Un orden de foco sin sentido, textos confusos o un flujo imposible con lector de pantalla pasan las reglas igual."
+  cuando_no: "No hace falta una auditoría completa de WCAG en cada PR: axe en la CI más una revisión manual de las pantallas nuevas o muy cambiadas suele ser un buen equilibrio."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Una de cada seis personas tiene algún tipo de discapacidad, y la accesibilidad además es un requisito legal en muchos lugares. Se prueba en dos capas:
+
+- **Automática (axe, Lighthouse):** contraste, labels, roles, atributos ARIA inválidos. Rápida, va en la CI.
+- **Manual:** teclado, lector de pantalla, zoom, fuente grande y comprensión. Encuentra lo que las reglas no ven.
+
+La referencia es WCAG (Web Content Accessibility Guidelines), con niveles A, AA y AAA; el objetivo habitual es AA.
+
+## Ejemplo
+
+El test real de Rollito, en `e2e/sitio.e2e.ts`:
+
+```ts
+test('no tiene problemas de accesibilidad detectables automáticamente', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByText('limitada al equipo de Taller Fichín')).toBeVisible()
+  const resultado = await new AxeBuilder({ page }).analyze()
+  expect(resultado.violations.map(v => `${v.id}: ${v.help}`)).toEqual([])
+})
+```
+
+Corre en escritorio y en celular. Y un hallazgo manual que axe no habría encontrado: las opciones de la pantalla de cuenta **no parecían botones**. El equipo lo notó usándola, y la corrección sumó `aria-pressed` para que el lector de pantalla anuncie cuál está elegida.

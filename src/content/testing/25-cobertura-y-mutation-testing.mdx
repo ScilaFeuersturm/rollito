@@ -1,0 +1,55 @@
+---
+id: testing-senior-cobertura-y-mutation-testing-01
+track: testing
+nivel: senior
+modulo: "Estrategia de calidad"
+titulo: "Cobertura de código vs. mutation testing"
+duracion_min: 6
+prerequisitos: [testing-senior-accesibilidad-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Un proyecto tiene 95% de cobertura. ¿Sus tests son buenos?"
+    opciones: ["Sí, seguro.", "No necesariamente: la cobertura dice qué líneas se ejecutaron, no si los tests verifican algo. Un test sin aserciones puede dar 100% de cobertura.", "Solo si es más de 99%."]
+    correcta: 1
+    explicacion: "La cobertura es útil para encontrar código sin probar; como objetivo en sí misma, se puede inflar."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace el mutation testing?"
+    opciones: ["Cambia los tests.", "Introduce cambios chicos en el código (mutantes: un `>` por `>=`, sacar un `trim`) y corre los tests. Si ningún test falla, el mutante \"sobrevive\": hay comportamiento sin verificar.", "Mide la velocidad de los tests."]
+    correcta: 1
+    explicacion: "Herramientas como Stryker (JavaScript y TypeScript) o PIT (Java y Kotlin) lo automatizan."
+  - tipo: autoevaluacion
+    pregunta: "En Rollito se cambió a mano `> 60` por `>= 60` en `validarNombre`. ¿Qué test lo detectó y por qué?"
+    explicacion: "El que acepta un nombre de exactamente 60 caracteres: con `>= 60`, ese nombre pasa a ser inválido y el test falla. Es un test de valor límite. Si solo hubiera casos de 10 o 30 caracteres, el mutante habría sobrevivido."
+tarea_local: "Elegí una función con tests en un proyecto tuyo, hacé tres mutantes a mano (cambiá un operador, sacá una condición, devolvé un valor fijo) y corré los tests después de cada uno. ¿Cuántos sobreviven?"
+resultado_esperado: "Un resultado del tipo \"2 de 3 detectados\", y un test nuevo que mata al que sobrevivió."
+resumen:
+  - "La cobertura dice qué se ejecutó, no si se verificó."
+  - "Un test sin aserciones puede dar cobertura alta."
+  - "El mutation testing cambia el código y mira si algún test falla."
+  - "Un mutante que sobrevive señala comportamiento sin verificar."
+  - "Los valores límite matan muchos mutantes."
+entrevista:
+  en_30_segundos: "Uso la cobertura para encontrar código sin probar, no como objetivo. Para medir si los tests verifican algo, uso mutation testing (Stryker o PIT): si un cambio en el código no rompe ningún test, hay comportamiento sin verificar. Los tests con valores límite y aserciones concretas son los que matan mutantes."
+  trampas:
+    - pregunta: "¿Conviene exigir 100% de cobertura?"
+      respuesta: "Suele salir caro y se infla con tests que no verifican nada. Es más útil exigir que el código nuevo venga con tests, mirar las ramas sin cubrir en la lógica importante y, para lo crítico, usar mutation testing."
+  cuando_no: "El mutation testing es lento (corre la suite una vez por mutante): se usa en los módulos críticos o en la CI nocturna, no en cada PR de todo el proyecto."
+---
+
+## Concepto
+
+**Qué problema resuelve.** ¿Cómo sabés si tus tests son buenos? La cobertura es la respuesta fácil, pero engañosa.
+
+- **Cobertura:** qué porcentaje del código se ejecuta durante los tests (líneas, ramas). Sirve para encontrar código sin probar.
+- **Mutation testing:** cambia el código de a poco (mutantes) y comprueba si algún test falla. Si ninguno falla, ese comportamiento no está verificado. Mide la **calidad** de los tests, no solo cuánto ejecutan.
+
+## Ejemplo
+
+Una ronda de mutation testing hecha a mano sobre `src/cuenta/validar.ts`, al preparar esta lección:
+
+- `limpio.length > 60` → `>= 60`: **detectado** (falla el caso de 60 caracteres).
+- `limpio.length === 0` → `< 0`: **detectado** (falla el caso del nombre vacío).
+- Sacar el `trim()`: **detectado** (fallan dos casos, incluido el de solo espacios).
+- `clave.length < 8` → `<= 8`: **detectado** (falla el caso de 8 caracteres).
+
+Los cuatro mutantes murieron porque los tests usan valores límite. Es la conexión entre la técnica del nivel Junior y la calidad de la automatización.

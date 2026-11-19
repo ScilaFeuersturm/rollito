@@ -1,0 +1,54 @@
+---
+id: testing-semi-senior-page-object-model-01
+track: testing
+nivel: semi-senior
+modulo: "Automatización"
+titulo: "Page Object Model"
+duracion_min: 5
+prerequisitos: [testing-semi-senior-localizadores-y-aserciones-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué problema resuelve el Page Object Model?"
+    opciones: ["Que los tests sean más rápidos.", "Que los detalles de cómo encontrar cada elemento queden en un solo lugar: si cambia la pantalla, se arregla la clase y no cada test. Los tests hablan en términos de la pantalla.", "Que no haga falta escribir aserciones."]
+    correcta: 1
+    explicacion: "Cuando se arregló el localizador de las opciones de la cuenta, el cambio fue en `CuentaPage`, y los tests no se tocaron."
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde van las aserciones: en el page object o en el test?"
+    opciones: ["Siempre en el page object.", "Las del objetivo del test van en el test, para que se lea qué se verifica. El page object puede tener esperas de navegación (por ejemplo, que la pantalla terminó de cargar).", "No se usan aserciones."]
+    correcta: 1
+    explicacion: "En `CuentaPage`, `abrir()` espera que aparezca la opción \"Entrar\"; lo que cada test verifica está en el test."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué métodos tendría un page object de la pantalla de una lección de Rollito?"
+    explicacion: "Por ejemplo: `abrir(id)`, `titulo()`, `responderOpcion(numeroDeEjercicio, opcion)`, `completar()` y `siguienteLeccion()`. Cada uno esconde cómo encontrar los elementos, y el test se lee como una historia: abrir, responder, completar."
+tarea_local: "Creá `e2e/paginas/LandingPage.ts` con `abrir()` y `entrar()`, y reescribí el primer test de `sitio.e2e.ts` usándolo."
+resultado_esperado: "El test de la landing se lee como un caso de prueba y no tiene localizadores sueltos."
+resumen:
+  - "Un page object es una clase por pantalla con sus localizadores y acciones."
+  - "Si cambia la pantalla, se arregla la clase y no cada test."
+  - "Los tests se leen en términos de negocio."
+  - "Las aserciones del objetivo del test van en el test."
+entrevista:
+  en_30_segundos: "Uso Page Object Model: una clase por pantalla con los localizadores y acciones con nombre de negocio, así los tests se leen como casos de prueba y un cambio de la pantalla se arregla en un solo lugar. Las aserciones de lo que verifica cada test quedan en el test."
+  trampas:
+    - pregunta: "¿Un page object por cada pantalla, siempre?"
+      respuesta: "Por cada pantalla o componente reutilizable que los tests usan seguido. Para un componente que aparece en muchas pantallas (un menú, un diálogo), conviene un objeto propio que las páginas reutilizan."
+  cuando_no: "Con dos o tres tests E2E en total, un page object puede ser más estructura de la necesaria: se agrega cuando empiezan a repetirse los localizadores."
+---
+
+import cuentaPage from '../../../e2e/paginas/CuentaPage.ts?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Si diez tests buscan el campo "Nombre" a su manera, un cambio en la pantalla obliga a tocar diez tests. Un **page object** es una clase por pantalla que:
+
+- Tiene los **localizadores** en un solo lugar.
+- Ofrece **acciones con nombre de negocio**: `registrarse(datos)`, `elegir('Tengo un código')`.
+- Deja que los tests **se lean como el caso de prueba** que verifican.
+
+## Ejemplo
+
+El page object real de la pantalla de cuenta (`e2e/paginas/CuentaPage.ts`):
+
+<pre><code className="language-ts">{cuentaPage.trimEnd()}</code></pre>
+
+Con él, el test del bug del nombre queda en cuatro líneas: abrir, registrarse con un nombre de espacios y verificar el mensaje.

@@ -1,0 +1,60 @@
+---
+id: testing-semi-senior-automatizacion-mobile-01
+track: testing
+nivel: semi-senior
+modulo: "Automatización"
+titulo: "Automatización mobile: Espresso, Compose Testing, Maestro y Appium"
+duracion_min: 6
+prerequisitos: [testing-semi-senior-tests-inestables-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre Espresso y Appium?"
+    opciones: ["Ninguna.", "Espresso (y Compose Testing) corre dentro de la app Android, es rápido y lo escriben los desarrolladores en Kotlin. Appium la maneja desde afuera, como una persona, sirve para Android e iOS y se escribe en varios lenguajes, pero es más lento.", "Appium es solo para iOS."]
+    correcta: 1
+    explicacion: "Espresso conoce el estado de la app y espera solo; Appium necesita más esperas explícitas."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué propone Maestro?"
+    opciones: ["Escribir tests en Java.", "Flujos de UI en archivos YAML simples (abrir la app, tocar, verificar), que corren en Android e iOS y esperan solos. Es fácil de leer para QA sin mucha experiencia en código.", "Reemplazar a los tests unitarios."]
+    correcta: 1
+    explicacion: "Verificá en la documentación de Maestro la sintaxis vigente."
+  - tipo: autoevaluacion
+    pregunta: "¿En qué nivel de la pirámide pondrías un test de Compose Testing de una pantalla?"
+    explicacion: "Entre unitario e integración: prueba la pantalla con su lógica, sin backend ni navegación completa, y corre rápido (en la JVM con Robolectric, como en el live coding de Android). Los flujos completos en un emulador (Maestro, Appium o Espresso con varias pantallas) son la punta de la pirámide."
+tarea_local: "Si tenés Android Studio, abrí `android-samples/live-coding` y corré `TareasContentTest`. Después leé el flujo de Maestro de la lección y escribí otro que abra el detalle de una tarea."
+resultado_esperado: "El test de Compose pasa en la JVM, y tenés un segundo flujo de Maestro escrito (aunque no lo corras)."
+resumen:
+  - "Compose Testing y Espresso corren dentro de la app Android y son rápidos."
+  - "Maestro escribe flujos en YAML para Android e iOS."
+  - "Appium maneja la app desde afuera, en varios lenguajes y plataformas."
+  - "Los flujos completos en emulador van en la punta de la pirámide."
+entrevista:
+  en_30_segundos: "En mobile combino niveles: tests de UI rápidos con Compose Testing o Espresso dentro de la app, y pocos flujos completos en emulador para los caminos críticos, con Maestro (simple, multiplataforma) o Appium si hace falta más flexibilidad. Elijo según la plataforma, quién mantiene los tests y la velocidad que necesita la CI."
+  trampas:
+    - pregunta: "¿Conviene que QA escriba los tests de Espresso?"
+      respuesta: "Puede, pero Espresso vive en el código de la app y en Kotlin: suele funcionar mejor que lo escriban los desarrolladores, con QA aportando los casos. Para que QA automatice flujos de forma independiente, Maestro o Appium suelen encajar mejor."
+  cuando_no: "Si la app es casi una web envuelta (por ejemplo, un WebView), conviene probarla con herramientas web como Playwright y dejar la automatización mobile nativa para lo que realmente es nativo."
+---
+
+## Concepto
+
+**Qué problema resuelve.** En mobile, la automatización tiene más opciones que en web, y cada una sirve para algo distinto.
+
+- **Compose Testing y Espresso:** dentro de la app Android, en Kotlin. Rápidos y estables. Los escriben los desarrolladores.
+- **XCUITest:** el equivalente en iOS.
+- **Maestro:** flujos en YAML, para Android e iOS. Fácil de escribir y de leer.
+- **Appium:** maneja la app desde afuera, para Android e iOS, en varios lenguajes. Más flexible y más lento.
+
+## Ejemplo
+
+En el recorrido Android de Rollito ya hay tests de UI reales: `TareasContentTest.kt` en el proyecto de live coding, con Compose Testing y Robolectric, que verifica el error y el botón Reintentar.
+
+Un flujo equivalente con Maestro, para un emulador, se vería así (sintaxis de referencia; verificá en la documentación de Maestro):
+
+```yaml
+appId: com.rollito.livecoding
+---
+- launchApp
+- assertVisible: "No hay conexión. Revisá tu red."
+- tapOn: "Reintentar"
+- assertVisible: "Pendiente"
+```

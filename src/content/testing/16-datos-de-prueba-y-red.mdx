@@ -1,0 +1,61 @@
+---
+id: testing-semi-senior-datos-de-prueba-y-red-01
+track: testing
+nivel: semi-senior
+modulo: "Automatización"
+titulo: "Datos de prueba, red simulada y aislamiento"
+duracion_min: 6
+prerequisitos: [testing-semi-senior-page-object-model-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué los E2E de Rollito bloquean las llamadas a Firebase?"
+    opciones: ["Porque Firebase es lento.", "Para que los tests no dependan de un servicio externo ni creen cuentas reales: lo que prueban (las opciones, la validación del nombre) no necesita red. Con `page.route(..., ruta => ruta.abort())` nada sale a internet.", "Porque Playwright no soporta Firebase."]
+    correcta: 1
+    explicacion: "Un test que depende de un servicio real puede fallar por motivos ajenos al código y dejar basura (cuentas, datos) en producción."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `route.fulfill({ json: ... })` en Playwright?"
+    opciones: ["Manda un pedido real.", "Responde a un pedido con datos inventados, sin llegar al servidor: sirve para probar estados difíciles de conseguir, como un error 500 o una lista vacía.", "Guarda la respuesta en un archivo."]
+    correcta: 1
+    explicacion: "Es el equivalente E2E de simular `fetch` en los tests de React del live coding."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué cada test tiene que preparar sus propios datos y no depender de otro test?"
+    explicacion: "Porque los tests corren en paralelo y en cualquier orden. Si el test B usa un dato que creó el test A, B falla cuando corre solo o antes que A. Cada test arma su estado (o usa datos fijos de solo lectura) y no deja nada que afecte a otros."
+tarea_local: "Escribí un test de Playwright para una página que pida datos a una API, simulando con `route.fulfill` tres respuestas: una lista, una lista vacía y un error 500. Verificá lo que se ve en cada caso."
+resultado_esperado: "Tres tests que no dependen de la red real y cubren los estados que a mano son difíciles de reproducir."
+resumen:
+  - "Cada test prepara sus datos y no depende del orden."
+  - "Page route bloquea o simula pedidos de red."
+  - "Los tests no tocan producción: usan emuladores o bases de prueba."
+  - "Storage state evita hacer login por la pantalla en cada test."
+entrevista:
+  en_30_segundos: "Hago que cada test sea independiente: prepara sus datos, no depende del orden y no toca producción. Simulo la red con `page.route` para probar estados difíciles (errores, listas vacías) y bloqueo servicios externos que no forman parte de lo que pruebo. Para el login, guardo la sesión con `storageState`."
+  trampas:
+    - pregunta: "Si simulo todas las respuestas, ¿el E2E sigue sirviendo?"
+      respuesta: "Sirve para probar la interfaz y sus estados, pero ya no prueba la integración real. Conviene tener pocos tests contra un entorno de prueba real (o un emulador) y el resto con red simulada."
+  cuando_no: "Para el test del camino crítico completo (por ejemplo, el registro real con un código válido), conviene un entorno de prueba con el emulador de Firebase, no red simulada."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Los tests E2E más inestables suelen fallar por los datos y la red: un usuario que otro test borró, un servicio externo caído, una base con basura de corridas anteriores.
+
+- **Aislamiento:** cada test prepara su estado y no depende del orden.
+- **Red simulada:** `page.route()` para bloquear o responder pedidos (`route.abort()`, `route.fulfill()`).
+- **Entornos de prueba:** emuladores (como el de Firebase) o una base que se reinicia, nunca producción.
+- **Sesiones guardadas:** `storageState` para no hacer login por la pantalla en cada test.
+
+## Ejemplo
+
+En `CuentaPage.abrir()`:
+
+```ts
+await this.page.route(/googleapis\.com|firebaseapp\.com/, ruta => ruta.abort())
+```
+
+Así, el test del nombre vacío confirma que la validación ocurre **antes** de llamar a Firebase: si el código intentara crear la cuenta, el pedido se cortaría y aparecería otro mensaje.
+
+Para simular un estado difícil de conseguir, por ejemplo un servidor caído:
+
+```ts
+await page.route('**/todos', ruta => ruta.fulfill({ status: 500, json: {} }))
+```

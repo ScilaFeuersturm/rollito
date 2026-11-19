@@ -1,0 +1,58 @@
+---
+id: testing-semi-senior-piramide-de-testing-01
+track: testing
+nivel: semi-senior
+modulo: "Automatización"
+titulo: "La pirámide de testing: qué automatizar y dónde"
+duracion_min: 6
+prerequisitos: [testing-junior-plan-de-pruebas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué dice la pirámide de testing?"
+    opciones: ["Que hay que tener muchos tests E2E.", "Muchos tests unitarios (rápidos y baratos), menos de integración y pocos E2E (lentos y frágiles, pero los más realistas).", "Que el testing manual va arriba de todo."]
+    correcta: 1
+    explicacion: "No es una regla exacta: es una guía para que la mayoría de los errores se detecten donde es más barato."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué conviene automatizar primero?"
+    opciones: ["Todo lo que se pueda.", "Lo que se repite seguido y tiene riesgo: la regresión del camino principal y la lógica crítica. Lo que cambia todos los días o se prueba una vez, no.", "Solo lo que es fácil."]
+    correcta: 1
+    explicacion: "Automatizar tiene un costo de mantenimiento: rinde cuando el test se ejecuta muchas veces."
+  - tipo: opcion_multiple
+    pregunta: "Un equipo tiene 300 tests E2E y 20 unitarios, y la CI tarda una hora y falla al azar. ¿Qué forma tiene?"
+    opciones: ["Una pirámide sana.", "Un \"cono de helado\" (pirámide invertida): conviene mover la mayoría de las verificaciones a tests unitarios y de integración, y dejar pocos E2E para los caminos críticos.", "Un trofeo."]
+    correcta: 1
+    explicacion: "Muchos E2E dan una CI lenta y con fallas intermitentes, y cuando algo falla cuesta saber por qué."
+tarea_local: "Hacé el inventario de los tests de un proyecto tuyo (o de Rollito, con `npm test` y `npm run test:e2e`) y clasificalos por nivel. ¿La forma es una pirámide?"
+resultado_esperado: "Una cuenta por nivel y una conclusión: qué movería de nivel y qué falta."
+resumen:
+  - "La pirámide pone muchos unitarios, menos de integración y pocos E2E."
+  - "Los E2E son los más realistas, pero también los más lentos y frágiles."
+  - "Se automatiza lo que se repite y tiene riesgo."
+  - "Una pirámide invertida da una CI lenta y con fallas al azar."
+entrevista:
+  en_30_segundos: "Sigo la pirámide: muchos tests unitarios para la lógica, algunos de integración para las piezas que se comunican, y pocos E2E para los caminos críticos. Automatizo lo que se repite y tiene riesgo, empezando por la regresión del camino principal, y evito el cono de helado de cientos de E2E."
+  trampas:
+    - pregunta: "¿Un test E2E reemplaza a los unitarios de esa funcionalidad?"
+      respuesta: "No: el E2E dice que algo falla, pero no dónde, y es lento para cubrir cada caso borde. Los casos borde van en unitarios; el E2E confirma que las piezas funcionan juntas."
+  cuando_no: "En un prototipo que puede cambiar por completo la semana que viene, invertir en una pirámide completa no se justifica: alcanza con unos pocos tests del camino principal."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Automatizar todo con tests E2E parece lo más realista, pero termina en una CI lenta y frágil. La pirámide reparte el esfuerzo:
+
+- **Base, unitarios:** muchos, rápidos y aislados. Validaciones, cálculos, reglas.
+- **Medio, integración:** piezas juntas. Una API con su base, reglas de seguridad con el emulador.
+- **Punta, E2E:** pocos, sobre los caminos críticos, en un navegador o dispositivo real.
+
+Una variante popular en frontend es el "trofeo": más peso en integración (componentes con su lógica), porque ahí aparecen muchos errores.
+
+## Ejemplo
+
+La pirámide de Rollito hoy:
+
+- **Unitarios (Vitest):** más de 80, en segundos. Validaciones, progreso, ejemplos de React.
+- **Integración:** 21 casos de reglas de Firestore contra el emulador; tests de componentes con Testing Library.
+- **E2E (Playwright):** 6 escenarios en escritorio y celular: landing, acceso restringido, cuenta, el bug del nombre y la página 404.
+
+El bug del nombre está cubierto en dos niveles: un test unitario de `validarNombre` y un E2E que lo recorre en el navegador.

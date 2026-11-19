@@ -1,0 +1,59 @@
+---
+id: testing-senior-liderar-qa-01
+track: testing
+nivel: senior
+modulo: "Estrategia de calidad"
+titulo: "Liderar QA: métricas, cultura y cuándo liberar"
+duracion_min: 6
+prerequisitos: [testing-senior-testing-en-produccion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué métrica dice más sobre la calidad de un proceso?"
+    opciones: ["Cantidad de bugs reportados por QA.", "Los defectos que escapan a producción (y su severidad), junto con el tiempo para detectarlos y arreglarlos. Contar bugs reportados premia reportar mucho, no la calidad.", "Cantidad de casos de prueba escritos."]
+    correcta: 1
+    explicacion: "Las métricas que se pueden inflar terminan midiendo comportamiento, no calidad."
+  - tipo: opcion_multiple
+    pregunta: "Quedan dos bugs de severidad media abiertos el día de la entrega. ¿Quién decide si se libera?"
+    opciones: ["QA, siempre.", "El negocio (o el producto), con información de QA: qué riesgo representan, a quién afectan y si hay forma de mitigarlos. QA informa el riesgo; no es el guardián que aprueba o rechaza solo.", "Nadie: se posterga hasta que no haya bugs."]
+    correcta: 1
+    explicacion: "Como no se puede probar todo ni llegar a cero bugs, la decisión de liberar es de riesgo y se toma informada."
+  - tipo: autoevaluacion
+    pregunta: "Nombrá tres acciones para que la calidad sea de todo el equipo y no solo de QA."
+    explicacion: "Que QA participe del refinamiento y los criterios de aceptación se escriban juntos; que cada PR traiga sus tests y la CI bloquee si fallan; y hacer revisiones sin culpables de los bugs que escaparon, para mejorar el proceso en vez de buscar responsables."
+tarea_local: "Escribí una revisión sin culpables de un problema que hayas vivido en un proyecto: qué pasó, por qué no se detectó antes, qué cambiarías del proceso y qué no harías."
+resultado_esperado: "Una revisión de una página centrada en el proceso, con al menos una acción concreta para que no se repita."
+resumen:
+  - "En el nivel Senior, QA hace que todo el equipo produzca calidad."
+  - "Los defectos que escapan a producción dicen más que los bugs reportados."
+  - "Las métricas que se pueden inflar no sirven como objetivo."
+  - "La decisión de liberar es de riesgo y la toma el negocio, informado por QA."
+  - "Las revisiones de incidentes buscan mejorar el proceso, no culpables."
+entrevista:
+  en_30_segundos: "Como líder de QA, mi objetivo es que el equipo entero produzca calidad: shift-left, tests en cada PR y revisiones de incidentes sin culpables. Mido lo que importa (defectos que escapan, tiempo de detección y de arreglo, estabilidad de la CI) y evito métricas que se inflan. En las entregas, informo el riesgo con claridad para que el negocio decida."
+  trampas:
+    - pregunta: "¿Un buen QA es el que encuentra más bugs?"
+      respuesta: "Un buen QA es el que ayuda a que menos bugs lleguen a producción: muchas veces eso significa encontrar problemas en los requisitos, antes de que exista el código, cuando ni siquiera cuentan como bugs."
+  cuando_no: "En un equipo de tres personas no hace falta un tablero de métricas: alcanza con revisar juntos, cada tanto, qué se escapó y por qué."
+---
+
+## Concepto
+
+**Qué problema resuelve.** En el nivel Senior, el trabajo de QA pasa de ejecutar pruebas a hacer que el equipo entero produzca calidad.
+
+**Métricas útiles (y cuáles evitar):**
+
+- **Útiles:** defectos que escapan a producción y su severidad; tiempo para detectarlos y arreglarlos; tasa de tests inestables; tiempo de la CI.
+- **Peligrosas como objetivo:** cantidad de bugs reportados, de casos escritos o porcentaje de cobertura.
+
+**Cultura:** calidad compartida, revisiones de incidentes sin culpables y QA como asesor de riesgo, no como guardián.
+
+**Liberar:** como nunca hay cero bugs, se decide con información: qué riesgo queda, a quién afecta y cómo se mitiga.
+
+## Ejemplo
+
+Una revisión sin culpables de un incidente real de Rollito: los deploys que fallaron durante seis commits.
+
+- **Qué pasó:** un archivo necesario estaba excluido por el `.gitignore`; el build local pasaba, el del servidor no.
+- **Por qué no se detectó:** se verificaba el build local, no el del servidor ni el estado del deploy.
+- **Qué cambió en el proceso:** build desde un clon limpio antes de pushear y verificación del deploy después de cada push.
+- **Qué no se hizo:** buscar un culpable. El objetivo es que el proceso no permita que vuelva a pasar.
