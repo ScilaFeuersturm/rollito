@@ -6,11 +6,12 @@ import { Home } from './Home'
 import { CodePractice } from './CodePractice'
 import { InterviewPractice } from './InterviewPractice'
 import { LessonPage } from './LessonPage'
+import { Privado } from './Privado'
 import { Repaso } from './Repaso'
 import { interviewPractice } from '../content/android/interview-practice'
 import { functionalInterview } from '../content/funcional/interview-practice'
 import { Link, usePathname } from './router'
-import { homePath, matchRoute, pageTitle, repasoPath } from './routes'
+import { homePath, matchRoute, pageTitle, privadoPath, repasoPath } from './routes'
 
 export function App({ url }: { url: string }) {
   const pathname = usePathname(url)
@@ -47,6 +48,8 @@ export function App({ url }: { url: string }) {
         <nav aria-label="Principal">
           <Link className={styles.navLink} href={repasoPath}
             aria-current={route.name === 'repaso' ? 'page' : undefined}>Repaso</Link>
+          {' '}<Link className={styles.navLink} href={privadoPath}
+            aria-current={route.name === 'privado' ? 'page' : undefined}>Privado</Link>
         </nav>
         <div className={styles.stats} aria-label="Tu progreso">
           <span>{completed * xpPerLesson} XP</span>
@@ -66,6 +69,7 @@ export function App({ url }: { url: string }) {
       {route.name === 'practica' && <CodePractice key={route.level.level} level={route.level} />}
       {route.name === 'repaso' && <Repaso progress={progress} />}
       {route.name === 'repaso-funcional' && <Repaso key="funcional" kind="funcional" progress={progress} />}
+      {route.name === 'privado' && <Privado />}
       {route.name === 'no-encontrada' && <section className={styles.hero}>
         <h1 tabIndex={-1}>No encontramos esa página</h1>
         <p>Puede que la dirección haya cambiado. <Link href={homePath}>Volvé al recorrido</Link>.</p>

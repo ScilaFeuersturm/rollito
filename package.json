@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.js",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "privado": "node scripts/cifrar-privado.js"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
