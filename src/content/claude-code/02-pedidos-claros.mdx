@@ -1,0 +1,70 @@
+---
+id: claude-code-pedidos-claros-01
+track: claude-code
+nivel: junior
+modulo: "Cómo pedirle las cosas"
+titulo: "Pedidos claros: archivo, síntoma y qué es \"listo\""
+duracion_min: 6
+prerequisitos: [claude-code-instalar-y-primera-sesion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál de estos pedidos va a necesitar menos idas y vueltas?"
+    opciones: ["\"Arreglá el login.\"", "\"En `LoginViewModel.kt`, cuando la contraseña es incorrecta la app se queda cargando. Tiene que mostrar 'Contraseña incorrecta' y habilitar el botón. Hay un test en `LoginViewModelTest` que lo cubre: hacelo pasar.\"", "\"Mejorá el código del login, que está feo.\""]
+    correcta: 1
+    explicacion: "La documentación lo resume así: nombrá el archivo, describí el síntoma y decí qué significa \"arreglado\". Y si hay algo que se puede correr para comprobarlo (un test), mejor."
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve escribir `@` en el pedido?"
+    opciones: ["Para mencionar a una persona del equipo.", "Para autocompletar la ruta de un archivo e incluirlo en el pedido, así Claude lo lee sin tener que buscarlo.", "Para ejecutar un comando de la terminal."]
+    correcta: 1
+    explicacion: "Por ejemplo: \"Revisá @src/app/Cuenta.tsx y decime si maneja bien los errores\". Para comandos de terminal está `!` al principio."
+  - tipo: opcion_multiple
+    pregunta: "Claude terminó y dice \"listo, ya funciona\". ¿Qué le pedís?"
+    opciones: ["Nada: si lo dice, es porque funciona.", "Evidencia: el comando que corrió y su salida (por ejemplo, los tests en verde) o una captura.", "Que lo vuelva a hacer, por las dudas."]
+    correcta: 1
+    explicacion: "Es otro consejo de la documentación oficial: pedí evidencia. Lo mismo que harías con el PR de cualquier persona."
+  - tipo: autoevaluacion
+    pregunta: "Tenés que construir algo grande y todavía no está claro. ¿Cómo arrancás?"
+    explicacion: "Pedile que te entreviste: \"Haceme preguntas hasta que puedas escribir la especificación, y después escribila en SPEC.md\". Después abrís una sesión nueva para construir a partir de ese archivo. Así separás pensar el qué de construirlo."
+tarea_local: "Misión 2: elegí un bug o una tarea chica real de tu proyecto. Escribí el pedido con las tres partes (archivo, síntoma, qué es \"listo\") y una forma de comprobarlo. Al final pedile evidencia: \"mostrame el comando que corriste y su salida\"."
+resultado_esperado: "Claude resuelve la tarea con menos preguntas de ida y vuelta, y te muestra la salida del test o del comando que lo comprueba."
+resumen:
+  - "Un buen pedido nombra el archivo, describe el síntoma y dice qué es estar listo."
+  - "Si hay algo que se puede correr para comprobarlo, nombralo en el pedido."
+  - "Con arroba incluís archivos y con control v pegás capturas."
+  - "Pedí evidencia: el comando que corrió y su salida."
+  - "Para algo grande y difuso, primero pedile que te entreviste y escriba la especificación."
+---
+
+## Concepto
+
+**Qué problema resuelve.** La diferencia entre quien "maneja bien" Claude Code y quien no casi nunca es un truco técnico: es cómo pide las cosas. Un pedido vago hace que Claude adivine, y ahí aparecen las idas y vueltas.
+
+**Las tres partes de un buen pedido** (así lo recomienda la documentación oficial):
+
+1. **Dónde:** el archivo o la pantalla. Con `@` autocompletás la ruta.
+2. **Qué pasa:** el síntoma concreto, o lo que querés lograr.
+3. **Qué es "listo":** cómo te vas a dar cuenta de que está bien. Ideal: algo que se puede correr y da verde o rojo, como un test.
+
+**Más contexto, menos adivinanza:**
+
+- **Capturas:** pegá la captura de un diseño o de un error con `Ctrl+V` (en Windows también `Alt+V`).
+- **Salidas de comandos:** `! npm test` ejecuta el comando y su salida queda en la conversación.
+- **Pedí evidencia** al final: el comando y su salida.
+
+## Ejemplo
+
+Pedido vago:
+
+```text
+arreglá el login
+```
+
+Pedido claro:
+
+```text
+En @src/app/Cuenta.tsx, cuando el código de invitación es inválido la pantalla
+queda en "Un momento…". Tiene que mostrar "El código de invitación no es válido"
+y volver a habilitar el botón. Corré npm test al final y mostrame la salida.
+```
+
+*Verificado contra la documentación oficial (code.claude.com/docs, sección de buenas prácticas) el 19/11/2026.*

@@ -1,0 +1,57 @@
+---
+id: claude-code-mcp-01
+track: claude-code
+nivel: junior
+modulo: "Automatizar"
+titulo: "MCP: conectá Claude con tus herramientas"
+duracion_min: 5
+prerequisitos: [claude-code-hooks-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es MCP?"
+    opciones: ["Un modelo nuevo de Claude.", "Un estándar abierto para conectar Claude Code con herramientas, bases de datos y APIs externas (Notion, GitHub, Figma, una base de datos…) a través de servidores MCP.", "Un formato de archivo de configuración."]
+    correcta: 1
+    explicacion: "Model Context Protocol. Cada servidor MCP le agrega a Claude herramientas para trabajar con ese servicio."
+  - tipo: opcion_multiple
+    pregunta: "Querés que todo el equipo use el mismo servidor MCP del proyecto. ¿Qué scope usás?"
+    opciones: ["`local` (el que viene por defecto).", "`project`: queda en el archivo `.mcp.json` de la raíz del proyecto, que se commitea. Cada persona lo aprueba la primera vez.", "`user`."]
+    correcta: 1
+    explicacion: "Por defecto, `claude mcp add` usa el scope `local`: solo para vos en ese proyecto. `user` lo deja para vos en todos tus proyectos."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué revisás antes de agregar un servidor MCP?"
+    explicacion: "Que venga de una fuente confiable: un servidor MCP le da a Claude acceso a un servicio y puede leer o modificar datos con tus credenciales. Y nunca pongas tokens en un `.mcp.json` que se commitea: para eso está el login con OAuth (`/mcp`) o las variables de entorno."
+tarea_local: "Misión 9: listá tus servidores con `claude mcp list` y mirá su estado con `/mcp` dentro de una sesión. Si tu equipo usa una herramienta con servidor MCP oficial (por ejemplo, la que usen para tickets o diseño), agregalo con scope local y probá pedirle algo."
+resultado_esperado: "Sabés qué servidores MCP tenés activos y cómo agregar uno, y probaste uno con un pedido real."
+resumen:
+  - "MCP es un estándar abierto para conectar Claude con herramientas externas."
+  - "Se agregan con claude mcp add, por HTTP o por stdio."
+  - "El scope project guarda el servidor en el archivo mcp punto json del proyecto."
+  - "Barra mcp muestra el estado de los servidores y permite iniciar sesión."
+  - "Solo servidores confiables, y nunca tokens en archivos que se commitean."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Sin MCP, Claude Code ve tu código y tu terminal. Con MCP puede trabajar con tus otras herramientas: leer un ticket, consultar una base de datos, mirar un diseño.
+
+**Cómo se agregan** (sintaxis de la documentación oficial):
+
+- Servidor remoto por HTTP: `claude mcp add --transport http <nombre> <url>`
+- Servidor local por stdio: `claude mcp add <nombre> -- <comando> [args...]`. El `--` separa las opciones de Claude del comando que lanza el servidor.
+
+**Scopes:** `local` (por defecto, solo vos en este proyecto), `project` (en `.mcp.json`, para el equipo) y `user` (vos, en todos tus proyectos).
+
+**Administrar:** `claude mcp list`, `claude mcp get <nombre>`, `claude mcp remove <nombre>`, y `/mcp` dentro de una sesión para ver el estado e iniciar sesión con OAuth.
+
+## Ejemplo
+
+Ejemplos de la documentación:
+
+```text
+claude mcp add --transport http notion https://mcp.notion.com/mcp
+claude mcp add --transport http compartido --scope project https://example.com/mcp
+```
+
+Después, adentro de la sesión, `/mcp` para iniciar sesión en el navegador si el servidor lo pide.
+
+*Verificado contra la documentación oficial (code.claude.com/docs, MCP) el 19/11/2026.*

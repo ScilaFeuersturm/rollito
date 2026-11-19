@@ -1,0 +1,58 @@
+---
+id: claude-code-trabajo-seguro-01
+track: claude-code
+nivel: junior
+modulo: "Trabajo diario seguro"
+titulo: "Trabajo seguro: secretos, diffs y criterio"
+duracion_min: 5
+prerequisitos: [claude-code-subagentes-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál es la mejor forma de evitar que Claude lea tus credenciales?"
+    opciones: ["Pedírselo en el chat cada vez.", "Reglas de deny en la configuración (`Read(./.env)`, `Read(./.env.*)`) y no tener secretos en el código. Un `.claudeignore` no sirve.", "Escribirlo en mayúsculas en el `CLAUDE.md`."]
+    correcta: 1
+    explicacion: "Una regla de deny la aplica el programa; un pedido en el chat depende de que el modelo lo tenga en cuenta. Y deny gana sobre allow."
+  - tipo: opcion_multiple
+    pregunta: "Claude terminó un cambio grande. ¿Qué hacés antes de commitear?"
+    opciones: ["Commitear directo: ya lo revisó Claude.", "Revisar el diff vos (`/diff` muestra los cambios sin commitear), correr los tests y, si es importante, pedir una revisión en una sesión nueva o con un subagente revisor.", "Pedirle a Claude que haga push."]
+    correcta: 1
+    explicacion: "Es la misma regla de la lección de IA del recorrido Android: si sale en tu PR, la responsabilidad es tuya."
+  - tipo: autoevaluacion
+    pregunta: "Decí en voz alta tres cosas que no le pegarías nunca a Claude ni dejarías que lea."
+    explicacion: "Tokens y contraseñas (los `.env`, las claves de firma), datos personales de clientes o usuarios, e información interna que la política de la empresa no permite compartir. Es lo mismo que con cualquier asistente de IA."
+tarea_local: "Misión 11: revisá `/permissions` en tu proyecto y sacá cualquier allow que sea más amplio de lo necesario (por ejemplo, `Bash(*)`). Agregá deny para tus archivos de secretos. Después de tu próximo cambio con Claude, revisalo con `/diff` antes de commitear."
+resultado_esperado: "Reglas de permisos ajustadas a lo que usás, secretos protegidos con deny, y la costumbre de revisar el diff antes de commitear."
+resumen:
+  - "Los secretos se protegen con reglas de deny, no con pedidos en el chat."
+  - "Permisos acotados: allow solo para lo que usás seguido."
+  - "Revisá el diff y corré los tests antes de commitear."
+  - "Si sale en tu PR, la responsabilidad es tuya."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Claude Code trabaja en tu máquina, con tus archivos y tus credenciales. Eso lo hace muy útil y, al mismo tiempo, pide criterio.
+
+**Cuatro hábitos:**
+
+1. **Secretos fuera de su alcance:** reglas de deny para `.env` y similares, y nada de secretos en el código.
+2. **Permisos acotados:** allow para lo que usás seguido (`npm test`), no para todo. `bypassPermissions`, solo en entornos aislados.
+3. **Revisar antes de commitear:** `/diff`, los tests y, si importa, una segunda opinión (sesión nueva o subagente revisor).
+4. **Elegir el esfuerzo:** `/model` cambia el modelo y `/effort` el nivel de razonamiento. Para tareas simples alcanza con poco; para un problema difícil, más.
+
+## Ejemplo
+
+Una configuración de proyecto prudente, en `.claude/settings.json`:
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash(npm test)", "Bash(npm run build)", "Bash(git status)", "Bash(git diff *)"],
+    "deny": ["Read(./.env)", "Read(./.env.*)", "Read(./privado/**)", "Bash(git push *)"]
+  }
+}
+```
+
+Con esto, Claude corre los tests y el build sin preguntar, nunca lee secretos ni la carpeta privada, y el push lo hacés vos.
+
+*Verificado contra la documentación oficial (code.claude.com/docs) el 19/11/2026.*

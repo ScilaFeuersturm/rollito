@@ -1,0 +1,70 @@
+---
+id: claude-code-corregir-el-rumbo-y-cuidar-el-contexto-01
+track: claude-code
+nivel: junior
+modulo: "Cómo pedirle las cosas"
+titulo: "Corregí el rumbo y cuidá el contexto"
+duracion_min: 6
+prerequisitos: [claude-code-pedidos-claros-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Claude está editando un archivo que no era el que querías. ¿Qué hacés?"
+    opciones: ["Esperás a que termine y después le pedís que deshaga todo.", "Apretás `Esc`: lo frena en el momento y conserva todo lo hecho hasta ahí, así lo redirigís sin perder trabajo.", "Cerrás la terminal."]
+    correcta: 1
+    explicacion: "`Esc` es la forma normal de corregir el rumbo. Si querés volver atrás, `Esc` dos veces con el campo vacío (o `/rewind`) abre el menú para rebobinar."
+  - tipo: opcion_multiple
+    pregunta: "Ya corregiste a Claude dos veces sobre lo mismo y sigue sin salir. ¿Qué recomienda la documentación?"
+    opciones: ["Corregirlo una tercera vez, más enojado.", "`/clear` y escribir un pedido mejor desde cero, con lo que aprendiste de los intentos fallidos.", "Escribir la regla en mayúsculas."]
+    correcta: 1
+    explicacion: "Después de dos correcciones fallidas, la conversación ya está llena de intentos equivocados. Empezar limpio con un pedido mejor suele ser más rápido. Y las mayúsculas, según la documentación, hacen que Claude aplique la regla de más."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuándo conviene usar `/clear`?"
+    opciones: ["Nunca: se pierde todo.", "Entre tareas que no tienen relación: según la documentación, no cuesta nada, y la conversación anterior se puede retomar con `/resume`.", "Solo cuando hay un error."]
+    correcta: 1
+    explicacion: "Una conversación larga con temas mezclados hace que Claude tenga en cuenta cosas que ya no importan. Para seguir en el mismo tema pero achicar el historial está `/compact`."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué diferencia hay entre `/clear`, `/compact` y `/btw`?"
+    explicacion: "`/clear` arranca una conversación nueva (la anterior se retoma con `/resume`). `/compact` resume la conversación actual para liberar espacio; se le puede dar un foco: `/compact quedate con los cambios de la API y los comandos de test`. `/btw` responde una pregunta rápida sin agregarla al historial."
+tarea_local: "Misión 3: en una sesión, pedile una tarea y frenala a la mitad con `Esc`. Redirigila con un pedido más preciso. Después probá `Esc` dos veces con el campo vacío para ver el menú de rebobinar, y terminá con `/clear` antes de pasar a otra tarea."
+resultado_esperado: "Frenaste y redirigiste a Claude sin perder trabajo, viste el menú de rebobinar y arrancaste la siguiente tarea con el contexto limpio."
+resumen:
+  - "Escape frena a Claude y conserva lo hecho hasta ahí."
+  - "Escape dos veces con el campo vacío abre el menú para rebobinar."
+  - "Después de dos correcciones fallidas, clear y un pedido mejor."
+  - "Clear entre tareas sin relación; compact para achicar el historial."
+  - "Btw responde una pregunta rápida sin ensuciar la conversación."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Claude Code trabaja con el **contexto** de la conversación: todo lo que se dijo, se leyó y se probó. Cuanto más limpio, mejor trabaja. Y cuando se va para otro lado, frenarlo a tiempo ahorra mucho.
+
+**Para corregir el rumbo:**
+
+- `Esc`: frena en el momento y conserva lo hecho.
+- `Esc` `Esc` con el campo vacío, o `/rewind`: menú para volver a un punto anterior.
+
+**Para cuidar el contexto:**
+
+- `/clear`: conversación nueva. Usalo entre tareas sin relación.
+- `/compact` con un foco: resume la conversación y libera espacio.
+- `/btw pregunta`: pregunta rápida que no queda en el historial.
+- `/rename nombre`: le ponés nombre a la sesión para retomarla después con `claude --resume nombre`.
+- `/context`: muestra qué está ocupando el contexto.
+
+## Ejemplo
+
+Una sesión típica:
+
+```text
+> En @src/cuenta/servicio.ts agregá un timeout de 10 s al login
+  (Claude empieza a tocar otro archivo)
+[Esc]
+> Solo en servicio.ts, no toques Cuenta.tsx
+  (termina bien)
+> /btw ¿qué código de error devuelve Firebase si no hay red?
+> /clear
+> Ahora otra cosa: ...
+```
+
+*Verificado contra la documentación oficial (code.claude.com/docs) el 19/11/2026.*

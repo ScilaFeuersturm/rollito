@@ -1,0 +1,62 @@
+---
+id: claude-code-instalar-y-primera-sesion-01
+track: claude-code
+nivel: junior
+modulo: "Primeros pasos"
+titulo: "Instalá Claude Code y abrí tu primera sesión"
+duracion_min: 5
+prerequisitos: []
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Desde dónde conviene abrir Claude Code?"
+    opciones: ["Desde cualquier carpeta: después le decís cuál es el proyecto.", "Desde la carpeta del proyecto (`cd mi-proyecto` y después `claude`): ese es el directorio en el que trabaja y desde donde lee la configuración del proyecto.", "Desde la carpeta de usuario, para que vea todo."]
+    correcta: 1
+    explicacion: "Claude Code trabaja sobre el directorio en el que lo abrís, y desde ahí carga el `CLAUDE.md` y la configuración del proyecto."
+  - tipo: opcion_multiple
+    pregunta: "Ayer dejaste una conversación a medias en este proyecto. ¿Cómo la retomás?"
+    opciones: ["No se puede: cada sesión empieza de cero.", "`claude -c` continúa la última conversación de este directorio; `claude -r` (o `/resume` dentro de una sesión) te deja elegir una anterior.", "Copiando y pegando la conversación vieja."]
+    correcta: 1
+    explicacion: "Las conversaciones se guardan por proyecto. Con `/rename` les podés poner nombre y después retomarlas con `claude --resume nombre`."
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve `claude -p \"pregunta\"`?"
+    opciones: ["Para abrir el modo plan.", "Para hacer una consulta única sin abrir una sesión interactiva: responde y termina. Sirve para scripts y para pasarle la salida de otro comando.", "Para cambiar la contraseña."]
+    correcta: 1
+    explicacion: "Por ejemplo: `cat error.log | claude -p \"¿qué está pasando acá?\"`."
+tarea_local: "Misión 1: instalá Claude Code (o la extensión de VS Code), abrí una sesión dentro de un proyecto tuyo y pedile: \"Explicame en cinco líneas qué hace este proyecto y cómo se corre\". Después cerrá con `/exit` y volvé a entrar con `claude -c`."
+resultado_esperado: "Claude te explica el proyecto leyendo los archivos, y al volver con `claude -c` la conversación sigue donde la dejaste."
+resumen:
+  - "Claude Code se abre desde la carpeta del proyecto con el comando claude."
+  - "La primera vez pide iniciar sesión en el navegador."
+  - "claude guion c continúa la última conversación; claude guion r te deja elegir una."
+  - "claude guion p hace una consulta única, útil para scripts."
+---
+
+## Concepto
+
+**Qué es.** Claude Code es un asistente que trabaja **dentro de tu proyecto**: lee archivos, ejecuta comandos, edita código y te pide permiso para lo que puede tener consecuencias. Se usa desde la terminal o desde la extensión de VS Code; los conceptos de este curso sirven para las dos.
+
+**Instalación** (comandos de la documentación oficial):
+
+- Windows, en PowerShell: `irm https://claude.ai/install.ps1 | iex`
+- macOS, Linux o WSL: `curl -fsSL https://claude.ai/install.sh | bash`
+- Para verificar: `claude --version`. Si dice que no encuentra `claude`, falta agregar la carpeta de instalación al PATH.
+
+En Windows conviene tener Git for Windows instalado, así Claude Code puede usar Bash; si no, usa PowerShell.
+
+**Primera sesión:** `cd` a la carpeta del proyecto y `claude`. La primera vez abre el navegador para iniciar sesión (si no se abre, apretá `c` para copiar el link).
+
+## Ejemplo
+
+Los comandos que vas a usar todos los días:
+
+```text
+claude                      abre una sesión en el proyecto actual
+claude "agregá un test"     abre una sesión y arranca con ese pedido
+claude -c                   continúa la última conversación de este proyecto
+claude -r                   elegís una conversación anterior para retomar
+claude -p "pregunta"        consulta única: responde y termina
+```
+
+Adentro de la sesión: `/help` muestra los comandos, `/exit` sale, y `?` con el campo vacío muestra los atajos de teclado.
+
+*Verificado contra la documentación oficial (code.claude.com/docs) el 19/11/2026. Claude Code se actualiza seguido: si algo no coincide, avisale a Aramis.*

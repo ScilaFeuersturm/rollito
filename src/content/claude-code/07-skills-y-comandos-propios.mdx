@@ -1,0 +1,71 @@
+---
+id: claude-code-skills-y-comandos-propios-01
+track: claude-code
+nivel: junior
+modulo: "Automatizar"
+titulo: "Skills: tus propios comandos"
+duracion_min: 6
+prerequisitos: [claude-code-claude-md-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde creás una skill `/revisar-pr` para todo el equipo del proyecto?"
+    opciones: ["En `~/.claude/skills/revisar-pr/SKILL.md`.", "En `.claude/skills/revisar-pr/SKILL.md`, dentro del proyecto, y la commiteás.", "En el `CLAUDE.md`."]
+    correcta: 1
+    explicacion: "La carpeta define el nombre del comando. En `~/.claude/skills/` van las personales, para todos tus proyectos. Los viejos archivos de `.claude/commands/` siguen funcionando: los comandos propios se unificaron con las skills."
+  - tipo: opcion_multiple
+    pregunta: "Tu skill `/deploy` sube cambios a staging. ¿Qué campo del frontmatter conviene poner?"
+    opciones: ["`model: opus`.", "`disable-model-invocation: true`, para que Claude no la pueda ejecutar por su cuenta: solo cuando la llamás vos.", "Ninguno."]
+    correcta: 1
+    explicacion: "Por defecto, Claude puede usar una skill solo si le parece relevante (lo decide por la `description`). Para skills con efectos secundarios, como hacer deploy o commitear, conviene que solo las dispares vos."
+  - tipo: opcion_multiple
+    pregunta: "Escribís `/arreglar-issue 123`. ¿Cómo recibe la skill el `123`?"
+    opciones: ["No lo recibe.", "En `$ARGUMENTS` (o `$0` para el primer argumento).", "En una variable de entorno."]
+    correcta: 1
+    explicacion: "`$ARGUMENTS` trae todo lo que escribiste después del comando, y `$0`, `$1`… cada argumento por posición, empezando en 0."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué diferencia hay entre poner algo en el `CLAUDE.md` y hacer una skill?"
+    explicacion: "El `CLAUDE.md` son hechos que Claude tiene que saber en todas las sesiones (comandos, convenciones). Una skill es un procedimiento de varios pasos que se usa a veces (revisar un PR, preparar un release). Así el `CLAUDE.md` queda corto y la skill se carga solo cuando hace falta."
+tarea_local: "Misión 7: creá `.claude/skills/revisar-cambios/SKILL.md` con una `description` clara y un cuerpo que le pida a Claude revisar el diff sin commitear buscando errores, secretos y tests faltantes. Usala con `/revisar-cambios` después de hacer un cambio."
+resultado_esperado: "Aparece `/revisar-cambios` en el menú de `/`, y al usarla Claude revisa tus cambios con los criterios que definiste."
+resumen:
+  - "Una skill es un archivo SKILL punto md dentro de una carpeta con su nombre."
+  - "Las del proyecto van en punto claude barra skills; las personales, en tu carpeta de usuario."
+  - "La description le dice a Claude cuándo usarla."
+  - "Disable model invocation hace que solo la dispares vos."
+  - "Arguments trae lo que escribiste después del comando."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Si todos los días le pedís lo mismo con las mismas palabras (revisar un PR, preparar un commit, generar un test), conviene escribirlo una vez como skill y llamarlo con `/nombre`.
+
+**Dónde van:**
+
+- Proyecto (equipo): `.claude/skills/<nombre>/SKILL.md`. Se commitea.
+- Personal: `~/.claude/skills/<nombre>/SKILL.md`.
+- Los archivos viejos de `.claude/commands/` siguen funcionando.
+
+**Frontmatter más usado:**
+
+- `description`: qué hace y cuándo usarla. Es lo que Claude lee para decidir si aplicarla.
+- `disable-model-invocation: true`: solo vos la podés disparar.
+- `argument-hint`: el texto de ayuda que aparece al escribir el comando, por ejemplo `[numero-de-issue]`.
+- `allowed-tools`: herramientas que puede usar sin pedir permiso mientras corre la skill.
+
+## Ejemplo
+
+El ejemplo mínimo de la documentación oficial, en `.claude/skills/fix-issue/SKILL.md`:
+
+```markdown
+---
+name: fix-issue
+description: Fix a GitHub issue
+disable-model-invocation: true
+---
+
+Fix GitHub issue $ARGUMENTS following our coding standards.
+```
+
+Con `/fix-issue 123`, el `123` llega en `$ARGUMENTS`. Las instrucciones pueden estar en español.
+
+*Verificado contra la documentación oficial (code.claude.com/docs, Skills) el 19/11/2026.*

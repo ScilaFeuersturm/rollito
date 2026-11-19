@@ -1,0 +1,66 @@
+---
+id: claude-code-subagentes-01
+track: claude-code
+nivel: junior
+modulo: "Automatizar"
+titulo: "Subagentes: delegá sin llenar tu conversación"
+duracion_min: 6
+prerequisitos: [claude-code-mcp-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cuándo conviene un subagente?"
+    opciones: ["Para cualquier pedido, así va más rápido.", "Cuando una tarea secundaria llenaría tu conversación de resultados que no vas a volver a mirar (búsquedas largas, logs, muchos archivos). El subagente trabaja en su propio contexto y te devuelve solo la conclusión.", "Nunca: son experimentales."]
+    correcta: 1
+    explicacion: "Cada subagente tiene su propia ventana de contexto, sus instrucciones y sus herramientas. Tu conversación principal queda limpia."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace el subagente integrado `Explore`?"
+    opciones: ["Edita archivos en paralelo.", "Busca y analiza código en modo de solo lectura, rápido: tiene la escritura y la edición prohibidas.", "Navega por internet."]
+    correcta: 1
+    explicacion: "Otros integrados: `Plan` (investigación en modo plan, solo lectura) y `general-purpose` (tareas de varios pasos con todas las herramientas)."
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde definís un subagente revisor para todo el equipo del proyecto?"
+    opciones: ["En el `CLAUDE.md`.", "En `.claude/agents/revisor.md`, con frontmatter (`name`, `description`, `tools`, `model`) y las instrucciones en el cuerpo.", "En `.mcp.json`."]
+    correcta: 1
+    explicacion: "En `~/.claude/agents/` van los personales. `name` y `description` son obligatorios; con `tools` limitás qué puede hacer."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué la documentación dice que una segunda sesión es \"el revisor independiente más fácil que podés conseguir\"?"
+    explicacion: "Porque la sesión que escribió el código ya tiene en su contexto todas las decisiones que tomó y tiende a darlas por buenas. Una sesión nueva, o un subagente revisor, mira el resultado sin ese sesgo."
+tarea_local: "Misión 10: creá `.claude/agents/revisor.md` con `tools: Read, Glob, Grep` (solo lectura) y una `description` que diga que revisa calidad y seguridad. Después de un cambio, pedile a Claude: \"usá el subagente revisor para revisar lo que cambiamos\"."
+resultado_esperado: "Claude delega la revisión al subagente, que lee sin poder editar y te devuelve una lista de observaciones."
+resumen:
+  - "Un subagente trabaja en su propio contexto y devuelve solo la conclusión."
+  - "Sirve para tareas que llenarían la conversación de resultados que no vas a mirar."
+  - "Los integrados incluyen Explore, Plan y general purpose."
+  - "Los propios se definen en punto claude barra agents con nombre, descripción y herramientas."
+  - "Una segunda sesión es el revisor independiente más fácil de conseguir."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Una búsqueda por todo el repo o la lectura de cien líneas de logs llenan tu conversación de cosas que no vas a volver a mirar, y el contexto se ensucia. Un subagente hace ese trabajo en su propia ventana y te devuelve solo lo importante.
+
+**Integrados:** `Explore` (busca código, solo lectura), `Plan` (investiga en modo plan) y `general-purpose` (tareas de varios pasos).
+
+**Propios:** archivos `.md` en `.claude/agents/` (proyecto) o `~/.claude/agents/` (personales), con frontmatter. Se crean a mano o pidiéndoselo a Claude.
+
+**Trabajo en paralelo:** `claude -w nombre` abre una sesión en un worktree nuevo de Git, para trabajar en dos cosas a la vez sin pisarse.
+
+## Ejemplo
+
+El ejemplo mínimo de la documentación oficial, en `.claude/agents/code-reviewer.md`:
+
+```markdown
+---
+name: code-reviewer
+description: Reviews code for quality and best practices
+tools: Read, Glob, Grep
+model: sonnet
+---
+
+You are a code reviewer. When invoked, analyze the code and provide
+specific, actionable feedback on quality, security, and best practices.
+```
+
+Con `tools: Read, Glob, Grep`, el revisor puede leer pero no editar.
+
+*Verificado contra la documentación oficial (code.claude.com/docs, Subagents) el 19/11/2026.*

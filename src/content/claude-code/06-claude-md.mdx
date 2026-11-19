@@ -1,0 +1,70 @@
+---
+id: claude-code-claude-md-01
+track: claude-code
+nivel: junior
+modulo: "Memoria del proyecto"
+titulo: "CLAUDE.md: lo que Claude tiene que saber siempre"
+duracion_min: 6
+prerequisitos: [claude-code-reglas-de-permisos-y-settings-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué conviene poner en el `CLAUDE.md` del proyecto?"
+    opciones: ["Todo lo que sabés del proyecto, cuanto más largo mejor.", "Lo que Claude no puede descubrir leyendo el repo y tiene que saber en cada sesión: comandos de build y test, convenciones, reglas del tipo \"siempre hacé X\". Menos de 200 líneas.", "El historial de cambios del proyecto."]
+    correcta: 1
+    explicacion: "La documentación dice: \"solo escribí lo que Claude no puede encontrar leyendo el repo\". Los procedimientos de varios pasos van en una skill, y lo que tiene que pasar sí o sí, en un hook."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál es una buena regla para el `CLAUDE.md`?"
+    opciones: ["\"Formateá bien el código.\"", "\"Usá sangría de 2 espacios.\"", "\"NUNCA JAMÁS uses var.\""]
+    correcta: 1
+    explicacion: "Las reglas concretas funcionan; las vagas no. Y según la documentación, las mayúsculas y el énfasis apilado hacen que Claude aplique la regla de más."
+  - tipo: opcion_multiple
+    pregunta: "Querés instrucciones solo para vos en este proyecto, que no se suban al repo. ¿Dónde van?"
+    opciones: ["En el `CLAUDE.md` del proyecto.", "En `CLAUDE.local.md`, agregado al `.gitignore`. Y si son para todos tus proyectos, en `~/.claude/CLAUDE.md`.", "En un comentario del código."]
+    correcta: 1
+    explicacion: "Hay varios niveles: el de la organización, el tuyo (`~/.claude/CLAUDE.md`), el del proyecto (`./CLAUDE.md`, se commitea) y el local (`./CLAUDE.local.md`)."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué hace `/init` y qué hace `/memory`?"
+    explicacion: "`/init` analiza el proyecto y crea un `CLAUDE.md` con los comandos de build y test y las convenciones que encuentra; si ya existe, sugiere mejoras. `/memory` lista los archivos de memoria y abre el que elijas en tu editor. También le podés pedir a Claude directamente: \"agregá esto al CLAUDE.md\"."
+tarea_local: "Misión 6: en tu proyecto, corré `/init`. Leé el `CLAUDE.md` que generó, sacá lo que Claude podría descubrir solo y agregá dos reglas concretas de tu equipo. Verificá que se cargó con `/context`."
+resultado_esperado: "Un `CLAUDE.md` corto (menos de 200 líneas), con los comandos del proyecto y reglas concretas, que aparece entre los archivos de memoria."
+resumen:
+  - "El CLAUDE punto md da contexto que Claude carga en cada sesión."
+  - "Barra init lo genera analizando el proyecto."
+  - "Solo va lo que Claude no puede descubrir leyendo el repo."
+  - "Reglas concretas, sin mayúsculas ni énfasis apilado, en menos de 200 líneas."
+  - "Hay niveles: tuyo, del proyecto, local y de la organización."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Cada sesión empieza sin recordar las anteriores. El `CLAUDE.md` es lo que Claude lee siempre al arrancar: los comandos del proyecto, las convenciones y las reglas del equipo. Así no tenés que repetirlas.
+
+**Dónde puede estar:**
+
+- `~/.claude/CLAUDE.md`: tuyo, para todos tus proyectos.
+- `./CLAUDE.md` o `./.claude/CLAUDE.md`: del proyecto. Se commitea.
+- `./CLAUDE.local.md`: tuyo, solo este proyecto. Va al `.gitignore`.
+- En una subcarpeta: se carga cuando Claude trabaja con archivos de esa carpeta.
+
+**Importar otros archivos:** dentro del `CLAUDE.md` podés escribir `@docs/flujo-de-git.md` y se incluye ese archivo.
+
+**Qué poner** (consejos de la documentación): comandos, convenciones y estructura; reglas concretas; sin contradicciones; menos de 200 líneas. Si un repo tiene `AGENTS.md` y no tiene `CLAUDE.md`, Claude lee el `AGENTS.md`.
+
+## Ejemplo
+
+Un `CLAUDE.md` corto y útil:
+
+```markdown
+# Rollito
+
+## Comandos
+- `npm test`: tests con Vitest
+- `npm run build`: chequeo de tipos, build y prerender (tiene que pasar antes de pushear)
+
+## Convenciones
+- Textos en español rioplatense, con voseo.
+- Las lecciones van en `src/content/<track>/` como .mdx; el frontmatter lo valida `lesson-schema.ts`.
+- No commitear nada de la carpeta `privado/`.
+```
+
+*Verificado contra la documentación oficial (code.claude.com/docs, Memory) el 19/11/2026.*

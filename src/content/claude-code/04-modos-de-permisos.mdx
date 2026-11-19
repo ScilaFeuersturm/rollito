@@ -1,0 +1,64 @@
+---
+id: claude-code-modos-de-permisos-01
+track: claude-code
+nivel: junior
+modulo: "Permisos y configuración"
+titulo: "Modos de permisos: manual, ediciones, plan y auto"
+duracion_min: 6
+prerequisitos: [claude-code-corregir-el-rumbo-y-cuidar-el-contexto-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Querés que Claude analice el proyecto y te proponga cómo encarar un cambio grande, sin tocar nada todavía. ¿Qué modo usás?"
+    opciones: ["`acceptEdits`.", "Plan: lee y explora, pero no edita archivos. Al final te muestra el plan para que lo apruebes.", "`bypassPermissions`."]
+    correcta: 1
+    explicacion: "Se entra con `Shift+Tab` o escribiendo `/plan` al principio de un pedido. Planificar antes de codear evita que Claude arranque por el lado equivocado."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace el modo `acceptEdits`?"
+    opciones: ["Acepta todo sin preguntar, incluidos comandos peligrosos.", "Aplica sin preguntar las ediciones de archivos y los comandos comunes de archivos (como `mkdir` o `mv`) dentro del directorio de trabajo. El resto sigue pidiendo permiso.", "Rechaza todas las ediciones."]
+    correcta: 1
+    explicacion: "Sirve cuando ya confiás en la dirección del cambio y no querés aprobar cada edición. Los comandos que no son de archivos siguen preguntando."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuándo usarías `bypassPermissions`?"
+    opciones: ["Siempre, para ir más rápido.", "Solo en entornos aislados, como un contenedor o una máquina virtual: saltea todos los pedidos de permiso.", "Cuando trabajás en producción."]
+    correcta: 1
+    explicacion: "La documentación lo dice explícitamente. En tu máquina, con tus credenciales y tus archivos, no corresponde."
+  - tipo: autoevaluacion
+    pregunta: "Estás en el modo plan y Claude te muestra el plan para aprobar. Querés salir sin aprobarlo. ¿Qué tecla apretás y por qué no `Shift+Tab`?"
+    explicacion: "`Esc`. En la pantalla de aprobación, `Shift+Tab` aprueba el plan. Con `Ctrl+G` podés abrir el plan en tu editor para revisarlo o modificarlo."
+tarea_local: "Misión 4: en tu proyecto, apretá `Shift+Tab` hasta llegar al modo plan y pedí \"planificá cómo agregarías un test para [algo de tu proyecto]\". Leé el plan, pedí un cambio y recién después aprobalo con la opción de aprobar ediciones a mano."
+resultado_esperado: "Claude explora sin editar, te muestra un plan, lo ajusta con tu pedido y solo después empieza a editar, pidiéndote permiso."
+resumen:
+  - "Shift tab recorre los modos de permisos."
+  - "Manual pide permiso para todo lo que no sea leer."
+  - "Accept edits aplica las ediciones de archivos sin preguntar."
+  - "El modo plan explora y propone sin tocar nada."
+  - "Bypass permissions es solo para entornos aislados."
+---
+
+## Concepto
+
+**Qué problema resuelve.** No todas las tareas necesitan el mismo nivel de control. Para explorar, querés que no toque nada; para un cambio que ya entendés, que no te pregunte por cada edición. Los modos ajustan eso.
+
+**Los modos** (con el nombre que aparece en la interfaz):
+
+- **Manual** (`default`): solo las lecturas corren sin preguntar.
+- **`acceptEdits`**: aplica ediciones y comandos comunes de archivos dentro del proyecto.
+- **Plan** (`plan`): lee y explora, no edita. Termina con un plan para aprobar.
+- **Auto** (`auto`): un clasificador revisa las acciones en lugar de preguntarte. Depende del modelo y del plan, y en versiones recientes es el modo de inicio.
+- **`dontAsk`**: rechaza todo lo que pediría permiso. Pensado para CI.
+- **`bypassPermissions`**: no pregunta nada. Solo en entornos aislados.
+
+**Cómo cambiar:** `Shift+Tab` durante la sesión (desde Auto, la primera vez pasa a Manual, después a `acceptEdits` y después a Plan), o al abrir: `claude --permission-mode plan`.
+
+## Ejemplo
+
+Un flujo que funciona muy bien para tareas medianas:
+
+```text
+1. Shift+Tab hasta Plan
+2. "Planificá cómo agregar recuperación de contraseña en la pantalla de cuenta"
+3. Revisás el plan, pedís ajustes
+4. Aprobás con "manually approve edits" para ver cada cambio
+```
+
+*Verificado contra la documentación oficial (code.claude.com/docs, Permission modes) el 19/11/2026. Los modos disponibles dependen de la versión y del plan.*

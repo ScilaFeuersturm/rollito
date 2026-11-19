@@ -1,0 +1,56 @@
+---
+id: claude-code-desafio-final-01
+track: claude-code
+nivel: junior
+modulo: "Desafío final"
+titulo: "Desafío final: configurá un proyecto de punta a punta"
+duracion_min: 7
+prerequisitos: [claude-code-trabajo-seguro-01]
+ejercicios:
+  - tipo: ordenar
+    pregunta: "Ordená los pasos del desafío como conviene hacerlos."
+    pasos: ["Generar y ajustar el CLAUDE.md con /init", "Configurar permisos: allow para los tests, deny para los secretos", "Planificar la funcionalidad en modo plan", "Implementarla con pedidos claros y verificarla con los tests", "Revisar con el subagente revisor y con /diff antes de commitear"]
+    explicacion: "Primero el contexto y la configuración, después el trabajo, y al final la revisión. Es el orden en que se arma un proyecto para trabajar bien con Claude Code."
+  - tipo: autoevaluacion
+    pregunta: "Contale a alguien del equipo, en dos minutos, cómo configuraste tu proyecto y por qué cada pieza."
+    explicacion: "Si podés explicar para qué sirve cada pieza (CLAUDE.md, permisos, skill, hook, subagente) y cuándo usarías cada modo, el curso cumplió su objetivo. Lo que no te salga, repasalo en su lección."
+tarea_local: "Desafío final, en un proyecto real o de práctica: (1) `/init` y ajustá el CLAUDE.md; (2) `.claude/settings.json` con allow para tus tests y deny para tus secretos; (3) una skill `/revisar-cambios`; (4) un hook que formatee después de editar; (5) un subagente revisor de solo lectura; (6) en modo plan, planificá y después implementá una funcionalidad chica, verificada con tests; (7) revisala con el subagente y con `/diff`, y commiteá vos."
+resultado_esperado: "Un proyecto con CLAUDE.md, permisos, una skill, un hook y un subagente revisor, y una funcionalidad hecha con plan, tests y revisión. Mostrásela a Aramis para cerrar el curso."
+resumen:
+  - "Primero contexto y configuración, después el trabajo, al final la revisión."
+  - "El CLAUDE punto md y los permisos se configuran una vez y sirven siempre."
+  - "Skills, hooks y subagentes automatizan lo que se repite."
+  - "Plan, pedidos claros, tests y revisión: el flujo que funciona."
+---
+
+## Concepto
+
+**El objetivo.** Juntar todo el curso en un solo proyecto: que quede configurado para que trabajar con Claude Code sea rápido, predecible y seguro.
+
+**Checklist del desafío:**
+
+- ☐ `CLAUDE.md` corto, con comandos y reglas concretas (lección 6).
+- ☐ Permisos: allow para tests y build, deny para secretos (lecciones 5 y 11).
+- ☐ Una skill propia, por ejemplo `/revisar-cambios` (lección 7).
+- ☐ Un hook que formatee después de editar (lección 8).
+- ☐ Un subagente revisor de solo lectura (lección 10).
+- ☐ Una funcionalidad hecha con modo plan, pedidos claros y tests (lecciones 2 a 4).
+- ☐ Revisión con el subagente y `/diff` antes de commitear.
+
+## Ejemplo
+
+Así podría quedar la carpeta `.claude/` del proyecto:
+
+```text
+CLAUDE.md
+.claude/
+  settings.json              permisos y hooks del equipo
+  settings.local.json        tus permisos personales (no se commitea)
+  skills/
+    revisar-cambios/
+      SKILL.md
+  agents/
+    revisor.md
+```
+
+Cuando lo termines, mostráselo a Aramis. Este curso se revisa una vez por semana contra la documentación oficial, porque Claude Code se actualiza seguido: si algo de las lecciones no coincide con lo que ves, avisá.

@@ -1,0 +1,77 @@
+---
+id: claude-code-hooks-01
+track: claude-code
+nivel: junior
+modulo: "Automatizar"
+titulo: "Hooks: que algo pase siempre"
+duracion_min: 6
+prerequisitos: [claude-code-skills-y-comandos-propios-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Querés que después de cada edición de archivo se ejecute el formateador. ¿Qué evento usás?"
+    opciones: ["`SessionStart`.", "`PostToolUse`, con `matcher: \"Edit|Write\"`: se ejecuta después de que Claude edita o escribe un archivo.", "`UserPromptSubmit`."]
+    correcta: 1
+    explicacion: "`PreToolUse` corre antes de usar una herramienta (y puede bloquearla); `PostToolUse`, después. El `matcher` filtra por nombre de herramienta."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué un hook y no una regla en el `CLAUDE.md` (\"formateá siempre después de editar\")?"
+    opciones: ["Es lo mismo.", "Porque el `CLAUDE.md` es una instrucción que Claude puede olvidar o interpretar; el hook es un comando que se ejecuta siempre, lo decide el programa y no el modelo.", "Porque el `CLAUDE.md` no admite comandos."]
+    correcta: 1
+    explicacion: "La documentación lo recomienda así: para los pasos que tienen que pasar sí o sí, hooks."
+  - tipo: opcion_multiple
+    pregunta: "Un hook de `PreToolUse` termina con código de salida 2. ¿Qué pasa?"
+    opciones: ["Nada.", "Bloquea la acción, y lo que el script escribió en stderr le llega a Claude como motivo.", "Reinicia Claude Code."]
+    correcta: 1
+    explicacion: "Con código 0 no decide nada y sigue el flujo normal de permisos. También se puede devolver un JSON con `permissionDecision`, pero no mezcles las dos formas en el mismo hook."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué tenés que revisar antes de activar un hook que te pasó otra persona?"
+    explicacion: "Qué comando ejecuta, porque corre en tu máquina con tus permisos. Leelo entero, como harías con cualquier script que te pasan. Y si viene en el `.claude/settings.json` de un repo que clonaste, revisalo antes de abrir Claude Code ahí."
+tarea_local: "Misión 8: en `.claude/settings.json` de un proyecto con un formateador configurado (Prettier, ktlint, etc.), agregá un hook `PostToolUse` con `matcher` `Edit|Write` que lo ejecute sobre el archivo editado. Pedile a Claude un cambio chico y mirá con `/hooks` que el hook está cargado."
+resultado_esperado: "Después de cada edición, el archivo queda formateado sin que se lo pidas a Claude."
+resumen:
+  - "Un hook es un comando que se ejecuta en un momento del ciclo de Claude Code."
+  - "Pre tool use corre antes de una herramienta y puede bloquearla; post tool use, después."
+  - "El matcher filtra por nombre de herramienta."
+  - "Código de salida dos bloquea la acción."
+  - "Revisá cualquier hook antes de activarlo: corre en tu máquina."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Hay pasos que tienen que pasar **siempre**: formatear, correr el linter, bloquear un comando peligroso. Como instrucción en el `CLAUDE.md`, Claude puede olvidarlos; como hook, los ejecuta el programa.
+
+**Eventos más usados:**
+
+- `PreToolUse`: antes de usar una herramienta. Puede bloquearla.
+- `PostToolUse`: después de usarla. Ideal para formatear o hacer lint.
+- `UserPromptSubmit`: cuando mandás un pedido.
+- `SessionStart`: al empezar la sesión.
+- `Stop`: cuando Claude termina de responder.
+- `Notification`: cuando Claude te necesita.
+
+**Dónde van:** en los mismos archivos de configuración (`~/.claude/settings.json`, `.claude/settings.json`, `.claude/settings.local.json`), y se suman entre niveles. `/hooks` muestra los que están cargados y de dónde vienen.
+
+## Ejemplo
+
+El ejemplo de la documentación oficial: formatear con Prettier después de cada edición. El hook recibe por stdin un JSON con los datos de la herramienta, y `jq` saca la ruta del archivo:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path') && npx prettier --write --ignore-unknown \"$f\""
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Necesita `jq` instalado. En Windows, la documentación muestra hooks que llaman a `powershell.exe` con un script `.ps1`.
+
+*Verificado contra la documentación oficial (code.claude.com/docs, Hooks) el 19/11/2026.*

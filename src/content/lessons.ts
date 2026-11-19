@@ -75,6 +75,16 @@ export const functionalLessons = lessons.filter(lesson => lesson.track === 'func
 
 export const interviewLessons = lessons.filter(lesson => lesson.track === 'entrevistas')
 
+export const claudeCodeLessons = lessons.filter(lesson => lesson.track === 'claude-code')
+
+// Módulos del curso de Claude Code, en el orden de las lecciones. Completar un módulo da una insignia.
+export const claudeCodeModules = claudeCodeLessons.reduce<{ title: string; lessons: Lesson[] }[]>((modulos, lesson) => {
+  const ultimo = modulos.at(-1)
+  if (ultimo?.title === lesson.modulo) ultimo.lessons.push(lesson)
+  else modulos.push({ title: lesson.modulo, lessons: [lesson] })
+  return modulos
+}, [])
+
 export const reactSections = [
   { level: 'junior', title: 'Junior', description: 'JSX, componentes, props, estado, eventos, listas, renderizado condicional y formularios.' },
   { level: 'semi-senior', title: 'Semi Senior', description: 'Hooks, Context, estado global, datos remotos, routing, TypeScript, testing y performance.' },
@@ -90,6 +100,7 @@ export function nextLesson(lesson: Lesson): Lesson | undefined {
     : lesson.track === 'funcional' ? functionalLessons
     : lesson.track === 'react' ? reactSequence
     : lesson.track === 'entrevistas' ? interviewLessons
+    : lesson.track === 'claude-code' ? claudeCodeLessons
     : androidSequence
   const position = sequence.findIndex(item => item.id === lesson.id)
   return position === -1 ? undefined : sequence[position + 1]

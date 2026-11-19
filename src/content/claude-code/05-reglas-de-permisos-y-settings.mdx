@@ -1,0 +1,72 @@
+---
+id: claude-code-reglas-de-permisos-y-settings-01
+track: claude-code
+nivel: junior
+modulo: "Permisos y configuración"
+titulo: "Configuralo: settings.json, allow y deny"
+duracion_min: 7
+prerequisitos: [claude-code-modos-de-permisos-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Tenés `\"allow\": [\"Bash(aws s3 ls)\"]` y `\"deny\": [\"Bash(aws *)\"]`. ¿Claude puede correr `aws s3 ls` sin preguntar?"
+    opciones: ["Sí: la regla de allow es más específica.", "No: las reglas se evalúan en orden deny, ask, allow, y gana la primera que coincide. El deny amplio bloquea aunque haya un allow más específico.", "Depende del modo."]
+    correcta: 1
+    explicacion: "La especificidad no cambia el orden. Es una trampa típica: si querés permitir algo dentro de un deny amplio, hay que achicar el deny."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué archivo de configuración se commitea para que lo use todo el equipo?"
+    opciones: ["`~/.claude/settings.json`.", "`.claude/settings.json` en el proyecto. El `.claude/settings.local.json` es personal y no se sube.", "`.claude/settings.local.json`."]
+    correcta: 1
+    explicacion: "`~/.claude/settings.json` es tuyo, para todos tus proyectos. `.claude/settings.json` es del proyecto y del equipo. `.claude/settings.local.json` es tuyo, solo para ese proyecto."
+  - tipo: opcion_multiple
+    pregunta: "Cuando Claude te pide permiso y elegís \"Yes, and don't ask again\", ¿dónde queda guardada la regla?"
+    opciones: ["En ningún lado: vale solo para esa vez.", "Como regla de allow en `.claude/settings.local.json`, en la raíz del repositorio.", "En el `CLAUDE.md`."]
+    correcta: 1
+    explicacion: "Por eso, con el tiempo, conviene revisar `/permissions`: ahí ves todas las reglas activas y de qué archivo vienen."
+  - tipo: autoevaluacion
+    pregunta: "Escribí de memoria una regla para que Claude nunca lea los archivos `.env`."
+    explicacion: "En `permissions.deny`: `\"Read(./.env)\"` y `\"Read(./.env.*)\"`. Ojo: un archivo `.claudeignore` no tiene efecto; la documentación dice que esas entradas van como reglas de deny de `Read`."
+tarea_local: "Misión 5: en tu proyecto, creá `.claude/settings.json` con un allow para tu comando de tests (por ejemplo `Bash(npm run test *)`) y un deny para leer `.env`. Abrí Claude Code, corré `/permissions` y `/status` y confirmá que se cargaron."
+resultado_esperado: "`/permissions` muestra tus dos reglas con su archivo de origen, y Claude corre los tests sin pedirte permiso."
+resumen:
+  - "Las reglas son allow, ask y deny, y se evalúan en ese orden: deny, ask, allow."
+  - "Gana la primera regla que coincide, aunque haya otra más específica."
+  - "El settings del proyecto se commitea; el settings local es personal."
+  - "Barra permissions muestra las reglas activas y de dónde vienen."
+  - "Los archivos de settings son JSON estricto: sin comentarios ni comas de más."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Aprobar `npm test` veinte veces por día cansa; dejar que Claude lea tu `.env`, no debería pasar nunca. Las reglas de permisos dejan eso configurado una vez.
+
+**Dónde se configura** (de mayor a menor prioridad):
+
+1. Configuración administrada por la organización.
+2. `--settings` al abrir.
+3. `.claude/settings.local.json`: personal, de este proyecto.
+4. `.claude/settings.json`: del proyecto, se commitea.
+5. `~/.claude/settings.json`: personal, para todos tus proyectos.
+
+Las listas como `permissions.allow` **se suman** entre archivos; no se reemplazan.
+
+**Las reglas:** `Herramienta` o `Herramienta(especificador)`. Se evalúan en orden **deny → ask → allow**, y gana la primera que coincide.
+
+**Comandos útiles:** `/permissions` (reglas activas y de dónde vienen), `/config` (opciones comunes), `/status` (qué archivos de configuración se cargaron).
+
+## Ejemplo
+
+Un `.claude/settings.json` de proyecto (ejemplo basado en la documentación):
+
+```json
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": ["Bash(npm run lint)", "Bash(npm run test *)"],
+    "deny": ["Read(./.env)", "Read(./.env.*)", "Bash(git push *)"]
+  }
+}
+```
+
+**Detalles de la sintaxis:** `Bash(git log *)` permite `git log` con cualquier argumento (el `*` va después del subcomando). En rutas, `/` al principio se ancla a la raíz del proyecto: `Edit(/docs/**)`.
+
+*Verificado contra la documentación oficial (code.claude.com/docs, Settings y Permissions) el 19/11/2026.*

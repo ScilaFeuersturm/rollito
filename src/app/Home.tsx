@@ -1,4 +1,4 @@
-import { androidSections, architectureSections, functionalLessons, interviewLessons, reactSections, type Lesson } from '../content/lessons'
+import { androidSections, architectureSections, claudeCodeModules, functionalLessons, interviewLessons, reactSections, type Lesson } from '../content/lessons'
 import type { Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
@@ -97,6 +97,23 @@ export function Home({ progress }: { progress: Progress }) {
                   ? <LessonList items={section.lessons} progress={progress} />
                   : <p className={styles.pending}>Lecciones en preparación</p>}
               </section>)}
+            </div>
+          </details>
+        </section>
+        <section className={styles.trackCard} aria-labelledby="claude-code">
+          <h3 id="claude-code">Claude Code</h3>
+          <p>Aprendé a trabajar con Claude Code: cómo pedirle las cosas, permisos, configuración, CLAUDE.md, skills, hooks, MCP y subagentes. Cada lección tiene una misión práctica.</p>
+          <p className={styles.meta}>Insignias: {claudeCodeModules.filter(m => m.lessons.every(l => Object.hasOwn(progress, l.id))).length} de {claudeCodeModules.length}</p>
+          <details>
+            <summary>Ver el curso de Claude Code</summary>
+            <div className={styles.roadmap}>
+              {claudeCodeModules.map(modulo => {
+                const completo = modulo.lessons.every(l => Object.hasOwn(progress, l.id))
+                return <section key={modulo.title} className={styles.level}>
+                  <h4>{completo ? '🏅 ' : ''}{modulo.title}</h4>
+                  <LessonList items={modulo.lessons} progress={progress} />
+                </section>
+              })}
             </div>
           </details>
         </section>
