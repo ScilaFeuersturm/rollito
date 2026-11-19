@@ -1,0 +1,50 @@
+---
+id: arduino-varios-leds-el-semaforo-01
+track: arduino
+nivel: junior
+modulo: "Primeros programas"
+titulo: "Varios LEDs: armá un semáforo"
+duracion_min: 6
+prerequisitos: [arduino-setup-loop-y-el-primer-parpadeo-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué cada LED del semáforo lleva su propia resistencia?"
+    opciones: ["Por estética.", "Porque si compartieran una, la corriente se repartiría de forma despareja (cada color tiene otro voltaje) y brillarían distinto o alguno no prendería.", "No hace falta."]
+    correcta: 1
+    explicacion: "Regla del kit: un LED, una resistencia."
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve la función `encender(int pin, int ms)` de la solución?"
+    opciones: ["Para nada, es decorativa.", "Para no repetir tres veces el mismo bloque (prender, esperar, apagar): se escribe una vez y se llama con cada pin y su tiempo.", "Para que sea más rápido."]
+    correcta: 1
+    explicacion: "Son las mismas funciones con parámetros que viste en Kotlin, con el tipo adelante: `void encender(int pin, int ms)`."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué verifica el comprobador del semáforo?"
+    explicacion: "Que en ningún momento haya dos luces prendidas a la vez, y que en cada instante esté la correcta: rojo de 0 a 3 s, verde de 3 a 6 s y amarillo de 6 a 7 s, repitiendo. Lo mide sobre 14,5 segundos de simulación."
+tarea_local: "Superá el desafío y armá el semáforo en la protoboard con los tres LEDs, cada uno con su resistencia de 220 Ω, y los cátodos al riel de GND."
+resultado_esperado: "El semáforo funciona igual en la placa que en el simulador."
+resumen:
+  - "Cada LED va en su pin y con su propia resistencia."
+  - "Las constantes con nombre hacen el código más claro."
+  - "Una función con parámetros evita repetir código."
+  - "Nunca puede haber dos luces del semáforo prendidas a la vez."
+entrevista:
+  en_30_segundos: "Para varios LEDs uso un pin y una resistencia por cada uno, constantes con nombre para los pines y funciones con parámetros para no repetir código."
+  trampas:
+    - pregunta: "¿Puedo prender los tres LEDs a la vez sin problema?"
+      respuesta: "Sí: tres LEDs a unos 14 mA cada uno suman unos 42 mA, muy por debajo de los 200 mA totales. El problema aparece con muchos LEDs o con cargas más grandes."
+  cuando_no: "Con muchos LEDs (una matriz, una tira), no alcanzan los pines ni la corriente: se usan chips como el 74HC595 o tiras con control propio."
+---
+
+import { ArduinoSim } from '../../arduino/ArduinoSim'
+
+## Concepto
+
+**Lo nuevo:** varios pines a la vez y funciones propias para no repetir código.
+
+- Cada LED en su pin, cada uno con su resistencia.
+- Constantes con nombre (`const int rojo = 12;`): el código se lee solo.
+- Una función propia con parámetros: `void encender(int pin, int ms) { … }`.
+
+## Ejemplo
+
+<ArduinoSim desafio="semaforo" />

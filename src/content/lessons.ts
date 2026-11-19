@@ -77,13 +77,20 @@ export const interviewLessons = lessons.filter(lesson => lesson.track === 'entre
 
 export const claudeCodeLessons = lessons.filter(lesson => lesson.track === 'claude-code')
 
-// Módulos del curso de Claude Code, en el orden de las lecciones. Completar un módulo da una insignia.
-export const claudeCodeModules = claudeCodeLessons.reduce<{ title: string; lessons: Lesson[] }[]>((modulos, lesson) => {
-  const ultimo = modulos.at(-1)
-  if (ultimo?.title === lesson.modulo) ultimo.lessons.push(lesson)
-  else modulos.push({ title: lesson.modulo, lessons: [lesson] })
-  return modulos
-}, [])
+// Agrupa las lecciones en módulos, en el orden en que aparecen. Completar un módulo da una insignia.
+function agruparEnModulos(items: Lesson[]) {
+  return items.reduce<{ title: string; lessons: Lesson[] }[]>((modulos, lesson) => {
+    const ultimo = modulos.at(-1)
+    if (ultimo?.title === lesson.modulo) ultimo.lessons.push(lesson)
+    else modulos.push({ title: lesson.modulo, lessons: [lesson] })
+    return modulos
+  }, [])
+}
+
+export const claudeCodeModules = agruparEnModulos(claudeCodeLessons)
+
+export const arduinoLessons = lessons.filter(lesson => lesson.track === 'arduino')
+export const arduinoModules = agruparEnModulos(arduinoLessons)
 
 export const reactSections = [
   { level: 'trainee', title: 'Trainee', description: 'Lo que hay que saber antes de React: HTML semántico, formularios, CSS, modelo de caja, Flexbox, Grid, responsive y el paso de HTML a JSX.' },
@@ -112,6 +119,7 @@ export function nextLesson(lesson: Lesson): Lesson | undefined {
     : lesson.track === 'entrevistas' ? interviewLessons
     : lesson.track === 'claude-code' ? claudeCodeLessons
     : lesson.track === 'testing' ? testingSequence
+    : lesson.track === 'arduino' ? arduinoLessons
     : androidSequence
   const position = sequence.findIndex(item => item.id === lesson.id)
   return position === -1 ? undefined : sequence[position + 1]

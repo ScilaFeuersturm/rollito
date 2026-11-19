@@ -1,0 +1,75 @@
+---
+id: arduino-servo-01
+track: arduino
+nivel: junior
+modulo: "Sensores y módulos del kit"
+titulo: "El servo: mover a un ángulo"
+duracion_min: 6
+prerequisitos: [arduino-fotorresistencia-y-divisor-de-tension-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo se conecta el servo SG90 del kit?"
+    opciones: ["Los tres cables a pines digitales.", "Marrón (o negro) a GND, rojo a 5V y naranja (o amarillo) a un pin digital, que lleva la señal.", "Solo el cable de señal."]
+    correcta: 1
+    explicacion: "Los colores pueden variar según el fabricante: mirá la hoja de datos."
+  - tipo: opcion_multiple
+    pregunta: "¿Se pueden alimentar varios servos desde el 5V del Arduino?"
+    opciones: ["Sí, todos los que quieras.", "Uno chico, sí. Para más de uno, conviene una fuente externa de 5 V con el GND unido al del Arduino: los servos piden picos de corriente que pueden reiniciar la placa o dañar el regulador.", "Nunca, ni uno."]
+    correcta: 1
+    explicacion: "Si el Arduino se reinicia cada vez que el servo se mueve, es la señal de que falta corriente."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué hace `miServo.write(90)`?"
+    explicacion: "Mueve el servo al ángulo de 90 grados (el centro). El SG90 va de 0 a 180 grados. Antes hay que llamar a `miServo.attach(pin)` en `setup()`."
+tarea_local: "Conectá el servo (marrón a GND, rojo a 5V, naranja al pin 9), cargá el barrido y después combinalo con el potenciómetro: que el ángulo siga a la perilla con `map(analogRead(A0), 0, 1023, 0, 180)`."
+resultado_esperado: "El servo barre de 0 a 180 y vuelve; con el potenciómetro, sigue a la perilla."
+resumen:
+  - "Un servo gira a un ángulo exacto, de cero a ciento ochenta grados."
+  - "Se controla con la librería Servo: attach y write."
+  - "Marrón a GND, rojo a cinco voltios y naranja al pin de señal."
+  - "Varios servos necesitan una fuente aparte con GND común."
+entrevista:
+  en_30_segundos: "Para un servo uso la librería Servo: `attach` al pin y `write` con el ángulo. Uno chico lo alimento del 5V de la placa; varios, con fuente externa y GND común, porque los picos de corriente pueden reiniciar el Arduino."
+  trampas:
+    - pregunta: "¿Por qué el servo \"tiembla\" en vez de quedarse quieto?"
+      respuesta: "Suele ser alimentación insuficiente o ruido. Con una fuente adecuada y un capacitor entre 5V y GND cerca del servo, se estabiliza."
+  cuando_no: "Para girar continuamente (como una rueda), un servo común no sirve: hace falta un motor de corriente continua con driver, o un servo de rotación continua."
+---
+
+## Concepto
+
+**Lo nuevo:** mover algo a una posición exacta.
+
+Un **servo** gira a un ángulo que le indicás (0 a 180 grados en el SG90). Se controla con la librería **Servo**, que viene con el IDE:
+
+- `#include <Servo.h>` y `Servo miServo;`
+- En `setup()`: `miServo.attach(9);`
+- Para moverlo: `miServo.write(angulo);`
+
+**Alimentación:** un SG90 solo, al 5V de la placa; varios, fuente aparte con GND común.
+
+## Ejemplo
+
+**Barrido del servo (código para la placa):**
+
+```cpp
+#include <Servo.h>
+
+Servo miServo;
+
+void setup() {
+  miServo.attach(9);
+}
+
+void loop() {
+  for (int angulo = 0; angulo <= 180; angulo += 10) {
+    miServo.write(angulo);
+    delay(100);
+  }
+  for (int angulo = 180; angulo >= 0; angulo -= 10) {
+    miServo.write(angulo);
+    delay(100);
+  }
+}
+```
+
+Para probar el circuito completo con cables y componentes, abrí un proyecto nuevo de **Arduino Uno** en [wokwi.com](https://wokwi.com), un simulador gratuito que funciona en el navegador.

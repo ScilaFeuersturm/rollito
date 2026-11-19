@@ -41,3 +41,13 @@ export function streak(progress: Progress, now = new Date()): number {
   }
   return count
 }
+
+const claveUltimaLeccion = 'rollito.ultimaLeccion'
+
+export function leerUltimaLeccion(): string | null {
+  try { return localStorage.getItem(claveUltimaLeccion) } catch { return null }
+}
+
+export function guardarUltimaLeccion(id: string) {
+  try { localStorage.setItem(claveUltimaLeccion, id) } catch { /* sin almacenamiento: no se recuerda */ }
+}

@@ -1,0 +1,64 @@
+---
+id: arduino-protoboard-led-y-resistencias-01
+track: arduino
+nivel: junior
+modulo: "Electricidad sin quemar nada"
+titulo: "La protoboard, el LED y las resistencias"
+duracion_min: 6
+prerequisitos: [arduino-voltaje-corriente-y-resistencia-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo están conectados los agujeros de una protoboard?"
+    opciones: ["Todos entre sí.", "En la zona central, cada columna de 5 agujeros está conectada (a cada lado de la canaleta del medio); los rieles de los costados, marcados + y −, están conectados a lo largo.", "Ninguno está conectado."]
+    correcta: 1
+    explicacion: "Por eso un componente no se pone con sus dos patas en la misma columna: quedaría en cortocircuito consigo mismo."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál es la pata positiva de un LED?"
+    opciones: ["La corta.", "La larga (ánodo): va hacia el pin del Arduino, a través de la resistencia. La corta (cátodo, del lado plano del LED) va a GND.", "Da lo mismo."]
+    correcta: 1
+    explicacion: "Un LED al revés simplemente no prende (no se quema con 5 V y resistencia), pero conviene acostumbrarse a mirarlo."
+  - tipo: opcion_multiple
+    pregunta: "Una resistencia tiene las bandas rojo, rojo, marrón y dorado. ¿Cuánto vale?"
+    opciones: ["22 Ω.", "220 Ω: rojo (2), rojo (2) y marrón (multiplica por 10). El dorado es la tolerancia (±5%).", "2200 Ω."]
+    correcta: 1
+    explicacion: "La de 10 kΩ (marrón, negro, naranja) es la otra que más vas a usar, para botones y sensores."
+tarea_local: "Con la placa desconectada, armá el circuito del ejemplo en la protoboard. Antes de conectar el USB, mostráselo a alguien del equipo o comparalo con una foto del circuito en Wokwi."
+resultado_esperado: "El circuito armado y revisado por otra persona. En la próxima lección lo hacés titilar con código."
+resumen:
+  - "En la protoboard, los rieles laterales van conectados a lo largo."
+  - "En la zona central, cada columna de cinco agujeros está conectada."
+  - "La pata larga del LED es el ánodo, la positiva."
+  - "Rojo, rojo, marrón es una resistencia de 220 ohms."
+  - "Se arma con la placa desconectada y se revisa antes de enchufar."
+entrevista:
+  en_30_segundos: "Armo con la placa desconectada: uso los rieles laterales para 5V y GND, pongo cada componente cruzando columnas, el LED con la pata larga hacia el pin y una resistencia de 220 Ω en serie. Reviso todo antes de conectar el USB."
+  trampas:
+    - pregunta: "¿Por qué un componente no se pone con las dos patas en la misma columna?"
+      respuesta: "Porque esa columna está conectada por dentro: las dos patas quedarían unidas y el componente no haría nada (o habría un cortocircuito, según qué sea)."
+  cuando_no: "Para un prototipo que va a quedar armado mucho tiempo o que se mueve, la protoboard no es confiable (los cables se aflojan): se pasa a una placa perforada con soldadura."
+---
+
+## Concepto
+
+**Por qué importa.** La protoboard permite armar circuitos sin soldar, pero hay que saber qué agujeros están conectados entre sí. Un cable en la fila equivocada es un cortocircuito.
+
+**La protoboard:**
+
+- **Rieles laterales (+ y −):** conectados a lo largo. Se usan para llevar 5V y GND a todo el circuito.
+- **Zona central:** cada columna de 5 agujeros está conectada; la canaleta del medio separa las dos mitades.
+
+**El LED:** pata larga = ánodo (+), pata corta = cátodo (−). Siempre con su resistencia.
+
+**Código de colores:** las dos primeras bandas son dígitos y la tercera, cuántos ceros se agregan (negro 0, marrón 1, rojo 2, naranja 3…).
+
+## Ejemplo
+
+**Armar un LED en la protoboard, paso a paso (con la placa desconectada del USB):**
+
+1. Pata larga del LED en una columna, pata corta en la columna de al lado.
+2. Resistencia de 220 Ω desde la columna de la pata corta hasta el riel −.
+3. Cable desde el riel − hasta un pin **GND** del Arduino.
+4. Cable desde la columna de la pata larga hasta el pin **13**.
+5. Revisá todo **antes** de conectar el USB.
+
+Da lo mismo poner la resistencia del lado del ánodo o del cátodo: lo que importa es que esté en serie con el LED.

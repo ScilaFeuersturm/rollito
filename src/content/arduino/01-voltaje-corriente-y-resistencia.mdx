@@ -1,0 +1,62 @@
+---
+id: arduino-voltaje-corriente-y-resistencia-01
+track: arduino
+nivel: junior
+modulo: "Electricidad sin quemar nada"
+titulo: "Voltaje, corriente y resistencia: la ley de Ohm"
+duracion_min: 6
+prerequisitos: []
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Una analogía útil: si la electricidad fuera agua en una manguera, ¿qué sería el voltaje?"
+    opciones: ["La cantidad de agua que pasa.", "La presión que empuja el agua. La corriente es cuánta agua pasa por segundo y la resistencia, qué tan angosta es la manguera.", "El color del agua."]
+    correcta: 1
+    explicacion: "Voltaje (V, en volts), corriente (I, en amperes) y resistencia (R, en ohms) se relacionan con la ley de Ohm: V = I × R."
+  - tipo: opcion_multiple
+    pregunta: "Un LED rojo necesita unos 2 V y no más de 20 mA. Con los 5 V del Arduino, ¿qué resistencia va en serie?"
+    opciones: ["Ninguna.", "Alrededor de 220 Ω: sobran 3 V, y R = 3 V / 0,015 A = 200 Ω; se usa el valor comercial más cercano hacia arriba, 220 Ω.", "10 Ω."]
+    correcta: 1
+    explicacion: "Sin resistencia, la corriente solo la limita el LED y el pin: el LED se quema o se daña el pin del Arduino."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es un cortocircuito?"
+    opciones: ["Un circuito corto.", "Conectar directamente el positivo (5V) con el negativo (GND) sin nada que limite la corriente. Puede dañar la placa o el puerto USB de la computadora.", "Un cable flojo."]
+    correcta: 1
+    explicacion: "Es el error número uno al armar en la protoboard: un cable de 5V que toca la fila de GND."
+tarea_local: "Calculá la resistencia para un LED verde (unos 2,2 V) a 15 mA con 5 V, y para el mismo LED alimentado con 3,3 V. Buscá en tu kit qué resistencias tenés."
+resultado_esperado: "Con 5 V: (5 − 2,2) / 0,015 ≈ 187 Ω → 220 Ω. Con 3,3 V: (3,3 − 2,2) / 0,015 ≈ 73 Ω → 100 Ω."
+resumen:
+  - "El voltaje empuja, la corriente es lo que pasa y la resistencia se opone."
+  - "La ley de Ohm dice que el voltaje es la corriente por la resistencia."
+  - "Un LED con el Arduino lleva una resistencia de 220 ohms."
+  - "Unir 5 V con GND directo es un cortocircuito."
+entrevista:
+  en_30_segundos: "Antes de conectar, calculo la corriente con la ley de Ohm: V = I × R. Un LED con los 5 V del Arduino necesita una resistencia en serie, de unos 220 Ω, para que no pase de 15 o 20 mA. Y reviso que nunca quede 5 V unido directo a GND."
+  trampas:
+    - pregunta: "Si pongo una resistencia más grande, ¿se quema algo?"
+      respuesta: "No: pasa menos corriente y el LED brilla menos. El riesgo está en las resistencias demasiado chicas o en no poner ninguna. En la duda, una más grande es la opción segura."
+  cuando_no: "Los módulos del kit que ya vienen armados en una placa chiquita (como el sensor de temperatura o el relé) suelen traer sus resistencias: se conectan según su hoja de datos, sin agregar otras."
+---
+
+## Concepto
+
+**Por qué importa.** Las placas y los componentes se queman por exceso de corriente. Con tres conceptos y una fórmula, sabés cuándo algo es peligroso **antes** de conectarlo.
+
+- **Voltaje (V, volts):** la "presión" que empuja la electricidad. El Arduino Uno trabaja con 5 V.
+- **Corriente (I, amperes):** cuánta electricidad pasa. Los LEDs y los pines del Arduino manejan miliamperes (mA): 20 mA = 0,02 A.
+- **Resistencia (R, ohms, Ω):** cuánto se opone un componente al paso de la corriente.
+
+**Ley de Ohm:** V = I × R. Despejando: **R = V / I** e **I = V / R**.
+
+**Para un LED:** R = (voltaje de la fuente − voltaje del LED) / corriente deseada.
+
+## Ejemplo
+
+**Calcular la resistencia de un LED rojo con el Arduino:**
+
+- Fuente: 5 V. LED rojo: unos 2 V. Corriente segura: 15 mA (0,015 A).
+- Voltaje que tiene que "absorber" la resistencia: 5 − 2 = 3 V.
+- R = 3 / 0,015 = **200 Ω** → se usa **220 Ω**, que es el valor comercial más cercano hacia arriba y viene en el kit.
+
+Con 220 Ω la corriente queda en 3 / 220 ≈ 13,6 mA: el LED brilla bien y el pin trabaja tranquilo.
+
+**Regla práctica para el kit:** un LED común con el Arduino siempre lleva una resistencia de **220 Ω** (o de 330 Ω, si querés que brille un poco menos).

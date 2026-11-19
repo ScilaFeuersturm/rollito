@@ -1,23 +1,31 @@
-import { androidSections, architectureSections, claudeCodeModules, testingSections, functionalLessons, interviewLessons, reactSections, type Lesson } from '../content/lessons'
-import type { Progress } from '../progress/progress'
+import { androidSections, architectureSections, arduinoModules, claudeCodeModules, lessons, nextLesson, testingSections, functionalLessons, interviewLessons, reactSections, type Lesson } from '../content/lessons'
+import { leerUltimaLeccion, type Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
 import { flashcardsPath, reactFlashcardsPath, testingInterviewPath, functionalInterviewPath, functionalRepasoPath, interviewPath, reactInterviewPath, reactPracticeLevels, reactPracticePath, lessonPath, practicePath, repasoPath } from './routes'
 
 const androidLessons = androidSections.flatMap(section => section.lessons)
 
-function LessonList({ items, progress }: { items: Lesson[]; progress: Progress }) {
+function LessonList({ items, progress, actual }: { items: Lesson[]; progress: Progress; actual?: string }) {
   return <ul className={styles.lessons}>
     {items.map(item => <li key={item.id}>
-      <Link href={lessonPath(item.id)}>
-        <strong>{item.titulo}</strong>
-        <span>{Object.hasOwn(progress, item.id) ? 'Completada · ' : ''}{item.duracion_min} min</span>
+      <Link href={lessonPath(item.id)} className={item.id === actual ? styles.actual : undefined} aria-current={item.id === actual ? 'step' : undefined}>
+        <strong>{item.id === actual ? '👉 ' : ''}{item.titulo}</strong>
+        <span>{item.id === actual ? 'Seguí acá · ' : ''}{Object.hasOwn(progress, item.id) ? 'Completada · ' : ''}{item.duracion_min} min</span>
       </Link>
     </li>)}
   </ul>
 }
 
+// La lección en la que quedaste: la última que abriste o, si ya la completaste, la siguiente de esa ruta.
+function leccionParaSeguir(progress: Progress) {
+  const ultima = lessons.find(l => l.id === leerUltimaLeccion())
+  if (!ultima) return undefined
+  return Object.hasOwn(progress, ultima.id) ? nextLesson(ultima) : ultima
+}
+
 export function Home({ progress }: { progress: Progress }) {
+  const seguir = leccionParaSeguir(progress)
   const androidCompleted = androidLessons.filter(item => Object.hasOwn(progress, item.id)).length
 
   return <>
@@ -25,6 +33,10 @@ export function Home({ progress }: { progress: Progress }) {
       <h1 tabIndex={-1}>Aprendé tecnología paso a paso</h1>
       <p>Elegí qué querés aprender o repasar, con lecciones cortas y ejercicios para practicar.</p>
     </section>
+    {seguir && <section className={styles.seguir} aria-labelledby="seguir">
+      <h2 id="seguir">Seguí donde quedaste</h2>
+      <Link href={lessonPath(seguir.id)} className={styles.primary}>👉 {seguir.titulo}</Link>
+    </section>}
     <section aria-labelledby="learning-paths">
       <h2 id="learning-paths">Rutas de aprendizaje</h2>
       <div className={styles.trackGrid}>
@@ -39,7 +51,7 @@ export function Home({ progress }: { progress: Progress }) {
                 <h4 id={`architecture-${section.id}`}>{section.title}</h4>
                 <p>{section.topics}</p>
                 {section.lessons.length > 0
-                  ? <LessonList items={section.lessons} progress={progress} />
+                  ? <LessonList actual={seguir?.id} items={section.lessons} progress={progress} />
                   : <p className={styles.pending}>Lecciones en preparación</p>}
               </section>)}
             </div>
@@ -77,7 +89,7 @@ export function Home({ progress }: { progress: Progress }) {
                     {level.topics.map(topic => <li key={topic}>{topic}</li>)}
                   </ul>
                   {level.lessons.length > 0
-                    ? <LessonList items={level.lessons} progress={progress} />
+                    ? <LessonList actual={seguir?.id} items={level.lessons} progress={progress} />
                     : <p className={styles.pending}>Lecciones en preparación</p>}
                 </section>)}
             </div>
@@ -107,7 +119,7 @@ export function Home({ progress }: { progress: Progress }) {
                 <h4 id={`react-${section.level}`}>{section.title}</h4>
                 <p>{section.description}</p>
                 {section.lessons.length > 0
-                  ? <LessonList items={section.lessons} progress={progress} />
+                  ? <LessonList actual={seguir?.id} items={section.lessons} progress={progress} />
                   : <p className={styles.pending}>Lecciones en preparación</p>}
               </section>)}
             </div>
@@ -130,7 +142,7 @@ export function Home({ progress }: { progress: Progress }) {
                 <h4 id={`testing-${section.level}`}>{section.title}</h4>
                 <p>{section.description}</p>
                 {section.lessons.length > 0
-                  ? <LessonList items={section.lessons} progress={progress} />
+                  ? <LessonList actual={seguir?.id} items={section.lessons} progress={progress} />
                   : <p className={styles.pending}>Lecciones en preparación</p>}
               </section>)}
             </div>
@@ -147,7 +159,24 @@ export function Home({ progress }: { progress: Progress }) {
                 const completo = modulo.lessons.every(l => Object.hasOwn(progress, l.id))
                 return <section key={modulo.title} className={styles.level}>
                   <h4>{completo ? '🏅 ' : ''}{modulo.title}</h4>
-                  <LessonList items={modulo.lessons} progress={progress} />
+                  <LessonList actual={seguir?.id} items={modulo.lessons} progress={progress} />
+                </section>
+              })}
+            </div>
+          </details>
+        </section>
+        <section className={styles.trackCard} aria-labelledby="arduino">
+          <h3 id="arduino">Arduino</h3>
+          <p>Electrónica sin quemar nada y programación del Arduino Uno, con un simulador de LEDs, botones, potenciómetro y buzzer en el navegador. Cada desafío se comprueba solo y después se prueba en la placa del kit.</p>
+          <p className={styles.meta}>Insignias: {arduinoModules.filter(m => m.lessons.every(l => Object.hasOwn(progress, l.id))).length} de {arduinoModules.length}</p>
+          <details>
+            <summary>Ver el curso de Arduino</summary>
+            <div className={styles.roadmap}>
+              {arduinoModules.map(modulo => {
+                const completo = modulo.lessons.every(l => Object.hasOwn(progress, l.id))
+                return <section key={modulo.title} className={styles.level}>
+                  <h4>{completo ? '🏅 ' : ''}{modulo.title}</h4>
+                  <LessonList actual={seguir?.id} items={modulo.lessons} progress={progress} />
                 </section>
               })}
             </div>
@@ -159,7 +188,7 @@ export function Home({ progress }: { progress: Progress }) {
           <details>
             <summary>Ver lecciones de Entrevistas</summary>
             <p>{interviewLessons.filter(item => Object.hasOwn(progress, item.id)).length} de {interviewLessons.length} lecciones completadas</p>
-            <LessonList items={interviewLessons} progress={progress} />
+            <LessonList actual={seguir?.id} items={interviewLessons} progress={progress} />
           </details>
         </section>
         <section className={styles.trackCard} aria-labelledby="functional-analysis">
@@ -175,7 +204,7 @@ export function Home({ progress }: { progress: Progress }) {
           <details>
             <summary>Ver lecciones de Análisis funcional</summary>
             <p>{functionalLessons.filter(item => Object.hasOwn(progress, item.id)).length} de {functionalLessons.length} lecciones completadas</p>
-            <LessonList items={functionalLessons} progress={progress} />
+            <LessonList actual={seguir?.id} items={functionalLessons} progress={progress} />
           </details>
         </section>
       </div>

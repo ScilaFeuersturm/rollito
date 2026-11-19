@@ -1,0 +1,74 @@
+---
+id: arduino-fotorresistencia-y-divisor-de-tension-01
+track: arduino
+nivel: junior
+modulo: "Sensores y módulos del kit"
+titulo: "Fotorresistencia (LDR) y divisor de tensión"
+duracion_min: 6
+prerequisitos: [arduino-buzzer-tone-y-notone-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo se conecta una fotorresistencia para leerla con el Arduino?"
+    opciones: ["Directo entre A0 y 5V.", "En un divisor de tensión: la LDR entre 5V y A0, y una resistencia de 10 kΩ entre A0 y GND. Así, el voltaje en A0 cambia con la luz.", "Entre A0 y GND, sin nada más."]
+    correcta: 1
+    explicacion: "Es el mismo principio que el potenciómetro: dos resistencias en serie, y A0 mide en el medio."
+  - tipo: opcion_multiple
+    pregunta: "Con la LDR arriba (a 5V) y 10 kΩ abajo, ¿qué pasa con la lectura cuando hay más luz?"
+    opciones: ["Baja.", "Sube: con más luz, la LDR tiene menos resistencia, y A0 queda más cerca de 5 V.", "No cambia."]
+    correcta: 1
+    explicacion: "Si la ponés al revés (LDR abajo), la lectura baja con la luz: los dos sirven, pero hay que saber cuál armaste."
+  - tipo: autoevaluacion
+    pregunta: "Escribí la condición para una luz nocturna que prenda un LED cuando oscurece."
+    explicacion: "`if (analogRead(A0) < 300) digitalWrite(led, HIGH); else digitalWrite(led, LOW);`. El umbral (300) se calibra mirando los valores en el monitor serie con luz y sin luz."
+tarea_local: "Armá el divisor con la LDR y la resistencia de 10 kΩ (marrón, negro, naranja). Cargá el código, mirá los valores con luz y tapando la LDR con la mano, y ajustá el umbral."
+resultado_esperado: "Al tapar la LDR, la lectura baja y el LED prende; con luz, se apaga."
+resumen:
+  - "Una fotorresistencia cambia su resistencia con la luz."
+  - "El Arduino mide voltaje, por eso se arma un divisor de tensión."
+  - "La LDR va con una resistencia de diez kilo ohms."
+  - "El umbral se calibra mirando los valores en el monitor serie."
+entrevista:
+  en_30_segundos: "Los sensores resistivos, como la fotorresistencia, se leen con un divisor de tensión: el sensor y una resistencia fija en serie, y la entrada analógica en el medio. El umbral se calibra mirando los valores reales en el monitor serie."
+  trampas:
+    - pregunta: "¿Por qué la luz nocturna \"parpadea\" cuando la luz está justo en el umbral?"
+      respuesta: "Porque la lectura oscila alrededor del valor y el LED se prende y apaga. Se resuelve con histéresis: prender por debajo de 280 y apagar por encima de 320, por ejemplo."
+  cuando_no: "Para medir luz con precisión (en lux), una LDR no alcanza: se usa un sensor digital de luz."
+---
+
+## Concepto
+
+**Lo nuevo:** sensores que son resistencias variables.
+
+Una **fotorresistencia (LDR)** cambia su resistencia con la luz: mucha luz, poca resistencia. El Arduino no mide resistencia, mide voltaje. Por eso se arma un **divisor de tensión**:
+
+- LDR entre **5V** y **A0**.
+- Resistencia de **10 kΩ** entre **A0** y **GND**.
+
+El voltaje en A0 cambia con la luz y se lee con `analogRead`.
+
+## Ejemplo
+
+**Luz nocturna (código para la placa; se puede probar en el simulador con el potenciómetro como si fuera la luz):**
+
+```cpp
+const int led = 13;
+const int umbral = 300;   // calibralo con el monitor serie
+
+void setup() {
+  pinMode(led, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int luz = analogRead(A0);
+  Serial.println(luz);
+  if (luz < umbral) {
+    digitalWrite(led, HIGH);   // está oscuro
+  } else {
+    digitalWrite(led, LOW);
+  }
+  delay(200);
+}
+```
+
+Para probar el circuito completo con cables y componentes, abrí un proyecto nuevo de **Arduino Uno** en [wokwi.com](https://wokwi.com), un simulador gratuito que funciona en el navegador.

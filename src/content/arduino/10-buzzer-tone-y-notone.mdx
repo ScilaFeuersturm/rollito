@@ -1,0 +1,52 @@
+---
+id: arduino-buzzer-tone-y-notone-01
+track: arduino
+nivel: junior
+modulo: "Salidas analógicas y sonido"
+titulo: "Sonido con el buzzer: tone y noTone"
+duracion_min: 5
+prerequisitos: [arduino-pwm-regular-el-brillo-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre un buzzer activo y uno pasivo?"
+    opciones: ["Ninguna.", "El activo suena solo con 5 V (un tono fijo, se prende con `digitalWrite`); el pasivo necesita que le generes la frecuencia, con `tone()`, y permite hacer notas.", "El pasivo es más fuerte."]
+    correcta: 1
+    explicacion: "Un truco para distinguirlos: conectado a 5V, el activo suena; el pasivo solo hace un clic."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `tone(8, 1000)`?"
+    opciones: ["Espera 1000 ms.", "Genera un sonido de 1000 Hz en el pin 8 hasta que llames a `noTone(8)` (o a `tone` con duración).", "Sube el volumen."]
+    correcta: 1
+    explicacion: "Verificado: el comprobador mira que el buzzer suene a 1000 Hz mientras se presiona el botón y se calle al soltarlo."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué notas corresponden aproximadamente a 262, 294 y 330 Hz?"
+    explicacion: "Do, re y mi de la octava central. Con una lista de frecuencias y `tone()` con `delay()` entre nota y nota se puede tocar una melodía."
+tarea_local: "Superá el desafío y armalo en la placa. Después escribí una melodía corta con un array de frecuencias y un `for` que las toque una por una."
+resultado_esperado: "La alarma suena mientras presionás el botón. La melodía se escucha en orden."
+resumen:
+  - "El buzzer pasivo suena con tone y una frecuencia."
+  - "No tone lo calla."
+  - "El buzzer activo suena con digital write, siempre con el mismo tono."
+  - "Tone afecta el PWM de los pines tres y once."
+entrevista:
+  en_30_segundos: "Para sonido uso un buzzer pasivo con `tone(pin, frecuencia)` y `noTone(pin)`. Sé que `tone()` usa un temporizador que interfiere con el PWM de los pines 3 y 11."
+  trampas:
+    - pregunta: "¿Puedo usar `tone()` en dos pines a la vez?"
+      respuesta: "No en el Uno: `tone()` funciona en un solo pin por vez. Para varios sonidos simultáneos hacen falta librerías especiales o más hardware."
+  cuando_no: "Para reproducir sonidos grabados o música de verdad, el buzzer no alcanza: se usa un módulo de audio (por ejemplo, un reproductor de MP3) con su parlante."
+---
+
+import { ArduinoSim } from '../../arduino/ArduinoSim'
+
+## Concepto
+
+**Lo nuevo:** generar sonido.
+
+- **Buzzer pasivo:** una pata al pin, la otra a GND. Con `tone(pin, frecuencia)` suena; con `noTone(pin)`, se calla.
+- **Buzzer activo:** suena con `digitalWrite(pin, HIGH)`, siempre con el mismo tono.
+- **Frecuencia:** en hertz. 440 Hz es el la; los tonos agudos molestan menos con valores entre 500 y 2000 Hz.
+
+## Ejemplo
+
+<ArduinoSim desafio="alarma" />
+
+Mantené apretado el botón del simulador para hacer sonar la alarma.

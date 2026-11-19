@@ -1,0 +1,57 @@
+---
+id: arduino-botones-pull-up-y-rebote-01
+track: arduino
+nivel: junior
+modulo: "Entradas"
+titulo: "Botones: pull-up, pull-down y rebote"
+duracion_min: 7
+prerequisitos: [arduino-el-monitor-serie-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pasa si leés un pin que no está conectado a nada?"
+    opciones: ["Siempre lee LOW.", "Lee valores al azar (\"flotante\"): el pin capta ruido eléctrico. Por eso un botón necesita una resistencia de pull-up o pull-down.", "Siempre lee HIGH."]
+    correcta: 1
+    explicacion: "El simulador avisa si leés un pin sin configurarlo."
+  - tipo: opcion_multiple
+    pregunta: "Con `pinMode(2, INPUT_PULLUP)` y el botón entre el pin 2 y GND, ¿qué se lee al presionar?"
+    opciones: ["HIGH.", "LOW: la resistencia interna mantiene el pin en HIGH, y al presionar, el botón lo une a GND. Es al revés de lo que uno espera, y es el error más común.", "Depende del botón."]
+    correcta: 1
+    explicacion: "Verificado: el comprobador del desafío detecta el código que prende el LED con HIGH en vez de LOW."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es el rebote de un botón?"
+    opciones: ["Que el botón salta.", "Al presionar, los contactos metálicos rebotan durante unos milisegundos y el Arduino puede leer varias pulsaciones en vez de una. Se resuelve esperando unos 20 a 50 ms y volviendo a leer (debounce).", "Un error del código."]
+    correcta: 1
+    explicacion: "Importa cuando contás pulsaciones (por ejemplo, un contador): para prender un LED mientras se presiona, no se nota."
+tarea_local: "Superá el desafío y armalo en la placa con `INPUT_PULLUP`: botón entre el pin 2 y GND, sin resistencia. Después agregá un contador de pulsaciones en el monitor serie y fijate si alguna vez cuenta de más."
+resultado_esperado: "El LED sigue al botón. El contador sin antirrebote a veces suma más de una por pulsación; con una espera de 50 ms después de detectar la pulsación, se estabiliza."
+resumen:
+  - "Un pin de entrada sin nada conectado lee valores al azar."
+  - "Una resistencia de pull up o pull down le da un valor definido."
+  - "Con input pullup no hace falta resistencia externa."
+  - "Con pull up, el botón presionado se lee LOW."
+  - "El rebote se resuelve esperando unos milisegundos y volviendo a leer."
+entrevista:
+  en_30_segundos: "Para un botón uso `INPUT_PULLUP` con el botón entre el pin y GND: no necesito resistencia externa, y presionado se lee LOW. Si cuento pulsaciones, aplico antirrebote esperando unos milisegundos."
+  trampas:
+    - pregunta: "¿Puedo conectar el botón entre el pin y 5V sin resistencia?"
+      respuesta: "Sin pull-down, el pin flota cuando no se presiona. Y si por error el pin estuviera como OUTPUT en LOW, presionar el botón haría un cortocircuito. Con `INPUT_PULLUP` y el botón a GND, ese riesgo no existe."
+  cuando_no: "Para muchos botones (un teclado), no alcanzan los pines: se usa una matriz (como el teclado 4x4 del kit) o un chip expansor."
+---
+
+import { ArduinoSim } from '../../arduino/ArduinoSim'
+
+## Concepto
+
+**El problema.** Un pin de entrada sin nada conectado "flota" y lee cualquier cosa. Un botón solo conecta o desconecta: hace falta que el pin tenga un valor definido cuando no se presiona.
+
+- **Pull-down:** resistencia (10 kΩ) del pin a GND. Sin presionar: LOW; presionado (botón a 5V): HIGH.
+- **Pull-up:** resistencia del pin a 5V. Sin presionar: HIGH; presionado (botón a GND): LOW.
+- **`INPUT_PULLUP`:** el Uno trae resistencias de pull-up internas. Con `pinMode(pin, INPUT_PULLUP)` y el botón entre el pin y GND, **no hace falta ninguna resistencia externa**. Es lo más simple y seguro.
+
+**Rebote:** al presionar, el contacto rebota unos milisegundos; si contás pulsaciones, esperá unos 20 a 50 ms y volvé a leer.
+
+## Ejemplo
+
+<ArduinoSim desafio="boton" />
+
+En el simulador, mantené apretado el botón con el mouse (o con Espacio, si lo enfocás con Tab) mientras corre el programa.

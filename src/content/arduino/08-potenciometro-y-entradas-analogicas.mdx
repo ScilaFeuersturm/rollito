@@ -1,0 +1,54 @@
+---
+id: arduino-potenciometro-y-entradas-analogicas-01
+track: arduino
+nivel: junior
+modulo: "Entradas"
+titulo: "Potenciómetro y entradas analógicas"
+duracion_min: 6
+prerequisitos: [arduino-botones-pull-up-y-rebote-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué rango devuelve `analogRead(A0)` en el Uno?"
+    opciones: ["0 a 255.", "0 a 1023: el conversor es de 10 bits y convierte de 0 a 5 V en 1024 valores.", "0 a 5."]
+    correcta: 1
+    explicacion: "En cambio, `analogWrite` (PWM) usa de 0 a 255. Por eso se usa `map()` para pasar de un rango al otro."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `map(lectura, 0, 1023, 0, 255)`?"
+    opciones: ["Dibuja un mapa.", "Convierte proporcionalmente un valor de un rango a otro: 0 → 0, 512 → 127, 1023 → 255.", "Redondea la lectura."]
+    correcta: 1
+    explicacion: "Verificado en el desafío: con el potenciómetro en 512, el brillo da 127."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo se conecta un potenciómetro?"
+    opciones: ["Las tres patas a A0.", "Las patas de los extremos a 5V y GND, y la del medio a A0: la pata del medio entrega un voltaje entre 0 y 5 V según la posición.", "Una pata a 5V y nada más."]
+    correcta: 1
+    explicacion: "Es un divisor de tensión: la misma idea que se usa con la fotorresistencia del kit."
+tarea_local: "Superá el desafío y armalo en la placa. Agregá un `Serial.println(lectura)` y mirá los valores en el monitor serie mientras girás el potenciómetro."
+resultado_esperado: "Los valores van de 0 a 1023 al girar de punta a punta, y el brillo del LED sigue la perilla."
+resumen:
+  - "Las entradas analógicas van de A0 a A5."
+  - "Analog read devuelve de cero a mil veintitrés."
+  - "El potenciómetro va con los extremos a cinco voltios y GND, y el medio a la entrada."
+  - "Map convierte un valor de un rango a otro."
+entrevista:
+  en_30_segundos: "Para leer valores intermedios uso las entradas analógicas: `analogRead` devuelve de 0 a 1023 según el voltaje de 0 a 5 V. Con `map()` convierto ese rango al que necesito, por ejemplo 0 a 255 para el brillo."
+  trampas:
+    - pregunta: "¿La lectura analógica es exacta?"
+      respuesta: "Tiene algo de ruido: puede variar uno o dos puntos aunque no toques nada. Para valores estables se promedian varias lecturas."
+  cuando_no: "Si solo necesitás saber si algo está prendido o apagado (un botón), alcanza con una entrada digital: lo analógico es para valores intermedios."
+---
+
+import { ArduinoSim } from '../../arduino/ArduinoSim'
+
+## Concepto
+
+**Lo nuevo:** leer valores intermedios, no solo HIGH o LOW.
+
+- **Entradas analógicas:** A0 a A5. `analogRead(A0)` devuelve de **0 (0 V) a 1023 (5 V)**.
+- **Potenciómetro:** una resistencia variable de tres patas. Extremos a 5V y GND, el medio a A0.
+- **`map(valor, desdeMin, desdeMax, hastaMin, hastaMax)`:** convierte de un rango a otro.
+
+## Ejemplo
+
+<ArduinoSim desafio="potenciometro" />
+
+Al ejecutar, mové el control del potenciómetro y mirá cómo cambia el brillo del LED.

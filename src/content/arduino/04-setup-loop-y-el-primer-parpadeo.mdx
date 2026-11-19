@@ -1,0 +1,68 @@
+---
+id: arduino-setup-loop-y-el-primer-parpadeo-01
+track: arduino
+nivel: junior
+modulo: "Primeros programas"
+titulo: "setup, loop y el primer parpadeo"
+duracion_min: 6
+prerequisitos: [arduino-limites-del-arduino-uno-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre `setup()` y `loop()`?"
+    opciones: ["Ninguna.", "`setup()` corre una sola vez al encender o resetear (configurar pines, iniciar el puerto serie); `loop()` se repite para siempre.", "`loop()` corre una vez y `setup()` siempre."]
+    correcta: 1
+    explicacion: "No hay un `main()` como en Kotlin: el Arduino llama a `setup()` y después a `loop()` una y otra vez."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pasa si te olvidás el segundo `delay(500)` del parpadeo?"
+    opciones: ["Nada.", "El LED se apaga y enseguida el `loop()` vuelve a empezar y lo prende: queda prendido casi todo el tiempo. El simulador detecta este error al comprobar.", "El LED titila más rápido."]
+    correcta: 1
+    explicacion: "Es uno de los errores típicos que el test del desafío verifica."
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve `pinMode(13, OUTPUT)`?"
+    opciones: ["Para que el pin lea.", "Para configurar el pin como salida. Sin eso, `digitalWrite` solo activa una resistencia interna y el LED se ve muy tenue o no prende. El simulador lo avisa.", "Para elegir el color del LED."]
+    correcta: 1
+    explicacion: "Se configura una vez, en `setup()`."
+tarea_local: "Superá el desafío en el simulador. Después, con la placa conectada por USB, abrí el IDE de Arduino, pegá tu código, elegí la placa \"Arduino Uno\" y el puerto, y tocá Subir."
+resultado_esperado: "El LED \"L\" de la placa (o tu LED externo) titila cada medio segundo, igual que en el simulador."
+resumen:
+  - "Setup corre una vez y loop se repite para siempre."
+  - "Pin mode configura el pin como salida."
+  - "Digital write da cinco voltios con HIGH y cero con LOW."
+  - "Delay espera la cantidad de milisegundos que le pasás."
+entrevista:
+  en_30_segundos: "Un sketch de Arduino tiene `setup()`, que corre una vez para configurar, y `loop()`, que se repite. Para un LED configuro el pin con `pinMode(OUTPUT)` y lo prendo y apago con `digitalWrite` y `delay`."
+  trampas:
+    - pregunta: "¿`delay()` tiene algún problema?"
+      respuesta: "Sí: mientras espera, el Arduino no hace nada más, ni siquiera leer un botón. Para hacer varias cosas a la vez se usa `millis()` y se compara el tiempo, en vez de esperar."
+  cuando_no: "Para programas que tienen que reaccionar rápido (leer un botón mientras un LED titila), `delay()` largo es un problema: se pasa a `millis()`."
+---
+
+import { ArduinoSim } from '../../arduino/ArduinoSim'
+
+## Concepto
+
+**La estructura de todo programa (sketch) de Arduino:**
+
+```cpp
+void setup() {
+  // corre una vez: configurar
+}
+
+void loop() {
+  // se repite para siempre
+}
+```
+
+**Las tres funciones del primer programa:**
+
+- `pinMode(pin, OUTPUT)`: el pin va a dar voltaje.
+- `digitalWrite(pin, HIGH)` / `LOW`: 5 V o 0 V.
+- `delay(ms)`: espera, en milisegundos.
+
+**Desde Kotlin o Swift:** es C++, pero lo que usás acá se parece mucho: `int` para enteros, `;` al final de cada línea y llaves para los bloques. `const int led = 13;` es como un `val`.
+
+## Ejemplo
+
+<ArduinoSim desafio="parpadeo" />
+
+Tocá **▶ Ejecutar** para ver el LED, y **✔ Comprobar desafío** para que el simulador verifique los tiempos. Cuando lo superes, cargalo en la placa con el IDE de Arduino (botón Subir).

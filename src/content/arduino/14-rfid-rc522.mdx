@@ -1,0 +1,87 @@
+---
+id: arduino-rfid-rc522-01
+track: arduino
+nivel: junior
+modulo: "Sensores y módulos del kit"
+titulo: "El lector RFID RC522: 3,3 voltios y SPI"
+duracion_min: 7
+prerequisitos: [arduino-ultrasonido-y-temperatura-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿A qué pin de alimentación va el VCC (o 3.3V) del RC522?"
+    opciones: ["A 5V.", "A 3,3V del Arduino. El RC522 funciona a 3,3 V: a 5V se puede dañar. Es la advertencia más importante de este kit.", "A Vin."]
+    correcta: 1
+    explicacion: "Revisalo dos veces antes de conectar el USB."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo se comunica el RC522 con el Arduino?"
+    opciones: ["Por el monitor serie.", "Por SPI, que en el Uno usa pines fijos: 13 (SCK), 12 (MISO) y 11 (MOSI). Además, SDA (SS) va al pin 10 y RST al 9, como en los ejemplos de la librería.", "Por Wi-Fi."]
+    correcta: 1
+    explicacion: "Como el SPI usa el pin 13, el LED \"L\" de la placa parpadea cuando hay comunicación: es normal."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué es el UID de una tarjeta y para qué sirve?"
+    explicacion: "Es el identificador único de la tarjeta o el llavero. El lector lo lee y el programa lo compara con una lista de UIDs autorizados, por ejemplo para abrir una cerradura o registrar quién llegó. No es seguro para cosas críticas: algunas tarjetas se pueden copiar."
+tarea_local: "Con la placa desconectada, conectá el RC522 según la tabla, revisando dos veces que VCC vaya a 3.3V. Instalá la librería MFRC522, cargá el ejemplo y acercá la tarjeta y el llavero del kit."
+resultado_esperado: "En el monitor serie aparece un UID distinto para la tarjeta y para el llavero."
+resumen:
+  - "El lector R C 522 se alimenta con 3,3 voltios, nunca con 5."
+  - "Se comunica por SPI, con los pines 10, 11, 12 y 13 en el Uno."
+  - "Necesita la librería MFRC522."
+  - "Cada tarjeta tiene un identificador único, el UID."
+entrevista:
+  en_30_segundos: "El RC522 se alimenta con 3,3 V (a 5 V se puede dañar) y se comunica por SPI: en el Uno, SCK 13, MISO 12, MOSI 11, más SS en el 10 y RST en el 9. Con la librería MFRC522 leo el UID de cada tarjeta y lo comparo con una lista de autorizados."
+  trampas:
+    - pregunta: "¿Un control de acceso con el UID del RC522 es seguro?"
+      respuesta: "No para algo crítico: muchas tarjetas de 13,56 MHz se pueden clonar, y el UID se lee sin ninguna clave. Sirve para proyectos y prototipos; para seguridad real hacen falta tarjetas con autenticación criptográfica."
+  cuando_no: "Si el proyecto necesita leer tarjetas a más distancia o de otros tipos (125 kHz, por ejemplo), el RC522 no sirve: hay otros lectores."
+---
+
+## Concepto
+
+**El módulo estrella del kit**, y el que más fácil se quema.
+
+**Alimentación: 3,3 V.** El VCC del RC522 va al pin **3.3V** del Arduino, **nunca a 5V**.
+
+**Conexión (SPI) con el Uno:**
+
+- **SDA (SS)** → pin 10
+- **SCK** → pin 13
+- **MOSI** → pin 11
+- **MISO** → pin 12
+- **RST** → pin 9
+- **GND** → GND
+- **3.3V** → 3.3V
+- IRQ: no se conecta.
+
+**Librería:** **MFRC522**, desde el Gestor de librerías del IDE.
+
+## Ejemplo
+
+**Leer el UID de una tarjeta (basado en el ejemplo de la librería MFRC522):**
+
+```cpp
+#include <SPI.h>
+#include <MFRC522.h>
+
+MFRC522 lector(10, 9);   // SS en el pin 10, RST en el pin 9
+
+void setup() {
+  Serial.begin(9600);
+  SPI.begin();
+  lector.PCD_Init();
+  Serial.println("Acercá una tarjeta");
+}
+
+void loop() {
+  if (!lector.PICC_IsNewCardPresent() || !lector.PICC_ReadCardSerial()) return;
+
+  Serial.print("UID:");
+  for (byte i = 0; i < lector.uid.size; i++) {
+    Serial.print(" ");
+    Serial.print(lector.uid.uidByte[i], HEX);
+  }
+  Serial.println();
+  lector.PICC_HaltA();
+}
+```
+
+**El simulador de Rollito no tiene esta librería.** Probá la lógica en Wokwi o directamente en la placa, revisando primero la conexión a 3,3 V. Verificá en el Gestor de librerías el nombre exacto de la librería y sus ejemplos.

@@ -1,0 +1,69 @@
+---
+id: arduino-limites-del-arduino-uno-01
+track: arduino
+nivel: junior
+modulo: "Electricidad sin quemar nada"
+titulo: "Los límites del Arduino Uno (lo que lo quema)"
+duracion_min: 7
+prerequisitos: [arduino-protoboard-led-y-resistencias-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cuánta corriente conviene sacar como máximo de un pin del Uno?"
+    opciones: ["1 A.", "Unos 20 mA por pin (el máximo absoluto es 40 mA), y no más de 200 mA sumando todos los pines.", "Lo que el componente pida."]
+    correcta: 1
+    explicacion: "Un LED con su resistencia está bien. Un motor, una tira de LEDs o un relé sin módulo, no: se alimentan aparte y el Arduino solo da la señal."
+  - tipo: opcion_multiple
+    pregunta: "El lector RFID del kit (RC522), ¿a qué pin de alimentación se conecta?"
+    opciones: ["A 5V, como todo.", "A **3,3V**. Funciona a 3,3 V: conectarlo a 5V lo puede dañar. Es uno de los errores más comunes con este kit.", "A Vin."]
+    correcta: 1
+    explicacion: "Mirá siempre el voltaje de cada módulo antes de conectarlo: no todos son de 5 V."
+  - tipo: opcion_multiple
+    pregunta: "¿Se puede conectar un motor directamente a un pin del Arduino?"
+    opciones: ["Sí, si es chiquito.", "No: un motor pide mucha más corriente que la que da un pin y, al frenar, genera picos que pueden dañar la placa. Se usa un driver o un transistor y una fuente aparte, con GND común.", "Solo con un cable largo."]
+    correcta: 1
+    explicacion: "El servo del kit es la excepción a medias: uno solo, chico, se puede alimentar con el 5V de la placa; para más de uno, fuente externa."
+  - tipo: autoevaluacion
+    pregunta: "Nombrá cinco cosas que nunca hay que hacer con el Uno."
+    explicacion: "Unir 5V y GND directo (cortocircuito); conectar un LED sin resistencia; sacar más de 20 mA de un pin o manejar motores directo desde un pin; conectar un módulo de 3,3 V (como el RFID) a 5V; alimentar por el jack con más de 12 V (o por Vin con un voltaje fuera de rango); y conectar o desconectar cables con la placa encendida."
+tarea_local: "Hacé el inventario de tu kit: para cada módulo (RFID, sensores, servo, relé, pantalla), buscá en su placa o en la hoja de datos con qué voltaje se alimenta. Marcá los de 3,3 V."
+resultado_esperado: "Una lista de los módulos del kit con su voltaje, con el RC522 marcado como de 3,3 V."
+resumen:
+  - "Un pin del Uno da hasta unos 20 miliamperes; la suma de todos, unos 200."
+  - "Los motores y las cargas grandes van con driver y fuente aparte."
+  - "El lector RFID del kit se alimenta con 3,3 voltios, no con 5."
+  - "Por el jack se alimenta con 7 a 12 voltios."
+  - "Se arma y se desarma con la placa desconectada."
+entrevista:
+  en_30_segundos: "Antes de conectar algo, reviso el voltaje y la corriente: el Uno trabaja a 5 V, cada pin da unos 20 mA y los motores van con driver y fuente aparte. Los módulos de 3,3 V, como el RFID RC522, van al pin de 3,3V. Y armo siempre con la placa desconectada, con una checklist antes de enchufar."
+  trampas:
+    - pregunta: "Si el LED del pin \"L\" de la placa prende, ¿el circuito externo está bien?"
+      respuesta: "No necesariamente: ese LED está conectado al pin 13 en la placa. Que prenda dice que el código funciona, no que tu cableado esté bien."
+  cuando_no: "Si vas a usar el Arduino con cargas grandes (motores, relés, tiras de LED) de forma habitual, conviene un módulo o shield que ya incluya los drivers y la protección, en vez de armarlo desde cero."
+---
+
+## Concepto
+
+**Por qué importa.** Es la lección que pidió el equipo: las placas cuestan plata. Casi todos los Arduinos quemados lo fueron por las mismas pocas causas.
+
+**Los números del Uno:**
+
+- **Lógica de 5 V:** los pines dan 5 V en HIGH y 0 V en LOW.
+- **Corriente por pin:** unos **20 mA** recomendados (40 mA es el máximo absoluto).
+- **Corriente total de los pines:** no más de unos **200 mA**.
+- **Alimentación:** por USB (5 V) o por el jack, con **7 a 12 V**.
+- **Pines 0 y 1:** los usa el puerto serie; si los ocupás, puede fallar la carga del programa.
+- **Pines con ~ (3, 5, 6, 9, 10, 11):** los únicos que regulan brillo o velocidad (PWM).
+
+**Módulos de 3,3 V:** algunos módulos del kit, como el **lector RFID RC522**, se alimentan con **3,3V**, no con 5V.
+
+## Ejemplo
+
+**Checklist antes de enchufar el USB:**
+
+1. ¿Algún cable une 5V (o 3,3V) con GND directamente? → cortocircuito.
+2. ¿Cada LED tiene su resistencia?
+3. ¿Cada módulo está conectado al voltaje que dice su placa (3,3V o 5V)?
+4. ¿Hay algún motor, relé o tira de LEDs conectado directo a un pin? → necesita driver y fuente aparte.
+5. ¿Los GND de todas las fuentes están unidos entre sí?
+
+**Lo que hace el simulador de Rollito:** avisa algunos de estos errores en el código, como escribir en un pin sin configurarlo como salida o usar PWM en un pin sin ~. Los errores de cableado los tenés que revisar vos, con esta lista.

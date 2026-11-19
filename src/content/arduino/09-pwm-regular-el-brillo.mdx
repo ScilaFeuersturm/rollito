@@ -1,0 +1,53 @@
+---
+id: arduino-pwm-regular-el-brillo-01
+track: arduino
+nivel: junior
+modulo: "Salidas analógicas y sonido"
+titulo: "PWM: regular el brillo (y por qué solo algunos pines)"
+duracion_min: 6
+prerequisitos: [arduino-potenciometro-y-entradas-analogicas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es PWM?"
+    opciones: ["Una entrada analógica.", "Prender y apagar el pin muy rápido (unas 490 veces por segundo): según el porcentaje del tiempo que está en HIGH, el LED se ve más o menos brillante.", "Un tipo de LED."]
+    correcta: 1
+    explicacion: "El Arduino Uno no tiene una salida analógica de verdad: simula valores intermedios con PWM."
+  - tipo: opcion_multiple
+    pregunta: "¿En qué pines del Uno funciona `analogWrite`?"
+    opciones: ["En todos.", "Solo en los marcados con ~: 3, 5, 6, 9, 10 y 11. En otro pin, el simulador te avisa.", "Solo en A0 a A5."]
+    correcta: 1
+    explicacion: "Verificado: el test hace el fade en el pin 7 y el simulador advierte que no tiene PWM."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué valores acepta `analogWrite(pin, valor)`?"
+    opciones: ["0 a 1023.", "0 (siempre apagado) a 255 (siempre prendido).", "0 a 100."]
+    correcta: 1
+    explicacion: "127 es aproximadamente la mitad del tiempo prendido."
+tarea_local: "Superá el desafío y probalo en la placa. Después usá el LED RGB del kit (si lo trae): sus tres patas de color van a tres pines con ~ (cada una con su resistencia) y mezclá colores con `analogWrite`."
+resultado_esperado: "El LED \"respira\" igual que en el simulador. Con el RGB, cambiando los tres valores obtenés distintos colores."
+resumen:
+  - "PWM prende y apaga el pin muy rápido para simular valores intermedios."
+  - "Analog write va de cero a doscientos cincuenta y cinco."
+  - "Solo funciona en los pines con virgulilla: 3, 5, 6, 9, 10 y 11."
+  - "Sirve para regular brillo, velocidad y colores."
+entrevista:
+  en_30_segundos: "El Uno simula salidas intermedias con PWM: `analogWrite` de 0 a 255 prende y apaga el pin rápido con distinta proporción. Solo funciona en los pines con ~ (3, 5, 6, 9, 10 y 11)."
+  trampas:
+    - pregunta: "¿PWM y `tone()` se llevan bien?"
+      respuesta: "No del todo: `tone()` usa uno de los temporizadores del chip, y mientras suena, el PWM de los pines 3 y 11 deja de funcionar bien. Si usás buzzer y LEDs con brillo regulado, poné los LEDs en 5, 6, 9 o 10."
+  cuando_no: "Para un motor, el PWM regula la velocidad, pero nunca desde el pin directo: siempre con un driver o un transistor y fuente aparte."
+---
+
+import { ArduinoSim } from '../../arduino/ArduinoSim'
+
+## Concepto
+
+**Lo nuevo:** salidas "intermedias".
+
+- **PWM (modulación por ancho de pulso):** el pin se prende y apaga muy rápido; el ojo ve el promedio.
+- **`analogWrite(pin, valor)`:** valor de 0 a 255.
+- **Solo en los pines con ~:** 3, 5, 6, 9, 10 y 11.
+- **Usos:** brillo de LEDs, velocidad de motores (con driver), colores del LED RGB del kit.
+
+## Ejemplo
+
+<ArduinoSim desafio="fade" />

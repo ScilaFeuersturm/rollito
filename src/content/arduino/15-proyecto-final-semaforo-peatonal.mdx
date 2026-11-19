@@ -1,0 +1,54 @@
+---
+id: arduino-proyecto-final-semaforo-peatonal-01
+track: arduino
+nivel: junior
+modulo: "Proyecto final"
+titulo: "Proyecto final: semáforo con botón peatonal"
+duracion_min: 7
+prerequisitos: [arduino-rfid-rc522-01]
+ejercicios:
+  - tipo: ordenar
+    pregunta: "Ordená la secuencia cuando alguien presiona el botón peatonal."
+    pasos: ["Verde de autos encendido, esperando", "Se detecta el botón presionado (LOW)", "Amarillo 1 segundo", "Rojo 3 segundos (cruza el peatón)", "Vuelve el verde"]
+    explicacion: "El comprobador presiona el botón en t = 1000 ms y verifica cada luz en seis momentos."
+  - tipo: opcion_multiple
+    pregunta: "Con esta solución, ¿qué pasa si alguien presiona el botón mientras el semáforo ya está en rojo?"
+    opciones: ["Se reinicia la secuencia.", "Nada: durante el `delay()`, el Arduino no lee el botón. Cuando vuelve al verde, recién ahí puede detectar otra pulsación.", "Se rompe."]
+    correcta: 1
+    explicacion: "Para un semáforo real eso está bien. Para reaccionar en cualquier momento, habría que usar `millis()` en vez de `delay()`."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué agregarías para que el peatón tenga su propio semáforo y un aviso sonoro?"
+    explicacion: "Dos LEDs más (rojo y verde peatonal, cada uno con su resistencia) que se prendan al revés que los de autos, y un buzzer que haga \"bip\" con `tone()` mientras el verde peatonal está encendido, para personas ciegas."
+tarea_local: "Superá el desafío, armá el circuito completo en la placa siguiendo la checklist y agregá una mejora: un LED verde peatonal y un buzzer que suene mientras se puede cruzar."
+resultado_esperado: "El semáforo funciona en la placa: al presionar el botón, los autos frenan y el peatón tiene su luz y su aviso sonoro."
+resumen:
+  - "El proyecto final junta salidas, una entrada con pull up y secuencias con tiempo."
+  - "Primero se supera en el simulador y después se arma en la placa."
+  - "Se arma con la placa desconectada y se revisa con la checklist."
+  - "Durante un delay, el Arduino no lee el botón."
+entrevista:
+  en_30_segundos: "Armé un semáforo con botón peatonal: tres LEDs con sus resistencias, un botón con `INPUT_PULLUP` y una secuencia con tiempos. Lo validé primero en el simulador, lo armé con la placa desconectada y revisé el circuito con una checklist antes de enchufar."
+  trampas:
+    - pregunta: "¿Cómo harías para que el botón responda en cualquier momento, incluso durante el rojo?"
+      respuesta: "Reemplazando los `delay()` por una máquina de estados con `millis()`: el `loop()` corre sin parar, lee el botón en cada vuelta y cambia de estado cuando pasó el tiempo de cada luz."
+  cuando_no: "Para un semáforo de verdad, en la calle, nada de esto alcanza: hacen falta normas, redundancia y hardware certificado. Este es un proyecto para aprender."
+---
+
+import { ArduinoSim } from '../../arduino/ArduinoSim'
+
+## Concepto
+
+**Junta todo lo del curso:** varias salidas, una entrada con `INPUT_PULLUP`, secuencias con tiempo y el armado seguro.
+
+**Antes de armarlo en la placa:**
+
+1. Superá el desafío en el simulador.
+2. Armá con la placa desconectada: tres LEDs con su resistencia de 220 Ω y el botón entre el pin 2 y GND.
+3. Pasá la checklist de la lección de límites.
+4. Conectá el USB, cargá el código y probalo.
+
+## Ejemplo
+
+<ArduinoSim desafio="peatonal" />
+
+Ejecutalo y presioná el botón peatonal: el semáforo de autos pasa a amarillo, después a rojo y vuelve a verde. Cuando superes los ocho desafíos del curso, mostráselo funcionando en la placa a alguien del equipo.

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { lessons } from '../content/lessons'
 import type { Cuenta as DatosCuenta } from '../cuenta/servicio'
 import { combinar, iguales } from '../cuenta/combinar'
-import { localDay, readProgress, saveProgress, streak, xpPerLesson, type Progress } from '../progress/progress'
+import { guardarUltimaLeccion, localDay, readProgress, saveProgress, streak, xpPerLesson, type Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Admin } from './Admin'
 import { Cuenta } from './Cuenta'
@@ -49,6 +49,8 @@ export function App({ url }: { url: string }) {
   // El servidor no tiene localStorage: arrancamos vacío en los dos lados para que el HTML
   // prerenderizado coincida con el primer render del cliente, y recién después leemos el progreso.
   const [progress, setProgress] = useState<Progress>({})
+  const leccionAbierta = route.name === 'leccion' ? route.lesson.id : undefined
+  useEffect(() => { if (leccionAbierta) guardarUltimaLeccion(leccionAbierta) }, [leccionAbierta])
   const [storageWarning, setStorageWarning] = useState(false)
   const [syncWarning, setSyncWarning] = useState(false)
   // undefined: todavía no sabemos; null: sin sesión.

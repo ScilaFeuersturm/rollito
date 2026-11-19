@@ -1,0 +1,29 @@
+.sim { border: 2px solid #1f6f78; border-radius: 1rem; padding: 1rem; margin-block: 1.25rem; background: #f3fbfb; }
+.cabecera { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; align-items: baseline; }
+.cabecera h3 { margin: 0; }
+.superado { background: #eaf6eb; color: #20532b; font-weight: 700; border-radius: 99px; padding: .15rem .6rem; font-size: .85rem; }
+.circuito { font-size: .92rem; }
+.circuito summary { cursor: pointer; font-weight: 700; }
+.editor { width: 100%; min-height: 16rem; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9rem; line-height: 1.4;
+  border: 1px solid #b9d9dc; border-radius: .5rem; padding: .6rem; background: #fff; color: #1f1a24; resize: vertical; box-sizing: border-box; }
+.acciones { display: flex; flex-wrap: wrap; gap: .5rem; margin-block: .75rem; }
+.acciones button { min-height: 44px; border-radius: 99px; padding: .45rem 1rem; font: inherit; font-weight: 700; cursor: pointer;
+  border: 2px solid #1f6f78; background: #fff; color: #1f6f78; }
+.acciones .principal { background: #1f6f78; color: #fff; }
+.acciones button:disabled { opacity: .5; cursor: default; }
+.placa { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; padding: .75rem; border-radius: .75rem; background: #10454b; color: #fff; }
+.componente { display: grid; justify-items: center; gap: .3rem; font-size: .8rem; text-align: center; min-width: 5.5rem; }
+.led { width: 2rem; height: 2rem; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .5); transition: opacity .05s; }
+.rojo { background: #ff3b30; box-shadow: 0 0 14px #ff3b30; }
+.amarillo { background: #ffcc00; box-shadow: 0 0 14px #ffcc00; }
+.verde { background: #34c759; box-shadow: 0 0 14px #34c759; }
+.azul { background: #2f8cff; box-shadow: 0 0 14px #2f8cff; }
+.pulsador { width: 3rem; height: 3rem; border-radius: 50%; border: 3px solid #fff; background: #3a3a3a; color: #fff; font-weight: 700; cursor: pointer; touch-action: none; }
+.pulsador[aria-pressed='true'] { background: #c9c9c9; color: #111; transform: scale(.94); }
+.buzzer { font-size: 1.4rem; }
+.serie { background: #111; color: #9ef09e; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .85rem; border-radius: .5rem;
+  padding: .5rem; min-height: 3rem; max-height: 10rem; overflow: auto; white-space: pre-wrap; margin-top: .75rem; }
+.ok { background: #eaf6eb; color: #20532b; border-radius: .5rem; padding: .6rem; font-weight: 700; }
+.problemas { background: #fdecec; color: #7a1f1f; border-radius: .5rem; padding: .6rem; }
+.advertencias { background: #fff6dd; color: #6b4d00; border-radius: .5rem; padding: .6rem; }
+.problemas ul, .advertencias ul { margin: .3rem 0 0; padding-left: 1.2rem; }

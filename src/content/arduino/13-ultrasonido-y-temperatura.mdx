@@ -1,0 +1,96 @@
+---
+id: arduino-ultrasonido-y-temperatura-01
+track: arduino
+nivel: junior
+modulo: "Sensores y módulos del kit"
+titulo: "Sensor de distancia (HC-SR04) y de temperatura (DHT11)"
+duracion_min: 7
+prerequisitos: [arduino-servo-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo mide la distancia el HC-SR04?"
+    opciones: ["Con un láser.", "Manda un pulso de ultrasonido y mide cuánto tarda en volver el eco. Distancia en cm = tiempo en microsegundos × 0,034 / 2 (ida y vuelta).", "Con la temperatura."]
+    correcta: 1
+    explicacion: "0,034 cm por microsegundo es la velocidad del sonido en el aire, aproximadamente."
+  - tipo: opcion_multiple
+    pregunta: "¿Cada cuánto conviene leer el DHT11?"
+    opciones: ["Mil veces por segundo.", "Como mucho una vez por segundo (mejor cada 2 s): es un sensor lento, y leerlo más seguido da errores.", "Una vez por hora."]
+    correcta: 1
+    explicacion: "Si la lectura falla, la librería devuelve un valor no numérico: hay que comprobarlo con `isnan()`."
+  - tipo: autoevaluacion
+    pregunta: "Para estos dos sensores, ¿el simulador de Rollito alcanza?"
+    explicacion: "No: el HC-SR04 usa `pulseIn` y el DHT11 necesita una librería, que el simulador no tiene. Se prueban en Wokwi (que tiene los dos sensores) o directamente en la placa, con el código de la lección."
+tarea_local: "Si tu kit trae alguno de los dos sensores, conectalo según la lección (con la placa desconectada), cargá el código y mirá los valores en el monitor serie."
+resultado_esperado: "Distancias en centímetros que cambian al acercar la mano, o la temperatura del ambiente cada 2 segundos."
+resumen:
+  - "El HC-SR04 mide distancia con el eco de un ultrasonido."
+  - "Distancia es la duración por cero coma cero treinta y cuatro, dividido dos."
+  - "El DHT11 mide temperatura y humedad y necesita una librería."
+  - "El DHT11 se lee como mucho una vez por segundo."
+entrevista:
+  en_30_segundos: "El HC-SR04 mide distancia con el tiempo de ida y vuelta de un ultrasonido, usando `pulseIn`. El DHT11 mide temperatura y humedad con una librería, y como es lento, lo leo cada dos segundos y valido que la lectura no sea `NaN`."
+  trampas:
+    - pregunta: "¿Por qué el HC-SR04 a veces da 0 o valores enormes?"
+      respuesta: "Porque no recibió el eco (el objeto está muy lejos, muy cerca o absorbe el sonido). Conviene descartar lecturas fuera del rango útil (unos 2 a 400 cm)."
+  cuando_no: "Para medir temperatura con precisión, el DHT11 es básico (±2 °C): hay sensores más precisos, como el DHT22 o el DS18B20."
+---
+
+## Concepto
+
+**Dos sensores muy comunes en los kits** (si el tuyo los trae):
+
+**HC-SR04 (distancia):** 4 pines: VCC (5V), Trig, Echo y GND. Se manda un pulso por Trig y se mide la duración del eco en Echo con `pulseIn`.
+
+**DHT11 (temperatura y humedad):** 3 pines (o 4): VCC (5V), datos y GND. Necesita la librería **"DHT sensor library"** (de Adafruit), que se instala desde el Gestor de librerías del IDE.
+
+## Ejemplo
+
+**Distancia con el HC-SR04 (Trig al pin 9, Echo al pin 10):**
+
+```cpp
+const int trig = 9;
+const int echo = 10;
+
+void setup() {
+  pinMode(trig, OUTPUT);
+  pinMode(echo, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  digitalWrite(trig, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);       // pulso de 10 µs
+  digitalWrite(trig, LOW);
+  long duracion = pulseIn(echo, HIGH);
+  float distancia = duracion * 0.034 / 2;
+  Serial.println(distancia);
+  delay(200);
+}
+```
+
+**Temperatura con el DHT11 (datos al pin 2, librería de Adafruit):**
+
+```cpp
+#include <DHT.h>
+
+DHT dht(2, DHT11);
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop() {
+  delay(2000);                       // el DHT11 es lento
+  float temperatura = dht.readTemperature();
+  if (isnan(temperatura)) {
+    Serial.println("No se pudo leer el sensor");
+    return;
+  }
+  Serial.println(temperatura);
+}
+```
+
+Para probar el circuito completo con cables y componentes, abrí un proyecto nuevo de **Arduino Uno** en [wokwi.com](https://wokwi.com), un simulador gratuito que funciona en el navegador. Verificá en el Gestor de librerías el nombre exacto de la librería DHT antes de instalarla.

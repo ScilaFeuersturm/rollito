@@ -142,3 +142,7 @@
 }
 .opcion:hover, .secundario:hover { background: #f0e9f8; }
 .opcion[aria-pressed='true'] { background: var(--accent); color: #fff; }
+.lessons a.actual { border: 2px solid var(--accent); background: #f7f1fd; }
+.seguir { margin-top: 1.5rem; }
+.seguir h2 { margin-bottom: .6rem; }
+.seguir a { display: inline-block; text-decoration: none; }

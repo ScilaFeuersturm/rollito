@@ -1,0 +1,53 @@
+---
+id: arduino-el-monitor-serie-01
+track: arduino
+nivel: junior
+modulo: "Primeros programas"
+titulo: "El monitor serie: que el Arduino te hable"
+duracion_min: 5
+prerequisitos: [arduino-varios-leds-el-semaforo-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve el monitor serie?"
+    opciones: ["Para cargar el programa.", "Para que el Arduino mande texto a la computadora por el cable USB: es la forma principal de ver qué está pasando (valores de sensores, en qué parte del código está).", "Para alimentar la placa."]
+    correcta: 1
+    explicacion: "Es el `println` de Arduino: la herramienta número uno para depurar."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué pasa si te olvidás `Serial.begin(9600)`?"
+    opciones: ["Nada.", "El puerto serie no se inicia y no aparece nada en el monitor. El simulador lo avisa.", "Se quema el puerto."]
+    correcta: 1
+    explicacion: "Además, la velocidad del monitor del IDE tiene que coincidir (9600): si no, aparecen caracteres raros."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué conviene no usar los pines 0 y 1 si usás `Serial`?"
+    opciones: ["Porque no existen.", "Porque el puerto serie usa esos pines (RX y TX): lo que conectes ahí interfiere con la comunicación y con la carga del programa.", "Porque son más lentos."]
+    correcta: 1
+    explicacion: "El simulador también lo avisa si los usás con el serie iniciado."
+tarea_local: "Superá el desafío y cargalo en la placa. Abrí el monitor serie del IDE con 9600 baudios y mirá el contador. Después cambiá la velocidad a 115200 sin tocar el código y fijate qué aparece."
+resultado_esperado: "Con 9600, el saludo y el contador; con la velocidad equivocada, caracteres raros."
+resumen:
+  - "El monitor serie muestra texto que manda el Arduino por el USB."
+  - "Serial begin con 9600 va en setup."
+  - "Serial println manda un valor con salto de línea."
+  - "La velocidad del monitor tiene que coincidir con la del código."
+  - "Si usás Serial, no conectes nada en los pines cero y uno."
+entrevista:
+  en_30_segundos: "Para ver qué pasa adentro del Arduino uso el monitor serie: `Serial.begin(9600)` en `setup()` y `Serial.println()` con los valores que quiero ver. Es la herramienta principal para depurar."
+  trampas:
+    - pregunta: "Muchos `Serial.println` dentro del `loop()` sin `delay`, ¿son un problema?"
+      respuesta: "Sí: llenan el monitor de mensajes y hacen más lento el loop. Conviene imprimir cada tanto (con un `delay` o comparando `millis()`)."
+  cuando_no: "En un proyecto terminado, sacá (o desactivá) los mensajes de depuración: consumen tiempo y memoria."
+---
+
+import { ArduinoSim } from '../../arduino/ArduinoSim'
+
+## Concepto
+
+**Para qué sirve.** El Arduino no tiene pantalla. El monitor serie es la ventana para ver qué pasa adentro.
+
+- `Serial.begin(9600)` en `setup()`: inicia la comunicación a 9600 baudios.
+- `Serial.println(valor)`: manda el valor y un salto de línea. `Serial.print(valor)`: sin salto.
+- En el IDE: **Herramientas → Monitor serie**, con la velocidad en 9600.
+
+## Ejemplo
+
+<ArduinoSim desafio="serie" />
