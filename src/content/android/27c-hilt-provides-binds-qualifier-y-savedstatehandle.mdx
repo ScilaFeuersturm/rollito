@@ -1,0 +1,82 @@
+---
+id: android-semi-senior-hilt-provides-binds-qualifier-y-savedstatehandle-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Machete de Hilt: @Provides, @Binds, @Qualifier y SavedStateHandle"
+duracion_min: 6
+prerequisitos: [android-semi-senior-hilt-componentes-y-scopes-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Tenés una clase propia `TareasRepositoryRed` con `@Inject constructor`, que implementa `TareasRepository`. ¿Qué escribís para que Hilt la use cuando piden la interfaz?"
+    opciones: ["Un `@Provides` que haga `TareasRepositoryRed(api)` a mano.", "Un `@Binds` abstracto: `abstract fun repo(impl: TareasRepositoryRed): TareasRepository`.", "Nada: Hilt encuentra la implementación solo."]
+    correcta: 1
+    explicacion: "Hilt no adivina qué implementación usar para una interfaz. Con `@Binds` se lo decís sin escribir código de construcción, porque la clase ya tiene `@Inject constructor`."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuándo hace falta `@Provides` sí o sí?"
+    opciones: ["Siempre que la clase sea `@Singleton`.", "Cuando el objeto se construye con código o es de una librería que no podés anotar: Retrofit, OkHttp, Room.", "Cuando la clase tiene más de tres dependencias."]
+    correcta: 1
+    explicacion: "No podés agregar `@Inject constructor` a `OkHttpClient`, y Retrofit se arma con un builder. Para eso está `@Provides`."
+  - tipo: opcion_multiple
+    pregunta: "Necesitás dos `OkHttpClient`: uno común y otro que agrega el token. ¿Qué usás?"
+    opciones: ["Dos funciones `@Provides` con nombres distintos.", "Un `@Qualifier` propio (por ejemplo `@ConAuth`) en el `@Provides` del segundo y en cada lugar donde se pida.", "`@Named` no existe en Hilt, así que no se puede."]
+    correcta: 1
+    explicacion: "Para Dagger, el nombre de la función no importa: importa el tipo más el qualifier. Sin qualifier, dos bindings del mismo tipo dan `DuplicateBindings`. También existe `@Named(\"...\")`, pero un qualifier propio evita errores de tipeo."
+  - tipo: autoevaluacion
+    pregunta: "¿Cómo le llega al `DetalleViewModel` el id de la tarea que se abrió?"
+    explicacion: "Recibe un `SavedStateHandle` en el constructor (Hilt lo provee en `ViewModelComponent`) y lee el argumento de navegación con `savedStateHandle.toRoute<Detalle>().id`. Así sobrevive a la rotación y a la muerte del proceso. Si el dato no viene de la navegación, existe la inyección asistida (`@AssistedInject`)."
+tarea_local: "En el proyecto `android-samples/live-coding`, abrí `di/Modulos.kt` y `ui/detalle/DetalleScreen.kt`. Identificá un `@Provides`, un `@Binds`, un `@HiltViewModel` y dónde se lee el `SavedStateHandle`."
+resultado_esperado: "`@Provides` en `RedModule` (cliente, json y API), `@Binds` en `RepositorioModule`, `@HiltViewModel` en `TareasViewModel` y `DetalleViewModel`, y `toRoute<Detalle>()` en el `DetalleViewModel`."
+resumen:
+  - "Inject constructor alcanza para las clases propias."
+  - "Binds vincula una interfaz con su implementación, sin código de construcción."
+  - "Provides construye con código, por ejemplo clases de librerías."
+  - "Un qualifier distingue dos bindings del mismo tipo."
+  - "El view model recibe el saved state handle y lee de ahí los argumentos de navegación."
+entrevista:
+  en_30_segundos: "Para clases propias uso `@Inject constructor`. Si alguien pide una interfaz, la vinculo con `@Binds` en un módulo abstracto. `@Provides` lo reservo para lo que se construye con código o viene de una librería, como Retrofit. Si necesito dos instancias del mismo tipo, las distingo con un `@Qualifier`. Los ViewModels son `@HiltViewModel`, y los argumentos de navegación los leen del `SavedStateHandle`."
+  trampas:
+    - pregunta: "¿Se pueden mezclar `@Binds` y `@Provides` en el mismo módulo?"
+      respuesta: "`@Binds` exige un módulo abstracto (`abstract class` o `interface`). Los `@Provides` pueden ir en su `companion object`, pero lo más claro es tener dos módulos: un `object` con los `@Provides` y una `abstract class` con los `@Binds`."
+    - pregunta: "¿Por qué el qualifier lleva `@Retention(AnnotationRetention.BINARY)`?"
+      respuesta: "Para que la anotación quede en el bytecode, donde la lee el procesador de Dagger, sin necesitar reflexión en tiempo de ejecución."
+  cuando_no: "No crees un qualifier para cada variante \"por las dudas\": si hoy hay un solo cliente HTTP, no hace falta. Se agrega cuando aparece el segundo."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Hilt necesita saber cómo crear cada cosa que se pide. Hay tres formas de decírselo, y una herramienta para cuando hay dos cosas del mismo tipo.
+
+- **`@Inject constructor`:** para tus clases. Hilt mira el constructor y resuelve los parámetros.
+- **`@Binds`:** "cuando pidan esta interfaz, usá esta implementación". Va en un módulo abstracto, sin cuerpo.
+- **`@Provides`:** "así se construye". Para clases de librerías o que se arman con código.
+- **`@Qualifier`:** distingue dos bindings del mismo tipo. Sin qualifier, Dagger falla con `DuplicateBindings`.
+- **`@HiltViewModel`:** el ViewModel recibe dependencias por constructor y se obtiene con `hiltViewModel()`.
+- **`SavedStateHandle`:** Hilt lo provee solo en `ViewModelComponent`. Trae los argumentos de navegación y guarda estado que sobrevive a la muerte del proceso.
+
+**Antes vs. ahora.** En Dagger "a mano" escribías un `@Provides` para casi todo. Hoy la regla es: `@Inject constructor` por defecto, `@Binds` para interfaces, y `@Provides` solo cuando no queda otra.
+
+## Ejemplo
+
+Un qualifier para un segundo `OkHttpClient` (verificado compilando con Hilt 2.60.1):
+
+```kotlin
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ConAuth
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ClientesModule {
+    @Provides @Singleton @ConAuth
+    fun clienteConAuth(base: OkHttpClient): OkHttpClient = base.newBuilder()
+        .addInterceptor { chain ->
+            chain.proceed(chain.request().newBuilder().header("Authorization", "Bearer TOKEN").build())
+        }
+        .build()
+}
+
+class PerfilApi @Inject constructor(@ConAuth private val cliente: OkHttpClient)
+```
+
+`newBuilder()` reutiliza el pool de conexiones del cliente base. `@Binds` y `SavedStateHandle` están en el proyecto de live coding (`di/Modulos.kt` y `DetalleViewModel`).

@@ -1,0 +1,85 @@
+---
+id: android-semi-senior-hilt-preguntas-trampa-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Machete de Hilt: cinco preguntas trampa"
+duracion_min: 6
+prerequisitos: [android-semi-senior-hilt-provides-binds-qualifier-y-savedstatehandle-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Caso 1. Una clase `@Singleton` recibe por constructor una `@ActivityScoped`. ¿Qué pasa?"
+    opciones: ["Funciona: el singleton recibe la Activity actual.", "No compila: `[Dagger/IncompatiblyScopedBindings]`. Un singleton no puede depender de algo con un scope más corto, porque lo retendría más allá de su vida.", "Compila, pero da una fuga de memoria en ejecución."]
+    correcta: 1
+    explicacion: "Dagger lo detecta al compilar. Es la protección contra la fuga clásica de guardar una Activity en un singleton."
+  - tipo: opcion_multiple
+    pregunta: "Caso 2. Un `@Singleton` pide `@ActivityContext context: Context`. ¿Qué pasa? ¿Y con `@ApplicationContext`?"
+    opciones: ["Los dos compilan.", "Con `@ActivityContext` no compila (`[Dagger/MissingBinding]`: en `SingletonComponent` no hay Activity). Con `@ApplicationContext` compila.", "Ninguno compila: un singleton no puede recibir `Context`."]
+    correcta: 1
+    explicacion: "El contexto de aplicación vive lo mismo que el singleton, así que no hay fuga. Si necesitás la Activity (por ejemplo, para un diálogo), la clase va en `ActivityComponent`."
+  - tipo: opcion_multiple
+    pregunta: "Caso 3. Agregás un segundo `@Provides fun otroCliente(): OkHttpClient` en otro módulo. ¿Qué pasa?"
+    opciones: ["Hilt usa el último que encuentra.", "No compila: `[Dagger/DuplicateBindings] okhttp3.OkHttpClient is bound multiple times`. Hace falta un `@Qualifier` en uno de los dos.", "Hilt usa el que tenga `@Singleton`."]
+    correcta: 1
+    explicacion: "Para Dagger, un binding se identifica por tipo más qualifier; el nombre de la función no cuenta."
+  - tipo: opcion_multiple
+    pregunta: "Caso 4. Un repositorio pide `SavedStateHandle` en su constructor y lo usa un `@Singleton`. ¿Qué pasa?"
+    opciones: ["Recibe el `SavedStateHandle` de la pantalla actual.", "No compila: `[Dagger/MissingBinding] SavedStateHandle cannot be provided`. Solo existe en `ViewModelComponent`: se lee en el ViewModel y se le pasa el dato al repositorio.", "Recibe uno vacío."]
+    correcta: 1
+    explicacion: "Si el repositorio fuera `@ViewModelScoped` o sin scope y solo lo usara un ViewModel, sí podría recibirlo. Pero lo más claro es que el ViewModel lea el argumento y llame al repositorio con el valor."
+  - tipo: opcion_multiple
+    pregunta: "Caso 5. Una clase `@ViewModelScoped` se pide desde algo que vive en `SingletonComponent`. ¿Qué pasa?"
+    opciones: ["Funciona: se crea una sola.", "No compila: `[Dagger/IncompatiblyScopedBindings]`. `ViewModelComponent` es hijo de los componentes de app, y un padre no puede usar bindings de un hijo.", "Funciona, pero se crea una por pedido."]
+    correcta: 1
+    explicacion: "La regla general: un componente ve lo de sus padres, nunca lo de sus hijos. Las cinco respuestas se verificaron compilando con Hilt 2.60.1."
+tarea_local: "En el proyecto `android-samples/live-coding`, creá un archivo con el caso 1 (una clase `@ActivityScoped` y una `@Singleton` que la recibe, pedida desde un `@EntryPoint` de `SingletonComponent`) y corré `./gradlew :app:assembleDebug`. Después borralo."
+resultado_esperado: "El build falla en la tarea `hiltJavaCompileDebug` con `[Dagger/IncompatiblyScopedBindings]`. Ojo: `compileDebugKotlin` sola no lo detecta, porque el grafo se valida en el paso de Hilt."
+resumen:
+  - "Un singleton no puede depender de algo con scope más corto: falla al compilar."
+  - "En un singleton va el contexto de aplicación, nunca el de la Activity."
+  - "Dos bindings del mismo tipo necesitan un qualifier."
+  - "El saved state handle solo existe en el componente del view model."
+  - "Un componente ve lo de sus padres, nunca lo de sus hijos."
+entrevista:
+  en_30_segundos: "La ventaja de Hilt es que muchos errores de ciclo de vida aparecen al compilar: un singleton que depende de algo de Activity da `IncompatiblyScopedBindings`; pedir `@ActivityContext` donde no hay Activity, o un `SavedStateHandle` fuera de un ViewModel, da `MissingBinding`; dos bindings del mismo tipo sin qualifier dan `DuplicateBindings`. La regla de fondo es que un componente ve lo de sus padres y nunca lo de sus hijos."
+  trampas:
+    - pregunta: "Si Hilt valida todo al compilar, ¿por qué una vez compiló algo que estaba mal?"
+      respuesta: "Porque Dagger valida los bindings que efectivamente se piden desde algún componente o punto de entrada. Una clase mal armada que nadie inyecta no se valida. Y la validación corre en el paso de Hilt (`hiltJavaCompile`), no en la compilación de Kotlin sola."
+  cuando_no: "No uses `@EntryPoint` para esquivar estos errores (por ejemplo, para sacar algo de un componente hijo desde un singleton): el error te está avisando de un problema de diseño."
+---
+
+## Concepto
+
+**Qué problema resuelve.** En la entrevista de Hilt casi nunca preguntan la sintaxis. Preguntan "¿qué pasa si…?". Las cinco trampas de esta lección se verificaron compilando con Hilt 2.60.1, y los errores que aparecen son los reales de Dagger.
+
+Todas salen de dos reglas:
+
+1. **Un componente ve lo de sus padres, nunca lo de sus hijos.** `SingletonComponent` no ve nada de Activity, Fragment ni ViewModel.
+2. **Un scope largo no puede depender de uno corto.** Si un singleton retuviera algo de Activity, la Activity no se podría liberar: sería una fuga.
+
+**Antes vs. ahora.** En la época de MVP, guardar el `Context` de una Activity en un singleton era una fuga que encontrabas con LeakCanary, en producción. Con Hilt, el mismo error no compila.
+
+## Ejemplo
+
+Los cinco casos, en el orden de los ejercicios:
+
+```kotlin
+// 1. IncompatiblyScopedBindings
+@ActivityScoped class Carrito @Inject constructor()
+@Singleton class Analitica @Inject constructor(val carrito: Carrito)
+
+// 2. MissingBinding (con @ApplicationContext sí compila)
+@Singleton class Preferencias @Inject constructor(@ActivityContext val contexto: Context)
+
+// 3. DuplicateBindings: ya hay otro @Provides de OkHttpClient
+@Provides fun otroCliente(): OkHttpClient = OkHttpClient()
+
+// 4. MissingBinding: SavedStateHandle solo existe en ViewModelComponent
+class BusquedaRepository @Inject constructor(val estado: SavedStateHandle)
+
+// 5. IncompatiblyScopedBindings: un padre no ve a un hijo
+@ViewModelScoped class Filtros @Inject constructor()
+@Singleton class Historial @Inject constructor(val filtros: Filtros)
+```
+
+Leé cada caso y decidí si compila antes de mirar los ejercicios.

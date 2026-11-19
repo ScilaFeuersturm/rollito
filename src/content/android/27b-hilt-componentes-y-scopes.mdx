@@ -1,0 +1,78 @@
+---
+id: android-semi-senior-hilt-componentes-y-scopes-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Machete de Hilt: componentes, scopes y cuánto vive cada uno"
+duracion_min: 6
+prerequisitos: [android-semi-senior-inyeccion-con-hilt-y-alcances-01, android-semi-senior-dagger-debajo-de-hilt-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Una clase `@ActivityScoped` y otra `@ActivityRetainedScoped`. La persona rota la pantalla. ¿Qué pasa con cada instancia?"
+    opciones: ["Las dos sobreviven.", "La `@ActivityScoped` se crea de nuevo, porque la Activity se recrea; la `@ActivityRetainedScoped` sobrevive, porque su componente vive desde el primer `onCreate` hasta el último `onDestroy`.", "Las dos se crean de nuevo."]
+    correcta: 1
+    explicacion: "`ActivityRetainedComponent` está pensado justamente para sobrevivir a los cambios de configuración, igual que un ViewModel."
+  - tipo: opcion_multiple
+    pregunta: "Un módulo instalado en `SingletonComponent` provee un objeto con `@Provides`, sin anotación de scope. Tres clases lo piden. ¿Cuántas instancias hay?"
+    opciones: ["Una: está en `SingletonComponent`.", "Tres: sin scope, Hilt crea una instancia nueva cada vez que alguien la pide. El componente dice desde dónde se puede inyectar; el scope, cuántas instancias hay.", "Depende de la versión de Hilt."]
+    correcta: 1
+    explicacion: "Es una de las confusiones más comunes. Para tener una sola, hace falta `@Singleton` además de `@InstallIn(SingletonComponent::class)`."
+  - tipo: ordenar
+    pregunta: "Ordená los componentes de Hilt del más amplio (vive más) al más acotado, siguiendo la jerarquía de una pantalla con Fragment."
+    pasos: ["`SingletonComponent`", "`ActivityRetainedComponent`", "`ActivityComponent`", "`FragmentComponent`"]
+    explicacion: "Cada componente es hijo del anterior y puede usar todo lo de sus padres, pero no al revés. `ViewModelComponent` también cuelga de `ActivityRetainedComponent`."
+  - tipo: autoevaluacion
+    pregunta: "Decí en voz alta qué componente usarías para: (1) el `OkHttpClient`, (2) el estado de filtros que comparten dos clases del mismo ViewModel, (3) un objeto que necesita la Activity actual para mostrar un diálogo."
+    explicacion: "(1) `SingletonComponent` + `@Singleton`: caro de crear y compartido. (2) `ViewModelComponent` + `@ViewModelScoped`: una instancia por ViewModel, compartida entre sus dependencias. (3) `ActivityComponent` (+ `@ActivityScoped` si tiene que ser la misma en toda la Activity): ahí está disponible la Activity y el `@ActivityContext`."
+tarea_local: "En el proyecto `android-samples/live-coding`, abrí `app/build/generated/hilt/component_sources/debug/.../App_HiltComponents.java` después de compilar y buscá `SingletonC`, `ActivityRetainedC` y `ViewModelC`."
+resultado_esperado: "Ves las clases generadas por Hilt para cada componente, una dentro de otra: es la jerarquía de la lección, convertida en código de Dagger."
+resumen:
+  - "Cada componente de Hilt está atado al ciclo de vida de una clase de Android."
+  - "Singleton vive lo que la app; activity retained y view model sobreviven a la rotación; activity no."
+  - "Un componente hijo ve lo de sus padres, pero no al revés."
+  - "El componente dice desde dónde se inyecta; el scope, cuántas instancias hay."
+  - "Sin anotación de scope, cada pedido recibe una instancia nueva."
+entrevista:
+  en_30_segundos: "Hilt tiene componentes predefinidos atados al ciclo de vida de Android: `SingletonComponent` vive lo que la app; `ActivityRetainedComponent` y `ViewModelComponent` sobreviven a la rotación; `ActivityComponent`, `FragmentComponent` y `ViewComponent` viven lo que su clase. Cada uno tiene su scope (`@Singleton`, `@ActivityRetainedScoped`, `@ViewModelScoped`, `@ActivityScoped`…). El componente define desde dónde se puede inyectar algo; el scope, si hay una instancia por componente o una nueva en cada pedido."
+  trampas:
+    - pregunta: "¿Conviene poner `@Singleton` a todo para ahorrar instancias?"
+      respuesta: "No. Un singleton vive lo que el proceso: retiene memoria y, si tiene estado, lo comparte entre pantallas aunque no deba. Se usa para objetos caros y sin estado de pantalla (cliente HTTP, base de datos). Lo demás va sin scope o con el scope más acotado que alcance."
+  cuando_no: "Si una clase es liviana y no tiene estado, no le pongas scope: crear una instancia nueva es más barato que el código de sincronización que genera un scope."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Con Dagger "a mano" definías vos los componentes y cuánto vivía cada uno. Hilt trae esos componentes armados y atados al ciclo de vida de Android, así que la pregunta pasa a ser "¿en qué componente va esto y necesita scope?".
+
+**Componente · scope · cuánto vive**
+
+- `SingletonComponent` · `@Singleton` · desde `Application.onCreate` hasta que muere el proceso.
+- `ActivityRetainedComponent` · `@ActivityRetainedScoped` · desde el primer `onCreate` de la Activity hasta el último `onDestroy`. **Sobrevive a la rotación.**
+- `ViewModelComponent` · `@ViewModelScoped` · lo que vive el ViewModel. **Sobrevive a la rotación.**
+- `ActivityComponent` · `@ActivityScoped` · de `onCreate` a `onDestroy`. **Se recrea al rotar.**
+- `FragmentComponent` · `@FragmentScoped` · de `onAttach` a `onDestroy` del Fragment.
+- `ViewComponent` · `@ViewScoped` · lo que vive la View.
+- `ServiceComponent` · `@ServiceScoped` · de `onCreate` a `onDestroy` del Service.
+
+**Jerarquía:** `SingletonComponent` → `ActivityRetainedComponent` → (`ViewModelComponent` | `ActivityComponent` → `FragmentComponent` → `ViewComponent`). `ServiceComponent` cuelga de `SingletonComponent`. Un hijo ve los bindings de sus padres, nunca al revés.
+
+**Qué trae cada componente sin que lo pidas:** `Application` y `@ApplicationContext` en todos; `Activity` y `@ActivityContext` desde `ActivityComponent` hacia abajo; `SavedStateHandle` solo en `ViewModelComponent`.
+
+**La regla que más se pregunta:** el **componente** dice desde dónde se puede inyectar; el **scope**, cuántas instancias hay. Sin scope, una nueva en cada pedido.
+
+## Ejemplo
+
+```kotlin
+@Singleton                                   // una para toda la app
+class SesionRepository @Inject constructor(private val api: AuthApi)
+
+@ViewModelScoped                             // una por ViewModel, compartida entre sus dependencias
+class FiltrosDeBusqueda @Inject constructor()
+
+@ActivityScoped                              // una por Activity; se recrea al rotar
+class Dialogos @Inject constructor(@ActivityContext private val contexto: Context)
+
+class FormateadorDeFechas @Inject constructor() // sin scope: una nueva cada vez
+```
+
+*La tabla sigue la documentación de Hilt; verificá en developer.android.com si se agregó algún componente nuevo.*
