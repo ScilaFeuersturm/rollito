@@ -1,6 +1,6 @@
 # Análisis funcional · Trainee
 
-**Estado:** las lecciones 1 a 11 están aprobadas y publicadas en `src/content/funcional/`, con repaso en audio (`/repaso/funcional/`) y simulacro de entrevista (`/simulacro/funcional/`, datos en `src/content/funcional/interview-practice.ts`). La lección 12 (integradora con Taller Fichín) se escribe cuando esté el contexto del proyecto.
+**Estado:** las lecciones 1 a 11 están aprobadas y publicadas en `src/content/funcional/`, con repaso en audio (`/repaso/funcional/`) y simulacro de entrevista (`/simulacro/funcional/`, datos en `src/content/funcional/interview-practice.ts`). La lección 12 (integradora con Taller Fichín) está en borrador para revisar.
 
 Track pensado para alguien que se suma como analista funcional sin experiencia previa (primer uso real: una persona que se suma a Taller Fichín). Cada lección sigue el formato habitual: concepto con analogía, ejemplo, ejercicios de autoevaluación, tarea práctica, resumen y "cómo contarlo en una entrevista".
 
@@ -19,7 +19,7 @@ Track pensado para alguien que se suma como analista funcional sin experiencia p
 | F9 | Prototipos de baja fidelidad | 5 |
 | F10 | Priorización con MoSCoW y backlog | 5 |
 | F11 | Documentación funcional: qué, para quién y cuánto | 5 |
-| F12 | Integrador: publicar un juego nuevo en Taller Fichín | (pendiente) |
+| F12 | Integrador: publicar un juego nuevo en Taller Fichín | 7 |
 
 ---
 
@@ -552,9 +552,80 @@ Armá un glosario de al menos ocho términos del negocio del estudio contable, c
 
 ---
 
+## F12. Integrador: publicar un juego nuevo en Taller Fichín · Trainee · 7 min
+
+**Concepto.** Esta lección junta todo el track en un caso real. **Taller Fichín** es un equipo que desarrolla juegos de estilo retro y apps web y mobile. La funcionalidad a analizar es **"publicar un juego nuevo en el sitio"**: que alguien del equipo pueda subir un juego terminado para que la gente lo conozca y lo juegue.
+
+El recorrido es el mismo que harías en un proyecto:
+
+1. Relevar.
+2. Buscar lo que no se dice.
+3. Escribir requerimientos e historias con criterios.
+4. Detallar el flujo con un caso de uso y un diagrama.
+5. Bocetar.
+6. Priorizar.
+7. Documentar.
+
+Arrancás con **supuestos** y los validás con el equipo:
+
+- Publica una persona del equipo.
+- Cada juego tiene título, descripción, capturas, plataforma (jugable en el navegador o con link a una tienda), controles y créditos.
+- Otra persona del equipo lo revisa antes de que aparezca.
+
+Pensalo como el trabajo práctico final de una materia: no hay temas nuevos, pero ahí descubrís si sabés usar todo junto.
+
+**Ejemplo.** Un recorrido corto por cada paso, para que veas el nivel de detalle esperado:
+
+- **Relevamiento:** "Contame cómo publicaron el último juego: quién lo subió, qué datos juntaron y qué salió mal."
+- **Lo que no se dice:** "¿Y si después de publicado aparece un bug grave? ¿Se puede ocultar? ¿Se muestran juegos en desarrollo como 'próximamente'?"
+- **Requerimiento no funcional:** "Cada captura tiene texto alternativo" (accesibilidad) y "la ficha del juego carga en menos de 3 segundos en un celular con 4G" (rendimiento).
+- **Historia:** "Como integrante de Taller Fichín, quiero publicar un juego nuevo en el sitio, para que la gente pueda conocerlo y jugarlo."
+- **Gherkin:** "Dado que cargué título y descripción, pero ninguna captura, cuando intento publicar, entonces veo el mensaje 'Agregá al menos una captura' y el juego queda como borrador."
+- **Diagrama:** BPMN con tres carriles (Integrante, Revisor y Sitio) y una compuerta "¿Aprobado?" que devuelve el juego a borrador con comentarios.
+- **Priorización:** *Must*, formulario y ficha pública. *Should*, vista previa antes de publicar. *Could*, trailer en video. *Won't*, comentarios de visitantes.
+- **Glosario:** juego, ficha, borrador, revisión, publicado y oculto.
+
+### Práctica
+
+1. ¿Por qué relevar si el sitio es del propio equipo? **Respuesta.** Porque cada integrante tiene supuestos distintos sobre cómo se publica, qué datos son obligatorios y quién aprueba. Relevar los hace explícitos antes de construir.
+2. ¿Qué estado necesita un juego además de "publicado"? **Respuesta.** Al menos "borrador" (en carga o rechazado en revisión) y probablemente "oculto" (publicado que se retira, por ejemplo por un bug grave). Aparecen al preguntar qué pasa cuando algo sale mal.
+3. ¿Qué dato de la ficha es un requerimiento de accesibilidad? **Respuesta.** El texto alternativo de las capturas, y también describir los controles con texto y no solo con una imagen.
+
+### Tarea para tu máquina
+
+Hacé el integrador con el equipo real de Taller Fichín. Entrevistá al menos a dos integrantes y armá un paquete con:
+
+- La guía de entrevista.
+- La lista de supuestos, marcando cuáles se confirmaron y cuáles no.
+- Cinco historias con criterios en Gherkin.
+- El caso de uso "Publicar juego".
+- Un BPMN con carriles.
+- El prototipo en papel del formulario y la ficha.
+- El backlog priorizado con MoSCoW.
+- Un glosario.
+
+**Resultado esperado.** Un paquete que alguien del equipo podría usar para construir la funcionalidad sin preguntarte lo básico, y una lista de los supuestos que cambiaron después de relevar.
+
+### Resumen
+
+- El integrador junta todo el track en un caso real: publicar un juego nuevo en el sitio de Taller Fichín.
+- Se arranca con supuestos y se validan relevando con el equipo.
+- El recorrido es relevar, buscar lo que no se dice, escribir historias y criterios, diagramar, bocetar, priorizar y documentar.
+- El resultado es un paquete que alguien del equipo puede usar para construir sin preguntar lo básico.
+
+### Entrevista
+
+**En 30 segundos.** "Como práctica, analicé la publicación de juegos en el sitio de Taller Fichín, un equipo que hace juegos retro. Relevé con dos integrantes, descubrí estados que nadie había mencionado, como borrador y oculto, y entregué historias con criterios en Gherkin, un BPMN con el circuito de revisión, un prototipo y un backlog priorizado con MoSCoW."
+
+**Trampa.** "Contame un proyecto donde hayas hecho análisis funcional." **Respuesta.** Este integrador sirve, contado con el formato STAR: la situación (el equipo publicaba juegos sin un proceso claro), la tarea (analizar la publicación), la acción (relevamiento, supuestos validados, artefactos) y el resultado (qué cambió o qué se construyó). Lo que más suma es contar un supuesto que resultó falso y cómo lo descubriste.
+
+**Cuándo no.** No todas las funcionalidades necesitan el paquete completo: en el día a día se elige qué artefactos aportan valor. El integrador lo usa todo a propósito, para practicar el ciclo entero una vez.
+
+---
+
 ## Para revisar
 
 - [x] ¿El ejemplo del estudio contable te sirve como hilo conductor, o preferís otro negocio? **Sí.**
 - [x] ¿Querés el repaso en audio también en este track (lee solo el resumen, como en Arquitectura)? **Sí.**
 - [x] ¿Sumamos un simulacro de entrevista para analista funcional trainee, como los de Android? **Sí.**
-- [ ] Para la lección 12 sigue pendiente el contexto de Taller Fichín: qué es, quién publica un juego y si hay aprobación antes de que aparezca en el sitio.
+- [ ] Lección 12: ¿te sirven los supuestos (publica alguien del equipo, otra persona revisa, la ficha lleva título, descripción, capturas, plataforma, controles y créditos)? Si alguno no es así en Taller Fichín, lo ajusto.
