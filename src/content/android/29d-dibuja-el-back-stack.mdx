@@ -1,0 +1,87 @@
+---
+id: android-semi-senior-dibuja-el-back-stack-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Dibujá el back stack: popUpTo, inclusive y launchSingleTop"
+duracion_min: 7
+prerequisitos: [android-semi-senior-navigation-compose-y-back-stack-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Arrancás en `Inicio`. Hacés `navigate(Detalle(1))`, `navigate(Detalle(2))` y `navigate(Detalle(2)) { launchSingleTop = true }`. ¿Cómo queda el back stack?"
+    opciones: ["`Inicio > Detalle(1) > Detalle(2) > Detalle(2)`", "`Inicio > Detalle(1) > Detalle(2)`", "`Inicio > Detalle(2)`"]
+    correcta: 1
+    explicacion: "`launchSingleTop` solo mira el tope: si el destino de arriba ya es ese, no apila otro. Sin esa opción, el resultado es la primera respuesta, porque `navigate` apila siempre, aunque el destino se repita."
+  - tipo: opcion_multiple
+    pregunta: "La app arranca en `Login`. Al loguearse: `navigate(Inicio) { popUpTo<Login> { inclusive = true } }`. ¿Cómo queda el back stack?"
+    opciones: ["`Login > Inicio`", "`Inicio`", "`Login`"]
+    correcta: 1
+    explicacion: "`popUpTo<Login>` saca todo lo que está arriba de `Login`, e `inclusive = true` saca también a `Login`. Así, Atrás desde `Inicio` cierra la app en vez de volver al login."
+  - tipo: opcion_multiple
+    pregunta: "Lo mismo, pero sin `inclusive`: `navigate(Inicio) { popUpTo<Login>() }`. ¿Cómo queda?"
+    opciones: ["`Inicio`", "`Login > Inicio`", "`Login`"]
+    correcta: 1
+    explicacion: "Sin `inclusive`, `popUpTo` saca lo que está arriba del destino, pero el destino queda. Con Atrás desde `Inicio` volvés al login: el bug clásico del flujo de login."
+  - tipo: opcion_multiple
+    pregunta: "Desde `Inicio > Detalle(1) > Detalle(2)` hacés `navigate(Perfil) { popUpTo<Inicio>() }`. ¿Cómo queda?"
+    opciones: ["`Inicio > Detalle(1) > Detalle(2) > Perfil`", "`Inicio > Perfil`", "`Perfil`"]
+    correcta: 1
+    explicacion: "Saca todo lo que está arriba de `Inicio` (los dos detalles), deja `Inicio` porque no es inclusive y apila `Perfil`."
+  - tipo: opcion_multiple
+    pregunta: "Trampa. Desde `Inicio > Detalle(1) > Detalle(2) > Perfil` hacés `popBackStack<Detalle>(inclusive = false)`. ¿Cómo queda?"
+    opciones: ["`Inicio > Detalle(1)`", "`Inicio > Detalle(1) > Detalle(2)`", "`Inicio`"]
+    correcta: 1
+    explicacion: "Vuelve hasta el `Detalle` **más reciente** del back stack (el 2), no hasta el primero. Si hay varias instancias del mismo destino, `popBackStack` y `popUpTo` siempre toman la de más arriba."
+tarea_local: "En el proyecto `android-samples/live-coding`, abrí `app/src/test/.../ui/BackStackTest.kt` y corré la clase. Después elegí un escenario, cambiá una opción (por ejemplo, sacá `inclusive = true` del 3) y fijate cómo falla el test."
+resultado_esperado: "Los 10 escenarios pasan. Al cambiar una opción, el test muestra el back stack esperado y el que quedó realmente, por ejemplo `expected: Inicio but was: Login > Inicio`."
+resumen:
+  - "Navigate apila siempre, aunque el destino se repita."
+  - "Launch single top evita apilar el mismo destino si ya está arriba."
+  - "Pop up to saca lo que está arriba de un destino; con inclusive, saca también ese destino."
+  - "En el login se usa pop up to del login con inclusive, para que Atrás no vuelva al login."
+  - "Si hay varias instancias de un destino, se toma la más reciente."
+entrevista:
+  en_30_segundos: "`navigate` siempre apila. `launchSingleTop` evita duplicar el destino si ya está arriba, útil para dobles toques. `popUpTo(X)` saca todo lo que está arriba de X antes de navegar, y con `inclusive = true` saca también a X: es lo que uso al terminar el login, para que Atrás no vuelva a esa pantalla. Si hay varias instancias del mismo destino, `popUpTo` y `popBackStack` toman la más reciente."
+  trampas:
+    - pregunta: "¿Qué diferencia hay entre `popBackStack()` y `navigateUp()`?"
+      respuesta: "`popBackStack()` saca el destino actual del back stack. `navigateUp()` es el botón Arriba de la barra: dentro de tu app hace lo mismo, pero si la pantalla se abrió por un deep link en la tarea de otra app, te lleva a la jerarquía de tu propia app en vez de volver a la otra."
+    - pregunta: "¿Por qué el test usa rutas `internal` y no `private`?"
+      respuesta: "Porque Navigation serializa las rutas con Kotlinx Serialization. Con una ruta `private`, falla en ejecución con `IllegalAccessException`: el serializador no puede acceder a la clase. Pasó de verdad al escribir el test de esta lección."
+  cuando_no: "No uses `popUpTo` para \"limpiar\" el back stack en cada navegación \"por las dudas\": rompe el comportamiento esperado de Atrás. Usalo cuando hay una razón concreta, como el login o un flujo de compra terminado."
+---
+
+## Concepto
+
+**Qué problema resuelve.** El back stack es la pila de pantallas que recorre el botón Atrás. En entrevista te dan una secuencia de navegaciones y te piden dibujar cómo queda. Las respuestas de esta lección **no son teóricas**: salen de un test que ejecuta cada secuencia con `TestNavHostController` (Navigation 2.10.2) y verifica el resultado.
+
+**Las cuatro herramientas:**
+
+- `navigate(X)`: apila `X`. **Siempre**, aunque ya esté arriba.
+- `launchSingleTop = true`: si el tope ya es `X`, no apila otro.
+- `popUpTo<Y>()`: antes de navegar, saca todo lo que está **arriba** de `Y`. `Y` queda.
+- `popUpTo<Y> { inclusive = true }`: saca también a `Y`.
+
+**Antes vs. ahora.** Con Fragments hacías `replace` + `addToBackStack`, y para limpiar usabas `popBackStack(nombre, POP_BACK_STACK_INCLUSIVE)` o flags de Intent como `FLAG_ACTIVITY_CLEAR_TOP`. Las ideas son las mismas: `popUpTo` equivale al viejo "clear top", y `launchSingleTop`, al modo `singleTop` de una Activity.
+
+## Ejemplo
+
+Escenario base, sin opciones:
+
+```kotlin
+// Arranca en Inicio
+navController.navigate(Detalle(1))
+navController.navigate(Detalle(2))
+navController.navigate(Detalle(2))
+// Back stack: Inicio > Detalle(1) > Detalle(2) > Detalle(2)
+```
+
+Y el flujo de login bien hecho:
+
+```kotlin
+navController.navigate(Inicio) {
+    popUpTo<Login> { inclusive = true }
+}
+// Back stack: Inicio  (Atrás cierra la app, no vuelve al login)
+```
+
+Predecí cada escenario de los ejercicios antes de mirar las opciones. Los diez escenarios verificados están en `android-samples/live-coding/app/src/test/java/com/rollito/livecoding/ui/BackStackTest.kt`.

@@ -1,0 +1,79 @@
+---
+id: android-semi-senior-deep-links-adb-y-back-stack-sintetico-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Deep links: declaración, prueba con adb y back stack sintético"
+duracion_min: 7
+prerequisitos: [android-semi-senior-bottom-navigation-savestate-y-restorestate-01, android-semi-senior-navegacion-deep-links-e-interoperabilidad-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "La app estaba en `Perfil`. Llega el deep link `rollito://tareas/7` en una tarea nueva (`FLAG_ACTIVITY_NEW_TASK`). ¿Cómo queda el back stack?"
+    opciones: ["`Perfil > Detalle(7)`", "`Inicio > Detalle(7)`", "`Detalle(7)`"]
+    correcta: 1
+    explicacion: "En una tarea nueva, Navigation descarta la pila anterior y arma un back stack sintético: el destino inicial del grafo abajo y el destino del deep link arriba. Así Atrás va a `Inicio` y no cierra la app. Verificado en el escenario 9 del test."
+  - tipo: opcion_multiple
+    pregunta: "¿Dónde hay que declarar el deep link para que funcione desde afuera de la app?"
+    opciones: ["Solo en el `NavHost`, con `navDeepLink`.", "En los dos lados: el `intent-filter` del manifiesto (para que Android le mande el link a tu Activity) y `navDeepLink` en el destino (para que Navigation sepa a qué pantalla ir).", "Solo en el manifiesto."]
+    correcta: 1
+    explicacion: "El manifiesto resuelve \"¿qué app abre este link?\"; `navDeepLink`, \"¿qué pantalla dentro de la app?\". Si falta uno, el link no abre la app o abre la pantalla inicial."
+  - tipo: opcion_multiple
+    pregunta: "Un deep link `miapp://transferir?monto=1000&destino=X` ejecuta la transferencia apenas se abre. ¿Qué problema tiene?"
+    opciones: ["Ninguno, si la persona está logueada.", "Cualquier app o página web puede disparar ese link: un deep link es una entrada externa no confiable. Tiene que llevar a una pantalla de confirmación y validar los parámetros, nunca ejecutar la acción directamente.", "Que los deep links no admiten parámetros numéricos."]
+    correcta: 1
+    explicacion: "Es una superficie de ataque clásica en apps móviles. Los parámetros se validan y las acciones sensibles piden confirmación, igual que con cualquier entrada externa."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué comando de adb usás para probar el deep link y qué verificás después?"
+    explicacion: "`adb shell am start -W -a android.intent.action.VIEW -d \"rollito://tareas/7\"`. Verificás que se abra el detalle correcto, que Atrás vaya a la pantalla inicial (back stack sintético) y qué pasa con un id inexistente (tiene que mostrar un error amable) y con uno de formato inválido como `rollito://tareas/abc` (como el argumento es `Long`, el link no coincide con el destino: revisá que la app no crashee y que caiga en una pantalla razonable)."
+tarea_local: "Con la app de `android-samples/live-coding` instalada en el emulador, probá `adb shell am start -W -a android.intent.action.VIEW -d \"rollito://tareas/7\"`, después apretá Atrás. Repetí con `rollito://tareas/999999`."
+resultado_esperado: "El primero abre el detalle de la tarea 7 y Atrás lleva a la lista. El segundo muestra el mensaje de error del detalle, porque la API devuelve 404, sin crashear."
+resumen:
+  - "El deep link se declara en el manifiesto y en el destino con nav deep link."
+  - "Se prueba con adb shell am start y el link."
+  - "En una tarea nueva, Navigation arma un back stack sintético con el destino inicial abajo."
+  - "Un deep link es una entrada externa: se validan los parámetros y las acciones sensibles piden confirmación."
+  - "Las rutas type-safe con nav deep link existen desde Navigation 2.8."
+entrevista:
+  en_30_segundos: "Declaro el deep link en dos lados: el `intent-filter` del manifiesto, para que Android le mande el link a la app, y `navDeepLink` en el destino. Lo pruebo con `adb shell am start -d`. Cuando entra en una tarea nueva, Navigation arma un back stack sintético con el destino inicial abajo, así Atrás no cierra la app. Y lo trato como entrada no confiable: valido los parámetros y nunca ejecuto una acción sensible sin confirmación."
+  trampas:
+    - pregunta: "¿Qué diferencia hay entre un deep link con esquema propio (`rollito://`) y un App Link (`https://`)?"
+      respuesta: "Con un esquema propio, cualquier app puede declarar el mismo esquema, y Android puede preguntar con cuál abrirlo. Un App Link usa `https://` con tu dominio y `android:autoVerify=\"true\"`: Android verifica que el dominio es tuyo (con el archivo `assetlinks.json`) y abre tu app directamente, sin preguntar. Para links que se comparten, conviene App Links."
+    - pregunta: "Al abrir por deep link, ¿qué argumentos recibe la pantalla inicial del back stack sintético?"
+      respuesta: "Navigation les pasa los argumentos del deep link también a los destinos del back stack sintético. En el test, la entrada de `Inicio` recibe el `id = 7`. Normalmente no molesta, pero conviene saberlo si la pantalla inicial lee argumentos."
+  cuando_no: "No publiques deep links para pantallas internas que no tienen sentido abrir desde afuera (por ejemplo, un paso intermedio de un formulario): cada deep link es un punto de entrada que hay que mantener y asegurar."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Un link en un mail, una notificación o una web tiene que abrir **una pantalla específica** de la app, con un Atrás que tenga sentido.
+
+**1. Declararlo, en dos lados.**
+
+```xml
+<!-- AndroidManifest.xml: qué app abre el link -->
+<intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data android:scheme="rollito" android:host="tareas" />
+</intent-filter>
+```
+
+```kotlin
+// En el NavHost: a qué pantalla va. rollito://tareas/7 → Detalle(id = 7)
+composable<Detalle>(deepLinks = listOf(navDeepLink<Detalle>(basePath = "rollito://tareas"))) { ... }
+```
+
+**2. Probarlo con adb.** `adb shell am start -W -a android.intent.action.VIEW -d "rollito://tareas/7"`. `am start` abre la Activity en una tarea nueva.
+
+**3. El back stack sintético.** Si el link entra en una tarea nueva, Navigation no deja la pila anterior: arma una nueva con el **destino inicial abajo** y el destino del link arriba. Así, Atrás lleva a la pantalla principal en vez de cerrar la app. Está verificado en el escenario 9 de `BackStackTest`: desde `Perfil`, el link deja `Inicio > Detalle(7)`.
+
+## Ejemplo
+
+**Seguridad.** Un deep link es una entrada externa, igual que un pedido HTTP: cualquier app o página puede dispararlo con los parámetros que quiera.
+
+- Validá los parámetros: un id inexistente o con formato inválido tiene que mostrar un error amable.
+- Nunca ejecutes una acción sensible (pagar, borrar, transferir) al abrir el link: llevá a una pantalla de confirmación.
+- Para links que se comparten, preferí App Links (`https://` + `autoVerify`): Android verifica que el dominio es tuyo.
+
+*Rutas type-safe: existen desde Navigation 2.8, y este proyecto compila con la 2.10.2. También existe Navigation 3, con otro modelo (el back stack es una lista que manejás vos). Verificá en developer.android.com qué usa el equipo.*

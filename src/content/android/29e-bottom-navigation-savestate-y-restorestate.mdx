@@ -1,0 +1,76 @@
+---
+id: android-semi-senior-bottom-navigation-savestate-y-restorestate-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Bottom navigation: saveState y restoreState"
+duracion_min: 6
+prerequisitos: [android-semi-senior-dibuja-el-back-stack-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Con el patrón completo (`saveState` y `restoreState` en `true`): en la tab Inicio abrís `Detalle(1)`, pasás a la tab Buscar y volvés a Inicio. ¿Cómo queda el back stack?"
+    opciones: ["`Inicio`", "`Inicio > Detalle(1)`", "`Inicio > Detalle(1) > Buscar > Inicio`"]
+    correcta: 1
+    explicacion: "Al salir de la tab Inicio, `saveState` guardó su pila (con el detalle). Al volver, `restoreState` la recuperó: la persona sigue donde estaba, como en cualquier app con pestañas."
+  - tipo: opcion_multiple
+    pregunta: "Lo mismo, pero con `saveState` y `restoreState` en `false`. ¿Cómo queda?"
+    opciones: ["`Inicio`", "`Inicio > Detalle(1)`", "`Buscar > Inicio`"]
+    correcta: 0
+    explicacion: "`popUpTo` sacó el detalle al ir a Buscar y no se guardó nada, así que al volver la tab arranca de cero."
+  - tipo: opcion_multiple
+    pregunta: "Desde `Inicio`, tocás la tab Buscar y después la tab Perfil (patrón completo). ¿Cómo queda?"
+    opciones: ["`Inicio > Buscar > Perfil`", "`Inicio > Perfil`", "`Perfil`"]
+    correcta: 1
+    explicacion: "`popUpTo(startDestination)` hace que las tabs no se apilen entre sí: siempre queda el destino inicial abajo y la tab actual arriba. Atrás desde Perfil va a Inicio, no a Buscar."
+  - tipo: autoevaluacion
+    pregunta: "Explicá en voz alta para qué sirve cada una de las cuatro opciones del patrón de bottom navigation."
+    explicacion: "`popUpTo(graph.findStartDestination().id)`: las tabs no se apilan; abajo queda siempre el destino inicial. `saveState = true` (dentro de `popUpTo`): guarda la pila de la tab de la que salís. `launchSingleTop = true`: tocar la tab actual no la duplica. `restoreState = true`: al volver a una tab, recupera la pila que se había guardado."
+tarea_local: "En `android-samples/live-coding`, corré `BackStackTest` y mirá los escenarios 6, 7 y 8. Cambiá `guardar = true` por `false` en el 6 y volvé a correrlo."
+resultado_esperado: "Con `guardar = false`, el escenario 6 falla: esperaba `Inicio > Detalle(1)` y queda `Inicio`."
+resumen:
+  - "Las tabs usan pop up to del destino inicial, para que no se apilen entre sí."
+  - "Save state guarda la pila de la tab de la que salís."
+  - "Restore state recupera esa pila al volver a la tab."
+  - "Launch single top evita duplicar la tab actual."
+entrevista:
+  en_30_segundos: "Para la bottom navigation uso el patrón recomendado: `navigate(tab)` con `popUpTo(startDestination) { saveState = true }`, `launchSingleTop = true` y `restoreState = true`. Así las tabs no se apilan entre sí, tocar la tab actual no la duplica y cada tab recuerda su propia pila: si estabas en un detalle dentro de Inicio, al volver a Inicio seguís ahí."
+  trampas:
+    - pregunta: "¿Qué pasa con el ViewModel de un destino cuya pila se guardó con `saveState`?"
+      respuesta: "Se conserva junto con el estado guardado de ese back stack, así que al restaurar la tab el ViewModel sigue ahí. Si la pila no se guarda, el destino sale del back stack y su ViewModel se limpia (`onCleared`)."
+  cuando_no: "Si una tab tiene que arrancar siempre de cero (por ejemplo, una de \"Novedades\" que conviene ver desde arriba), podés usar `saveState = false` solo para esa tab."
+---
+
+## Concepto
+
+**Qué problema resuelve.** En una app con pestañas, la persona espera que cada pestaña recuerde dónde estaba. Si estaba mirando un detalle en Inicio, pasa a Buscar y vuelve, quiere seguir en el detalle. Y Atrás no debería recorrer todas las pestañas que tocó.
+
+**Antes vs. ahora.** Con Fragments, esto era un clásico doloroso: varios back stacks a mano, `show`/`hide` de Fragments o librerías externas. Desde Navigation 2.4 hay soporte para múltiples back stacks con `saveState` y `restoreState`.
+
+**El patrón completo** (verificado en el test de la lección anterior, escenarios 6 a 8):
+
+```kotlin
+fun NavController.irATab(tab: Any) = navigate(tab) {
+    popUpTo(graph.findStartDestination().id) { saveState = true }
+    launchSingleTop = true
+    restoreState = true
+}
+```
+
+## Ejemplo
+
+Así se usa desde la barra inferior de Material 3:
+
+```kotlin
+NavigationBar {
+    tabs.forEach { tab ->
+        NavigationBarItem(
+            selected = destinoActual?.hierarchy?.any { it.hasRoute(tab.ruta::class) } == true,
+            onClick = { navController.irATab(tab.ruta) },
+            icon = { Icon(tab.icono, contentDescription = null) },
+            label = { Text(tab.titulo) },
+        )
+    }
+}
+```
+
+`hierarchy` sirve para marcar la tab como seleccionada aunque estés en un detalle dentro de ella.
