@@ -6,8 +6,11 @@ import styles from './ReactPlayground.module.css'
 // muestra el código igual que cualquier otro ejemplo (sin Sandpack en el servidor).
 const Sandpack = lazy(() => import('@codesandbox/sandpack-react').then(module => ({ default: module.Sandpack })))
 
-/** Ejemplo de React con editor y vista previa en vivo. `code` es el contenido de App.tsx. */
-export function ReactPlayground({ code }: { code: string }) {
+/**
+ * Ejemplo de React con editor y vista previa en vivo. `code` es el contenido de App.tsx y
+ * `dependencies`, las librerías extra que necesita (por ejemplo, React Router).
+ */
+export function ReactPlayground({ code, dependencies }: { code: string; dependencies?: Record<string, string> }) {
   const [live, setLive] = useState(false)
   const source = code.trimEnd()
 
@@ -24,6 +27,7 @@ export function ReactPlayground({ code }: { code: string }) {
   return <div className={styles.playground}>
     <Suspense fallback={<p role="status">Cargando el editor…</p>}>
       <Sandpack template="react-ts" files={{ '/App.tsx': source }}
+        customSetup={dependencies ? { dependencies } : undefined}
         options={{ showLineNumbers: true, showTabs: false, editorHeight: 420 }} />
     </Suspense>
   </div>
