@@ -1,0 +1,49 @@
+---
+id: funcional-que-hace-un-analista-funcional-01
+track: funcional
+nivel: trainee
+modulo: "Análisis funcional"
+titulo: "Qué hace un analista funcional"
+duracion_min: 5
+prerequisitos: []
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿El analista funcional decide qué base de datos usar?"
+    explicacion: "No. Eso es una decisión técnica del equipo de desarrollo. El analista define qué tiene que hacer el sistema y qué reglas cumplir."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué el analista habla con QA antes de que se programe?"
+    explicacion: "Para acordar desde el principio cómo se va a verificar cada funcionalidad: los criterios de aceptación sirven a la vez para construir y para probar."
+  - tipo: autoevaluacion
+    pregunta: "El cliente pide \"un botón para exportar a Excel\". ¿Qué pregunta haría primero el analista?"
+    explicacion: "Para qué lo necesita: qué hace después con ese Excel. A veces la necesidad real es otra, como un reporte que ya podría estar en la app."
+tarea_local: "Pensá en una app que uses todos los días. Escribí en un documento tres cosas: qué problema le resuelve a quien la usa, quiénes son sus distintos tipos de usuarios y una regla de negocio que se note al usarla (por ejemplo, \"no se puede transferir más que el saldo\")."
+resultado_esperado: "Un documento de media página donde el problema está escrito en términos del usuario, no de la tecnología."
+resumen:
+  - "El analista funcional es el puente entre lo que el negocio necesita y lo que el equipo construye."
+  - "Define qué tiene que hacer el sistema y por qué, no cómo se programa."
+  - "Trabaja con el cliente, los devs, QA y diseño durante todo el proyecto."
+  - "Antes de anotar un pedido, entiende para qué lo necesitan."
+entrevista:
+  en_30_segundos: "El analista funcional entiende el problema del negocio y lo traduce en requerimientos claros para el equipo. Releva con el cliente, escribe historias y criterios de aceptación, acompaña a devs y QA durante el desarrollo y valida que lo construido resuelva la necesidad real."
+  trampas:
+    - pregunta: "¿El analista tiene que anotar exactamente lo que pide el cliente?"
+      respuesta: "No: tiene que entender la necesidad detrás del pedido. Muchas veces el cliente propone una solución (\"un botón\", \"un Excel\") y el analista descubre el problema real, que puede resolverse mejor."
+  cuando_no: "En un equipo muy chico, el rol puede repartirse entre producto y desarrollo. Lo importante es que alguien haga el trabajo de entender y documentar, aunque no tenga ese título."
+---
+
+## Concepto
+
+El analista funcional es el puente entre **lo que el negocio necesita** y **lo que el equipo construye**. Entiende el problema, lo traduce en requerimientos claros y se asegura de que lo construido resuelva lo que hacía falta. No decide cómo se programa: decide, con el cliente, **qué** tiene que hacer el sistema y **por qué**.
+
+Trabaja con todo el equipo:
+
+- **Cliente y usuarios:** releva qué necesitan y valida que lo entendió bien.
+- **Devs:** les explica el qué y el porqué, y responde dudas mientras construyen.
+- **QA:** acuerda los criterios de aceptación con los que se va a probar.
+- **Diseño:** comparte los flujos y las reglas para que la interfaz los refleje.
+
+Pensalo como un traductor en una reunión entre dos países: no habla por ninguno, pero sin él cada uno entiende lo que quiere.
+
+## Ejemplo
+
+La socia del estudio contable dice: "Queremos una app para que no se nos pasen los vencimientos". El analista no anota "app de vencimientos" y listo. Pregunta quién carga las tareas, quién las hace, qué pasa hoy cuando se pasa un vencimiento, y cómo sabrían que la app funcionó. Con eso escribe historias y criterios que el equipo puede construir y probar.

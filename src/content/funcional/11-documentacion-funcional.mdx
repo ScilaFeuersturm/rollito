@@ -1,0 +1,55 @@
+---
+id: funcional-documentacion-funcional-01
+track: funcional
+nivel: trainee
+modulo: "Análisis funcional"
+titulo: "Documentación funcional: qué, para quién y cuánto"
+duracion_min: 5
+prerequisitos: [funcional-priorizacion-con-moscow-y-backlog-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué pregunta te hacés antes de escribir un documento?"
+    explicacion: "Para quién es y qué necesita saber esa persona. Eso define el nivel de detalle y el lenguaje."
+  - tipo: autoevaluacion
+    pregunta: "¿Para qué sirve un glosario?"
+    explicacion: "Para que todos usen las mismas palabras con el mismo significado. Muchas confusiones vienen de que \"cliente\" o \"vencimiento\" significan cosas distintas para cada uno."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué problema tiene tener la misma regla escrita en tres documentos?"
+    explicacion: "Cuando la regla cambia, se actualiza en uno y los otros quedan desactualizados: ya no se sabe cuál es la verdad."
+tarea_local: "Armá un glosario de al menos ocho términos del negocio del estudio contable, con una definición de una línea cada uno, y un resumen de alcance de media página para la socia, sin términos técnicos."
+resultado_esperado: "Un glosario que alguien nuevo puede leer en dos minutos, y un resumen de alcance que la socia entendería sin preguntarte nada."
+resumen:
+  - "La documentación funcional sirve para que todos entiendan lo mismo."
+  - "Antes de escribir, preguntate para quién es y qué necesita saber."
+  - "Hay que escribir lo justo, en una sola fuente de verdad, y actualizarla cuando algo cambia."
+  - "Un glosario evita que la misma palabra signifique cosas distintas para cada persona."
+entrevista:
+  en_30_segundos: "Documento pensando en quién lo va a leer: el cliente, los devs, QA o alguien nuevo. Escribo lo justo, mantengo una sola fuente de verdad con glosario, alcance, historias con criterios y diagramas, y la actualizo cuando algo cambia."
+  trampas:
+    - pregunta: "En ágil no se documenta, ¿no?"
+      respuesta: "El manifiesto ágil valora más el software que funciona que la documentación exhaustiva, pero no dice que no se documente. Se documenta lo que aporta valor, de forma liviana y actualizada."
+  cuando_no: "No documentes lo que el código o la herramienta ya muestran solos y nadie va a consultar: documentación que no se lee se desactualiza y termina confundiendo."
+---
+
+## Concepto
+
+La documentación funcional sirve para que **todos entiendan lo mismo** y para que el conocimiento no dependa de una persona. La pregunta clave antes de escribir es **¿para quién es?**:
+
+- **Cliente:** qué se va a construir y qué no, en su lenguaje.
+- **Devs:** reglas de negocio, flujos, casos borde y criterios de aceptación.
+- **QA:** criterios y escenarios para probar.
+- **Quien se sume al equipo:** el panorama general y un glosario.
+
+Buenas prácticas: escribir **lo justo** (ni un documento de cien páginas que nadie lee, ni nada), mantener **una sola fuente de verdad**, tener un **glosario** con los términos del negocio y **actualizar** cuando algo cambia.
+
+Pensalo como el manual de un electrodoméstico: hay una guía rápida para usarlo, y un manual técnico para el service. Mezclarlos no le sirve a nadie.
+
+## Ejemplo
+
+Para la app del estudio, el analista mantiene en un solo lugar compartido:
+
+- Un resumen de una página del alcance: qué incluye la primera versión y qué no.
+- Un glosario ("vencimiento", "responsable", "reasignación", "documentación pendiente").
+- Las historias con sus criterios en el backlog.
+- Un diagrama del proceso.
+- Una tabla con las reglas de reasignación.

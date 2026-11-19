@@ -1,22 +1,26 @@
 import type { Track } from '../audio/speech'
 import { AudioPlayer } from '../components/audio/AudioPlayer'
 import { audioTopics } from '../content/audio'
-import { architectureSections } from '../content/lessons'
+import { architectureSections, functionalLessons } from '../content/lessons'
 import type { Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
 import { lessonPath } from './routes'
 
-const tracks: Track[] = architectureSections.flatMap(section => section.lessons.map(lesson => ({
+const toTrack = (lesson: { id: string; titulo: string; resumen: string[] }): Track => ({
   id: lesson.id, title: lesson.titulo, lines: lesson.resumen,
-})))
+})
+const architectureTracks = architectureSections.flatMap(section => section.lessons.map(toTrack))
+const functionalTracks = functionalLessons.map(toTrack)
 
-export function Repaso({ progress }: { progress: Progress }) {
+export function Repaso({ progress, kind = 'arquitectura' }: { progress: Progress; kind?: 'arquitectura' | 'funcional' }) {
+  const tracks = kind === 'funcional' ? functionalTracks : architectureTracks
+  const name = kind === 'funcional' ? 'Análisis funcional' : 'Arquitectura'
 
   return <>
     <section className={styles.hero}>
-      <h1 tabIndex={-1}>Repaso de Arquitectura</h1>
-      <p>Leé o escuchá las ideas clave de las lecciones de Arquitectura, con preguntas para repasar en voz alta.</p>
+      <h1 tabIndex={-1}>Repaso de {name}</h1>
+      <p>Leé o escuchá las ideas clave de las lecciones de {name}, con preguntas para repasar en voz alta.</p>
     </section>
     {tracks.length > 0 ? <AudioPlayer tracks={tracks} showTitles renderTitle={track => <>
       <Link href={lessonPath(track.id)}>{track.title}</Link>

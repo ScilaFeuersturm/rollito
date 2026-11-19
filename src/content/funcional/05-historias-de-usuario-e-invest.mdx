@@ -1,0 +1,55 @@
+---
+id: funcional-historias-de-usuario-e-invest-01
+track: funcional
+nivel: trainee
+modulo: "Análisis funcional"
+titulo: "Historias de usuario e INVEST"
+duracion_min: 6
+prerequisitos: [funcional-requerimientos-funcionales-y-no-funcionales-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué parte de la historia ayuda más a decidir cómo resolverla?"
+    explicacion: "El \"para\": explica el beneficio, y con eso el equipo puede proponer la mejor solución."
+  - tipo: autoevaluacion
+    pregunta: "\"Como usuario, quiero gestionar el estudio.\" ¿Qué letra de INVEST no cumple?"
+    explicacion: "Sobre todo la S (no es pequeña) y la E (no se puede estimar). Es una épica que hay que dividir."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué \"Como desarrollador, quiero migrar la base de datos\" no es una buena historia de usuario?"
+    explicacion: "No describe valor para un usuario del sistema. Es una tarea técnica; si importa, se explica por el beneficio que habilita."
+tarea_local: "Escribí cinco historias de usuario para la app del estudio, con al menos tres roles distintos (por ejemplo, socia, responsable y administrativa). Revisá cada una contra INVEST y partí las que sean demasiado grandes."
+resultado_esperado: "Cinco historias con rol, acción y beneficio, y al lado de cada una una nota de qué letra de INVEST tuviste que mejorar, si alguna."
+resumen:
+  - "Una historia de usuario describe una funcionalidad desde el punto de vista de quien la usa."
+  - "El formato es como rol, quiero acción, para beneficio."
+  - "El para es lo más importante, porque explica el valor."
+  - "Una buena historia es independiente, negociable, valiosa, estimable, pequeña y testeable."
+entrevista:
+  en_30_segundos: "Escribo historias con rol, acción y beneficio, y las reviso con INVEST. Si una no entra en una iteración, la parto por flujo, por regla o por tipo de usuario. La historia es el disparador de una conversación con el equipo, y se completa con criterios de aceptación."
+  trampas:
+    - pregunta: "¿Una historia de usuario es la especificación completa?"
+      respuesta: "No. Es un recordatorio de una conversación. El detalle está en los criterios de aceptación, en los ejemplos y en lo que se habla con el equipo."
+  cuando_no: "Para reglas de negocio complejas o integraciones, una historia sola se queda corta: conviene acompañarla con un caso de uso, un diagrama o una tabla de reglas."
+---
+
+## Concepto
+
+Una historia de usuario describe una funcionalidad **desde el punto de vista de quien la usa**, con este formato:
+
+> Como **[rol]**, quiero **[acción]**, para **[beneficio]**.
+
+El "para" es lo más importante: explica el valor y ayuda a decidir.
+
+Una buena historia cumple **INVEST**:
+
+- **I**ndependiente: se puede construir sin depender de otra.
+- **N**egociable: es una conversación, no un contrato cerrado.
+- **V**aliosa: aporta algo a alguien.
+- **E**stimable: el equipo entiende lo suficiente para estimarla.
+- **S**mall (pequeña): entra en una iteración.
+- **T**esteable: se puede verificar si está hecha.
+
+Pensalo como un pedido en un bar: "Como turista con frío, quiero algo caliente, para entrar en calor". El mozo puede ofrecerte un café, un té o una sopa: el "para" le deja elegir la mejor opción.
+
+## Ejemplo
+
+"Como responsable de una tarea, quiero ver mis tareas ordenadas por vencimiento, para atender primero lo más urgente." En cambio, "Como usuario, quiero un sistema de tareas" es demasiado grande: hay que partirla (es una *épica*).

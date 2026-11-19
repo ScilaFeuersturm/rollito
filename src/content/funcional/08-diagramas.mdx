@@ -1,0 +1,57 @@
+---
+id: funcional-diagramas-01
+track: funcional
+nivel: trainee
+modulo: "Análisis funcional"
+titulo: "Diagramas: flujo, actividad y BPMN simple"
+duracion_min: 6
+prerequisitos: [funcional-casos-de-uso-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué elemento de BPMN usás para una decisión?"
+    explicacion: "Una compuerta, que se dibuja como un rombo."
+  - tipo: autoevaluacion
+    pregunta: "¿Para qué sirven los carriles?"
+    explicacion: "Para mostrar qué rol hace cada actividad, y ver los pases de una persona a otra, donde suelen aparecer demoras."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué conviene dibujar el proceso actual y no solo el futuro?"
+    explicacion: "Porque así el cliente valida que entendiste cómo trabaja hoy, y los problemas del proceso se ven antes de diseñar la solución."
+tarea_local: "Dibujá en papel o con una herramienta gratuita (por ejemplo draw.io o Excalidraw) el proceso actual de \"un cliente pide un trámite\" en el estudio, con al menos dos carriles, una compuerta y eventos de inicio y fin."
+resultado_esperado: "Un diagrama que alguien que no estuvo en el relevamiento puede seguir de principio a fin, y en el que se nota al menos un punto de demora o de riesgo."
+resumen:
+  - "Un diagrama muestra de un vistazo lo que en texto lleva una página."
+  - "El diagrama de flujo muestra pasos y decisiones, y el de actividad agrega inicio, fin y tareas en paralelo."
+  - "BPMN usa eventos, actividades, compuertas y carriles para procesos con varios participantes."
+  - "Dibujar el proceso actual ayuda a validar lo relevado y a ver los problemas."
+entrevista:
+  en_30_segundos: "Uso diagramas para relevar y validar: flujo o actividad para un proceso simple, y BPMN con carriles cuando participan varios roles. Primero dibujo el proceso actual con el cliente, así los problemas aparecen antes de diseñar el futuro."
+  trampas:
+    - pregunta: "¿Tenés que saber toda la notación BPMN?"
+      respuesta: "No para empezar. Con eventos, actividades, compuertas y carriles se modela la mayoría de los procesos de negocio. Lo importante es que el diagrama se entienda, no que use todos los símbolos."
+  cuando_no: "Un diagrama enorme, con cincuenta cajas, no lo lee nadie. Si crece demasiado, conviene partirlo en subprocesos o volver al texto."
+---
+
+## Concepto
+
+Un diagrama muestra de un vistazo lo que en texto lleva una página. Los más usados:
+
+- **Diagrama de flujo:** pasos y decisiones de un proceso. Rectángulos para pasos, rombos para decisiones, flechas para el orden.
+- **Diagrama de actividad (UML):** parecido, con inicio y fin marcados y actividades en paralelo.
+- **BPMN simple:** para procesos de negocio con varios participantes. Los elementos básicos son **eventos** (círculos: inicio y fin), **actividades** (rectángulos redondeados), **compuertas** (rombos: decisiones) y **carriles** (una franja por rol, para ver quién hace cada cosa).
+
+Sirven para relevar (se dibujan con el cliente) y para validar (el cliente ve enseguida si falta un paso).
+
+Pensalo como el mapa del subte: no muestra cada calle, pero entendés en dos segundos cómo ir de una estación a otra y dónde combinar.
+
+## Ejemplo
+
+Proceso actual del estudio en BPMN con tres carriles (Cliente, Administrativa y Contadora):
+
+1. El cliente manda la documentación.
+2. La administrativa carga la tarea en la planilla.
+3. Compuerta: ¿la documentación está completa?
+   - No: la administrativa la pide al cliente y se vuelve al paso 1.
+   - Sí: la contadora prepara la presentación.
+4. Evento de fin: presentación enviada.
+
+Dibujarlo hace evidente un problema: si la documentación está incompleta, nadie registra cuándo se pidió.

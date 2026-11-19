@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
 import { androidRoadmap } from './android/roadmap'
-import { architectureSection, hasAudio } from './audio'
+import { architectureSection, hasAudio, isArchitecture } from './audio'
 import { lessonSchema } from './lesson-schema'
 
 interface LessonModule {
@@ -63,7 +63,7 @@ export const architectureSections = [
   { id: 'architectures', title: 'Arquitecturas', topics: 'De MVC, MVP y MVVM a Clean Architecture y microservicios.' },
 ].map(section => ({
   ...section,
-  lessons: lessons.filter(lesson => hasAudio(lesson) && architectureSection(lesson) === section.id),
+  lessons: lessons.filter(lesson => isArchitecture(lesson) && architectureSection(lesson) === section.id),
 }))
 
 export const androidSections = androidRoadmap.map(level => ({
@@ -71,11 +71,15 @@ export const androidSections = androidRoadmap.map(level => ({
   lessons: lessons.filter(lesson => lesson.track === 'android' && lesson.nivel === level.level),
 }))
 
+export const functionalLessons = lessons.filter(lesson => lesson.track === 'funcional')
+
 const architectureSequence = architectureSections.flatMap(section => section.lessons)
 const androidSequence = androidSections.flatMap(section => section.lessons)
 
 export function nextLesson(lesson: Lesson): Lesson | undefined {
-  const sequence = hasAudio(lesson) ? architectureSequence : androidSequence
+  const sequence = isArchitecture(lesson) ? architectureSequence
+    : lesson.track === 'funcional' ? functionalLessons
+    : androidSequence
   const position = sequence.findIndex(item => item.id === lesson.id)
   return position === -1 ? undefined : sequence[position + 1]
 }

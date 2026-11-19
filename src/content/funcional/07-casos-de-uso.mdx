@@ -1,0 +1,56 @@
+---
+id: funcional-casos-de-uso-01
+track: funcional
+nivel: trainee
+modulo: "Análisis funcional"
+titulo: "Casos de uso"
+duracion_min: 6
+prerequisitos: [funcional-criterios-de-aceptacion-con-gherkin-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué diferencia hay entre una precondición y el primer paso del flujo?"
+    explicacion: "La precondición es lo que ya tiene que ser cierto antes de empezar; el primer paso es la primera acción del actor."
+  - tipo: autoevaluacion
+    pregunta: "¿Para qué sirven los flujos alternativos?"
+    explicacion: "Para documentar qué pasa cuando algo se desvía del camino feliz, que es donde aparecen las reglas de negocio y los bugs."
+  - tipo: autoevaluacion
+    pregunta: "¿Cuándo usarías un caso de uso en vez de solo una historia?"
+    explicacion: "Cuando el flujo tiene muchos pasos, varias variantes o involucra a otros sistemas, y una historia con sus criterios no alcanza para que se entienda."
+tarea_local: "Escribí el caso de uso \"Cargar una tarea nueva\" para la app del estudio, con actor, precondiciones, flujo principal de al menos cinco pasos, dos flujos alternativos y postcondiciones."
+resultado_esperado: "Un caso de uso de una página que alguien del equipo podría leer sin preguntarte nada, con los alternativos numerados según el paso en que se desvían (por ejemplo, 3a)."
+resumen:
+  - "Un caso de uso describe paso a paso cómo un actor usa el sistema para lograr un objetivo."
+  - "Tiene actor, precondiciones, flujo principal, flujos alternativos y postcondiciones."
+  - "Los flujos alternativos documentan qué pasa cuando algo se desvía o falla."
+  - "Conviene cuando el flujo es largo o tiene muchas variantes."
+entrevista:
+  en_30_segundos: "Un caso de uso describe la interacción entre un actor y el sistema para lograr un objetivo: precondiciones, flujo principal, alternativos y postcondiciones. Lo uso cuando el flujo es complejo y una historia con criterios no alcanza."
+  trampas:
+    - pregunta: "¿Casos de uso o historias de usuario?"
+      respuesta: "No compiten. La historia sirve para planificar y priorizar; el caso de uso, para detallar un flujo complejo. En muchos equipos conviven: la historia en el backlog y el caso de uso como anexo."
+  cuando_no: "Para una funcionalidad simple, como cambiar el nombre de una tarea, un caso de uso completo es burocracia: alcanza con la historia y sus criterios."
+---
+
+## Concepto
+
+Un caso de uso describe **la interacción entre un actor y el sistema para lograr un objetivo**, paso a paso. Tiene:
+
+- **Actor:** quién inicia la interacción (una persona u otro sistema).
+- **Precondiciones:** qué tiene que ser cierto antes de empezar.
+- **Flujo principal:** los pasos del camino feliz.
+- **Flujos alternativos y de excepción:** qué pasa cuando algo se desvía o falla.
+- **Postcondiciones:** cómo queda el sistema al terminar.
+
+Frente a una historia de usuario, un caso de uso es más detallado: sirve cuando el flujo tiene muchos pasos o muchas variantes.
+
+Pensalo como la receta completa de una torta: además de los pasos, dice qué hacer si no levanta o si te falta un ingrediente.
+
+## Ejemplo
+
+*Caso de uso: Reasignar tarea.*
+
+- **Actor:** Socia.
+- **Precondición:** la tarea existe y no está completada.
+- **Flujo principal:** 1. La socia abre la tarea. 2. Elige "Reasignar". 3. El sistema muestra el equipo disponible. 4. La socia elige a una persona. 5. El sistema reasigna la tarea y avisa a las dos personas.
+- **Alternativo 4a:** la persona elegida está de licencia → el sistema lo advierte y pide confirmar.
+- **Postcondición:** la tarea tiene un nuevo responsable y queda registrado el cambio.

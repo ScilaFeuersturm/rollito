@@ -7,6 +7,8 @@ import { CodePractice } from './CodePractice'
 import { InterviewPractice } from './InterviewPractice'
 import { LessonPage } from './LessonPage'
 import { Repaso } from './Repaso'
+import { interviewPractice } from '../content/android/interview-practice'
+import { functionalInterview } from '../content/funcional/interview-practice'
 import { Link, usePathname } from './router'
 import { homePath, matchRoute, pageTitle, repasoPath } from './routes'
 
@@ -57,9 +59,13 @@ export function App({ url }: { url: string }) {
       {route.name === 'leccion' && <LessonPage key={route.lesson.id} lesson={route.lesson}
         completed={Object.hasOwn(progress, route.lesson.id)} onComplete={() => complete(route.lesson.id)} />}
       {route.name === 'inicio' && <Home progress={progress} />}
-      {route.name === 'simulacro' && <InterviewPractice key={route.level.level} level={route.level} />}
+      {route.name === 'simulacro' && <InterviewPractice key={route.level.level} area="Android"
+        title={`Simulacro ${route.level.title}`} questions={interviewPractice[route.level.level]} />}
+      {route.name === 'simulacro-funcional' && <InterviewPractice area="Análisis funcional"
+        title="Simulacro Analista Funcional Trainee" questions={functionalInterview} />}
       {route.name === 'practica' && <CodePractice key={route.level.level} level={route.level} />}
       {route.name === 'repaso' && <Repaso progress={progress} />}
+      {route.name === 'repaso-funcional' && <Repaso key="funcional" kind="funcional" progress={progress} />}
       {route.name === 'no-encontrada' && <section className={styles.hero}>
         <h1 tabIndex={-1}>No encontramos esa página</h1>
         <p>Puede que la dirección haya cambiado. <Link href={homePath}>Volvé al recorrido</Link>.</p>

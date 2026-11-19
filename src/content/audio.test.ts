@@ -13,3 +13,9 @@ describe('hasAudio', () => {
     expect(hasAudio({ track: 'android', modulo: 'Kotlin' })).toBe(false)
   })
 })
+
+describe('hasAudio en Análisis funcional', () => {
+  it('habilita el audio en el track funcional', () => {
+    expect(hasAudio({ track: 'funcional', modulo: 'Análisis funcional' })).toBe(true)
+  })
+})

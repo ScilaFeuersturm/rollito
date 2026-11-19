@@ -1,0 +1,54 @@
+---
+id: funcional-priorizacion-con-moscow-y-backlog-01
+track: funcional
+nivel: trainee
+modulo: "Análisis funcional"
+titulo: "Priorización con MoSCoW y backlog"
+duracion_min: 5
+prerequisitos: [funcional-prototipos-de-baja-fidelidad-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué significa la W de MoSCoW?"
+    explicacion: "*Won't have this time*: algo que se acordó explícitamente que no entra en esta entrega, aunque quizás entre después."
+  - tipo: autoevaluacion
+    pregunta: "Si todo está marcado como *must*, ¿qué pasa?"
+    explicacion: "No hay priorización real. Hay que volver a preguntar \"si solo pudiéramos entregar una cosa, ¿cuál sería?\"."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué lo de abajo del backlog no necesita estar detallado?"
+    explicacion: "Porque puede cambiar o descartarse. Se detalla a medida que sube y se acerca el momento de construirlo."
+tarea_local: "Tomá las cinco historias que escribiste en F5, sumá tres más y clasificalas con MoSCoW. Ordenalas como un backlog y justificá en una línea cada *must*."
+resultado_esperado: "Un backlog de ocho historias ordenadas, con no más de la mitad marcadas como *must*, y al menos una como *won't*."
+resumen:
+  - "Nunca hay tiempo para todo, así que hay que priorizar."
+  - "MoSCoW clasifica en imprescindible, importante, deseable y lo que no entra ahora."
+  - "El backlog es la lista ordenada de todo lo pendiente, con lo más valioso arriba."
+  - "Lo de arriba se detalla, y lo de abajo puede seguir siendo solo una idea."
+entrevista:
+  en_30_segundos: "Priorizo con el cliente usando MoSCoW y mantengo un backlog ordenado por valor. Si todo es *must*, pregunto qué entregaríamos si solo pudiéramos hacer una cosa. Detallo lo que está arriba y dejo lo de abajo liviano, porque puede cambiar."
+  trampas:
+    - pregunta: "¿Quién decide las prioridades, el analista?"
+      respuesta: "Las decide el negocio, normalmente el Product Owner o el cliente. El analista aporta información: valor, dependencias, riesgos y lo que el equipo estima, para que la decisión sea informada."
+  cuando_no: "Con dos o tres ítems obvios, clasificarlos con MoSCoW es ceremonia: alcanza con ordenarlos."
+---
+
+## Concepto
+
+Nunca hay tiempo para todo, así que hay que **priorizar**. **MoSCoW** clasifica cada requerimiento en:
+
+- **Must have:** imprescindible. Sin esto, la entrega no sirve.
+- **Should have:** importante, pero hay forma de arreglarse un tiempo sin esto.
+- **Could have:** deseable, si sobra tiempo.
+- **Won't have (this time):** acordado que no entra **ahora**.
+
+El **backlog** es la lista ordenada de todo lo pendiente, con lo más valioso arriba. Lo de arriba está detallado y listo para construir; lo de abajo puede ser solo una idea.
+
+Pensalo como armar la valija para un viaje corto: el documento es *must*, el abrigo es *should*, el tercer par de zapatillas es *could*, y la plancha es *won't*.
+
+## Ejemplo
+
+Para la primera versión de la app del estudio:
+
+- **Must:** cargar tareas, asignarlas y ver la lista ordenada por vencimiento.
+- **Should:** aviso por mail dos días antes del vencimiento.
+- **Could:** adjuntar archivos a la tarea.
+- **Won't:** integración con el sistema de AFIP (queda para una próxima etapa).

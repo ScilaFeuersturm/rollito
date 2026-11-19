@@ -1,16 +1,15 @@
-import { interviewPractice } from '../content/android/interview-practice'
-import type { androidRoadmap } from '../content/android/roadmap'
 import styles from './App.module.css'
 import { Link } from './router'
 import { homePath } from './routes'
 
-export function InterviewPractice({ level }: { level: (typeof androidRoadmap)[number] }) {
-  const questions = interviewPractice[level.level]
+type Question = { topic: string; prompt: string; answer: string }
+
+export function InterviewPractice({ area, title, questions }: { area: string; title: string; questions: readonly Question[] }) {
 
   return <article>
     <Link href={homePath}>← Volver al recorrido</Link>
-    <p className={styles.meta}>Android · {questions.length} preguntas</p>
-    <h1 tabIndex={-1}>Simulacro {level.title}</h1>
+    <p className={styles.meta}>{area} · {questions.length} preguntas</p>
+    <h1 tabIndex={-1}>{title}</h1>
     <p>Respondé en voz alta. Explicá qué harías y por qué antes de abrir la respuesta modelo.</p>
     <ol className={styles.practiceQuestions}>
       {questions.map(question => <li key={question.topic} className={styles.level}>

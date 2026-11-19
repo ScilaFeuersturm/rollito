@@ -1,6 +1,6 @@
 # Análisis funcional · Trainee
 
-**Estado:** borradores de las lecciones 1 a 11 para revisar. Todavía no están maquetados. La lección 12 (integradora con Taller Fichín) se escribe cuando esté el contexto del proyecto.
+**Estado:** las lecciones 1 a 11 están aprobadas y publicadas en `src/content/funcional/`, con repaso en audio (`/repaso/funcional/`) y simulacro de entrevista (`/simulacro/funcional/`, datos en `src/content/funcional/interview-practice.ts`). La lección 12 (integradora con Taller Fichín) se escribe cuando esté el contexto del proyecto.
 
 Track pensado para alguien que se suma como analista funcional sin experiencia previa (primer uso real: una persona que se suma a Taller Fichín). Cada lección sigue el formato habitual: concepto con analogía, ejemplo, ejercicios de autoevaluación, tarea práctica, resumen y "cómo contarlo en una entrevista".
 
@@ -554,7 +554,7 @@ Armá un glosario de al menos ocho términos del negocio del estudio contable, c
 
 ## Para revisar
 
-- [ ] ¿El ejemplo del estudio contable te sirve como hilo conductor, o preferís otro negocio?
-- [ ] ¿Querés el repaso en audio también en este track (lee solo el resumen, como en Arquitectura)?
-- [ ] ¿Sumamos un simulacro de entrevista para analista funcional trainee, como los de Android?
+- [x] ¿El ejemplo del estudio contable te sirve como hilo conductor, o preferís otro negocio? **Sí.**
+- [x] ¿Querés el repaso en audio también en este track (lee solo el resumen, como en Arquitectura)? **Sí.**
+- [x] ¿Sumamos un simulacro de entrevista para analista funcional trainee, como los de Android? **Sí.**
 - [ ] Para la lección 12 sigue pendiente el contexto de Taller Fichín: qué es, quién publica un juego y si hay aprobación antes de que aparezca en el sitio.

@@ -1,0 +1,50 @@
+---
+id: funcional-lo-que-el-cliente-no-dice-01
+track: funcional
+nivel: trainee
+modulo: "Análisis funcional"
+titulo: "Lo que el cliente no dice"
+duracion_min: 5
+prerequisitos: [funcional-relevamiento-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué el cliente no menciona sus supuestos?"
+    explicacion: "Porque para él son tan obvios que no los registra como información. Por eso hay que preguntar activamente por ellos."
+  - tipo: autoevaluacion
+    pregunta: "Dame una pregunta \"¿Y si…?\" para el flujo \"asignar una tarea\"."
+    explicacion: "Por ejemplo: \"¿Y si la persona asignada ya tiene diez tareas para ese día?\" o \"¿Y si se asigna por error a la persona equivocada?\"."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué importa conocer los picos de volumen?"
+    explicacion: "Porque cambian los requerimientos: en época de vencimientos el sistema y el equipo tienen otra carga, y puede hacer falta priorizar, filtrar o avisar distinto."
+tarea_local: "Tomá este requerimiento del estudio: \"Cuando una tarea vence, el sistema avisa al responsable\". Escribí al menos seis preguntas \"¿Y si…?\" o \"¿Siempre…?\" que destapen supuestos y excepciones."
+resultado_esperado: "Preguntas que cubren al menos: quién más tiene que enterarse, con cuánta anticipación, qué pasa con tareas ya hechas, ausencias del responsable, feriados y fines de semana, y qué pasa si nadie hace nada después del aviso."
+resumen:
+  - "Lo más peligroso de un relevamiento es lo que nadie menciona porque parece obvio."
+  - "Hay que buscar supuestos, excepciones, reglas implícitas, volúmenes y personas ausentes."
+  - "Las preguntas y si, siempre es así y quién más destapan lo que no se dijo."
+  - "Cada excepción descubierta temprano es un problema menos en producción."
+entrevista:
+  en_30_segundos: "Busco activamente lo que no se dice: supuestos, excepciones y reglas implícitas. Para cada flujo pregunto qué pasa cuando sale mal, si siempre es así y quién más está involucrado. Las excepciones descubiertas en el relevamiento son mucho más baratas que las descubiertas en producción."
+  trampas:
+    - pregunta: "¿Cómo sabés cuándo dejar de preguntar \"¿Y si…?\"?"
+      respuesta: "Cuando las respuestas dejan de cambiar el comportamiento del sistema, o cuando el caso es tan raro que conviene resolverlo a mano. Se prioriza por frecuencia e impacto: no todo caso borde merece funcionalidad."
+  cuando_no: "No hace falta resolver cada excepción en el sistema: a veces la mejor respuesta es \"esto se maneja a mano\" y dejarlo documentado."
+---
+
+## Concepto
+
+Lo más peligroso de un relevamiento es lo que **nadie menciona**, porque para el cliente es obvio:
+
+- **Supuestos:** "Obvio que cada uno ve solo sus tareas."
+- **Excepciones:** qué pasa si alguien se va de vacaciones, si un cliente cancela o si se carga algo mal.
+- **Reglas de negocio implícitas:** "Los vencimientos de AFIP no se pueden reasignar el mismo día."
+- **Volúmenes y tiempos:** cuántas tareas por mes, cuándo hay picos.
+- **Personas que no estaban en la reunión:** quién más usa o se ve afectado por el sistema.
+
+Las preguntas que más destapan son "¿Y si…?", "¿Siempre es así?", "¿Quién más…?" y "¿Qué pasa cuando sale mal?".
+
+Pensalo como pedirle a alguien que te explique cómo llegar a su casa: te dice las calles, pero se olvida de que el portón está cerrado después de las 20 porque para él es obvio.
+
+## Ejemplo
+
+El estudio dice "cada tarea tiene un responsable". El analista pregunta "¿Y si el responsable se enferma el día del vencimiento?". Respuesta: "Ah, la toma Mirta, pero solo si es de AFIP; las otras esperan". Apareció una regla de reasignación que nadie había mencionado.

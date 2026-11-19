@@ -1,0 +1,63 @@
+---
+id: funcional-criterios-de-aceptacion-con-gherkin-01
+track: funcional
+nivel: trainee
+modulo: "Análisis funcional"
+titulo: "Criterios de aceptación con Gherkin"
+duracion_min: 6
+prerequisitos: [funcional-historias-de-usuario-e-invest-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué va en el **Dado**?"
+    explicacion: "El contexto o estado inicial antes de la acción: qué datos existen, quién está usando el sistema."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué cada escenario debería probar un solo comportamiento?"
+    explicacion: "Para que, si falla, se sepa exactamente qué no funciona, y para que se lea fácil."
+  - tipo: autoevaluacion
+    pregunta: "¿Alcanza con escribir el camino feliz?"
+    explicacion: "No. Los errores y casos borde (lista vacía, datos inválidos, sin permisos) son donde más bugs aparecen."
+tarea_local: "Para la historia \"Como socia, quiero reasignar una tarea, para cubrir a alguien ausente\", escribí tres escenarios en Gherkin: el camino feliz, la reasignación a alguien que no pertenece al estudio, y la reasignación de una tarea ya completada."
+resultado_esperado: "Tres escenarios con Dado, Cuando y Entonces, cada uno con un resultado verificable (por ejemplo, un mensaje concreto o un estado visible)."
+resumen:
+  - "Los criterios de aceptación definen cuándo una historia está terminada."
+  - "En Gherkin se escriben con dado un contexto, cuando una acción, entonces un resultado."
+  - "Cada escenario prueba un solo comportamiento."
+  - "Hay que escribir también los casos de error, no solo el camino feliz."
+entrevista:
+  en_30_segundos: "Acompaño cada historia con criterios de aceptación en Gherkin: Dado, Cuando, Entonces, un comportamiento por escenario, incluyendo errores y casos borde. Los acuerdo con QA y devs antes de construir, así todos tienen la misma definición de terminado."
+  trampas:
+    - pregunta: "¿Gherkin describe la interfaz, como \"hago clic en el botón azul\"?"
+      respuesta: "Conviene que no. Los escenarios describen comportamiento (\"cuando reasigno la tarea\"), no detalles de pantalla, así no se rompen cada vez que cambia el diseño."
+  cuando_no: "Para reglas con muchas combinaciones (por ejemplo, impuestos según tipo de cliente y monto), una tabla de decisión se lee mejor que veinte escenarios casi iguales."
+---
+
+## Concepto
+
+Los **criterios de aceptación** definen cuándo una historia está terminada. Una forma muy usada de escribirlos es **Gherkin**, con escenarios en lenguaje natural:
+
+- **Dado** un contexto inicial.
+- **Cuando** ocurre una acción.
+- **Entonces** se espera un resultado.
+- **Y** / **Pero** para encadenar condiciones.
+
+Cada escenario prueba **un solo comportamiento**, y se escriben también los casos de error, no solo el camino feliz. Como están en lenguaje natural, los entienden el cliente, los devs y QA, y algunas herramientas permiten automatizarlos como tests.
+
+Pensalo como las reglas de un juego de mesa: "Dado que tenés tres cartas iguales, cuando las bajás, entonces sumás diez puntos". No hay discusión posible sobre quién ganó.
+
+## Ejemplo
+
+Para la historia "ver mis tareas ordenadas por vencimiento":
+
+```gherkin
+Escenario: Las tareas vencidas aparecen primero
+  Dado que tengo una tarea que venció ayer
+  Y una tarea que vence mañana
+  Cuando abro mi lista de tareas
+  Entonces veo primero la tarea vencida
+  Y la tarea vencida aparece marcada como vencida
+
+Escenario: No tengo tareas asignadas
+  Dado que no tengo tareas asignadas
+  Cuando abro mi lista de tareas
+  Entonces veo el mensaje "No tenés tareas pendientes"
+```

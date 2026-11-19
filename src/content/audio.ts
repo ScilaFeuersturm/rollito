@@ -1,5 +1,5 @@
-// El repaso en audio es solo para la sección Arquitectura: conceptos para escuchar y pensar,
-// no sintaxis (la sintaxis se aprende leyendo y escribiendo código).
+// El repaso en audio es para conceptos que se escuchan y se piensan, no para sintaxis
+// (la sintaxis se aprende leyendo y escribiendo código).
 
 // Temas que más se preguntan en entrevistas de Android y frontend, en orden de aprendizaje.
 export const audioTopics = [
@@ -19,9 +19,15 @@ export const audioTopics = [
   'Monolito vs. microservicios',
 ]
 
-export function hasAudio(lesson: { track: string; modulo: string }) {
+// Lecciones de la sección Arquitectura (POO, SOLID, patrones y arquitecturas).
+export function isArchitecture(lesson: { track: string; modulo: string }) {
   return lesson.track === 'fundamentos'
     && ['arquitectura', 'solid', 'patrones de diseño'].includes(normalizedModule(lesson.modulo))
+}
+
+// El repaso en audio está en Arquitectura y en Análisis funcional: conceptos para escuchar y pensar.
+export function hasAudio(lesson: { track: string; modulo: string }) {
+  return isArchitecture(lesson) || lesson.track === 'funcional'
 }
 
 function normalizedModule(module: string) {

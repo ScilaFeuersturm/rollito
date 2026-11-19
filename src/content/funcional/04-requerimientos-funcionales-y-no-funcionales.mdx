@@ -1,0 +1,46 @@
+---
+id: funcional-requerimientos-funcionales-y-no-funcionales-01
+track: funcional
+nivel: trainee
+modulo: "Análisis funcional"
+titulo: "Requerimientos funcionales y no funcionales"
+duracion_min: 5
+prerequisitos: [funcional-lo-que-el-cliente-no-dice-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "\"El sistema envía un mail cuando se asigna una tarea.\" ¿Funcional o no funcional?"
+    explicacion: "Funcional: describe algo que el sistema hace."
+  - tipo: autoevaluacion
+    pregunta: "\"La app tiene que ser fácil de usar.\" ¿Qué problema tiene?"
+    explicacion: "No es medible. Se puede reescribir como \"una persona nueva puede asignar su primera tarea en menos de un minuto, sin capacitación\"."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué hay que relevar los no funcionales desde el principio?"
+    explicacion: "Porque pueden cambiar la arquitectura: no es lo mismo una app para 6 personas que para 600, o una que maneja datos sensibles de clientes."
+tarea_local: "Para la app del estudio, escribí cinco requerimientos funcionales y tres no funcionales. Cada no funcional tiene que incluir un número o una condición verificable."
+resultado_esperado: "Una lista donde cada no funcional se puede probar con un sí o un no (por ejemplo, \"carga en menos de 2 segundos con 500 tareas\")."
+resumen:
+  - "Un requerimiento funcional describe algo que el sistema tiene que hacer."
+  - "Un requerimiento no funcional describe cómo lo hace o qué cualidad cumple, como rendimiento o seguridad."
+  - "Los no funcionales tienen que ser medibles para poder verificarlos."
+  - "Relevarlos desde el principio evita sorpresas que cambian la arquitectura."
+entrevista:
+  en_30_segundos: "Los funcionales describen qué hace el sistema; los no funcionales, cómo lo hace: rendimiento, seguridad, usabilidad, disponibilidad. Siempre escribo los no funcionales de forma medible, porque si no, no hay forma de saber si se cumplieron."
+  trampas:
+    - pregunta: "¿La seguridad es un requerimiento funcional o no funcional?"
+      respuesta: "Depende de cómo se exprese. \"Cada persona solo ve los clientes asignados\" es una cualidad del sistema (no funcional), pero \"el sistema permite que una administradora asigne permisos\" es una funcionalidad. Lo importante no es la etiqueta, sino que esté escrito y sea verificable."
+  cuando_no: "No hace falta una lista exhaustiva de no funcionales para un prototipo interno de una semana. Sí hace falta en cuanto hay datos reales, usuarios externos o volumen."
+---
+
+## Concepto
+
+- **Requerimiento funcional:** algo que el sistema tiene que **hacer**. "El sistema permite asignar una tarea a un integrante del equipo."
+- **Requerimiento no funcional:** **cómo** tiene que hacerlo, o qué cualidad tiene que cumplir: rendimiento, seguridad, usabilidad, disponibilidad, accesibilidad, compatibilidad.
+
+Un requerimiento no funcional tiene que ser **medible**. "Tiene que ser rápido" no se puede verificar. "La lista de tareas carga en menos de 2 segundos con 500 tareas" sí.
+
+Pensalo como pedir una casa: "tiene que tener tres dormitorios" es funcional; "tiene que soportar un terremoto de grado 6" es no funcional.
+
+## Ejemplo
+
+- Funcional: "Una tarea vencida aparece marcada en rojo en la lista del responsable."
+- No funcional: "Cada persona del estudio solo ve los datos de los clientes que tiene asignados" (seguridad) y "La app se puede usar desde el celular" (compatibilidad).

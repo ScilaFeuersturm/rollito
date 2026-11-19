@@ -1,0 +1,44 @@
+---
+id: funcional-prototipos-de-baja-fidelidad-01
+track: funcional
+nivel: trainee
+modulo: "Análisis funcional"
+titulo: "Prototipos de baja fidelidad"
+duracion_min: 5
+prerequisitos: [funcional-diagramas-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué el prototipo no tiene colores ni diseño final?"
+    explicacion: "Para que la conversación se centre en la información y el flujo, no en la estética, y para que cambiarlo sea barato."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué validás con un prototipo de baja fidelidad?"
+    explicacion: "Que el flujo tiene sentido, que la información necesaria está en cada pantalla y que no falta ningún paso."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué conviene hacer mientras alguien prueba el prototipo?"
+    explicacion: "Pedirle que piense en voz alta y no explicarle cómo se usa: las dudas que tenga son los problemas del diseño."
+tarea_local: "Dibujá en papel las pantallas de \"cargar una tarea nueva\" para la app del estudio, con todos los datos que releves (título, cliente, responsable, vencimiento y lo que haga falta). Mostráselo a alguien y pedile que lo recorra pensando en voz alta."
+resultado_esperado: "Dos o tres pantallas en papel y una lista de las dudas o cambios que surgieron al probarlo."
+resumen:
+  - "Un prototipo de baja fidelidad es un boceto simple de las pantallas, sin diseño final."
+  - "Muestra qué información hay en cada pantalla y cómo se pasa de una a otra."
+  - "Sirve para validar el flujo antes de diseñar y programar, cuando cambiar es barato."
+  - "Al probarlo, pedile a la persona que piense en voz alta y no le expliques cómo se usa."
+entrevista:
+  en_30_segundos: "Uso prototipos de baja fidelidad para validar el flujo y la información antes de diseñar y programar. Los pruebo con usuarios reales pidiéndoles que piensen en voz alta, y lo que descubro se vuelve requerimiento o criterio de aceptación."
+  trampas:
+    - pregunta: "¿El analista funcional diseña las pantallas?"
+      respuesta: "No el diseño visual: eso es de diseño UX/UI. El analista puede bocetar el flujo y la información para validar requerimientos, y después trabaja con diseño para que la interfaz final los refleje."
+  cuando_no: "Si el cambio es sobre una pantalla que ya existe y el flujo no cambia, alcanza con describirlo o con una captura anotada."
+---
+
+## Concepto
+
+Un prototipo de baja fidelidad es un **boceto simple de las pantallas**: en papel, en una pizarra o con herramientas de wireframes. No tiene colores ni diseño final; muestra **qué información hay en cada pantalla y cómo se pasa de una a otra**.
+
+Sirve para validar el flujo con el cliente **antes** de diseñar y programar, cuando cambiar algo cuesta minutos. Como se ve "sin terminar", la gente se anima a criticarlo, que es justo lo que querés.
+
+Pensalo como la maqueta de cartón que hace un arquitecto: nadie va a vivir ahí, pero sirve para darse cuenta de que la cocina quedó lejos del comedor.
+
+## Ejemplo
+
+El analista dibuja tres pantallas en papel: la lista de tareas, el detalle y la reasignación. Se las muestra a la contadora y le pide que "use" la app tocando el papel. Al llegar al detalle, ella pregunta: "¿Y dónde veo qué documentación falta?". Ese dato no estaba en ningún requerimiento.

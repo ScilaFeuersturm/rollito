@@ -1,8 +1,8 @@
-import { androidSections, architectureSections, type Lesson } from '../content/lessons'
+import { androidSections, architectureSections, functionalLessons, type Lesson } from '../content/lessons'
 import type { Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
-import { interviewPath, lessonPath, practicePath, repasoPath } from './routes'
+import { functionalInterviewPath, functionalRepasoPath, interviewPath, lessonPath, practicePath, repasoPath } from './routes'
 
 const androidLessons = androidSections.flatMap(section => section.lessons)
 
@@ -89,8 +89,19 @@ export function Home({ progress }: { progress: Progress }) {
         </section>
         <section className={styles.trackCard} aria-labelledby="functional-analysis">
           <h3 id="functional-analysis">Análisis funcional</h3>
-          <p>Aprendé a relevar necesidades y convertirlas en requisitos, historias de usuario y criterios de aceptación.</p>
-          <p className={styles.trackStatus}>En preparación</p>
+          <p>Aprendé a relevar necesidades y convertirlas en requisitos, historias de usuario y criterios de aceptación, con repaso en audio.</p>
+          <nav aria-labelledby="functional-practice">
+            <h4 id="functional-practice" className={styles.practiceHeading}>Para practicar</h4>
+            <ul className={styles.practiceLinks}>
+              <li><Link href={functionalInterviewPath}>Simulacro de entrevista</Link></li>
+              <li><Link href={functionalRepasoPath}>Repaso en audio</Link></li>
+            </ul>
+          </nav>
+          <details>
+            <summary>Ver lecciones de Análisis funcional</summary>
+            <p>{functionalLessons.filter(item => Object.hasOwn(progress, item.id)).length} de {functionalLessons.length} lecciones completadas</p>
+            <LessonList items={functionalLessons} progress={progress} />
+          </details>
         </section>
       </div>
     </section>

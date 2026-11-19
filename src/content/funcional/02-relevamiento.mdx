@@ -1,0 +1,51 @@
+---
+id: funcional-relevamiento-01
+track: funcional
+nivel: trainee
+modulo: "Análisis funcional"
+titulo: "Relevamiento: entrevistas y preguntas útiles"
+duracion_min: 6
+prerequisitos: [funcional-que-hace-un-analista-funcional-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué \"¿Necesitan alertas?\" es una mala pregunta de relevamiento?"
+    explicacion: "Es cerrada e induce la respuesta: casi todos dicen que sí. No revela cómo trabajan hoy ni cuál es el problema real."
+  - tipo: autoevaluacion
+    pregunta: "¿Para qué sirve pedir \"la última vez que pasó\"?"
+    explicacion: "Un caso concreto trae detalles reales (quién, cuándo, qué falló) que en una respuesta general se pierden."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué entrevistar también a quien hace las tareas, y no solo a la socia?"
+    explicacion: "Cada rol ve partes distintas del proceso. La socia ve el resultado; quien hace las tareas conoce los pasos, las excepciones y los atajos."
+tarea_local: "Prepará una guía de entrevista de 8 preguntas para relevar cómo el estudio contable maneja hoy sus tareas. Al menos la mitad tienen que ser abiertas, y una tiene que pedir un caso concreto. Si podés, probala con alguien que maneje tareas en su trabajo."
+resultado_esperado: "Una guía que empieza por el contexto (cómo trabajan hoy), sigue por los problemas con casos concretos y termina con una pregunta de cierre del tipo \"¿Qué tendría que pasar para que digan que esto funcionó?\"."
+resumen:
+  - "Relevar es descubrir cómo funciona hoy el negocio y qué necesita."
+  - "Las preguntas abiertas y los casos concretos revelan más que las preguntas cerradas."
+  - "Preguntar el porqué varias veces lleva a la causa real del problema."
+  - "Mientras estás entendiendo el problema, no propongas soluciones."
+entrevista:
+  en_30_segundos: "Relevo con entrevistas a distintos roles, observación y revisión de documentos. Uso preguntas abiertas, pido casos concretos, pregunto el porqué hasta llegar a la causa y cierro resumiendo lo que entendí para que me corrijan."
+  trampas:
+    - pregunta: "El cliente ya sabe lo que quiere, ¿para qué relevar tanto?"
+      respuesta: "El cliente sabe qué le duele, pero no siempre qué lo resuelve. Además, distintas personas del negocio suelen tener versiones distintas del mismo proceso, y eso solo aparece relevando."
+  cuando_no: "Para un cambio chico y bien entendido, como cambiar un texto o agregar un campo, una conversación corta alcanza. El relevamiento profundo se justifica cuando el proceso es nuevo, complejo o crítico."
+---
+
+## Concepto
+
+Relevar es **descubrir cómo funciona hoy el negocio y qué necesita**. La herramienta principal es la entrevista, pero también sirve observar a la gente trabajando y revisar documentos existentes (planillas, formularios, mails).
+
+Buenas prácticas para entrevistar:
+
+- **Preguntas abiertas** ("¿Cómo hacen hoy para…?") en vez de cerradas ("¿Necesitan alertas?").
+- **Pedir casos concretos:** "Contame la última vez que se pasó un vencimiento" da más información que "¿Qué problemas tienen?".
+- **Preguntar el porqué** varias veces, hasta llegar a la causa (la técnica de los "5 porqués").
+- **No proponer soluciones** mientras todavía estás entendiendo el problema.
+- **Hablar con distintos roles:** la socia, quien carga las tareas y quien las hace ven problemas distintos.
+- **Resumir al final** lo que entendiste, para que te corrijan.
+
+Pensalo como una médica en la consulta: primero pregunta qué te pasa, desde cuándo y qué lo empeora, y recién después receta.
+
+## Ejemplo
+
+En vez de preguntar "¿Quieren notificaciones?", el analista pregunta "¿Cómo se enteran hoy de que una tarea vence esta semana?". La respuesta ("Mirta revisa la planilla los lunes y avisa por WhatsApp; si Mirta falta, nadie avisa") revela el problema real: el aviso depende de una sola persona.
