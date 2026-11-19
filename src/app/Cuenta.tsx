@@ -1,11 +1,19 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import type { Cuenta as DatosCuenta } from '../cuenta/servicio'
 import { mensajeDeError } from '../cuenta/errores'
 import styles from './App.module.css'
-import { Link } from './router'
+import { Contacto } from './Landing'
+import { Link, navigate } from './router'
 import { adminPath, privadoPath } from './routes'
 
 const servicio = () => import('../cuenta/servicio')
+
+// Adónde ir después de entrar: la página que pidió el login (?volver=) o la home. Solo rutas internas.
+let destinoTrasEntrar: string | null = null
+function recordarDestino() {
+  const volver = new URLSearchParams(location.search).get('volver')
+  destinoTrasEntrar = volver && volver.startsWith('/') && !volver.startsWith('//') && !volver.startsWith('/cuenta') ? volver : '/'
+}
 
 type Props = {
   cuenta: DatosCuenta | null | undefined
@@ -15,6 +23,13 @@ type Props = {
 }
 
 export function Cuenta({ cuenta, completadas, alCambiarCuenta, alSalir }: Props) {
+  useEffect(() => {
+    if (cuenta?.miembro && destinoTrasEntrar) {
+      const destino = destinoTrasEntrar
+      destinoTrasEntrar = null
+      navigate(destino)
+    }
+  }, [cuenta?.miembro])
   if (cuenta === undefined) return <section className={styles.hero}><h1 tabIndex={-1}>Tu cuenta</h1><p>Cargando…</p></section>
   if (cuenta === null) return <SinSesion />
   if (!cuenta.miembro) return <SinInvitacion cuenta={cuenta} alCambiarCuenta={alCambiarCuenta} alSalir={alSalir} />
@@ -54,6 +69,7 @@ function SinSesion() {
     const form = new FormData(event.currentTarget)
     void enviar(async () => {
       const s = await servicio()
+      if (modo !== 'recuperar') recordarDestino()
       if (modo === 'entrar') await s.entrar(valor(form, 'email'), valor(form, 'clave'))
       if (modo === 'registrarme') await s.registrar(valor(form, 'nombre'), valor(form, 'email'), valor(form, 'clave'), valor(form, 'codigo'))
       if (modo === 'recuperar') {
@@ -65,7 +81,7 @@ function SinSesion() {
 
   return <section className={styles.hero}>
     <h1 tabIndex={-1}>Tu cuenta</h1>
-    <p>Rollito se usa sin cuenta. Con una cuenta de Taller Fichín, tu progreso se guarda y lo ves en cualquier dispositivo.</p>
+    <p>Entrá con tu cuenta de Taller Fichín. Tu progreso se guarda en la cuenta y lo ves en cualquier dispositivo.</p>
     <p role="tablist" aria-label="Opciones de cuenta">
       {(['entrar', 'registrarme', 'recuperar'] as const).map(opcion =>
         <button key={opcion} type="button" role="tab" aria-selected={modo === opcion} className={styles.navLink}
@@ -89,6 +105,7 @@ function SinSesion() {
     </form>
     {error && <p role="alert">{error}</p>}
     {ok && <p role="status">{ok}</p>}
+    <Contacto />
   </section>
 }
 
@@ -99,13 +116,14 @@ function SinInvitacion({ cuenta, alCambiarCuenta, alSalir }: { cuenta: DatosCuen
     const form = new FormData(event.currentTarget)
     void enviar(async () => {
       const s = await servicio()
+      recordarDestino()
       await s.canjear(valor(form, 'nombre'), valor(form, 'codigo'))
       alCambiarCuenta(await s.refrescarCuenta())
     })
   }
   return <section className={styles.hero}>
     <h1 tabIndex={-1}>Falta tu invitación</h1>
-    <p>Entraste como {cuenta.email}, pero tu cuenta todavía no tiene acceso. Pedile un código de invitación a la admin.</p>
+    <p>Entraste como {cuenta.email}, pero tu cuenta todavía no tiene acceso. Si sos de Taller Fichín, pedile un código de invitación a Aramis.</p>
     <form className={styles.form} onSubmit={alEnviar}>
       <label>Código de invitación<input name="codigo" autoCapitalize="none" spellCheck={false} required /></label>
       <label>Nombre<input name="nombre" autoComplete="name" maxLength={60} required /></label>

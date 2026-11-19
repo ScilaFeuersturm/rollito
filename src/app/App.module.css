@@ -130,3 +130,5 @@
 .task table { border-collapse: collapse; display: block; overflow-x: auto; }
 .task th, .task td { border: 1px solid var(--line); padding: .35rem .5rem; text-align: left; vertical-align: top; }
 .task blockquote { margin: 1rem 0; padding-left: 1rem; border-left: 4px solid var(--accent); }
+
+.cta { display: inline-block; text-decoration: none; }

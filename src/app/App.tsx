@@ -7,6 +7,7 @@ import styles from './App.module.css'
 import { Admin } from './Admin'
 import { Cuenta } from './Cuenta'
 import { Home } from './Home'
+import { Landing, SoloMiembros } from './Landing'
 import { CodePractice } from './CodePractice'
 import { InterviewPractice } from './InterviewPractice'
 import { LessonPage } from './LessonPage'
@@ -28,6 +29,14 @@ function marcarSesion(activa: boolean) {
 
 const servicio = () => import('../cuenta/servicio')
 
+// Rutas que solo ven los miembros. La landing, la cuenta y el 404 son públicas; admin se controla adentro.
+const rutasDeContenido = new Set(['leccion', 'repaso', 'repaso-funcional', 'simulacro', 'simulacro-funcional', 'practica', 'privado'])
+const esContenido = (nombre: string) => rutasDeContenido.has(nombre)
+
+function Cargando() {
+  return <section className={styles.hero}><h1 tabIndex={-1}>Rollito</h1><p>Cargando…</p></section>
+}
+
 export function App({ url }: { url: string }) {
   const pathname = usePathname(url)
   const route = matchRoute(pathname)
@@ -39,15 +48,25 @@ export function App({ url }: { url: string }) {
   // undefined: todavía no sabemos; null: sin sesión.
   const [cuenta, setCuenta] = useState<DatosCuenta | null | undefined>(undefined)
   const [necesitaCuenta, setNecesitaCuenta] = useState(false)
+  // Hay una marca de sesión en este navegador: mientras confirmamos, mostramos "Cargando" en vez de la landing.
+  const [sesionProbable, setSesionProbable] = useState(false)
+  const esMiembro = cuenta?.miembro === true
   const firstRender = useRef(true)
   const completed = lessons.filter(item => Object.hasOwn(progress, item.id)).length
   const days = streak(progress)
 
   useEffect(() => setProgress(readProgress()), [])
 
+  // Firebase se descarga solo si hay (o puede haber) una sesión. Sin marca de sesión, ya sabemos que no hay cuenta.
   useEffect(() => {
-    if (route.name === 'cuenta' || route.name === 'admin' || haySesion()) setNecesitaCuenta(true)
-  }, [route.name])
+    if (necesitaCuenta) return
+    if (route.name === 'cuenta' || route.name === 'admin' || haySesion()) {
+      setSesionProbable(haySesion())
+      setNecesitaCuenta(true)
+    } else {
+      setCuenta(null)
+    }
+  }, [route.name, necesitaCuenta])
 
   useEffect(() => {
     if (!necesitaCuenta) return
@@ -111,31 +130,35 @@ export function App({ url }: { url: string }) {
       <div className={styles.bar}>
         <Link className={styles.brand} href={homePath}>Rollito<span aria-hidden="true">.</span></Link>
         <nav aria-label="Principal">
-          <Link className={styles.navLink} href={repasoPath}
-            aria-current={route.name === 'repaso' ? 'page' : undefined}>Repaso</Link>
-          {' '}<Link className={styles.navLink} href={cuentaPath}
-            aria-current={route.name === 'cuenta' ? 'page' : undefined}>{cuenta?.nombre ?? 'Cuenta'}</Link>
+          {esMiembro && <><Link className={styles.navLink} href={repasoPath}
+            aria-current={route.name === 'repaso' ? 'page' : undefined}>Repaso</Link>{' '}</>}
+          <Link className={styles.navLink} href={cuentaPath}
+            aria-current={route.name === 'cuenta' ? 'page' : undefined}>{cuenta?.nombre ?? 'Entrar'}</Link>
         </nav>
-        <div className={styles.stats} aria-label="Tu progreso">
+        {esMiembro && <div className={styles.stats} aria-label="Tu progreso">
           <span>{completed * xpPerLesson} XP</span>
           <span>Racha · {days} {days === 1 ? 'día' : 'días'}</span>
-        </div>
+        </div>}
       </div>
     </header>
     <main className={styles.main}>
       {storageWarning && <p role="status">El navegador no pudo guardar tu progreso. Se conserva mientras esta página siga abierta.</p>}
       {syncWarning && <p role="status">No se pudo sincronizar tu progreso con la cuenta. Queda guardado en este navegador y se vuelve a intentar la próxima vez.</p>}
-      {route.name === 'leccion' && <LessonPage key={route.lesson.id} lesson={route.lesson}
-        completed={Object.hasOwn(progress, route.lesson.id)} onComplete={() => complete(route.lesson.id)} />}
-      {route.name === 'inicio' && <Home progress={progress} />}
-      {route.name === 'simulacro' && <InterviewPractice key={route.level.level} area="Android"
-        title={`Simulacro ${route.level.title}`} questions={interviewPractice[route.level.level]} />}
-      {route.name === 'simulacro-funcional' && <InterviewPractice area="Análisis funcional"
-        title="Simulacro Analista Funcional Trainee" questions={functionalInterview} />}
-      {route.name === 'practica' && <CodePractice key={route.level.level} level={route.level} />}
-      {route.name === 'repaso' && <Repaso progress={progress} />}
-      {route.name === 'repaso-funcional' && <Repaso key="funcional" kind="funcional" progress={progress} />}
-      {route.name === 'privado' && <Privado />}
+      {route.name === 'inicio' && (esMiembro ? <Home progress={progress} />
+        : cuenta === undefined && sesionProbable ? <Cargando /> : <Landing />)}
+      {esContenido(route.name) && !esMiembro && (cuenta === undefined ? <Cargando /> : <SoloMiembros volver={pathname} />)}
+      {esContenido(route.name) && esMiembro && <>
+        {route.name === 'leccion' && <LessonPage key={route.lesson.id} lesson={route.lesson}
+          completed={Object.hasOwn(progress, route.lesson.id)} onComplete={() => complete(route.lesson.id)} />}
+        {route.name === 'simulacro' && <InterviewPractice key={route.level.level} area="Android"
+          title={`Simulacro ${route.level.title}`} questions={interviewPractice[route.level.level]} />}
+        {route.name === 'simulacro-funcional' && <InterviewPractice area="Análisis funcional"
+          title="Simulacro Analista Funcional Trainee" questions={functionalInterview} />}
+        {route.name === 'practica' && <CodePractice key={route.level.level} level={route.level} />}
+        {route.name === 'repaso' && <Repaso progress={progress} />}
+        {route.name === 'repaso-funcional' && <Repaso key="funcional" kind="funcional" progress={progress} />}
+        {route.name === 'privado' && <Privado />}
+      </>}
       {route.name === 'cuenta' && <Cuenta cuenta={cuenta} completadas={completed} alCambiarCuenta={setCuenta} alSalir={salir} />}
       {route.name === 'admin' && <Admin cuenta={cuenta} />}
       {route.name === 'no-encontrada' && <section className={styles.hero}>
