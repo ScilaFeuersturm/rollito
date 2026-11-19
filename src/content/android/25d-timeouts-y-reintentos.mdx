@@ -1,0 +1,69 @@
+---
+id: android-semi-senior-timeouts-y-reintentos-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Timeouts y reintentos con espera exponencial"
+duracion_min: 6
+prerequisitos: [android-semi-senior-kotlinx-moshi-y-gson-comparados-01, android-semi-senior-live-coding-3-repository-y-fallas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué falla **no** conviene reintentar?"
+    opciones: ["Un timeout.", "Un 404 o un JSON con formato inválido: no se arreglan reintentando, solo gastan batería y demoran el error.", "Un 503."]
+    correcta: 1
+    explicacion: "Se reintentan las fallas transitorias: sin conexión, timeout y 5xx. Un 4xx dice \"tu pedido está mal\", y repetirlo da el mismo resultado."
+  - tipo: opcion_multiple
+    pregunta: "Con `conReintentos` (3 intentos, espera inicial de 1 s), las respuestas son 503, timeout y éxito. ¿En qué momentos se hacen los tres intentos?"
+    opciones: ["0 s, 1 s y 2 s.", "0 s, 1 s y 3 s: espera 1 s y después 2 s, porque la espera se duplica.", "0 s, 3 s y 6 s."]
+    correcta: 1
+    explicacion: "Es la espera exponencial: 1 s, 2 s, 4 s… Verificado en `ReintentosTest` con el tiempo virtual de `runTest`, que registra `[0, 1000, 3000]`."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué hay que tener cuidado al reintentar un `POST /pagos`?"
+    opciones: ["Porque los POST no se pueden reintentar.", "Porque si el primer intento llegó al servidor pero la respuesta se perdió (timeout), reintentar puede cobrar dos veces. Se reintenta solo si la operación es idempotente, por ejemplo con una clave de idempotencia que el servidor reconoce.", "Porque Retrofit no permite reintentar."]
+    correcta: 1
+    explicacion: "Un timeout no dice si el servidor procesó el pedido o no. Con una `Idempotency-Key` única por operación, el servidor detecta el duplicado y no lo procesa dos veces."
+  - tipo: autoevaluacion
+    pregunta: "Explicá la diferencia entre `connectTimeout`, `readTimeout` y `callTimeout` de OkHttp."
+    explicacion: "`connectTimeout`: lo máximo para establecer la conexión TCP/TLS. `readTimeout`: lo máximo entre dos paquetes de la respuesta (no el total). `callTimeout`: lo máximo para la llamada completa, de punta a punta, incluidos los redireccionamientos y reintentos de OkHttp. Por defecto, `connectTimeout`, `readTimeout` y `writeTimeout` (el equivalente de lectura, para enviar el cuerpo) son de 10 s, y `callTimeout` no tiene límite."
+tarea_local: "En `android-samples/live-coding`, abrí `data/Reintentos.kt` y su test. Agregá un caso: un 503 seguido de un 404. ¿Cuántas llamadas hace y qué devuelve?"
+resultado_esperado: "Hace 2 llamadas: el 503 se reintenta, pero el 404 no es transitorio, así que devuelve `Error(Cliente(404))` sin esperar más."
+resumen:
+  - "Los timeouts se configuran explícitos: conexión, lectura y llamada completa."
+  - "Se reintentan solo fallas transitorias: sin conexión, timeout y errores 5xx."
+  - "La espera se duplica en cada intento: uno, dos, cuatro segundos."
+  - "Solo se reintentan operaciones idempotentes, o con clave de idempotencia."
+entrevista:
+  en_30_segundos: "Configuro timeouts explícitos en OkHttp (conexión, lectura y, si hace falta, la llamada completa). Los reintentos los hago en el repositorio, solo para fallas transitorias (sin conexión, timeout, 5xx) y con espera exponencial, para no saturar un servidor que ya está con problemas. Un 4xx no se reintenta. Y solo reintento operaciones idempotentes; para un pago, uso una clave de idempotencia."
+  trampas:
+    - pregunta: "¿OkHttp ya reintenta solo?"
+      respuesta: "Con `retryOnConnectionFailure` (activado por defecto) recupera algunos problemas de conexión, como una conexión del pool que el servidor cerró. No reintenta 5xx ni timeouts de negocio: esa política es tuya."
+    - pregunta: "¿Por qué agregarías un componente aleatorio a la espera (jitter)?"
+      respuesta: "Si mil teléfonos fallan al mismo tiempo y todos reintentan exactamente a 1 s, 2 s y 4 s, golpean al servidor en oleadas sincronizadas. Con una variación aleatoria, los reintentos se reparten en el tiempo."
+  cuando_no: "No reintentes en silencio algo que la persona está esperando por mucho tiempo: después de uno o dos intentos, mostrá el error con un botón Reintentar y dejá que ella decida."
+---
+
+import reintentos from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/data/Reintentos.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** La red móvil falla todo el tiempo: túneles, ascensores, cambios de wifi a datos. Algunas fallas se arreglan solas en un segundo y conviene reintentarlas; otras no y conviene mostrarlas enseguida. Además, sin timeouts explícitos, una pantalla puede quedar cargando mucho más de lo razonable.
+
+**Timeouts de OkHttp:**
+
+- `connectTimeout`: establecer la conexión.
+- `readTimeout`: el tiempo máximo **entre paquetes** de la respuesta, no el total.
+- `callTimeout`: la llamada completa, de punta a punta.
+
+**Reintentos:** solo para fallas **transitorias** y operaciones **idempotentes**, con **espera exponencial** (1 s, 2 s, 4 s…) para no saturar un servidor que ya tiene problemas.
+
+## Ejemplo
+
+El helper del proyecto de live coding, verificado con `runTest` y tiempo virtual (los intentos ocurren en `0`, `1000` y `3000` ms):
+
+<pre><code className="language-kotlin">{reintentos.trimEnd()}</code></pre>
+
+Se usa en el repositorio, solo para lecturas:
+
+```kotlin
+override suspend fun tareas() = conReintentos { llamar { api.tareas().map { it.aDominio() } } }
+```

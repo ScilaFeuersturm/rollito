@@ -7,7 +7,7 @@ Solución del ejercicio clásico de entrevista: *lista desde una API REST, con l
 En Android Studio: **File → Open** y elegí esta carpeta (`android-samples/live-coding`). La primera sincronización descarga las dependencias.
 
 - Correr la app: botón Run, con un emulador con internet. Usa la API pública `https://jsonplaceholder.typicode.com/todos`.
-- Tests (ViewModel y Compose, en la JVM con Robolectric): `./gradlew :app:testDebugUnitTest`.
+- Tests (27, en la JVM; los de Compose con Robolectric): `./gradlew :app:testDebugUnitTest`.
 - Deep link: `adb shell am start -W -a android.intent.action.VIEW -d "rollito://tareas/7"`.
 
 ## Dónde está cada paso
@@ -22,6 +22,10 @@ En Android Studio: **File → Open** y elegí esta carpeta (`android-samples/liv
 | 6. Hilt | `di/Modulos.kt`, `App.kt` |
 | 7. Navegación y deep link | `ui/Navegacion.kt`, `ui/detalle/DetalleScreen.kt`, `AndroidManifest.xml` |
 | 8. Tests | `app/src/test/.../TareasViewModelTest.kt`, `TareasContentTest.kt` |
+| Extra: back stack (lecciones 29d a 29f) | `app/src/test/.../ui/BackStackTest.kt` |
+| Extra: serialización comparada (25c) | `app/src/test/.../data/SerializacionComparadaTest.kt` |
+| Extra: reintentos (25d) | `data/Reintentos.kt` + `ReintentosTest.kt` |
+| Extra: refresh de token (25e, code review 3) | `data/auth/Autenticacion.kt` + `AutenticacionTest.kt` |
 
 ## Versiones
 

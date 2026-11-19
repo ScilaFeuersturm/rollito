@@ -51,5 +51,9 @@ dependencies {
     testImplementation(platform(libs.compose.bom))
     testImplementation(libs.compose.ui.test.junit4)
     testImplementation(libs.androidx.navigation.testing)
+    // Solo para comparar librerías de serialización y probar el refresh de token.
+    testImplementation(libs.gson)
+    testImplementation(libs.moshi.kotlin)
+    testImplementation(libs.okhttp.mockwebserver)
     debugImplementation(libs.compose.ui.test.manifest)
 }

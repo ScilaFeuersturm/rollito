@@ -1,0 +1,78 @@
+---
+id: android-semi-senior-kotlinx-moshi-y-gson-comparados-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Kotlinx Serialization, Moshi y Gson, comparados"
+duracion_min: 7
+prerequisitos: [android-semi-senior-okhttp-y-serializacion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "`data class SinDefault(val id: Long, val titulo: String)` recibe `{\"id\":1}`. ¿Qué hace cada librería?"
+    opciones: ["Las tres lanzan una excepción.", "Kotlinx lanza `MissingFieldException`, Moshi lanza `JsonDataException` y Gson devuelve `SinDefault(id=1, titulo=null)` sin avisar.", "Las tres devuelven `titulo = \"\"`."]
+    correcta: 1
+    explicacion: "Gson no conoce la nulabilidad de Kotlin: deja `null` en un `String` no nulable, y el `NullPointerException` aparece más tarde, lejos del parseo. Kotlinx y Moshi fallan en el momento, con un error claro."
+  - tipo: opcion_multiple
+    pregunta: "El JSON trae `\"titulo\": null` y el campo es `val titulo: String = \"Sin título\"`. Con `Json { coerceInputValues = true }`, ¿qué hace Kotlinx?"
+    opciones: ["Lanza `JsonDecodingException`.", "Usa el valor por defecto, `\"Sin título\"`. Sin `coerceInputValues`, lanza `JsonDecodingException`.", "Deja `null`."]
+    correcta: 1
+    explicacion: "`coerceInputValues` convierte un `null` (o un valor de enum desconocido) en el valor por defecto, siempre que el campo tenga uno. Sirve cuando el backend manda `null` donde debería omitir el campo."
+  - tipo: opcion_multiple
+    pregunta: "El JSON trae una clave que el modelo no tiene (`\"extra\": 5`). ¿Quién falla por defecto?"
+    opciones: ["Las tres.", "Solo Kotlinx (`JsonDecodingException`), que es estricto por defecto. Se configura con `ignoreUnknownKeys = true`. Moshi y Gson la ignoran.", "Solo Gson."]
+    correcta: 1
+    explicacion: "Por eso casi todos los proyectos configuran el `Json` de Kotlinx con `ignoreUnknownKeys = true`: si el backend agrega un campo, la app no se rompe."
+  - tipo: opcion_multiple
+    pregunta: "Trampa. Serializás `ConDefault(id = 1)` (con `titulo` y `completada` en sus valores por defecto) para mandarlo al backend. ¿Qué JSON genera Kotlinx?"
+    opciones: ["`{\"id\":1,\"titulo\":\"Sin título\",\"completada\":false}`", "`{\"id\":1}`: por defecto, Kotlinx omite los campos que tienen su valor por defecto. Moshi y Gson los mandan todos.", "`{}`"]
+    correcta: 1
+    explicacion: "Si el backend espera todos los campos, hace falta `Json { encodeDefaults = true }`. Es un bug clásico al migrar de Gson a Kotlinx: el servidor empieza a recibir pedidos con campos faltantes."
+tarea_local: "En `android-samples/live-coding`, abrí `app/src/test/.../data/SerializacionComparadaTest.kt` y corrélo. Agregá un caso propio, por ejemplo un enum con un valor que el modelo no conoce, y predecí qué hace cada librería antes de correrlo."
+resultado_esperado: "Los 5 casos pasan. En tu caso nuevo, compará tu predicción con el resultado real (pista: con un enum desconocido, Kotlinx falla salvo que uses `coerceInputValues` y el campo tenga valor por defecto)."
+resumen:
+  - "Gson usa reflexión, no conoce Kotlin y puede dejar null en un campo no nulable."
+  - "Kotlinx Serialization genera el código al compilar y respeta los valores por defecto y la nulabilidad."
+  - "Moshi entiende Kotlin, con generación de código o con su adaptador de reflexión."
+  - "Kotlinx es estricto con las claves desconocidas: se configura ignore unknown keys."
+  - "Al serializar, Kotlinx omite los valores por defecto salvo que actives encode defaults."
+entrevista:
+  en_30_segundos: "Gson usa reflexión y no conoce Kotlin: si falta un campo obligatorio, deja `null` sin avisar. Moshi y Kotlinx Serialization entienden la nulabilidad y los valores por defecto, y fallan en el parseo con un error claro. En un proyecto nuevo elijo Kotlinx: genera el código al compilar, no necesita reflexión, se lleva bien con R8 y sirve para KMP. Lo configuro con `ignoreUnknownKeys` y tengo en cuenta que por defecto no serializa los valores por defecto."
+  trampas:
+    - pregunta: "¿Moshi usa reflexión o generación de código?"
+      respuesta: "Las dos opciones. Con `KotlinJsonAdapterFactory` usa reflexión (necesita `kotlin-reflect`, más pesado). Con `moshi-kotlin-codegen` genera los adaptadores al compilar, con KSP. En producción se prefiere el codegen; verificá en el repo de Moshi qué versión soporta tu versión de KSP."
+  cuando_no: "No migres de Gson a Kotlinx en un proyecto grande de una sola vez: los dos pueden convivir mientras migrás modelo por modelo, con tests de parseo para cada uno."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Las tres librerías convierten JSON en objetos, pero se comportan distinto justo en los casos que generan bugs: campos que faltan, `null` donde no debería haber, claves nuevas del backend. Las respuestas de esta lección salen de un test que corre los mismos JSON con las tres (Kotlinx Serialization 1.13.0, Moshi 1.15.2 y Gson 2.15.0).
+
+**Cómo funciona cada una:**
+
+- **Gson:** reflexión en tiempo de ejecución. No conoce Kotlin: si la clase no tiene constructor sin argumentos, la crea **sin llamar al constructor**, así que ignora los valores por defecto y la nulabilidad. Está en mantenimiento.
+- **Moshi:** entiende Kotlin. Funciona con reflexión (`KotlinJsonAdapterFactory`) o, mejor, con generación de código (`moshi-kotlin-codegen` + KSP).
+- **Kotlinx Serialization:** un plugin del compilador genera el serializador. No usa reflexión y funciona en KMP. Es estricto por defecto.
+
+**Qué hace cada una en cada caso** (Kotlinx · Moshi · Gson):
+
+- Falta un campo **con** valor por defecto → usa el default · usa el default · **`null`**.
+- Falta un campo **sin** valor por defecto → `MissingFieldException` · `JsonDataException` · **`null` sin avisar**.
+- `null` explícito en un campo no nulable → `JsonDecodingException` (o el default, con `coerceInputValues`) · `JsonDataException` · **`null`**.
+- Clave desconocida → **`JsonDecodingException`** (salvo `ignoreUnknownKeys`) · la ignora · la ignora.
+- Serializar con valores por defecto → **los omite** (salvo `encodeDefaults`) · los manda · los manda.
+
+**Cuándo elegir cuál:** Kotlinx en proyectos nuevos, sobre todo con KMP. Moshi si el equipo ya lo usa, con codegen. Gson solo en código existente, migrando de a poco.
+
+## Ejemplo
+
+La configuración típica de Kotlinx en un proyecto real:
+
+```kotlin
+val json = Json {
+    ignoreUnknownKeys = true   // un campo nuevo del backend no rompe la app
+    coerceInputValues = true   // un null o un enum desconocido usa el valor por defecto
+    // encodeDefaults = true   // solo si el backend espera todos los campos al enviar
+}
+```
+
+Los cinco casos verificados están en `android-samples/live-coding/app/src/test/java/com/rollito/livecoding/data/SerializacionComparadaTest.kt`.

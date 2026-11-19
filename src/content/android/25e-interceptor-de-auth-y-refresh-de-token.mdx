@@ -1,0 +1,76 @@
+---
+id: android-semi-senior-interceptor-de-auth-y-refresh-de-token-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Interceptor de auth y refresh de token con Authenticator"
+duracion_min: 7
+prerequisitos: [android-semi-senior-timeouts-y-reintentos-01, android-semi-senior-datos-sensibles-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué el refresh va en un `Authenticator` y no en el `Interceptor`?"
+    opciones: ["Porque los interceptores no pueden leer headers.", "Porque OkHttp llama al `Authenticator` solo ante un 401, cierra la respuesta anterior y reintenta con el pedido que devolvés. El interceptor queda simple: solo agrega el header.", "Porque el `Authenticator` es más rápido."]
+    correcta: 1
+    explicacion: "Hacerlo a mano en un interceptor obliga a cerrar la respuesta, reintentar y evitar bucles. El `Authenticator` es la pieza que OkHttp diseñó para eso."
+  - tipo: opcion_multiple
+    pregunta: "Diez pedidos salen a la vez con un token vencido y los diez reciben 401. Con la versión ingenua (cada uno llama a `refrescar()`), ¿cuántos refreshes hay?"
+    opciones: ["Uno.", "Diez. Verificado: el test falla con `expected:<1> but was:<10>`. Con un bloque sincronizado que revisa si otro hilo ya refrescó, hay uno solo.", "Ninguno."]
+    correcta: 1
+    explicacion: "Diez refreshes simultáneos pueden invalidarse entre sí (muchos backends anulan el refresh token anterior al emitir uno nuevo) y cerrarle la sesión a la persona sin motivo."
+  - tipo: opcion_multiple
+    pregunta: "El refresh falla (el refresh token también venció). ¿Qué tiene que devolver el `Authenticator`?"
+    opciones: ["El pedido con `Authorization: Bearer null`.", "`null`: OkHttp deja de reintentar y entrega el 401. La app cierra la sesión y lleva al login.", "El mismo pedido sin cambios, para que OkHttp reintente."]
+    correcta: 1
+    explicacion: "Devolver el mismo pedido genera un bucle de 401. Verificado en el test: con el refresh fallido hay un solo pedido al servidor."
+  - tipo: autoevaluacion
+    pregunta: "¿Para qué sirve contar las respuestas anteriores (`priorResponse`) en el `Authenticator`?"
+    explicacion: "Para no entrar en un bucle: si ya reintentamos con un token recién refrescado y el servidor vuelve a responder 401, el problema no es el token vencido (puede ser falta de permisos o una sesión revocada). Ahí devolvemos `null` y nos rendimos."
+tarea_local: "En `android-samples/live-coding`, corré `AutenticacionTest`. Después, en `Autenticacion.kt`, reemplazá el bloque `synchronized` por un `sesion.refrescar()` directo y volvé a correrlo. Restauralo al terminar."
+resultado_esperado: "Con la versión sincronizada pasan los 3 tests. Con la ingenua falla `diez 401 simultaneos hacen un solo refresh`, con `expected:<1> but was:<10>`."
+resumen:
+  - "El interceptor solo agrega el header de autorización."
+  - "El authenticator se llama ante un 401, refresca el token y devuelve el pedido para reintentar."
+  - "Varios 401 simultáneos tienen que hacer un solo refresh."
+  - "Si el refresh falla, se devuelve null y la app cierra la sesión."
+  - "Se cuentan los intentos para no entrar en un bucle de errores 401."
+entrevista:
+  en_30_segundos: "Separo dos piezas de OkHttp. Un interceptor que agrega `Authorization: Bearer` a cada pedido y un `Authenticator`, que OkHttp llama solo ante un 401. El `Authenticator` refresca el token dentro de un bloque sincronizado: si otro hilo ya lo refrescó, reutiliza el nuevo, así diez 401 simultáneos hacen un solo refresh. Si el refresh falla, devuelve `null` y la app cierra la sesión, y cuento los intentos para no entrar en un bucle."
+  trampas:
+    - pregunta: "¿El refresh puede pasar por el mismo `OkHttpClient`?"
+      respuesta: "Conviene que use un cliente sin este `Authenticator` (por ejemplo, `cliente.newBuilder().authenticator(Authenticator.NONE).build()`). Si no, un 401 del endpoint de refresh dispara otro refresh, y entrás en un bucle o en un deadlock con el bloque sincronizado."
+    - pregunta: "¿Dónde guardás el token y el refresh token?"
+      respuesta: "Nunca en texto plano ni en logs: cifrados con una clave del Android Keystore. El access token puede vivir en memoria; el refresh token es el más sensible porque dura más. Se ve en la lección de datos sensibles."
+  cuando_no: "Si el backend usa sesiones con cookies y no tokens, no hace falta este mecanismo: OkHttp tiene `CookieJar`."
+---
+
+import autenticacion from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/data/auth/Autenticacion.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Los access tokens duran poco (minutos u horas). Cuando vencen, el backend responde 401, y la app tiene que conseguir uno nuevo con el refresh token y repetir el pedido, sin que la persona se entere. Hecho mal, aparecen los bugs del code review 3: `Bearer null`, bucles de 401, diez refreshes simultáneos.
+
+**Dos piezas, cada una con un trabajo:**
+
+- **`AuthInterceptor`:** agrega `Authorization: Bearer <token>` a cada pedido. Nada más.
+- **`TokenAuthenticator`:** OkHttp lo llama **solo ante un 401**. Refresca, devuelve el pedido con el token nuevo y OkHttp lo reintenta. Si devuelve `null`, OkHttp se rinde y entrega el 401.
+
+**Tres detalles que piden en entrevista:**
+
+1. **Un solo refresh** aunque lleguen varios 401: bloque sincronizado y "¿otro hilo ya lo refrescó?".
+2. **Si el refresh falla, `null`**: nunca `Bearer null` ni el mismo pedido.
+3. **Contar los intentos** con `priorResponse`, para no entrar en un bucle.
+
+## Ejemplo
+
+El código del proyecto de live coding (es la solución del code review 3). Los tests usan MockWebServer y verifican el reintento, el refresh fallido y los 10 pedidos simultáneos:
+
+<pre><code className="language-kotlin">{autenticacion.trimEnd()}</code></pre>
+
+Se arma así:
+
+```kotlin
+val cliente = OkHttpClient.Builder()
+    .addInterceptor(AuthInterceptor(sesion))
+    .authenticator(TokenAuthenticator(sesion))
+    .build()
+```
