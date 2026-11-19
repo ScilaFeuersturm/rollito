@@ -1,0 +1,45 @@
+---
+id: entrevistas-machete-android-de-una-pagina-01
+track: entrevistas
+nivel: junior
+modulo: "Machete"
+titulo: "Machete de una página: Android para la noche anterior"
+duracion_min: 7
+prerequisitos: []
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "Tapá el machete y decí, para cada uno de los 14 puntos, una frase que usarías en la entrevista. ¿En cuáles dudaste?"
+    explicacion: "Los que te costaron son los que conviene repasar con su lección de Rollito. La noche anterior no es para aprender cosas nuevas: es para ordenar lo que ya sabés."
+  - tipo: autoevaluacion
+    pregunta: "Elegí los tres puntos que más te preguntarían para el puesto y contalos en voz alta, en 30 segundos cada uno."
+    explicacion: "Si un punto te sale en menos de 30 segundos con el qué, el porqué y un ejemplo, está listo."
+tarea_local: "La noche antes, leé el machete una vez, en voz alta, y después andá a dormir. No estudies nada nuevo."
+resultado_esperado: "Llegás a la entrevista con las 14 ideas ordenadas y descansada."
+resumen:
+  - "La noche anterior se repasa, no se aprende."
+  - "Para cada tema: qué es, por qué existe y una frase para la entrevista."
+  - "Los puntos que te cuestan se repasan con su lección de Rollito."
+---
+
+## Concepto
+
+Para cada punto: **qué es**, **por qué existe** y **una frase para usar en la entrevista**.
+
+1. **MVVM, Repository y Clean.** Separar la UI, la lógica de pantalla y los datos. *"El ViewModel expone estado, el repositorio es la única fuente de datos y el dominio no depende de Android."*
+2. **Ciclo de vida y ViewModel.** La Activity se recrea al rotar y el ViewModel no. *"Cargo en el ViewModel porque sobrevive a la rotación; lo mínimo para la muerte del proceso va en SavedStateHandle."*
+3. **Compose, Material 3 y StateFlow.** UI declarativa: describís la pantalla para un estado. *"Colecto con collectAsStateWithLifecycle y separo la pantalla en una parte con estado y otra sin estado."*
+4. **Corrutinas y Flow.** Código asíncrono que se lee secuencial, con cancelación estructurada. *"Uso viewModelScope, withContext para cambiar de dispatcher y stateIn con WhileSubscribed(5000)."*
+5. **Navegación.** Un grafo con back stack y deep links. *"Rutas type-safe, popUpTo con inclusive para el login, y saveState y restoreState en la bottom navigation."*
+6. **Retrofit, OkHttp y serialización.** Llamadas HTTP como funciones suspend. *"Un solo OkHttpClient, logging solo en debug y Kotlinx Serialization con ignoreUnknownKeys."*
+7. **Carga, errores y datos seguros.** Que la persona entienda qué pasa y que nada sensible se filtre. *"Clasifico las fallas en el repositorio, reintento solo las transitorias y nunca logueo tokens."*
+8. **Hilt y Dagger.** Inyección de dependencias generada al compilar. *"El componente define desde dónde se inyecta y el scope, cuántas instancias hay; un singleton no puede depender de algo de Activity."*
+9. **Gradle y modularización.** Builds con tipos y versiones centralizadas. *"Kotlin DSL, version catalog y KSP; módulos por feature con implementation para no filtrar dependencias."*
+10. **Tests.** Confianza para cambiar código. *"ViewModel en la JVM con MockK, runTest y un dispatcher de test; la pantalla con Compose Testing."*
+11. **Git, PRs y CI.** Integrar cambios sin romper nada. *"PRs chicos, mensajes que cuentan el porqué y CI que corre build, lint y tests en cada PR."*
+12. **Crashlytics y monitoreo.** Enterarte de los problemas antes que los usuarios. *"Miro la tasa de usuarios sin crashes por versión y reporto los errores no fatales, sin datos personales."*
+13. **IA con revisión crítica.** Productividad sin bajar la calidad. *"La uso para código repetitivo y borradores; reviso ciclo de vida, hilos, errores y seguridad, y nunca pego secretos."*
+14. **Inglés técnico.** Comunicar ideas técnicas con claridad. *"Frases cortas: qué es, por qué y un ejemplo; y si no entiendo, repregunto."*
+
+## Ejemplo
+
+**Antes de entrar:** respirá, tené a mano agua y tus tres preguntas para el final, y recordá que si no sabés algo, decirlo y contar cómo lo averiguarías también es una buena respuesta.

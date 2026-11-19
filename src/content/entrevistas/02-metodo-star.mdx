@@ -1,0 +1,60 @@
+---
+id: entrevistas-metodo-star-01
+track: entrevistas
+nivel: junior
+modulo: "Experiencia y comportamiento"
+titulo: "Método STAR: un proyecto del que estés orgullosa y un bug difícil"
+duracion_min: 7
+prerequisitos: [entrevistas-contame-de-vos-01]
+ejercicios:
+  - tipo: ordenar
+    pregunta: "Ordená las partes de una respuesta STAR."
+    pasos: ["Situación: el contexto, en una o dos frases", "Tarea: qué tenías que lograr vos", "Acción: qué hiciste vos, paso a paso", "Resultado: qué cambió, idealmente con un número"]
+    explicacion: "La Acción es la parte más larga y la más importante: ahí se ve cómo pensás. La Situación tiene que ser corta."
+  - tipo: opcion_multiple
+    pregunta: "En la Acción, ¿\"nosotros\" o \"yo\"?"
+    opciones: ["\"Nosotros\", para mostrar trabajo en equipo.", "\"Yo\" para lo que hiciste vos, y \"el equipo\" para el contexto. Quien entrevista evalúa tu aporte, y con \"nosotros\" no lo puede distinguir.", "Da lo mismo."]
+    correcta: 1
+    explicacion: "El trabajo en equipo se muestra contando cómo colaboraste (\"le propuse a QA…\", \"coordiné con backend…\"), no diluyendo tu parte."
+  - tipo: opcion_multiple
+    pregunta: "Contando un bug difícil, ¿qué es lo que más valora quien entrevista?"
+    opciones: ["Que el bug fuera muy raro.", "Cómo lo investigaste: hipótesis, cómo lo reprodujiste, qué descartaste, cómo confirmaste la causa y qué hiciste para que no volviera.", "Que lo arreglaste rápido sin ayuda."]
+    correcta: 1
+    explicacion: "El método vale más que la anécdota. Cerrar con \"agregué un test que lo cubre\" o \"una alerta en Crashlytics\" muestra que pensás en evitar que se repita."
+  - tipo: autoevaluacion
+    pregunta: "Contá en voz alta tu proyecto con STAR en menos de 2 minutos. ¿La Acción ocupó al menos la mitad del tiempo?"
+    explicacion: "Si la Situación se llevó la mitad, recortá el contexto. Si el Resultado no tiene ningún dato concreto, buscá uno: tiempo ahorrado, errores que bajaron, usuarios impactados o algo que se pudo hacer gracias a tu trabajo."
+tarea_local: "Armá dos historias STAR por escrito, con la plantilla: un proyecto del que estés orgullosa y un bug difícil. Para cada una, anotá un número para el Resultado (aunque sea aproximado y lo digas así)."
+resultado_esperado: "Dos historias que se cuentan en 1 a 2 minutos cada una, con la Acción en primera persona y un resultado concreto."
+resumen:
+  - "STAR es situación, tarea, acción y resultado."
+  - "La acción es la parte más larga y va en primera persona."
+  - "El resultado conviene que tenga un número o un cambio concreto."
+  - "En un bug difícil, importa más el método de investigación que la anécdota."
+  - "Cerrá contando qué hiciste para que no se repitiera."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Las preguntas de comportamiento ("contame de una vez que…") evalúan cómo actuás de verdad. Sin estructura, la respuesta se va en contexto y no se entiende qué hiciste vos. STAR ordena la historia.
+
+- **S**ituación: contexto mínimo. *"En [COMPLETAR: empresa], el equipo de [COMPLETAR] tenía [COMPLETAR: el problema]."*
+- **T**area: tu objetivo. *"Me tocó [COMPLETAR]."*
+- **A**cción: qué hiciste vos, paso a paso. Es lo más largo.
+- **R**esultado: qué cambió. *"Bajamos [COMPLETAR: métrica] de X a Y."*
+
+## Ejemplo
+
+**Plantilla 1: un proyecto del que estés orgullosa.** Elegí uno donde tu aporte sea claro y que conecte con el puesto. Si tenés experiencia en seguridad o autenticación, es un muy buen tema: es delicado, tiene impacto y pocos lo dominan.
+
+> **S:** "[COMPLETAR: contexto del proyecto, en una o dos frases]."
+> **T:** "Mi responsabilidad era [COMPLETAR]."
+> **A:** "Primero [COMPLETAR]. Después [COMPLETAR], y para [COMPLETAR: un riesgo o una dificultad] propuse [COMPLETAR]."
+> **R:** "[COMPLETAR: resultado concreto]. Lo que más me enorgullece es [COMPLETAR]."
+
+**Plantilla 2: un bug difícil.**
+
+> **S:** "Teníamos un [COMPLETAR: crash, comportamiento raro] que pasaba [COMPLETAR: cuándo, a quién] y no se reproducía fácil."
+> **T:** "Me tocó encontrar la causa."
+> **A:** "Mi primera hipótesis fue [COMPLETAR], pero la descarté porque [COMPLETAR]. Logré reproducirlo [COMPLETAR: cómo]. La causa era [COMPLETAR]."
+> **R:** "Lo corregí con [COMPLETAR], agregué [COMPLETAR: un test, una alerta] para que no volviera, y [COMPLETAR: impacto]."

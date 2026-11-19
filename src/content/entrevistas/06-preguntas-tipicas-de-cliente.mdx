@@ -1,0 +1,55 @@
+---
+id: entrevistas-preguntas-tipicas-de-cliente-01
+track: entrevistas
+nivel: junior
+modulo: "Entrevista con el cliente"
+titulo: "Preguntas típicas de cliente: estimaciones, bloqueos y cambios"
+duracion_min: 7
+prerequisitos: [entrevistas-entrevista-con-el-cliente-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "\"¿Cuánto te llevaría esta funcionalidad?\" y todavía no tenés detalles. ¿Qué respondés?"
+    opciones: ["Un número cualquiera para no quedar mal.", "Que para estimar necesitás entender el alcance; hacés dos o tres preguntas y das un rango con los supuestos (\"si X ya existe, entre 3 y 5 días\").", "\"No puedo saberlo.\""]
+    correcta: 1
+    explicacion: "Un rango con supuestos explícitos es honesto y útil: el cliente sabe de qué depende y qué pasa si cambia."
+  - tipo: opcion_multiple
+    pregunta: "\"¿Qué hacés si estás bloqueada?\" ¿Cuál es la mejor respuesta?"
+    opciones: ["\"Sigo intentando sola hasta resolverlo.\"", "Me pongo un límite de tiempo para investigar sola; si no avanzo, pido ayuda contando qué probé, y mientras tanto avanzo con otra cosa.", "\"Le aviso al líder enseguida.\""]
+    correcta: 1
+    explicacion: "Equilibra autonomía y comunicación: no molestás por cualquier cosa, pero tampoco perdés días trabada en silencio."
+  - tipo: opcion_multiple
+    pregunta: "\"¿Cómo manejás requerimientos que cambian?\""
+    opciones: ["\"Me molesta, pero me adapto.\"", "Entiendo que es normal; hago visible el impacto (qué se mueve, qué se atrasa) y acuerdo con quien decide qué se prioriza, dejándolo por escrito.", "\"Pido que no cambien más.\""]
+    correcta: 1
+    explicacion: "El cambio es parte del trabajo. Lo profesional es hacer visible el costo para que se decida con información."
+  - tipo: autoevaluacion
+    pregunta: "Contestá en voz alta \"¿cómo es tu forma de trabajar?\" en menos de un minuto."
+    explicacion: "Una buena respuesta toca: cómo organizás el trabajo (tareas chicas, PRs chicos), cómo comunicás el avance (dailies, avisar riesgos temprano), cómo asegurás la calidad (tests, revisión) y cómo colaborás (code reviews, documentar decisiones)."
+tarea_local: "Escribí una respuesta corta, de tres o cuatro líneas, para cada una de las cinco preguntas de la lección. Usá un ejemplo real tuyo en al menos dos."
+resultado_esperado: "Cinco respuestas cortas, con al menos dos ejemplos concretos de tu experiencia."
+resumen:
+  - "Para estimar, preguntá el alcance y da un rango con supuestos."
+  - "Si te bloqueás, ponete un límite de tiempo y pedí ayuda contando qué probaste."
+  - "Los cambios de requerimientos se manejan haciendo visible su impacto."
+  - "Comunicá el avance y avisá los riesgos temprano."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Las preguntas de cliente no tienen respuesta técnica: miden previsibilidad y comunicación. Conviene tener pensadas cinco.
+
+1. **Forma de trabajo:** tareas chicas, PRs chicos, tests, avisar temprano.
+2. **Comunicación:** cómo y cuándo contás el avance y los riesgos.
+3. **Estimaciones:** preguntar el alcance, dar un rango y explicitar los supuestos.
+4. **Bloqueos:** límite de tiempo, pedir ayuda con contexto y avanzar con otra cosa mientras.
+5. **Requerimientos que cambian:** hacer visible el impacto y acordar la prioridad por escrito.
+
+## Ejemplo
+
+**Plantilla para "¿qué hacés si estás bloqueada?":**
+
+> "Primero me doy un tiempo para investigar sola, [COMPLETAR: por ejemplo, una o dos horas], revisando [COMPLETAR: documentación, el código, los logs]. Si no avanzo, pido ayuda con contexto: qué intento hacer, qué probé y qué pasó. Mientras espero, avanzo con [COMPLETAR: otra parte de la tarea]. Por ejemplo, en [COMPLETAR: situación real], [COMPLETAR: cómo se resolvió]."
+
+**Plantilla para estimaciones:**
+
+> "Antes de dar un número, preguntaría [COMPLETAR: dos o tres cosas sobre el alcance]. Con eso, daría un rango, por ejemplo [COMPLETAR], aclarando que depende de [COMPLETAR: supuestos]. Si algo cambia, aviso apenas lo sé."

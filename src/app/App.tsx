@@ -14,6 +14,7 @@ import { LessonPage } from './LessonPage'
 import { Privado } from './Privado'
 import { Repaso } from './Repaso'
 import { interviewPractice } from '../content/android/interview-practice'
+import { flashcards } from '../content/android/flashcards'
 import { functionalInterview } from '../content/funcional/interview-practice'
 import { Link, usePathname } from './router'
 import { cuentaPath, homePath, matchRoute, pageTitle, repasoPath } from './routes'
@@ -30,7 +31,7 @@ function marcarSesion(activa: boolean) {
 const servicio = () => import('../cuenta/servicio')
 
 // Rutas que solo ven los miembros. La landing, la cuenta y el 404 son públicas; admin se controla adentro.
-const rutasDeContenido = new Set(['leccion', 'repaso', 'repaso-funcional', 'simulacro', 'simulacro-funcional', 'practica', 'privado'])
+const rutasDeContenido = new Set(['flashcards', 'leccion', 'repaso', 'repaso-funcional', 'simulacro', 'simulacro-funcional', 'practica', 'privado'])
 const esContenido = (nombre: string) => rutasDeContenido.has(nombre)
 
 function Cargando() {
@@ -152,6 +153,7 @@ export function App({ url }: { url: string }) {
           completed={Object.hasOwn(progress, route.lesson.id)} onComplete={() => complete(route.lesson.id)} />}
         {route.name === 'simulacro' && <InterviewPractice key={route.level.level} area="Android"
           title={`Simulacro ${route.level.title}`} questions={interviewPractice[route.level.level]} />}
+        {route.name === 'flashcards' && <InterviewPractice area="Android" title="Ronda relámpago" questions={flashcards} />}
         {route.name === 'simulacro-funcional' && <InterviewPractice area="Análisis funcional"
           title="Simulacro Analista Funcional Trainee" questions={functionalInterview} />}
         {route.name === 'practica' && <CodePractice key={route.level.level} level={route.level} />}

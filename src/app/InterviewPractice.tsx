@@ -12,7 +12,7 @@ export function InterviewPractice({ area, title, questions }: { area: string; ti
     <h1 tabIndex={-1}>{title}</h1>
     <p>Respondé en voz alta. Explicá qué harías y por qué antes de abrir la respuesta modelo.</p>
     <ol className={styles.practiceQuestions}>
-      {questions.map(question => <li key={question.topic} className={styles.level}>
+      {questions.map((question, index) => <li key={index} className={styles.level}>
         <h2>{question.topic}</h2>
         <p>{question.prompt}</p>
         <details>

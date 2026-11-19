@@ -1,8 +1,8 @@
-import { androidSections, architectureSections, functionalLessons, reactSections, type Lesson } from '../content/lessons'
+import { androidSections, architectureSections, functionalLessons, interviewLessons, reactSections, type Lesson } from '../content/lessons'
 import type { Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
-import { functionalInterviewPath, functionalRepasoPath, interviewPath, lessonPath, practicePath, repasoPath } from './routes'
+import { flashcardsPath, functionalInterviewPath, functionalRepasoPath, interviewPath, lessonPath, practicePath, repasoPath } from './routes'
 
 const androidLessons = androidSections.flatMap(section => section.lessons)
 
@@ -55,6 +55,7 @@ export function Home({ progress }: { progress: Progress }) {
               {androidSections.map(level => <li key={level.level}>
                 <Link href={interviewPath(level.level)}>{level.title}</Link>
               </li>)}
+              <li><Link href={flashcardsPath}>Ronda relámpago (60 preguntas)</Link></li>
             </ul>
           </nav>
           <nav aria-labelledby="android-code-practice">
@@ -97,6 +98,15 @@ export function Home({ progress }: { progress: Progress }) {
                   : <p className={styles.pending}>Lecciones en preparación</p>}
               </section>)}
             </div>
+          </details>
+        </section>
+        <section className={styles.trackCard} aria-labelledby="interviews">
+          <h3 id="interviews">Entrevistas</h3>
+          <p>Prepará las preguntas que no son técnicas: contarte, historias STAR, entrevista con el cliente, inglés técnico y un machete para la noche anterior.</p>
+          <details>
+            <summary>Ver lecciones de Entrevistas</summary>
+            <p>{interviewLessons.filter(item => Object.hasOwn(progress, item.id)).length} de {interviewLessons.length} lecciones completadas</p>
+            <LessonList items={interviewLessons} progress={progress} />
           </details>
         </section>
         <section className={styles.trackCard} aria-labelledby="functional-analysis">

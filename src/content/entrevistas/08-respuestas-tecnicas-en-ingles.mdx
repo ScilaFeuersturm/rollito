@@ -1,0 +1,135 @@
+---
+id: entrevistas-respuestas-tecnicas-en-ingles-01
+track: entrevistas
+nivel: junior
+modulo: "Inglés técnico"
+titulo: "15 preguntas técnicas en inglés, con respuesta modelo"
+duracion_min: 7
+prerequisitos: []
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué conviene en una entrevista técnica en inglés?"
+    opciones: ["Respuestas largas con vocabulario complejo, para mostrar nivel.", "Frases cortas y claras, con una estructura simple: qué es, por qué se usa y un ejemplo. Se entiende mejor y te equivocás menos.", "Contestar en español si te trabás."]
+    correcta: 1
+    explicacion: "En una entrevista B2 evalúan si podés comunicar ideas técnicas con claridad, no si usás palabras difíciles."
+  - tipo: autoevaluacion
+    pregunta: "Grabate respondiendo tres preguntas de la lista sin mirar la respuesta. Después compará."
+    explicacion: "Fijate en tres cosas: si la estructura fue clara (qué es, por qué y un ejemplo), si usaste los términos técnicos correctos y si hablaste en frases cortas. No te preocupes por el acento."
+tarea_local: "Elegí cinco preguntas de la lista, escribí tu propia respuesta en inglés y practicala en voz alta hasta poder decirla sin leer."
+resultado_esperado: "Cinco respuestas propias de 20 a 40 segundos cada una, dichas sin leer."
+resumen:
+  - "Frases cortas y estructura simple: qué es, por qué y un ejemplo."
+  - "Los términos técnicos se dicen igual que en el trabajo diario."
+  - "Practicar en voz alta vale más que leer."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Si la búsqueda pide inglés B2, puede haber una parte de la entrevista en inglés. Sirve tener respuestas cortas pensadas para lo que más se pregunta. Intentá contestar cada una antes de abrir la respuesta.
+
+## Ejemplo
+
+<details>
+<summary>1. Tell me about yourself.</summary>
+
+"I'm a mobile developer with [COMPLETAR] years of experience, mainly in [COMPLETAR]. I've worked on [COMPLETAR], and I'm especially interested in [COMPLETAR]. Now I'm looking for [COMPLETAR]."
+
+</details>
+
+<details>
+<summary>2. Can you explain MVVM?</summary>
+
+"MVVM separates the UI from the logic. The View displays data, the ViewModel holds the screen state and handles user events, and the Model is the data layer, usually through a repository. The ViewModel doesn't know about the View, so it's easy to test and it survives configuration changes."
+
+</details>
+
+<details>
+<summary>3. What's the difference between StateFlow and LiveData?</summary>
+
+"Both hold observable state. LiveData is lifecycle-aware and Android-specific. StateFlow is part of Kotlin coroutines, always has a value, and has more operators, but you need to collect it in a lifecycle-aware way, for example with collectAsStateWithLifecycle."
+
+</details>
+
+<details>
+<summary>4. How do you handle errors in network calls?</summary>
+
+"The repository catches exceptions and maps them to domain errors: no connection, timeout, client error, server error or parsing error. The ViewModel turns them into a UI state, and the screen shows a message and a retry button when it makes sense."
+
+</details>
+
+<details>
+<summary>5. What is a coroutine?</summary>
+
+"A coroutine is a lightweight way to write asynchronous code that looks sequential. It can suspend without blocking a thread, and with structured concurrency it's cancelled automatically when its scope ends, for example when the ViewModel is cleared."
+
+</details>
+
+<details>
+<summary>6. Why use dependency injection?</summary>
+
+"It makes classes receive their dependencies instead of creating them. That makes the code easier to test, because you can pass fakes, and easier to change. On Android I use Hilt, which is built on top of Dagger."
+
+</details>
+
+<details>
+<summary>7. What is Jetpack Compose?</summary>
+
+"Compose is Android's declarative UI toolkit. Instead of mutating views, you describe the UI for a given state, and when the state changes, Compose recomposes only the parts that depend on it."
+
+</details>
+
+<details>
+<summary>8. How do you test a ViewModel?</summary>
+
+"I test it on the JVM. I mock the repository with MockK, replace the Main dispatcher with a test dispatcher, and use runTest to check the sequence of UI states, for example loading, then content, or loading, then error."
+
+</details>
+
+<details>
+<summary>9. What happens when the user rotates the screen?</summary>
+
+"The Activity is destroyed and recreated, but the ViewModel survives because it's kept in the ViewModelStore. Small UI state can be saved with rememberSaveable, and SavedStateHandle covers process death."
+
+</details>
+
+<details>
+<summary>10. How do you store sensitive data?</summary>
+
+"Never in plain text and never in logs. Tokens are encrypted with a key stored in the Android Keystore, and I avoid keeping secrets in the app itself, because an APK can be decompiled."
+
+</details>
+
+<details>
+<summary>11. Describe your code review process.</summary>
+
+"I keep pull requests small, describe what changed and how to test it, and make sure CI passes. When reviewing, I focus on correctness, readability and edge cases, and I ask questions instead of just giving orders."
+
+</details>
+
+<details>
+<summary>12. How do you use AI tools when coding?</summary>
+
+"I use them for boilerplate, first drafts of tests and exploring new APIs. I review everything like code from someone who doesn't know the project, and I never paste secrets or confidential code."
+
+</details>
+
+<details>
+<summary>13. Tell me about a difficult bug you fixed.</summary>
+
+"Use the STAR structure: the situation, your task, what you did step by step, and the result. Focus on how you investigated: your hypotheses, how you reproduced it and how you prevented it from happening again."
+
+</details>
+
+<details>
+<summary>14. Why do you want to work here?</summary>
+
+"Connect something specific about the company with what you're looking for: 'I'm interested in [COMPLETAR] because [COMPLETAR], and I think my experience in [COMPLETAR] can help with [COMPLETAR].'"
+
+</details>
+
+<details>
+<summary>15. Do you have any questions for us?</summary>
+
+"Yes, thank you. What does a typical week look like for the team? And what's the biggest technical challenge you're facing right now?"
+
+</details>

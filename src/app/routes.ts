@@ -9,6 +9,7 @@ export type Route =
   | { name: 'repaso-funcional' }
   | { name: 'simulacro-funcional' }
   | { name: 'simulacro'; level: (typeof androidRoadmap)[number] }
+  | { name: 'flashcards' }
   | { name: 'practica'; level: (typeof androidRoadmap)[number] }
   | { name: 'privado' }
   | { name: 'cuenta' }
@@ -19,6 +20,7 @@ export const homePath = '/'
 export const repasoPath = '/repaso/'
 export const functionalRepasoPath = '/repaso/funcional/'
 export const functionalInterviewPath = '/simulacro/funcional/'
+export const flashcardsPath = '/flashcards/android/'
 export const interviewPath = (level: AndroidLevel) => `/simulacro/android/${level}/`
 export const practicePath = (level: AndroidLevel) => `/practica/android/${level}/`
 export const privadoPath = '/privado/'
@@ -35,6 +37,7 @@ export function matchRoute(pathname: string): Route {
   if (path + '/' === adminPath) return { name: 'admin' }
   if (path + '/' === functionalRepasoPath) return { name: 'repaso-funcional' }
   if (path + '/' === functionalInterviewPath) return { name: 'simulacro-funcional' }
+  if (path + '/' === flashcardsPath) return { name: 'flashcards' }
   const level = androidRoadmap.find(item => path + '/' === interviewPath(item.level))
   if (level) return { name: 'simulacro', level }
   const practiceLevel = androidRoadmap.find(item => path + '/' === practicePath(item.level))
@@ -50,6 +53,7 @@ export function pageTitle(route: Route) {
     case 'repaso': return 'Repaso de Arquitectura · Rollito'
     case 'repaso-funcional': return 'Repaso de Análisis funcional · Rollito'
     case 'simulacro-funcional': return 'Simulacro Analista Funcional Trainee · Rollito'
+    case 'flashcards': return 'Ronda relámpago Android · Rollito'
     case 'simulacro': return `Simulacro Android · ${route.level.title} · Rollito`
     case 'practica': return `Práctica de código Android · ${route.level.title} · Rollito`
     case 'leccion': return `${route.lesson.titulo} · Rollito`
@@ -66,6 +70,7 @@ export const prerenderPaths = [
   repasoPath,
   functionalRepasoPath,
   functionalInterviewPath,
+  flashcardsPath,
   privadoPath,
   cuentaPath,
   adminPath,
