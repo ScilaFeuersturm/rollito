@@ -1,6 +1,6 @@
 # React · De Junior a Semi Senior
 
-**Estado:** borradores de las 8 lecciones Junior para revisar. Todavía no están maquetadas. Las 10 lecciones Semi Senior, los simulacros y la práctica de código vienen en la próxima tanda.
+**Estado:** las 8 lecciones Junior están aprobadas y publicadas en `src/content/react/`. Las 10 lecciones Semi Senior, los simulacros y la práctica de código vienen en la próxima tanda.
 
 Cada lección sigue el formato habitual: concepto con analogía, ejemplo, ejercicios de autoevaluación, tarea para tu máquina, resumen y "cómo contarlo en una entrevista". El ejemplo de cada lección es un `App.tsx` de `react-samples/` que TypeScript y un test verifican. En la app se ve como código, con un botón **Probar en vivo** que abre Sandpack para editarlo y ver el resultado.
 

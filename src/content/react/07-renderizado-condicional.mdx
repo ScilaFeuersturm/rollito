@@ -1,0 +1,54 @@
+---
+id: react-junior-renderizado-condicional-01
+track: react
+nivel: junior
+modulo: "React"
+titulo: "Renderizado condicional"
+duracion_min: 5
+prerequisitos: [react-junior-listas-y-keys-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué muestra `{cantidad && <p>Tenés tareas</p>}` si `cantidad` es 0?"
+    explicacion: "Un \"0\" en la pantalla: `0 && algo` da 0, y React dibuja los números. La condición tiene que ser booleana: `cantidad > 0`."
+  - tipo: autoevaluacion
+    pregunta: "¿Cuándo usás un ternario y cuándo `&&`?"
+    explicacion: "El ternario cuando hay dos alternativas para mostrar. `&&` cuando se muestra algo o nada."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué devuelve un componente que no tiene que mostrar nada?"
+    explicacion: "`null`."
+tarea_local: "Armá una pantalla con tres estados: \"Cargando…\", la lista de tareas y \"No tenés tareas\". Simulá cada uno con una variable y usá un `return` temprano para el estado de carga."
+resultado_esperado: "Al cambiar la variable se ve cada uno de los tres estados, y nunca aparece un número suelto en la pantalla."
+resumen:
+  - "El renderizado condicional se hace con JavaScript común: ternarios, and lógico e if con return temprano."
+  - "El ternario elige entre dos alternativas, y el and lógico muestra algo o nada."
+  - "Con and lógico, una condición que vale cero muestra el cero en pantalla: conviene que sea booleana."
+  - "Un componente que no tiene que mostrar nada devuelve null."
+entrevista:
+  en_30_segundos: "Uso ternarios para elegir entre dos alternativas, `&&` para mostrar algo o nada con condiciones booleanas, y `return` temprano para estados como carga o error. Cuando la lógica crece, extraigo componentes o variables con nombre para que el JSX siga legible."
+  trampas:
+    - pregunta: "¿Ocultar con CSS es lo mismo que no renderizar?"
+      respuesta: "No. Si no se renderiza, el componente no existe: pierde su estado y no consume recursos. Si se oculta con CSS, sigue montado y conserva su estado. A veces conviene una cosa y a veces la otra."
+  cuando_no: "Ternarios anidados dentro del JSX se vuelven ilegibles. Con más de dos casos, conviene un `if` antes del `return`, un objeto que mapee estados a componentes o un componente aparte."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/07-renderizado-condicional/App.tsx?raw'
+
+## Concepto
+
+Mostrar una cosa u otra según una condición se hace con JavaScript común:
+
+- **Ternario** `condicion ? <A /> : <B />` cuando hay dos alternativas.
+- **`&&`** cuando hay una sola: `hayError && <Mensaje />`.
+- **`if` con `return` temprano** antes del JSX principal, por ejemplo para un estado de carga.
+- **`return null`** cuando el componente no tiene que mostrar nada.
+
+La trampa clásica: con `&&`, si la condición es un número, `0 && <A />` da `0`, y React **muestra el 0**. Por eso conviene que la condición sea booleana: `cantidad > 0 && ...`.
+
+Pensalo como un cartel de "Abierto / Cerrado" en una puerta: según la hora, se da vuelta y muestra una cara u otra.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+Con la lista vacía se ve el mensaje. `urgentes > 0 && ...` no muestra nada cuando `urgentes` es 0. Con `urgentes && ...` aparecería un "0" suelto en la pantalla.

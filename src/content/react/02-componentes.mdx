@@ -1,0 +1,51 @@
+---
+id: react-junior-componentes-01
+track: react
+nivel: junior
+modulo: "React"
+titulo: "Componentes"
+duracion_min: 5
+prerequisitos: [react-junior-jsx-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué pasa si declarás un componente como `tarjetaDeTarea`, con minúscula?"
+    explicacion: "Al usarlo como `<tarjetaDeTarea />`, React lo interpreta como una etiqueta HTML desconocida y no ejecuta tu función. Los componentes van con mayúscula."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué significa que un componente sea puro?"
+    explicacion: "Que con las mismas props y el mismo estado devuelve siempre el mismo JSX, y que mientras se dibuja no modifica variables de afuera ni hace pedidos de red."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué conviene partir una pantalla en componentes chicos?"
+    explicacion: "Se reutilizan, se leen y se prueban por separado, y cada uno tiene una responsabilidad clara."
+tarea_local: "En tu proyecto de Vite, partí una pantalla de tareas en tres componentes: `Encabezado`, `ListaDeTareas` y `PieDePagina`, cada uno en su propio archivo, y usalos desde `App`."
+resultado_esperado: "`App` queda corta y se lee como un índice de la pantalla, y cada componente vive en su archivo."
+resumen:
+  - "Un componente es una función que devuelve JSX."
+  - "Su nombre empieza con mayúscula, y se usa como una etiqueta."
+  - "La interfaz se arma combinando componentes chicos y reutilizables."
+  - "Un componente tiene que ser puro: con los mismos datos, devuelve siempre lo mismo."
+entrevista:
+  en_30_segundos: "Un componente es una función que recibe props y devuelve JSX. Armo la interfaz componiendo piezas chicas con una responsabilidad cada una, y las mantengo puras: el dibujo depende solo de sus props y su estado, y los efectos van aparte."
+  trampas:
+    - pregunta: "¿Componentes de clase o de función?"
+      respuesta: "Hoy se usan componentes de función con hooks: son más simples y es lo que recomienda la documentación de React. Los de clase siguen funcionando y aparecen en código viejo, así que conviene reconocerlos."
+  cuando_no: "Partir de más también es un problema: un componente de tres líneas que se usa una sola vez y obliga a saltar entre archivos no aporta. Se extrae cuando se repite o cuando simplifica."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/02-componentes/App.tsx?raw'
+
+## Concepto
+
+Un componente es una **función que devuelve JSX**. Es la pieza básica de React: la interfaz se arma combinando componentes chicos, como bloques. Reglas:
+
+- El nombre **empieza con mayúscula** (`TarjetaDeTarea`). Con minúscula, React lo trata como una etiqueta HTML.
+- Se usa como una etiqueta: `<TarjetaDeTarea />`.
+- Tiene que ser **puro**: con los mismos datos, devuelve siempre lo mismo y no modifica nada de afuera mientras se dibuja.
+
+Pensalo como los bloques de Lego: cada pieza tiene una forma definida y la podés usar las veces que quieras para armar cosas más grandes.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+`App` se arma con un `Encabezado` y dos `TarjetaDeTarea`. Por ahora las dos tarjetas son iguales: en la próxima lección cada una va a recibir sus propios datos.

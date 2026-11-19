@@ -1,0 +1,49 @@
+---
+id: react-junior-listas-y-keys-01
+track: react
+nivel: junior
+modulo: "React"
+titulo: "Listas y keys"
+duracion_min: 6
+prerequisitos: [react-junior-eventos-y-comunicacion-de-hijo-a-padre-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué tiene que cumplir una key?"
+    explicacion: "Ser única entre hermanos y estable: el mismo dato tiene que tener siempre la misma key entre dibujos."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué el índice como key falla al agregar un elemento al principio?"
+    explicacion: "Porque todos los elementos cambian de índice: React cree que cada fila es otra, y el estado interno de las filas queda en la posición equivocada."
+  - tipo: autoevaluacion
+    pregunta: "¿Usarías `Math.random()` como key?"
+    explicacion: "No: cambia en cada dibujo, así que React cree que todos los elementos son nuevos, los destruye y los vuelve a crear, perdiendo su estado."
+tarea_local: "Armá una lista de tareas donde cada fila tenga un campo de texto para una nota. Usá el índice como key, escribí una nota en la primera fila y agregá una tarea al principio. Después repetilo con el `id` como key."
+resultado_esperado: "Con el índice, la nota queda en la primera fila, que ahora es otra tarea. Con el `id`, la nota sigue con su tarea."
+resumen:
+  - "Para mostrar una lista se transforma un array en elementos con map."
+  - "Cada elemento necesita una key única entre hermanos y estable en el tiempo, como el id del dato."
+  - "Con el índice como key, agregar o reordenar elementos mezcla el estado de las filas."
+  - "Una key que cambia en cada dibujo hace que React vuelva a crear todos los elementos."
+entrevista:
+  en_30_segundos: "Renderizo listas con `map` y una key estable y única entre hermanos, normalmente el id del dato. React la usa para reconciliar: saber qué elementos se mantienen, cuáles se agregan y cuáles se van. Evito el índice si la lista puede cambiar de orden, porque mezcla el estado de las filas."
+  trampas:
+    - pregunta: "¿Un componente puede leer su key como prop?"
+      respuesta: "No: React la usa internamente y no la pasa como prop. Si el componente necesita el id, hay que pasárselo además en otra prop."
+  cuando_no: "Si la lista es estática, nunca cambia de orden y sus filas no tienen estado interno, el índice como key no causa problemas. Igual, si hay un id, conviene usarlo."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/06-listas-y-keys/App.tsx?raw'
+
+## Concepto
+
+Para mostrar una lista se transforma un array en elementos con `map`. Cada elemento necesita una **key**: un valor **único entre hermanos y estable en el tiempo**, normalmente el `id` del dato. React usa la key para saber qué elemento es cuál entre un dibujo y el siguiente.
+
+Usar el índice del array como key funciona si la lista nunca cambia de orden, pero falla al agregar al principio, borrar o reordenar: React confunde los elementos y el estado interno de cada fila (por ejemplo, un checkbox o un campo de texto) queda pegado a la posición equivocada.
+
+Pensalo como el DNI de cada persona en una fila: si identificás a la gente por su lugar en la fila ("el tercero"), cuando alguien se cuela todos cambian de identidad.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+Cada `li` tiene como key el `id` de la tarea. Al agregar una arriba, React sabe que las otras dos son las mismas y solo agrega la nueva.

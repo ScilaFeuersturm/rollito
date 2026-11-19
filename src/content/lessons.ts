@@ -73,12 +73,20 @@ export const androidSections = androidRoadmap.map(level => ({
 
 export const functionalLessons = lessons.filter(lesson => lesson.track === 'funcional')
 
+export const reactSections = [
+  { level: 'junior', title: 'Junior', description: 'JSX, componentes, props, estado, eventos, listas, renderizado condicional y formularios.' },
+  { level: 'semi-senior', title: 'Semi Senior', description: 'Hooks, Context, estado global, datos remotos, routing, TypeScript, testing y performance.' },
+].map(section => ({ ...section, lessons: lessons.filter(lesson => lesson.track === 'react' && lesson.nivel === section.level) }))
+
+const reactSequence = reactSections.flatMap(section => section.lessons)
+
 const architectureSequence = architectureSections.flatMap(section => section.lessons)
 const androidSequence = androidSections.flatMap(section => section.lessons)
 
 export function nextLesson(lesson: Lesson): Lesson | undefined {
   const sequence = isArchitecture(lesson) ? architectureSequence
     : lesson.track === 'funcional' ? functionalLessons
+    : lesson.track === 'react' ? reactSequence
     : androidSequence
   const position = sequence.findIndex(item => item.id === lesson.id)
   return position === -1 ? undefined : sequence[position + 1]

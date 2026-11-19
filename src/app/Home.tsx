@@ -1,4 +1,4 @@
-import { androidSections, architectureSections, functionalLessons, type Lesson } from '../content/lessons'
+import { androidSections, architectureSections, functionalLessons, reactSections, type Lesson } from '../content/lessons'
 import type { Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
@@ -84,8 +84,20 @@ export function Home({ progress }: { progress: Progress }) {
         </section>
         <section className={styles.trackCard} aria-labelledby="react">
           <h3 id="react">React</h3>
-          <p>Construí interfaces web con componentes, estado y hooks.</p>
-          <p className={styles.trackStatus}>En preparación</p>
+          <p>Construí interfaces web con componentes, estado y hooks, con ejemplos que podés editar en vivo.</p>
+          <details>
+            <summary>Ver lecciones de React</summary>
+            <div className={styles.roadmap}>
+              {reactSections.map(section => <section key={section.level} className={styles.level}
+                aria-labelledby={`react-${section.level}`}>
+                <h4 id={`react-${section.level}`}>{section.title}</h4>
+                <p>{section.description}</p>
+                {section.lessons.length > 0
+                  ? <LessonList items={section.lessons} progress={progress} />
+                  : <p className={styles.pending}>Lecciones en preparación</p>}
+              </section>)}
+            </div>
+          </details>
         </section>
         <section className={styles.trackCard} aria-labelledby="functional-analysis">
           <h3 id="functional-analysis">Análisis funcional</h3>

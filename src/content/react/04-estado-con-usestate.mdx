@@ -1,0 +1,52 @@
+---
+id: react-junior-estado-con-usestate-01
+track: react
+nivel: junior
+modulo: "React"
+titulo: "Estado con useState"
+duracion_min: 6
+prerequisitos: [react-junior-props-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué no alcanza con una variable común (`let completada = false`)?"
+    explicacion: "Porque se vuelve a crear en cada dibujo y cambiarla no avisa a React, así que la pantalla no se actualiza."
+  - tipo: autoevaluacion
+    pregunta: "Con `cantidad` en 0, llamás dos veces seguidas a `setCantidad(cantidad + 1)`. ¿Cuánto vale después?"
+    explicacion: "1. Las dos llamadas usan el mismo valor de `cantidad` de ese dibujo. Con `setCantidad(c => c + 1)` dos veces, vale 2."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué hacer `tareas.push(nueva)` y después `setTareas(tareas)` no actualiza la pantalla?"
+    explicacion: "Porque es la misma lista: React compara la referencia, ve que no cambió y no vuelve a dibujar. Hay que crear una lista nueva, por ejemplo `setTareas([...tareas, nueva])`."
+tarea_local: "Hacé un contador de tareas hechas con dos botones: \"Sumar una\" y \"Sumar tres\". \"Sumar tres\" tiene que llamar tres veces al setter. Probalo primero con `setHechas(hechas + 1)` y después con la forma con función."
+resultado_esperado: "Con la primera forma, \"Sumar tres\" suma solo uno. Con `setHechas(h => h + 1)` suma tres."
+resumen:
+  - "El estado es la memoria de un componente, y al cambiar hace que React lo vuelva a dibujar."
+  - "Use state devuelve el valor actual y una función para cambiarlo."
+  - "Si el valor nuevo depende del anterior, se usa la forma con función."
+  - "Los objetos y listas del estado no se modifican: se reemplazan por una copia nueva."
+entrevista:
+  en_30_segundos: "El estado es la memoria de un componente: con `useState` obtengo el valor y un setter, y cada cambio dispara un nuevo dibujo. Trato el estado como inmutable, creando copias nuevas, y uso la forma con función cuando el valor nuevo depende del anterior."
+  trampas:
+    - pregunta: "Después de `setCantidad(5)`, ¿qué imprime `console.log(cantidad)` en la línea siguiente?"
+      respuesta: "El valor anterior. El setter no cambia la variable de ese dibujo: programa uno nuevo, y recién ahí `cantidad` vale 5."
+  cuando_no: "No todo va al estado: lo que se puede calcular a partir de otro estado o de las props (por ejemplo, la cantidad de tareas pendientes) se calcula al dibujar. Duplicarlo en el estado obliga a mantener dos datos sincronizados."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/04-estado/App.tsx?raw'
+
+## Concepto
+
+El **estado** es la memoria de un componente: datos que cambian con el tiempo y que, al cambiar, hacen que React vuelva a dibujar el componente. Se crea con `useState`, que devuelve el valor actual y una función para cambiarlo: `const [completada, setCompletada] = useState(false)`. Cosas clave:
+
+- Una variable común no sirve: se reinicia en cada dibujo y React no se entera de que cambió.
+- Llamar al *setter* no cambia la variable en ese momento: pide un nuevo dibujo con el valor nuevo.
+- Si el valor nuevo depende del anterior, se usa la forma con función: `setCantidad(anterior => anterior + 1)`.
+- Los objetos y listas del estado no se modifican: se reemplazan por una copia nueva.
+
+Pensalo como un pizarrón en la cocina de un restaurante: cuando alguien cambia lo que está escrito, todos los que lo miran se enteran y actúan.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+Al tocar el botón, `setCompletada` pide un nuevo dibujo con el valor contrario, y el texto y el botón cambian.

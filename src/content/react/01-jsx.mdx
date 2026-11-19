@@ -1,0 +1,54 @@
+---
+id: react-junior-jsx-01
+track: react
+nivel: junior
+modulo: "React"
+titulo: "JSX: HTML dentro de JavaScript"
+duracion_min: 5
+prerequisitos: []
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿JSX es HTML?"
+    explicacion: "No. Es una sintaxis de JavaScript que se compila a llamadas de funciones de React. Por eso se escribe `className` y no `class`, que es una palabra reservada de JavaScript."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué podés poner entre llaves?"
+    explicacion: "Cualquier expresión de JavaScript que devuelva un valor: una variable, una cuenta, una llamada a una función, un ternario. Un `if` no, porque es una sentencia y no devuelve valor."
+  - tipo: autoevaluacion
+    pregunta: "Un componente devuelve un `h1` y un `p` uno al lado del otro, sin nada que los envuelva. ¿Qué pasa?"
+    explicacion: "No compila: JSX necesita un único elemento raíz. Se envuelven en un fragmento (`<>...</>`) para no agregar un elemento de más al DOM."
+tarea_local: "Creá un proyecto con `npm create vite@latest` eligiendo React y TypeScript. En `App.tsx`, mostrá una tarjeta de tarea con título, fecha de vencimiento y la cantidad de días que faltan, calculada con una cuenta entre llaves."
+resultado_esperado: "La tarjeta muestra los datos, y al cambiar las variables en el código la pantalla se actualiza sola con el servidor de desarrollo corriendo."
+resumen:
+  - "JSX es una sintaxis para escribir algo parecido a HTML dentro de JavaScript."
+  - "Entre llaves va cualquier expresión de JavaScript, como una variable o una cuenta."
+  - "Se usa class name en vez de class, y cada componente devuelve un solo elemento raíz."
+  - "React escapa el texto entre llaves, así que no se ejecuta código inyectado."
+entrevista:
+  en_30_segundos: "JSX es azúcar sintáctica que se compila a llamadas de funciones de React que describen la interfaz. Permite mezclar marcado con expresiones de JavaScript entre llaves, exige un único elemento raíz o un fragmento, y escapa el contenido, lo que protege contra inyección de código."
+  trampas:
+    - pregunta: "¿Se puede usar React sin JSX?"
+      respuesta: "Sí: JSX es opcional. Se puede llamar directamente a las funciones de React que crean elementos, pero el código queda mucho menos legible. Por eso casi todos los proyectos usan JSX."
+  cuando_no: "Si necesitás mostrar HTML que viene de afuera (por ejemplo, de un editor de texto enriquecido), las llaves lo muestran como texto. Existe `dangerouslySetInnerHTML`, pero el nombre es una advertencia: solo con contenido sanitizado."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/01-jsx/App.tsx?raw'
+
+## Concepto
+
+JSX es una sintaxis que permite escribir algo parecido a HTML dentro de JavaScript. No es HTML: al compilar, cada etiqueta se transforma en una llamada a una función de React que describe qué mostrar. Reglas básicas:
+
+- **Llaves `{}`** para meter cualquier expresión de JavaScript: variables, cuentas, llamadas a funciones.
+- **`className`** en vez de `class`, y los atributos en camelCase (`onClick`, `htmlFor`).
+- **Un solo elemento raíz** por componente. Si no querés un `div` de más, usás un fragmento: `<>...</>`.
+- **Etiquetas cerradas siempre**: `<img />`, `<br />`.
+
+Además, React escapa el texto que metés entre llaves, así que un texto con `<script>` se muestra como texto y no se ejecuta.
+
+Pensalo como una plantilla de carta: el texto fijo ya está escrito, y en los huecos (`{nombre}`) va lo que cambia en cada caso.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+`{tarea.titulo}` y `{pendientes}` se reemplazan por sus valores. Si cambiás `pendientes` a 5 en el editor en vivo, la pantalla lo muestra al instante.

@@ -1,0 +1,51 @@
+---
+id: react-junior-formularios-controlados-01
+track: react
+nivel: junior
+modulo: "React"
+titulo: "Formularios controlados"
+duracion_min: 6
+prerequisitos: [react-junior-renderizado-condicional-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué hace que un campo sea controlado?"
+    explicacion: "Que su valor sale del estado (`value`) y cada cambio actualiza ese estado (`onChange`). React es la única fuente de verdad."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué pasa si ponés `value={titulo}` pero te olvidás del `onChange`?"
+    explicacion: "El campo queda de solo lectura: el valor siempre es el del estado, que nunca cambia. React además avisa en la consola."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué `evento.preventDefault()` en el `onSubmit`?"
+    explicacion: "Porque el comportamiento por defecto de un formulario es enviarse y recargar la página, y eso borraría el estado de la app."
+tarea_local: "Agregá al formulario del ejemplo un campo de fecha de vencimiento obligatorio, con su `label`. Mostrá un error distinto si falta el título o la fecha, y deshabilitá el botón mientras el título esté vacío."
+resultado_esperado: "Cada error aparece solo cuando corresponde, el botón se habilita al escribir el título y, al enviar bien, los dos campos quedan vacíos."
+resumen:
+  - "En un campo controlado, el valor vive en el estado y cada tecla lo actualiza."
+  - "En uno no controlado, el valor vive en el DOM y se lee recién al enviar."
+  - "Al enviar se llama a prevent default para que el navegador no recargue la página."
+  - "Cada campo lleva un label asociado para que sea accesible."
+entrevista:
+  en_30_segundos: "Uso campos controlados cuando necesito validar o transformar mientras se escribe: el estado es la fuente de verdad. Para formularios simples, o muy grandes, uso campos no controlados y leo los valores al enviar. En el envío prevengo el comportamiento por defecto, valido y doy feedback accesible."
+  trampas:
+    - pregunta: "¿Qué agregó React 19 a los formularios?"
+      respuesta: "Permite pasarle una función a la prop `action` del `form`: React la llama con un `FormData` al enviar, y hooks como `useActionState` manejan el resultado y el estado de envío. Para formularios con muchas reglas, en proyectos grandes también se usan librerías como React Hook Form."
+  cuando_no: "En un formulario con decenas de campos, controlar cada uno con su propio estado vuelve a dibujar todo en cada tecla y llena el componente de código repetido. Ahí convienen campos no controlados o una librería de formularios."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/08-formularios/App.tsx?raw'
+
+## Concepto
+
+En un **campo controlado**, el valor vive en el estado de React: el input recibe `value={titulo}` y cada tecla actualiza el estado con `onChange`. Así el estado es la única fuente de verdad, y es fácil validar, limpiar o transformar lo que se escribe.
+
+En un **campo no controlado**, el valor vive en el DOM y se lee al enviar (con una `ref` o con `FormData`). Es más simple cuando no hace falta reaccionar a cada tecla.
+
+Al enviar, `onSubmit` recibe el evento y se llama a `evento.preventDefault()` para que el navegador no recargue la página. Para accesibilidad, cada campo lleva un `label` asociado con `htmlFor`.
+
+Pensalo como un formulario en papel con una persona al lado que va leyendo mientras escribís y te avisa si te equivocaste, en vez de revisarlo todo recién al final.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+El campo está controlado por `titulo`. Al enviar se valida, se agrega la tarea, se limpia el campo y se borra el error.

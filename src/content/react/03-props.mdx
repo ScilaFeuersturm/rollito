@@ -1,0 +1,53 @@
+---
+id: react-junior-props-01
+track: react
+nivel: junior
+modulo: "React"
+titulo: "Props"
+duracion_min: 5
+prerequisitos: [react-junior-componentes-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Un componente puede modificar sus props?"
+    explicacion: "No: son de solo lectura. Si un dato tiene que cambiar, es estado, y vive en el componente que lo maneja."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué significa escribir `urgente` sin valor, como en `<TarjetaDeTarea urgente />`?"
+    explicacion: "Es lo mismo que `urgente={true}`."
+  - tipo: autoevaluacion
+    pregunta: "¿Para qué sirve `children`?"
+    explicacion: "Para que el padre le pase contenido arbitrario a un componente contenedor, como una `Tarjeta` que envuelve lo que le pongas adentro."
+tarea_local: "Creá un componente `Tarjeta` que reciba `titulo` y `children` y los muestre dentro de un borde. Usalo dos veces con contenido distinto adentro: un párrafo en una y una lista en la otra."
+resultado_esperado: "El mismo componente muestra contenidos distintos, y TypeScript marca error si te olvidás el `titulo`."
+resumen:
+  - "Las props son los datos que un componente recibe de su padre."
+  - "Son de solo lectura: el componente no las modifica."
+  - "Los datos fluyen en una sola dirección, de padre a hijo."
+  - "Children es una prop especial con el contenido que va entre las etiquetas."
+entrevista:
+  en_30_segundos: "Las props son la entrada de un componente: datos de solo lectura que pasa el padre, con flujo en una sola dirección. Las tipo con TypeScript, uso valores por defecto para las opcionales y `children` para componentes contenedores."
+  trampas:
+    - pregunta: "¿Qué diferencia hay entre props y estado?"
+      respuesta: "Las props vienen de afuera y el componente no las cambia. El estado es memoria propia del componente, y cuando cambia React lo vuelve a dibujar. Un mismo dato puede ser estado en el padre y prop en el hijo."
+  cuando_no: "Pasar una prop a través de cuatro o cinco componentes que no la usan, solo para que llegue abajo (*prop drilling*), es una señal de que conviene otra solución, como Context, que se ve en Semi Senior."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/03-props/App.tsx?raw'
+
+## Concepto
+
+Las **props** son los datos que un componente recibe de su padre, como los parámetros de una función. Se pasan como atributos (`<TarjetaDeTarea titulo="Pagar la luz" />`) y se leen desestructurando el parámetro. Cosas clave:
+
+- Son de **solo lectura**: el componente no las modifica.
+- Los datos fluyen **en una sola dirección**, de padre a hijo.
+- Se pueden poner **valores por defecto** (`urgente = false`).
+- Con TypeScript se declara su tipo, y el editor avisa si falta una prop o tiene el tipo equivocado.
+- `children` es una prop especial: lo que va entre la etiqueta de apertura y la de cierre.
+
+Pensalo como un formulario impreso que llenás: el formulario (el componente) es siempre el mismo, pero cada copia lleva datos distintos.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+La misma tarjeta muestra dos tareas distintas. `urgente` es opcional: en la segunda tarjeta no se pasa y vale `false`.

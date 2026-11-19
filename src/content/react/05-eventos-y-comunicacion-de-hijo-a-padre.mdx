@@ -1,0 +1,49 @@
+---
+id: react-junior-eventos-y-comunicacion-de-hijo-a-padre-01
+track: react
+nivel: junior
+modulo: "React"
+titulo: "Eventos y comunicación de hijo a padre"
+duracion_min: 5
+prerequisitos: [react-junior-estado-con-usestate-01]
+ejercicios:
+  - tipo: autoevaluacion
+    pregunta: "¿Qué diferencia hay entre `onClick={completar}` y `onClick={completar()}`?"
+    explicacion: "La primera pasa la función para que React la llame al hacer clic. La segunda la ejecuta en cada dibujo y le pasa a `onClick` lo que devuelve."
+  - tipo: autoevaluacion
+    pregunta: "¿Cómo le avisa un hijo a su padre que pasó algo?"
+    explicacion: "Llamando a una función que el padre le pasó por props, por ejemplo `alCompletar`."
+  - tipo: autoevaluacion
+    pregunta: "Dos componentes hermanos necesitan mostrar la misma cantidad de tareas. ¿Dónde va el estado?"
+    explicacion: "En el padre común. El padre se lo pasa a los dos por props, junto con las funciones para cambiarlo."
+tarea_local: "Armá un `Buscador` con un campo de texto y una `ListaDeTareas` que muestre solo las tareas que contienen lo escrito. Los dos son hermanos dentro de `App`, así que el texto buscado tiene que vivir en `App`."
+resultado_esperado: "Al escribir en el buscador, la lista se filtra al instante, y ni el buscador ni la lista guardan el texto por su cuenta."
+resumen:
+  - "Los eventos se manejan pasando una función, sin ejecutarla, a props como on click."
+  - "Para que un hijo avise algo, el padre le pasa una función por props."
+  - "Si dos hermanos necesitan el mismo dato, el estado sube al padre común."
+  - "El evento trae métodos como prevent default para cortar el comportamiento por defecto."
+entrevista:
+  en_30_segundos: "Manejo eventos pasando funciones a props como `onClick`. Como el flujo de datos es de padre a hijo, para comunicar hacia arriba paso callbacks por props, y cuando dos componentes comparten un dato, subo el estado al padre común."
+  trampas:
+    - pregunta: "¿El objeto de evento de React es el evento nativo del navegador?"
+      respuesta: "No exactamente: es un evento sintético que React arma con la misma interfaz en todos los navegadores. El nativo está en `evento.nativeEvent`, aunque casi nunca hace falta."
+  cuando_no: "Subir el estado demasiado arriba, por ejemplo a `App`, cuando solo lo usa una parte chica de la pantalla, hace que se vuelva a dibujar más de lo necesario. Se sube solo hasta el primer padre común."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/05-eventos/App.tsx?raw'
+
+## Concepto
+
+Los eventos se manejan pasando una **función** a props como `onClick` u `onChange`: `onClick={completar}`, no `onClick={completar()}`, que la ejecutaría al dibujar. La función recibe el evento, con métodos como `preventDefault()`.
+
+Como los datos solo bajan de padre a hijo, para que un hijo avise algo hacia arriba **el padre le pasa una función por props**, y el hijo la llama. Si dos componentes hermanos necesitan el mismo dato, el estado se **sube** al padre común (*lifting state up*).
+
+Pensalo como el timbre de una casa: la visita (el hijo) no entra a cambiar nada; toca el timbre (llama la función) y quien vive ahí (el padre) decide qué hacer.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+`BotonCompletar` no sabe cuántas tareas hay: solo llama a `alCompletar`. El estado vive en `App`, que es quien decide sumar uno.
