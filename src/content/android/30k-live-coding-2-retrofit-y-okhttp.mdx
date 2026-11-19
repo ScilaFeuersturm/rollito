@@ -1,0 +1,71 @@
+---
+id: android-semi-senior-live-coding-2-retrofit-y-okhttp-01
+track: android
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding 2: Retrofit y OkHttp"
+duracion_min: 5
+prerequisitos: [android-semi-senior-live-coding-1-requisitos-modelo-y-dto-01, android-semi-senior-okhttp-y-serializacion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué las funciones de `TareasApi` son `suspend`?"
+    opciones: ["Porque Retrofit no admite otra cosa.", "Porque Retrofit las ejecuta fuera del hilo principal y suspende hasta tener la respuesta: no hace falta `Call`, callbacks ni `withContext(Dispatchers.IO)`.", "Para que se ejecuten en paralelo automáticamente."]
+    correcta: 1
+    explicacion: "Con `suspend`, una llamada HTTP se escribe como una función común y respeta la cancelación del scope que la llama."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué el interceptor de logging se agrega solo si `BuildConfig.DEBUG`?"
+    opciones: ["Porque en release es más lento.", "Porque con `Level.BODY` imprime cuerpos y headers completos: en release expondría tokens y datos personales en el log.", "Porque en release no existe Logcat."]
+    correcta: 1
+    explicacion: "Es una frase que suma en entrevista, sobre todo con experiencia en seguridad: \"en release no logueo cuerpos; si necesito diagnóstico, uso métricas sin datos personales\"."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué tiene que haber un solo `OkHttpClient` en toda la app?"
+    explicacion: "Cada cliente tiene su propio pool de conexiones y su caché. Uno solo, compartido como `@Singleton`, reutiliza conexiones (más rápido, menos batería). Si un caso necesita otra configuración, se deriva con `cliente.newBuilder()`, que comparte el pool."
+tarea_local: "En el proyecto `android-samples/live-coding`, abrí `di/Modulos.kt` y `data/remote/TareasApi.kt`. Corré la app en el emulador y mirá en Logcat (filtro `okhttp`) el pedido a `/todos`."
+resultado_esperado: "En Logcat aparece el `GET https://jsonplaceholder.typicode.com/todos` con su respuesta, porque es un build de debug."
+resumen:
+  - "La interfaz de Retrofit describe los endpoints con funciones suspend."
+  - "Un solo cliente de OkHttp para toda la app, con timeouts explícitos."
+  - "El logging del cuerpo va solo en debug."
+  - "El conversor de Kotlinx Serialization traduce el JSON a los DTO."
+entrevista:
+  en_30_segundos: "Defino la API como una interfaz de Retrofit con funciones `suspend`, así cada llamada se usa como una función común y se cancela con el scope. Tengo un solo `OkHttpClient` con timeouts explícitos y logging solo en debug, y uso Kotlinx Serialization como conversor."
+  trampas:
+    - pregunta: "¿Qué diferencia hay entre `connectTimeout` y `readTimeout`?"
+      respuesta: "`connectTimeout` es lo máximo que espera para establecer la conexión; `readTimeout`, lo máximo entre dos paquetes de la respuesta. Hay también `callTimeout`, que limita la llamada completa."
+  cuando_no: "Si el live coding es de 30 minutos, no armes interceptores de autenticación ni caché: mencioná dónde irían y seguí."
+---
+
+import tareasApi from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/data/remote/TareasApi.kt?raw'
+
+## Concepto
+
+**Paso 2: la interfaz de Retrofit y el cliente HTTP.**
+
+> "Describo los dos endpoints como funciones `suspend`. Retrofit las ejecuta fuera del hilo principal, así que el repositorio no necesita cambiar de dispatcher."
+
+> "Configuro un solo `OkHttpClient`, con timeouts explícitos para no depender de los valores por defecto, y el interceptor de logging solo en debug, porque en release imprimiría tokens y datos personales."
+
+En un live coding, la configuración del cliente suele ir directamente en el módulo de Hilt (paso 6), así que acá alcanza con nombrarla.
+
+## Ejemplo
+
+La interfaz:
+
+<pre><code className="language-kotlin">{tareasApi.trimEnd()}</code></pre>
+
+El cliente, tal como está en `di/Modulos.kt`:
+
+```kotlin
+@Provides @Singleton
+fun okHttp(): OkHttpClient = OkHttpClient.Builder()
+    .connectTimeout(10, TimeUnit.SECONDS)
+    .readTimeout(15, TimeUnit.SECONDS)
+    .apply {
+        if (BuildConfig.DEBUG) {
+            addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
+        }
+    }
+    .build()
+```
+
+Para usar `BuildConfig.DEBUG`, el módulo activa `buildFeatures { buildConfig = true }`. En los proyectos nuevos viene apagado por defecto.

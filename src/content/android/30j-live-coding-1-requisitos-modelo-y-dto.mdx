@@ -1,0 +1,67 @@
+---
+id: android-semi-senior-live-coding-1-requisitos-modelo-y-dto-01
+track: android
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding 1: requisitos, modelo y DTO"
+duracion_min: 6
+prerequisitos: [android-semi-senior-mvvm-repository-y-casos-de-uso-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Te dan el enunciado y el reloj empieza a correr. ¿Qué hacés primero?"
+    opciones: ["Abro Android Studio y empiezo por la pantalla, que es lo que se ve.", "Hago dos o tres preguntas (¿paginado?, ¿offline?, ¿cuánto tiempo hay?), cuento el plan en voz alta y arranco por el modelo.", "Pregunto qué librerías tengo que usar y espero instrucciones."]
+    correcta: 1
+    explicacion: "Lo que se evalúa es cómo pensás, no solo el código. Aclarar el alcance y contar el plan muestra criterio y evita que te quedes sin tiempo haciendo algo que no te pidieron."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué separar `TareaDto` de `Tarea` si tienen casi los mismos campos?"
+    opciones: ["Porque Kotlin no permite usar `@Serializable` en el dominio.", "Para que un cambio del backend (un nombre, un formato) quede en el DTO y en su mapeo, sin tocar el ViewModel ni la UI.", "No hace falta: es duplicar código."]
+    correcta: 1
+    explicacion: "El DTO es el contrato con el servidor; el dominio es lo que la app necesita. En un live coding chico se puede decir \"lo separo para mostrar la idea, aunque acá sean casi iguales\"."
+  - tipo: opcion_multiple
+    pregunta: "El JSON trae `userId`, que el DTO no declara. ¿Qué pasa?"
+    opciones: ["Kotlinx Serialization falla por defecto con una clave desconocida, salvo que el `Json` tenga `ignoreUnknownKeys = true`.", "Lo ignora siempre.", "Lo guarda en un mapa aparte."]
+    correcta: 0
+    explicacion: "Por eso el módulo de red configura `Json { ignoreUnknownKeys = true }`. Es una frase para decir en voz alta: \"así, si el backend agrega campos, la app no se rompe\"."
+tarea_local: "Abrí en Android Studio el proyecto `android-samples/live-coding` del repo de Rollito (File → Open) y dejá que sincronice. Mirá la estructura de paquetes (`domain`, `data`, `ui`, `di`) antes de seguir con las próximas lecciones."
+resultado_esperado: "El proyecto sincroniza y compila. Ubicás `Tarea.kt` en `domain` y `TareaDto.kt` en `data/remote`."
+resumen:
+  - "Antes de escribir, aclarás el alcance con dos o tres preguntas y contás el plan."
+  - "El orden es de adentro hacia afuera: modelo, red, repositorio, view model, pantalla."
+  - "El DTO refleja el JSON; el modelo de dominio, lo que necesita la app."
+  - "Ignore unknown keys evita que un campo nuevo del backend rompa la app."
+entrevista:
+  en_30_segundos: "Antes de codear, confirmo el alcance: si hay paginado, si tiene que andar offline y cuánto tiempo tengo. Cuento el plan: modelo, API, repositorio que clasifica fallas, ViewModel con un estado sellado, pantalla, inyección, navegación y un test. Arranco por el modelo, separando el DTO del dominio para que un cambio del backend no llegue a la UI."
+  trampas:
+    - pregunta: "¿Y si no llegás a terminar?"
+      respuesta: "Por eso voy de adentro hacia afuera y cuento el plan al principio: si se acaba el tiempo, lo que hay funciona y queda claro qué faltaba y cómo lo haría. Un live coding a medias pero ordenado vale más que uno completo y desprolijo."
+  cuando_no: "Si te piden explícitamente \"solo la UI con datos falsos\", no armes DTO, Retrofit ni repositorio: respetá el alcance y mencioná dónde iría cada capa."
+---
+
+import tarea from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/domain/Tarea.kt?raw'
+import tareaDto from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/data/remote/TareaDto.kt?raw'
+
+## Concepto
+
+**El enunciado clásico:** *"Mostrá una lista desde una API REST, con loading, error con reintento y estado vacío; al tocar un ítem, andá al detalle."*
+
+Estas nueve lecciones lo resuelven paso a paso, en el orden en que conviene hacerlo en vivo, con **qué decir en voz alta** en cada paso. El código es un proyecto real que compila y tiene tests en verde: está en `android-samples/live-coding/` del repo.
+
+**Paso 0: aclarar antes de escribir.** Hacé dos o tres preguntas y contá el plan.
+
+> "Antes de arrancar, ¿la lista es paginada o viene completa? ¿Tiene que funcionar sin conexión? ¿Cuánto tiempo tengo? Si les parece, voy de adentro hacia afuera: modelo, API, repositorio, ViewModel y pantalla. Así, si me quedo sin tiempo, lo que hay funciona."
+
+**Paso 1: modelo y DTO.** Arrancás por los datos, porque todo lo demás depende de ellos.
+
+> "Separo el DTO, que es la forma del JSON, del modelo de dominio, que es lo que la app necesita. Con `@SerialName` traduzco los nombres del backend a los nuestros, y el valor por defecto de `completada` me cubre si el campo no viene."
+
+## Ejemplo
+
+El modelo de dominio:
+
+<pre><code className="language-kotlin">{tarea.trimEnd()}</code></pre>
+
+El DTO, con su mapeo al dominio:
+
+<pre><code className="language-kotlin">{tareaDto.trimEnd()}</code></pre>
+
+La API usada es la pública de JSONPlaceholder (`/todos`), que devuelve `id`, `title`, `completed` y un `userId` que la app ignora.

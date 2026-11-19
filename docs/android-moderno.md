@@ -41,7 +41,7 @@ Los niveles sirven para organizar la preparación. Cada empresa puede repartir l
 
 ## Recorrido completo en la vista previa local
 
-Las 85 lecciones de Android están publicadas. Para preparar entrevistas también hay simulacros (12 preguntas por nivel) y práctica de código en vivo por nivel; ver [repaso-entrevistas.md](android/repaso-entrevistas.md). Las guías por nivel reúnen las fichas de las últimas 36 lecciones y sus respuestas. Las siete iniciales se describen más abajo.
+Las 94 lecciones de Android están publicadas. Para preparar entrevistas también hay simulacros (12 preguntas por nivel) y práctica de código en vivo por nivel; ver [repaso-entrevistas.md](android/repaso-entrevistas.md). Las guías por nivel reúnen las fichas de las últimas 36 lecciones y sus respuestas. Las siete iniciales se describen más abajo.
 
 - [Junior](android/junior.md) · 9 lecciones adicionales.
 - [Semi Senior](android/semi-senior.md) · 14 lecciones.

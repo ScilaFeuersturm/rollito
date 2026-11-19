@@ -1,0 +1,55 @@
+---
+id: android-semi-senior-live-coding-5-pantalla-compose-01
+track: android
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding 5: la pantalla en Compose"
+duracion_min: 6
+prerequisitos: [android-semi-senior-live-coding-4-viewmodel-y-uistate-01, android-semi-senior-efectos-en-compose-y-state-hoisting-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué hay dos composables, `TareasScreen` y `TareasContent`?"
+    opciones: ["Porque Compose no permite usar un ViewModel y un `LazyColumn` en la misma función.", "State hoisting: `TareasScreen` conoce al ViewModel; `TareasContent` solo recibe estado y callbacks, así que se previsualiza y se testea sin ViewModel ni Hilt.", "Para que compile más rápido."]
+    correcta: 1
+    explicacion: "El test de Compose del paso 8 usa `TareasContent` directamente, con estados armados a mano."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué `collectAsStateWithLifecycle()` y no `collectAsState()`?"
+    opciones: ["Son iguales.", "Porque deja de colectar cuando la app no se ve (por debajo de `STARTED`), y no trabaja en segundo plano.", "Porque `collectAsState()` no funciona con `StateFlow`."]
+    correcta: 1
+    explicacion: "Viene de `lifecycle-runtime-compose`. Es lo recomendado en Android."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `key = { it.id }` en `items(...)`?"
+    opciones: ["Ordena la lista por id.", "Le da identidad estable a cada fila: si la lista cambia, Compose sabe qué fila es cuál, conserva su estado y anima bien.", "Evita que haya ids repetidos."]
+    correcta: 1
+    explicacion: "Es una de las cosas que conviene decir en voz alta: muestra que conocés cómo Compose reutiliza ítems."
+tarea_local: "En `TareasScreen.kt`, agregá un `@Preview` que muestre `TareasContent` con `TareasUiState.Error(Falla.Timeout)` y otro con `TareasUiState.Vacio`. Miralos en el panel de diseño de Android Studio."
+resultado_esperado: "Los dos previews se ven sin correr la app: uno con \"El servidor tardó demasiado.\" y el botón Reintentar, y otro con \"No hay tareas todavía\"."
+resumen:
+  - "La pantalla se divide en una parte con estado, que conoce al view model, y otra sin estado."
+  - "Un when exhaustivo dibuja cada caso del estado."
+  - "Collect as state with lifecycle deja de colectar cuando la app no se ve."
+  - "Las filas de la lista llevan key para tener identidad estable."
+  - "El mensaje de error depende de la falla."
+entrevista:
+  en_30_segundos: "Separo la pantalla en dos: `TareasScreen` obtiene el ViewModel con `hiltViewModel()` y colecta el estado con `collectAsStateWithLifecycle`; `TareasContent` es sin estado, recibe el `UiState` y callbacks, y hace un `when` exhaustivo. La lista usa `LazyColumn` con `key` por id, y el error muestra un mensaje según la falla, con un botón de reintento."
+  trampas:
+    - pregunta: "¿Por qué pasás `viewModel::cargar` como `onReintentar` y no el ViewModel entero?"
+      respuesta: "Para que `TareasContent` no dependa del ViewModel: recibe solo lo que necesita. Además, una referencia a función es estable y no provoca recomposiciones innecesarias."
+  cuando_no: "En un live coding con poco tiempo, el mensaje por falla puede ser uno solo (\"Algo salió mal\"). Mencioná que lo diferenciarías y que los textos irían en `strings.xml` para traducirlos."
+---
+
+import pantalla from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/ui/lista/TareasScreen.kt?raw'
+
+## Concepto
+
+**Paso 5: la pantalla.**
+
+> "Divido la pantalla en dos. `TareasScreen` es la que tiene estado: pide el ViewModel a Hilt y colecta con `collectAsStateWithLifecycle`, que deja de colectar cuando la app no se ve. `TareasContent` es sin estado: recibe el estado y callbacks. Esa es la que voy a testear y previsualizar."
+
+> "Hago un `when` exhaustivo sobre el estado: indicador de carga, mensaje de vacío, error con botón de reintento y la lista. La lista es un `LazyColumn` con `key` por id."
+
+> "El mensaje de error depende de la falla. Si tuviera más tiempo, los textos irían en `strings.xml`."
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{pantalla.trimEnd()}</code></pre>

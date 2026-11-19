@@ -1,0 +1,63 @@
+---
+id: android-semi-senior-live-coding-6-modulos-de-hilt-01
+track: android
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding 6: módulos de Hilt y scopes"
+duracion_min: 6
+prerequisitos: [android-semi-senior-live-coding-5-pantalla-compose-01, android-semi-senior-inyeccion-con-hilt-y-alcances-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué el repositorio se vincula con `@Binds` y Retrofit con `@Provides`?"
+    opciones: ["Es indistinto.", "`@Binds` sirve para decir \"esta interfaz se implementa con esta clase\", que ya tiene `@Inject constructor`. `@Provides` hace falta cuando hay que construir el objeto con código, como Retrofit con su builder.", "`@Provides` solo funciona con `object` y `@Binds` solo con clases."]
+    correcta: 1
+    explicacion: "`@Binds` es una función abstracta sin cuerpo; Dagger genera menos código. Para clases de librerías que no podés anotar, va `@Provides`."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué `OkHttpClient`, `Json` y `TareasApi` llevan `@Singleton`?"
+    opciones: ["Porque Hilt lo exige en `SingletonComponent`.", "Porque son caros de crear y no tienen estado de pantalla: una sola instancia para toda la app comparte conexiones y configuración.", "Para que sean más fáciles de testear."]
+    correcta: 1
+    explicacion: "Sin `@Singleton`, Hilt crearía una instancia nueva cada vez que alguien la pide, aunque el módulo esté instalado en `SingletonComponent`. El componente dice desde dónde se puede inyectar; el scope, cuántas instancias hay."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué hace cada anotación: `@HiltAndroidApp`, `@AndroidEntryPoint`, `@HiltViewModel` e `@Inject constructor`?"
+    explicacion: "`@HiltAndroidApp` en la `Application` genera el contenedor raíz. `@AndroidEntryPoint` permite inyectar en una Activity o un Fragment. `@HiltViewModel` hace que el ViewModel se pueda crear con `hiltViewModel()` y recibir dependencias. `@Inject constructor` le dice a Hilt cómo crear una clase propia sin escribir un módulo."
+tarea_local: "En `Modulos.kt`, sacá `@Singleton` de `okHttp()` y agregá un `Log.d` dentro de la función. Corré la app, entrá al detalle y volvé un par de veces."
+resultado_esperado: "Sin `@Singleton`, el log aparece varias veces (una por cada vez que se crea la API). Con `@Singleton`, una sola."
+resumen:
+  - "Hilt arranca con hilt android app y se inyecta en Activities con android entry point."
+  - "Binds vincula una interfaz con su implementación; provides construye objetos con código."
+  - "El componente dice desde dónde se puede inyectar; el scope, cuántas instancias hay."
+  - "Red, json y API van como singleton: son caros y no tienen estado de pantalla."
+entrevista:
+  en_30_segundos: "Tengo dos módulos instalados en `SingletonComponent`: uno con `@Provides` para el `OkHttpClient`, el `Json` y Retrofit, todos `@Singleton` porque son caros y se comparten, y otro con `@Binds` que vincula `TareasRepository` con su implementación. La `Application` lleva `@HiltAndroidApp`, la Activity `@AndroidEntryPoint` y los ViewModels `@HiltViewModel`, que reciben el repositorio por constructor."
+  trampas:
+    - pregunta: "¿El repositorio tiene que ser `@Singleton`?"
+      respuesta: "Acá no tiene estado, así que sería igual de correcto sin scope. Lo hago singleton si guarda algo compartido, como una caché en memoria. Lo importante es poder justificar la elección."
+    - pregunta: "¿Qué pasa si un `@Singleton` recibe algo con scope de Activity?"
+      respuesta: "Hilt no lo permite: falla en compilación, porque el `SingletonComponent` no ve los bindings de un componente hijo. Es justamente lo que evita una fuga de memoria."
+  cuando_no: "En un live coding de 30 minutos, si te dicen \"sin DI\", armá las dependencias a mano en una `Factory` del ViewModel y mencioná cómo quedaría con Hilt."
+---
+
+import modulos from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/di/Modulos.kt?raw'
+import app from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/App.kt?raw'
+
+## Concepto
+
+**Paso 6: conectar todo con Hilt.**
+
+> "Armo un módulo instalado en `SingletonComponent` para la red: `OkHttpClient`, `Json` y la API, con `@Singleton` porque son caros de crear y se comparten. Configuro el `Json` con `ignoreUnknownKeys`."
+
+> "Para el repositorio uso `@Binds`: la implementación ya tiene `@Inject constructor`, así que solo le digo a Hilt qué clase usar cuando piden la interfaz. En los tests podría reemplazar este módulo con uno falso."
+
+> "La `Application` lleva `@HiltAndroidApp` y la Activity `@AndroidEntryPoint`. Los ViewModels son `@HiltViewModel` y los obtengo con `hiltViewModel()`."
+
+## Ejemplo
+
+Los módulos:
+
+<pre><code className="language-kotlin">{modulos.trimEnd()}</code></pre>
+
+La `Application` y la Activity:
+
+<pre><code className="language-kotlin">{app.trimEnd()}</code></pre>
+
+*`hiltViewModel()` se importa de `androidx.hilt.lifecycle.viewmodel.compose` (artefacto `hilt-lifecycle-viewmodel-compose`). Antes estaba en `hilt-navigation-compose`. Verificá el paquete vigente en developer.android.com.*

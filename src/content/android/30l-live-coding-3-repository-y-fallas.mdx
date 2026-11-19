@@ -1,0 +1,62 @@
+---
+id: android-semi-senior-live-coding-3-repository-y-fallas-01
+track: android
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding 3: Repository que clasifica fallas"
+duracion_min: 7
+prerequisitos: [android-semi-senior-live-coding-2-retrofit-y-okhttp-01, android-semi-senior-http-retrofit-y-clasificacion-de-fallas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué el `catch` de `SocketTimeoutException` va antes que el de `IOException`?"
+    opciones: ["Por estilo, el orden no importa.", "Porque `SocketTimeoutException` es una subclase de `IOException`: si `IOException` va primero, el timeout nunca se distingue de la falta de conexión.", "Porque Kotlin exige ordenar los catch alfabéticamente."]
+    correcta: 1
+    explicacion: "Se toma el primer `catch` que coincide. Los más específicos van primero."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué hay un `catch (e: CancellationException) { throw e }` al principio?"
+    opciones: ["Para loguear la cancelación.", "Porque el último `catch (e: Exception)` atraparía la cancelación y la convertiría en un error: la corrutina no se cancelaría bien y la UI mostraría \"Algo salió mal\" al salir de la pantalla.", "Porque Retrofit lanza `CancellationException` en cada error HTTP."]
+    correcta: 1
+    explicacion: "Es la trampa de atrapar `Exception` dentro de corrutinas. Decirlo en voz alta muestra que entendés la cancelación."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué el repositorio devuelve `Resultado` en vez de dejar pasar las excepciones?"
+    opciones: ["Porque las excepciones son lentas.", "Porque el tipo obliga a quien llama a manejar el error (`when` exhaustivo) y la UI recibe fallas con significado, sin conocer excepciones de Retrofit ni de OkHttp.", "Porque Hilt no puede inyectar funciones que lanzan excepciones."]
+    correcta: 1
+    explicacion: "También se puede usar `kotlin.Result`, pero su error es un `Throwable` genérico. Un sealed propio deja las fallas del dominio explícitas."
+  - tipo: autoevaluacion
+    pregunta: "Sin mirar: ¿en qué falla se convierte cada caso? Sin red, timeout, 404, 503 y JSON con un campo obligatorio faltante."
+    explicacion: "Sin red → `SinConexion` (`IOException`). Timeout → `Timeout` (`SocketTimeoutException`). 404 → `Cliente(404)` (`HttpException`). 503 → `Servidor(503)`. JSON inválido → `Parseo` (`SerializationException`). Y cualquier otra cosa → `Desconocida`."
+tarea_local: "En el proyecto `android-samples/live-coding`, activá el modo avión en el emulador y abrí la app. Después, en `Modulos.kt`, cambiá la URL base por una que devuelva 404 (por ejemplo, agregá `/noexiste/` al final) y volvé a correrla."
+resultado_esperado: "Con modo avión se ve \"No hay conexión. Revisá tu red.\" con el botón Reintentar. Con la URL rota, \"Algo salió mal.\", porque es un 4xx."
+resumen:
+  - "El repositorio traduce excepciones técnicas a fallas con significado."
+  - "Los catch más específicos van primero: timeout antes que entrada y salida."
+  - "La excepción de cancelación se relanza siempre."
+  - "Un resultado sellado obliga a manejar el error en quien llama."
+entrevista:
+  en_30_segundos: "El repositorio es la frontera con la red: llama a la API, mapea DTO a dominio y convierte las excepciones en un `Resultado` con fallas clasificadas (sin conexión, timeout, 4xx, 5xx, parseo). Así el ViewModel hace un `when` exhaustivo y la UI puede mostrar un mensaje distinto, por ejemplo ofrecer reintentar ante un 5xx pero no ante un 4xx. Siempre relanzo la `CancellationException`."
+  trampas:
+    - pregunta: "¿Dónde cambiarías de dispatcher a `Dispatchers.IO`?"
+      respuesta: "Con Retrofit `suspend` no hace falta: ya ejecuta la llamada fuera del hilo principal. Si el repositorio hiciera trabajo bloqueante propio (leer un archivo, una librería sin `suspend`), ahí usaría `withContext(Dispatchers.IO)`, y lo inyectaría para poder reemplazarlo en los tests."
+  cuando_no: "Si el tiempo es muy corto, `kotlin.Result` con `runCatching` es aceptable, pero mencioná que hay que relanzar la `CancellationException` y que la clasificación de fallas queda pendiente."
+---
+
+import resultado from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/data/Resultado.kt?raw'
+import repositorio from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/data/TareasRepository.kt?raw'
+
+## Concepto
+
+**Paso 3: el repositorio.** Es la frontera con el mundo exterior. Llama a la API, convierte DTO en dominio y transforma las excepciones en algo que la app entiende.
+
+> "Defino una interfaz `TareasRepository`, así el ViewModel no sabe si los datos vienen de red o de una base, y en los tests la reemplazo con un mock."
+
+> "Devuelvo un `Resultado` sellado y clasifico las fallas: sin conexión, timeout, 4xx, 5xx y parseo. Así la UI puede decir algo útil. Ojo con el orden: el timeout es una `IOException`, así que va primero. Y relanzo la cancelación, porque si no, salir de la pantalla aparecería como un error."
+
+## Ejemplo
+
+Los tipos:
+
+<pre><code className="language-kotlin">{resultado.trimEnd()}</code></pre>
+
+El repositorio:
+
+<pre><code className="language-kotlin">{repositorio.trimEnd()}</code></pre>

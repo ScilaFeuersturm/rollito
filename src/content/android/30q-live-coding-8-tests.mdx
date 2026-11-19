@@ -1,0 +1,74 @@
+---
+id: android-semi-senior-live-coding-8-tests-01
+track: android
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding 8: test del ViewModel y test de Compose"
+duracion_min: 7
+prerequisitos: [android-semi-senior-live-coding-7-navegacion-y-deep-link-01, android-semi-senior-tests-unitarios-junit-y-mockk-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve `Dispatchers.setMain(dispatcher)` en el test del ViewModel?"
+    opciones: ["Para que el test corra más rápido.", "`viewModelScope` usa `Dispatchers.Main`, que en un test de JVM no existe. Se reemplaza por un dispatcher de test que además permite controlar cuándo corren las corrutinas.", "Para que MockK funcione con corrutinas."]
+    correcta: 1
+    explicacion: "Sin `setMain`, el test falla con un error del estilo \"Module with the Main dispatcher is missing\". Se restaura con `resetMain()` en `@After`."
+  - tipo: opcion_multiple
+    pregunta: "En el primer test, ¿por qué `estado.value` es `Cargando` justo después de crear el ViewModel?"
+    opciones: ["Porque el mock tarda en responder.", "Porque `StandardTestDispatcher` encola la corrutina del `init` y no la ejecuta hasta `advanceUntilIdle()`. Así se puede verificar el estado intermedio.", "Porque `runTest` agrega un delay."]
+    correcta: 1
+    explicacion: "Con `UnconfinedTestDispatcher` la corrutina correría enseguida y nunca verías `Cargando`. Elegir el dispatcher es elegir qué se puede observar."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué `coEvery` y no `every` para mockear `repo.tareas()`?"
+    opciones: ["Por costumbre.", "Porque `tareas()` es una función `suspend`: MockK usa `coEvery` y `coVerify` para funciones suspend.", "Porque `every` solo funciona con interfaces."]
+    correcta: 1
+    explicacion: "Con `every` sobre una función suspend, MockK da un error en tiempo de ejecución."
+  - tipo: opcion_multiple
+    pregunta: "El mock responde al instante. Llamás a `viewModel.cargar()` y después a `advanceUntilIdle()`. ¿Podés ver el estado `Cargando` en el medio?"
+    opciones: ["Sí, con `runCurrent()` entre las dos llamadas.", "No: la corrutina pone `Cargando` y, como el mock no suspende, en la misma corrida pone el resultado. Para verlo, el mock tiene que tardar (`coAnswers { delay(1_000); ... }`) y se avanza con `runCurrent()`.", "Sí, siempre que uses `StandardTestDispatcher`."]
+    correcta: 1
+    explicacion: "Es lo que hace el cuarto test del proyecto, y por eso es el único que falla si borrás la línea de `Cargando` en `cargar()`."
+  - tipo: autoevaluacion
+    pregunta: "¿Dónde corre el test de Compose del proyecto y dónde correría en un proyecto típico?"
+    explicacion: "En el proyecto está en `src/test` con Robolectric (`@RunWith(RobolectricTestRunner::class)`), así que corre en la JVM sin emulador. En un proyecto típico, el mismo test, sin `@RunWith`, va en `src/androidTest` y corre en un emulador o dispositivo. La API de Compose Testing (`createComposeRule`, `onNodeWithText`, `performClick`) es la misma."
+tarea_local: "En Android Studio, abrí `TareasViewModelTest.kt` y corré la clase con el triángulo verde del margen. Después, en `TareasViewModel.cargar()`, borrá la línea `_estado.value = TareasUiState.Cargando` y volvé a correr los tests."
+resultado_esperado: "Con la línea, los 4 tests pasan. Sin ella, falla solo `al reintentar muestra cargando mientras espera la respuesta`: es el único que demora la respuesta del mock (`coAnswers` con `delay`) y usa `runCurrent()` para mirar el estado intermedio. Los otros no lo detectan, porque con un mock que responde al instante el `Cargando` nunca se llega a ver."
+resumen:
+  - "El dispatcher principal se reemplaza con uno de test en el before y se restaura en el after."
+  - "Standard test dispatcher encola las corrutinas y advance until idle las ejecuta."
+  - "Co every mockea funciones suspend."
+  - "El test de Compose usa la parte sin estado de la pantalla, con estados armados a mano."
+  - "Con Robolectric, el test de Compose corre en la JVM; sin él, va en android test."
+entrevista:
+  en_30_segundos: "Testeo el ViewModel en la JVM: mockeo el repositorio con MockK (`coEvery` porque es suspend), reemplazo `Dispatchers.Main` con un `StandardTestDispatcher` y uso `runTest` y `advanceUntilIdle()` para controlar cuándo corren las corrutinas. Verifico la secuencia de estados: cargando, contenido, vacío, error y reintento. Para la UI, testeo el composable sin estado con Compose Testing: armo un estado, busco por texto y verifico que el callback se llame."
+  trampas:
+    - pregunta: "¿Mockeás el ViewModel en el test de Compose?"
+      respuesta: "No hace falta: por eso separé `TareasContent`, que no conoce al ViewModel. Le paso estados armados a mano y lambdas que cuentan llamadas. El test queda rápido y sin Hilt."
+    - pregunta: "¿Por qué el proyecto usa `createComposeRule` de `junit4.v2`?"
+      respuesta: "Porque la versión anterior quedó deprecada. La v2 usa `StandardTestDispatcher`, que encola tareas en vez de ejecutarlas enseguida, igual que en los tests de corrutinas. Es un buen ejemplo de API que cambia rápido: verificá la vigente en developer.android.com."
+  cuando_no: "Si quedan cinco minutos, priorizá un solo test del ViewModel con el caso feliz y el de error: muestra más criterio que un test de UI a medias."
+---
+
+import testViewModel from '../../../android-samples/live-coding/app/src/test/java/com/rollito/livecoding/ui/lista/TareasViewModelTest.kt?raw'
+import testCompose from '../../../android-samples/live-coding/app/src/test/java/com/rollito/livecoding/ui/lista/TareasContentTest.kt?raw'
+
+## Concepto
+
+**Paso 8: tests.** Si llegás hasta acá, cerrás con un test del ViewModel y, si hay tiempo, uno de la pantalla.
+
+> "Testeo el ViewModel en la JVM. Mockeo el repositorio con MockK, con `coEvery` porque `tareas()` es suspend. Como `viewModelScope` usa `Dispatchers.Main`, lo reemplazo con un `StandardTestDispatcher`, que encola las corrutinas: así puedo ver el estado `Cargando` antes de avanzar."
+
+> "Verifico los casos del enunciado: contenido, vacío y error seguido de un reintento exitoso. Para ver el `Cargando` del reintento, hago que el mock tarde con `coAnswers` y `delay`, y avanzo solo lo justo con `runCurrent()`."
+
+> "Para la UI, testeo `TareasContent`, que no tiene estado: le paso un error y verifico el mensaje y que el botón Reintentar llame al callback."
+
+Los seis tests (cuatro del ViewModel y dos de Compose) pasan con `./gradlew :app:testDebugUnitTest` en `android-samples/live-coding`.
+
+## Ejemplo
+
+Test del ViewModel:
+
+<pre><code className="language-kotlin">{testViewModel.trimEnd()}</code></pre>
+
+Test de Compose (corre en la JVM con Robolectric):
+
+<pre><code className="language-kotlin">{testCompose.trimEnd()}</code></pre>

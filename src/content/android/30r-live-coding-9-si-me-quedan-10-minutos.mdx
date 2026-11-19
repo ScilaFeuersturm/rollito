@@ -1,0 +1,61 @@
+---
+id: android-semi-senior-live-coding-9-si-me-quedan-10-minutos-01
+track: android
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding 9: si me quedan 10 minutos"
+duracion_min: 5
+prerequisitos: [android-semi-senior-live-coding-8-tests-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Te quedan 10 minutos y la app funciona. ¿Qué mejora tiene más valor para mostrar?"
+    opciones: ["Agregar animaciones a la lista.", "Elegir una o dos mejoras, decir por qué (por ejemplo, un test del repositorio con MockWebServer porque la clasificación de fallas es lógica crítica) y nombrar el resto como pendientes priorizados.", "Migrar todo a MVI."]
+    correcta: 1
+    explicacion: "Lo que se evalúa en esos minutos es tu criterio para priorizar. Una mejora bien justificada vale más que tres a medias."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué cambio de este código conviene mencionar si te preguntan por accesibilidad?"
+    opciones: ["Ninguno: Compose es accesible por defecto.", "Que el texto \"Completada\" o \"Pendiente\" ya se lee, pero conviene revisar los objetivos táctiles (mínimo 48 dp), el contraste y probar con TalkBack. Y que el indicador de carga tenga una descripción.", "Agregar más colores."]
+    correcta: 1
+    explicacion: "Nombrar TalkBack, los objetivos táctiles y la semántica muestra que lo tenés en cuenta, aunque no llegues a implementarlo."
+  - tipo: autoevaluacion
+    pregunta: "Armá en voz alta tu respuesta de 30 segundos a \"si tuvieras más tiempo, ¿qué mejorarías?\", usando tres mejoras de la lección en orden de prioridad."
+    explicacion: "Ejemplo: \"Primero, un test del repositorio con MockWebServer, porque la clasificación de fallas es la lógica más delicada y hoy solo está probada a mano. Segundo, caché con Room como fuente de verdad, para que la lista se vea sin conexión. Tercero, los textos en strings.xml y una pasada de accesibilidad con TalkBack. Dejaría la paginación para cuando la lista crezca.\""
+tarea_local: "En el proyecto `android-samples/live-coding`, elegí una mejora de la lista e implementala. La más corta: mover los textos de `mensaje(falla)` a `res/values/strings.xml` y leerlos con `stringResource`."
+resultado_esperado: "La app se ve igual y los tests de Compose siguen en verde (si cambiaste los textos, actualizá los asserts)."
+resumen:
+  - "Con el tiempo extra se muestra criterio: una o dos mejoras justificadas y el resto priorizado."
+  - "Lo primero suele ser un test de la lógica más delicada, como la clasificación de fallas."
+  - "Caché con Room como fuente de verdad, para que funcione sin conexión."
+  - "Textos en recursos, accesibilidad y paginación, según el contexto."
+entrevista:
+  en_30_segundos: "Con diez minutos más, primero agregaría un test del repositorio con MockWebServer, porque clasificar fallas es la lógica más delicada. Después haría que Room sea la fuente de verdad, para mostrar datos sin conexión. Y dejaría anotados textos en recursos, accesibilidad, pull-to-refresh y paginación, priorizados según cómo crezca la lista."
+  trampas:
+    - pregunta: "¿Por qué no agregaste un caso de uso entre el ViewModel y el repositorio?"
+      respuesta: "Porque acá no hay lógica de negocio que justifique otra capa: el caso de uso solo delegaría. Lo agregaría si aparece lógica que combine repositorios o se reutilice en varias pantallas, por ejemplo filtrar tareas según reglas del negocio."
+  cuando_no: "No uses los últimos minutos para refactorizar algo que funciona sin que te lo pidan: podés romperlo frente a quien te evalúa. Mejor contá qué cambiarías y por qué."
+---
+
+## Concepto
+
+**El cierre.** Cuando termina el enunciado, suelen preguntar "¿qué mejorarías?" o te dan unos minutos más. No es para agregar features: es para ver **cómo priorizás**.
+
+> "La app cumple el enunciado. Con el tiempo que queda, elijo [una mejora] porque [justificación]. Después seguiría con [otra], y dejaría [lo demás] para más adelante."
+
+**Mejoras posibles, con su justificación:**
+
+1. **Test del repositorio con MockWebServer.** La clasificación de fallas es la lógica más delicada y hoy solo está probada a mano. Con MockWebServer simulás un 503, un timeout o un JSON roto.
+2. **Room como fuente de verdad.** La UI observa la base y la red solo la actualiza: la lista se ve sin conexión y al volver a abrir la app. Es el patrón *offline-first*.
+3. **Textos en `strings.xml`.** Traducción, y los tests pueden usar el mismo recurso.
+4. **Accesibilidad.** Probar con TalkBack, revisar contraste, objetivos táctiles de 48 dp y la descripción del indicador de carga.
+5. **Pull-to-refresh** sobre el contenido, para reintentar sin pasar por el estado de error.
+6. **Paginación con Paging 3**, si la lista puede crecer mucho. Con 200 ítems no hace falta: decilo.
+7. **Reintento con backoff** para fallas de servidor, pero no para 4xx, que no se arreglan reintentando.
+8. **Reglas de R8** si la app se minifica: Kotlinx Serialization trae las suyas, pero conviene verificarlas con un build de release.
+
+## Ejemplo
+
+Cómo sonaría el cierre:
+
+> "Quedó funcionando: lista, carga, error con reintento, vacío, detalle con deep link y tests del ViewModel y de la pantalla. Con diez minutos más, agregaría un test del repositorio con MockWebServer, porque la clasificación de fallas es la lógica más delicada y es la que más impacto tiene en lo que ve la persona. Si tuviera una tarde, haría que Room sea la fuente de verdad para que funcione offline. Lo que no haría todavía es paginar: con este volumen no se justifica."
+
+Así mostrás que distinguís entre lo que agrega valor ahora y lo que es complejidad prematura.

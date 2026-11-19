@@ -1,0 +1,52 @@
+---
+id: android-semi-senior-live-coding-4-viewmodel-y-uistate-01
+track: android
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding 4: ViewModel con UiState sellado"
+duracion_min: 5
+prerequisitos: [android-semi-senior-live-coding-3-repository-y-fallas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué `Vacio` es un estado aparte y no un `Contenido(emptyList())`?"
+    opciones: ["Porque `LazyColumn` no acepta listas vacías.", "Porque la pantalla muestra algo distinto (un mensaje), y tenerlo explícito en el tipo obliga a la UI a contemplarlo en el `when`.", "Por rendimiento."]
+    correcta: 1
+    explicacion: "El enunciado pide estado vacío. Si queda escondido en `Contenido`, es fácil olvidarlo y mostrar una pantalla en blanco."
+  - tipo: opcion_multiple
+    pregunta: "La persona toca Reintentar. ¿Qué secuencia de estados emite `cargar()` si esta vez sale bien?"
+    opciones: ["`Error` → `Contenido`", "`Error` → `Cargando` → `Contenido`", "`Cargando` → `Error` → `Contenido`"]
+    correcta: 1
+    explicacion: "`cargar()` primero pone `Cargando` (la UI muestra el indicador) y después el resultado. Es lo que verifica el test del paso 8."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué el `init` llama a `cargar()` y no la pantalla con un `LaunchedEffect`?"
+    explicacion: "Porque el `init` del ViewModel corre una sola vez y sobrevive a la rotación. Un `LaunchedEffect(Unit)` en la pantalla se volvería a ejecutar si la pantalla sale de la composición y vuelve, y la carga se repetiría. Hay quien prefiere una carga perezosa con `stateIn`; las dos son defendibles."
+tarea_local: "En `TareasViewModel.kt`, poné un punto de corte en `cargar()`, corré la app en modo debug y rotá el emulador cuando se esté mostrando la lista."
+resultado_esperado: "El punto de corte se detiene una sola vez, al abrir la pantalla: al rotar no se vuelve a ejecutar."
+resumen:
+  - "El estado de la pantalla es un tipo sellado: cargando, vacío, contenido o error."
+  - "El view model expone un state flow de solo lectura."
+  - "Cargar pone primero cargando y después el resultado."
+  - "La carga inicial va en el init, que sobrevive a la rotación."
+entrevista:
+  en_30_segundos: "El ViewModel expone un `StateFlow<TareasUiState>` de solo lectura. El estado es un sealed con cargando, vacío, contenido y error, así la pantalla no puede quedar en combinaciones imposibles. `cargar()` emite `Cargando`, pide al repositorio y traduce el `Resultado` a un estado. Reintentar es volver a llamar a `cargar()`."
+  trampas:
+    - pregunta: "¿Por qué no `_estado.value = ...` en vez de `_estado.update { ... }`?"
+      respuesta: "Acá el nuevo estado no depende del anterior, así que asignar `value` está bien. Cuando sí depende (por ejemplo, agregar un ítem a la lista actual), conviene `update`, que es atómico y evita perder una actualización si dos corrutinas escriben a la vez."
+  cuando_no: "Si la pantalla fuera una lista que se actualiza sola (por ejemplo, desde Room), en vez de `cargar()` con `MutableStateFlow` expondría el `Flow` del repositorio con `stateIn(WhileSubscribed(5000))`."
+---
+
+import viewModel from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/ui/lista/TareasViewModel.kt?raw'
+
+## Concepto
+
+**Paso 4: el ViewModel.**
+
+> "Modelo el estado de la pantalla como un sealed interface con los cuatro casos que pide el enunciado: cargando, vacío, contenido y error. Así el `when` de la UI es exhaustivo y no puedo olvidarme de ninguno."
+
+> "Expongo un `StateFlow` de solo lectura. La versión mutable es privada: solo el ViewModel cambia el estado. Cargo en el `init`, que corre una vez y sobrevive a la rotación, y reintentar es volver a llamar a `cargar()`."
+
+> "Uso `viewModelScope`: si la persona sale de la pantalla, el pedido se cancela solo."
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{viewModel.trimEnd()}</code></pre>

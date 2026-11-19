@@ -1,0 +1,83 @@
+---
+id: android-semi-senior-live-coding-7-navegacion-y-deep-link-01
+track: android
+nivel: semi-senior
+modulo: "Live coding guiado"
+titulo: "Live coding 7: navegación al detalle y deep link"
+duracion_min: 6
+prerequisitos: [android-semi-senior-live-coding-6-modulos-de-hilt-01, android-semi-senior-navigation-compose-y-back-stack-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué el detalle recibe solo el `id` y no la `Tarea` completa?"
+    opciones: ["Porque Navigation no permite pasar objetos.", "Porque los argumentos se guardan en el estado restaurable: tienen que ser chicos. Con el id, el detalle carga los datos frescos y además funciona igual desde un deep link, que solo trae el id.", "Porque el id es más rápido de serializar."]
+    correcta: 1
+    explicacion: "Pasar objetos grandes por navegación es un antipatrón: se pueden perder al restaurar y quedan desactualizados."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo obtiene el `DetalleViewModel` el id?"
+    opciones: ["Desde un parámetro de `DetalleScreen`.", "Con `savedStateHandle.toRoute<Detalle>().id`: Navigation guarda los argumentos en el `SavedStateHandle` del ViewModel del destino.", "Desde una variable global."]
+    correcta: 1
+    explicacion: "Así el id sobrevive a la rotación y a la muerte del proceso, y el ViewModel se testea pasándole un `SavedStateHandle` armado a mano."
+  - tipo: opcion_multiple
+    pregunta: "Abrís la app con `adb shell am start -W -a android.intent.action.VIEW -d \"rollito://tareas/7\"` y después apretás Atrás. ¿Qué pasa?"
+    opciones: ["Se cierra la app.", "Volvés a la lista: Navigation arma un back stack sintético con el destino inicial debajo del detalle.", "Se vuelve a abrir el detalle."]
+    correcta: 1
+    explicacion: "Cuando un deep link abre la app en una tarea nueva, Navigation agrega el `startDestination` debajo, para que Atrás tenga sentido."
+tarea_local: "Con el emulador abierto y la app instalada, corré `adb shell am start -W -a android.intent.action.VIEW -d \"rollito://tareas/7\"` y después apretá Atrás."
+resultado_esperado: "Se abre directamente el detalle de la tarea 7 y Atrás te lleva a la lista, no afuera de la app."
+resumen:
+  - "Las rutas type-safe son clases serializables: el compilador controla los argumentos."
+  - "Se pasa el id, no el objeto: el detalle carga sus datos."
+  - "El view model del destino lee el argumento del saved state handle."
+  - "El deep link se declara en el destino y en el manifiesto."
+  - "Al abrir por deep link, Navigation arma un back stack con la lista debajo."
+entrevista:
+  en_30_segundos: "Uso Navigation Compose con rutas type-safe: `Lista` es un objeto y `Detalle(id)` una data class serializable. Al tocar una tarea navego con `navigate(Detalle(id))`. El `DetalleViewModel` lee el id del `SavedStateHandle` con `toRoute`, así sobrevive a la muerte del proceso. El mismo destino acepta el deep link `rollito://tareas/{id}`, declarado también en el manifiesto, y al abrirlo Navigation arma un back stack sintético con la lista debajo."
+  trampas:
+    - pregunta: "Si tocás dos veces rápido la misma tarea, ¿qué pasa?"
+      respuesta: "Se pueden apilar dos detalles. Se evita con `launchSingleTop = true` en las opciones de `navigate`, o ignorando el segundo toque si el destino actual ya es ese."
+  cuando_no: "Si te piden \"sin librerías\", alcanza con un estado `var seleccionada: Long?` en la Activity y un `BackHandler`: mostrás el detalle si hay selección. Mencioná que en una app real usarías Navigation."
+---
+
+import navegacion from '../../../android-samples/live-coding/app/src/main/java/com/rollito/livecoding/ui/Navegacion.kt?raw'
+
+## Concepto
+
+**Paso 7: navegar al detalle y aceptar un deep link.**
+
+> "Defino las rutas type-safe: `Lista` es un objeto y `Detalle` una data class con el id, las dos `@Serializable`. Paso solo el id, no la tarea entera: los argumentos tienen que ser chicos, y así el detalle funciona igual desde un deep link."
+
+> "El `DetalleViewModel` lee el id del `SavedStateHandle` con `toRoute`. No lo recibe por parámetro, así sobrevive incluso a la muerte del proceso."
+
+> "Declaro el deep link en el destino y en el manifiesto, y lo pruebo con `adb`. Al entrar por el deep link, Navigation arma el back stack con la lista debajo."
+
+## Ejemplo
+
+El grafo de navegación:
+
+<pre><code className="language-kotlin">{navegacion.trimEnd()}</code></pre>
+
+Cómo el ViewModel del detalle obtiene el id (`ui/detalle/DetalleScreen.kt`):
+
+```kotlin
+@HiltViewModel
+class DetalleViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val repo: TareasRepository,
+) : ViewModel() {
+    private val id = savedStateHandle.toRoute<Detalle>().id
+    // ...
+}
+```
+
+El deep link en el manifiesto:
+
+```xml
+<intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data android:scheme="rollito" android:host="tareas" />
+</intent-filter>
+```
+
+*Las rutas type-safe existen desde Navigation 2.8 y este proyecto compila con la 2.10.2. También existe Navigation 3, con otro modelo: el back stack es una lista que manejás vos. Verificá en developer.android.com cuál usa el equipo.*
