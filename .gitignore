@@ -4,7 +4,7 @@ dist/
 dist-ssr/
 
 # Preparación personal de entrevistas (no se publica)
-privado/
+/privado/
 
 # Logs del emulador de Firebase
 *-debug.log
