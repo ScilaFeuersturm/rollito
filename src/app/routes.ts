@@ -11,6 +11,8 @@ export type Route =
   | { name: 'simulacro'; level: (typeof androidRoadmap)[number] }
   | { name: 'practica'; level: (typeof androidRoadmap)[number] }
   | { name: 'privado' }
+  | { name: 'cuenta' }
+  | { name: 'admin' }
   | { name: 'no-encontrada' }
 
 export const homePath = '/'
@@ -20,6 +22,8 @@ export const functionalInterviewPath = '/simulacro/funcional/'
 export const interviewPath = (level: AndroidLevel) => `/simulacro/android/${level}/`
 export const practicePath = (level: AndroidLevel) => `/practica/android/${level}/`
 export const privadoPath = '/privado/'
+export const cuentaPath = '/cuenta/'
+export const adminPath = '/admin/'
 export const lessonPath = (id: string) => `/lecciones/${id}/`
 
 export function matchRoute(pathname: string): Route {
@@ -27,6 +31,8 @@ export function matchRoute(pathname: string): Route {
   if (path === '/') return { name: 'inicio' }
   if (path === '/repaso') return { name: 'repaso' }
   if (path + '/' === privadoPath) return { name: 'privado' }
+  if (path + '/' === cuentaPath) return { name: 'cuenta' }
+  if (path + '/' === adminPath) return { name: 'admin' }
   if (path + '/' === functionalRepasoPath) return { name: 'repaso-funcional' }
   if (path + '/' === functionalInterviewPath) return { name: 'simulacro-funcional' }
   const level = androidRoadmap.find(item => path + '/' === interviewPath(item.level))
@@ -48,6 +54,8 @@ export function pageTitle(route: Route) {
     case 'practica': return `Práctica de código Android · ${route.level.title} · Rollito`
     case 'leccion': return `${route.lesson.titulo} · Rollito`
     case 'privado': return 'Material privado · Rollito'
+    case 'cuenta': return 'Tu cuenta · Rollito'
+    case 'admin': return 'Administración · Rollito'
     case 'no-encontrada': return 'No encontramos esa página · Rollito'
   }
 }
@@ -59,6 +67,8 @@ export const prerenderPaths = [
   functionalRepasoPath,
   functionalInterviewPath,
   privadoPath,
+  cuentaPath,
+  adminPath,
   ...androidRoadmap.map(item => interviewPath(item.level)),
   ...androidRoadmap.map(item => practicePath(item.level)),
   ...lessons.map(lesson => lessonPath(lesson.id)),

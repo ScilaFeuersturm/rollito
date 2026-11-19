@@ -7,16 +7,19 @@
     "build": "tsc --noEmit && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.js",
     "preview": "vite preview",
     "test": "vitest run",
-    "privado": "node scripts/cifrar-privado.js"
+    "privado": "node scripts/cifrar-privado.js",
+    "test:reglas": "npx -y firebase-tools@15.37.0 emulators:exec --only firestore --project demo-rollito \"node --test firebase/reglas.emulador.mjs\""
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
     "@mdx-js/react": "^3.1.1",
+    "firebase": "^13.4.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
     "@mdx-js/rollup": "^3.1.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",

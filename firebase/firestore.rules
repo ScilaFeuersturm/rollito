@@ -1,0 +1,77 @@
+rules_version = '2';
+
+// Reglas de Firestore de Rollito. Se pegan en la consola: Firestore Database → Reglas → Publicar.
+// Se prueban con `npm run test:reglas` (emulador de Firebase), ver firebase/reglas.emulador.mjs.
+//
+// Colecciones:
+//   admins/{uid}           la admin. Se crea a mano en la consola; nadie la puede escribir desde la app.
+//   invitaciones/{codigo}  códigos de un solo uso que genera la admin.
+//   miembros/{uid}         ficha de cada integrante. Se crea al canjear una invitación.
+//   progreso/{uid}         lecciones completadas: { lecciones: { id: 'AAAA-MM-DD' }, actualizado }.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function autenticado() {
+      return request.auth != null;
+    }
+    function esAdmin() {
+      return autenticado() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    function esMiembro() {
+      return autenticado() && exists(/databases/$(database)/documents/miembros/$(request.auth.uid));
+    }
+    function invitacion(codigo) {
+      return /databases/$(database)/documents/invitaciones/$(codigo);
+    }
+    function miembro(uid) {
+      return /databases/$(database)/documents/miembros/$(uid);
+    }
+
+    match /admins/{uid} {
+      allow get: if autenticado() && request.auth.uid == uid;
+    }
+
+    match /invitaciones/{codigo} {
+      allow read, delete: if esAdmin();
+      allow create: if esAdmin()
+        && request.resource.data.keys().hasOnly(['usada', 'creadaEn'])
+        && request.resource.data.usada == false
+        && request.resource.data.creadaEn == request.time;
+      // Canje: solo en el mismo batch que crea la ficha de miembro de quien la canjea, y una sola vez.
+      allow update: if autenticado()
+        && resource.data.usada == false
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['usada', 'usadaPor', 'usadaEn'])
+        && request.resource.data.usada == true
+        && request.resource.data.usadaPor == request.auth.uid
+        && request.resource.data.usadaEn == request.time
+        && existsAfter(miembro(request.auth.uid))
+        && getAfter(miembro(request.auth.uid)).data.invitacion == codigo;
+    }
+
+    match /miembros/{uid} {
+      allow read: if autenticado() && (request.auth.uid == uid || esAdmin());
+      allow create: if autenticado() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['nombre', 'email', 'invitacion', 'creadoEn'])
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() > 0
+        && request.resource.data.nombre.size() <= 60
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.creadoEn == request.time
+        && request.resource.data.invitacion is string
+        && get(invitacion(request.resource.data.invitacion)).data.usada == false
+        && getAfter(invitacion(request.resource.data.invitacion)).data.usadaPor == request.auth.uid;
+      // Quitar el acceso a alguien es borrar su ficha.
+      allow delete: if esAdmin();
+    }
+
+    match /progreso/{uid} {
+      allow read: if autenticado() && (request.auth.uid == uid || esAdmin());
+      allow create, update: if esMiembro() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['lecciones', 'actualizado'])
+        && request.resource.data.lecciones is map
+        && request.resource.data.lecciones.size() <= 1000
+        && request.resource.data.actualizado == request.time;
+      allow delete: if esAdmin();
+    }
+  }
+}
