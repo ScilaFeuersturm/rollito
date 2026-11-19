@@ -1,5 +1,11 @@
 export const androidRoadmap = [
   {
+    level: 'trainee',
+    title: 'Trainee',
+    description: 'Kotlin desde cero, con un puente desde Swift: variables, funciones, control de flujo, nulos, clases, object y companion, interfaces y colecciones.',
+    topics: ['val y var', 'Textos y templates', 'Funciones', 'if, when y rangos', 'Nulos', 'Clases', 'Data, enum y sealed', 'object y companion object', 'Interfaces y extensiones', 'Colecciones y lambdas', 'De Swift a Kotlin'],
+  },
+  {
     level: 'junior',
     title: 'Junior',
     description: 'De Java y XML a Kotlin y Compose. Construí una pantalla y respondé a las acciones del usuario.',

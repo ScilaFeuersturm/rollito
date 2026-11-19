@@ -1,0 +1,85 @@
+---
+id: android-trainee-de-swift-a-kotlin-01
+track: android
+nivel: trainee
+modulo: "Kotlin desde cero"
+titulo: "De Swift a Kotlin: tabla de equivalencias"
+duracion_min: 5
+prerequisitos: [android-trainee-colecciones-y-lambdas-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál es la traducción de `guard let usuario = usuario else { return }`?"
+    opciones: ["`guard usuario`", "`val usuario = usuario ?: return`", "`if let usuario`"]
+    correcta: 1
+    explicacion: "Después de esa línea, `usuario` es no nulable en el resto de la función."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál de estas equivalencias es incorrecta?"
+    opciones: ["`protocol` → `interface`", "`struct` → `data class`", "`static` → `static`"]
+    correcta: 2
+    explicacion: "Kotlin no tiene `static`: se usa `companion object` (o un `object` para un singleton)."
+  - tipo: autoevaluacion
+    pregunta: "Traducí en voz alta: `let total = tareas.filter { !$0.hecha }.count`."
+    explicacion: "`val total = tareas.count { !it.hecha }` (o `tareas.filter { !it.hecha }.size`). `let` pasa a ser `val`, `$0` pasa a ser `it`, y `count` con una condición cuenta directo sin filtrar."
+tarea_local: "Tomá una función que hayas escrito en Swift (o una de un tutorial) de unas 15 líneas y traducila a Kotlin con la tabla. Compilala en Android Studio."
+resultado_esperado: "La función traducida y compilando, con `val` por defecto y sin `!!`."
+resumen:
+  - "Let es val, func es fun y switch es when."
+  - "Doble signo de pregunta es Elvis."
+  - "Guard let es val con Elvis y return."
+  - "Struct se parece a data class y enum con valores asociados a sealed."
+  - "Static va en un companion object, y las clases son cerradas por defecto."
+entrevista:
+  en_30_segundos: "Vengo de Swift, así que la transición es natural: `let` es `val`, `switch` es `when`, `??` es Elvis, `guard let` es `?: return`, los protocolos son interfaces y los enums con valores asociados son sealed. Las diferencias a cuidar: no hay `static` (uso companion object), las clases son cerradas por defecto y una data class es una clase, no un struct."
+  trampas:
+    - pregunta: "¿`first()` en Kotlin es como `first` en Swift?"
+      respuesta: "No: en Swift devuelve un Optional; en Kotlin, `first()` lanza una excepción si la lista está vacía. El equivalente seguro es `firstOrNull()`."
+  cuando_no: "No traduzcas línea por línea código grande: aprovechá lo idiomático de cada lenguaje (por ejemplo, `when` como expresión o funciones de colección)."
+---
+
+## Concepto
+
+**Para qué sirve.** Una referencia rápida para quien viene de Swift (o vuelve a Kotlin después de un tiempo). Cada fila tiene su lección en este nivel.
+
+- `let` / `var` → `val` / `var`
+- `"\(nombre)"` → `"$nombre"` o `"${expresion}"`
+- `func` → `fun`, sin labels externos
+- `Void` → `Unit`
+- `switch` / `case` → `when`
+- `1...3` / `0..<3` → `1..3` / `0 until 3`
+- `String?` → `String?` (igual)
+- `??` → `?:` (Elvis)
+- `if let x = y` → `y?.let { }` o `if (y != null)` con smart cast
+- `guard let x = y else { return }` → `val x = y ?: return`
+- `!` (force unwrap) → `!!`
+- `struct` → `data class` (ojo: es una clase, con `val` y `copy`)
+- `enum` simple → `enum class`
+- `enum` con valores asociados → `sealed interface`
+- `static let` / `static func` → dentro de `companion object`
+- `static let shared = X()` → `object X`
+- `protocol` → `interface`
+- `extension Tipo { func f() }` → `fun Tipo.f()`
+- clases abiertas por defecto → **cerradas** por defecto (`open` para heredar)
+- `$0` → `it`
+- `[String]` / `[String: Int]` → `List<String>` / `Map<String, Int>`
+
+## Ejemplo
+
+Lo mismo, en los dos lenguajes:
+
+```swift
+// Swift
+struct Tarea { let titulo: String; var hecha = false }
+let pendientes = tareas.filter { !$0.hecha }.map { $0.titulo }
+guard let primera = pendientes.first else { return }
+print("Primera: \(primera)")
+```
+
+```kotlin
+// Kotlin
+data class Tarea(val titulo: String, val hecha: Boolean = false)
+val pendientes = tareas.filter { !it.hecha }.map { it.titulo }
+val primera = pendientes.firstOrNull() ?: return
+println("Primera: $primera")
+```
+
+Una diferencia sutil: en Swift, `first` ya devuelve un Optional; en Kotlin, `first()` lanza una excepción si la lista está vacía, y `firstOrNull()` devuelve nulable.

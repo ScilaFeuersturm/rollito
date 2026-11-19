@@ -1,0 +1,63 @@
+---
+id: android-trainee-textos-01
+track: android
+nivel: trainee
+modulo: "Kotlin desde cero"
+titulo: "Textos: templates, varias líneas y comparación"
+duracion_min: 4
+prerequisitos: [android-trainee-variables-y-tipos-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo se escribe en Kotlin lo que en Swift es `\"Hola, \\(nombre)\"`?"
+    opciones: ["`\"Hola, \" + nombre` es la única forma.", "`\"Hola, $nombre\"`, y para expresiones, con llaves: `\"${tareas + 1}\"`.", "`\"Hola, {nombre}\"`"]
+    correcta: 1
+    explicacion: "Son los string templates. Con llaves podés poner cualquier expresión, incluidas llamadas: `\"${nombre.uppercase()}\"`."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué compara `==` entre dos `String` en Kotlin?"
+    opciones: ["Si son el mismo objeto.", "El contenido (llama a `equals`). Para saber si son el mismo objeto se usa `===`.", "Solo el largo."]
+    correcta: 1
+    explicacion: "En Java, `==` comparaba referencias y era una trampa clásica; en Kotlin, `==` compara contenido, como en Swift."
+tarea_local: "Armá un texto de varias líneas con un resumen del día: tu nombre, cuántas tareas hiciste y cuántas te quedan (calculado con una resta adentro del template)."
+resultado_esperado: "Un texto sin sangría extra (gracias a `trimIndent()`) con los valores reemplazados."
+resumen:
+  - "Los templates usan pesos y nombre, o pesos y llaves para expresiones."
+  - "Triple comilla con trim indent arma textos de varias líneas."
+  - "Igual igual compara el contenido de los textos."
+  - "Triple igual compara si es el mismo objeto."
+entrevista:
+  en_30_segundos: "Armo los textos con templates (`\"$nombre\"` o `\"${expresion}\"`), uso triple comilla con `trimIndent()` para varias líneas, y comparo con `==`, que en Kotlin compara contenido."
+  trampas:
+    - pregunta: "¿Conviene armar textos para la UI con templates?"
+      respuesta: "Para logs y textos internos, sí. Para lo que ve la persona, los textos van en recursos (`strings.xml`) con parámetros, así se pueden traducir."
+  cuando_no: "Si un texto se arma en muchos pasos dentro de un bucle, `buildString { append(...) }` es más claro y eficiente que concatenar."
+---
+
+import ejemplo from '../../../android-samples/kotlin/trainee/Textos.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Casi toda pantalla arma textos con datos. Kotlin tiene templates como Swift, con una sintaxis un poco distinta.
+
+- **Templates:** `"Hola, $nombre"` o, para expresiones, `"${tareas + 1}"`.
+- **Varias líneas:** entre triple comilla, con `trimIndent()` para sacar la sangría.
+- **Comparación:** `==` compara contenido; `===`, si es el mismo objeto.
+- **Funciones útiles:** `uppercase()`, `lowercase()`, `trim()`, `length`, `isBlank()`, `split()`.
+
+**Desde Swift:** `\(nombre)` pasa a ser `$nombre`; `.count` pasa a ser `.length`; `"""` existe en los dos.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{ejemplo.trimEnd()}</code></pre>
+
+Imprime (salida real, compilada con kotlinc 2.1.10):
+
+```text
+Hola, Ana
+Tenés 4 tareas mañana
+ANA tiene 3 letras
+Lista:
+- Comprar yerba
+- Pagar la luz
+true
+true
+```

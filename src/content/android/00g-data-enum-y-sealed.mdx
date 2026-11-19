@@ -1,0 +1,69 @@
+---
+id: android-trainee-data-enum-y-sealed-01
+track: android
+nivel: trainee
+modulo: "Kotlin desde cero"
+titulo: "Data classes, enums y sealed: modelar datos"
+duracion_min: 6
+prerequisitos: [android-trainee-clases-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué genera una `data class`?"
+    opciones: ["Nada especial.", "`equals` y `hashCode` (comparar por contenido), `toString` legible, `copy` y la desestructuración. Lo más parecido a un `struct` de Swift.", "Una tabla en la base de datos."]
+    correcta: 1
+    explicacion: "Verificado: dos `Tarea(1, \"Yerba\")` son `==` (true) pero no `===` (false)."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál es el equivalente de un `enum` de Swift con valores asociados (`case error(String)`)?"
+    opciones: ["`enum class` con parámetros.", "Una `sealed interface` (o `sealed class`) con un subtipo por caso, cada uno con sus datos. El `when` sobre ella es exhaustivo.", "No existe."]
+    correcta: 1
+    explicacion: "Los `enum class` de Kotlin tienen todos los mismos datos; las sealed permiten que cada caso tenga los suyos."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué el `when` de `describir(estado)` no necesita `else`?"
+    explicacion: "Porque `Estado` es sealed: el compilador conoce todos los subtipos y verifica que el `when` los cubra. Si mañana se agrega un estado nuevo, el código que no lo maneje deja de compilar, en vez de fallar en producción."
+tarea_local: "Modelá el resultado de un login con una sealed interface: `Exito(usuario)`, `CredencialesInvalidas` y `SinConexion`. Escribí una función que devuelva el mensaje para cada caso con un `when` sin `else`."
+resultado_esperado: "Un `when` exhaustivo; si agregás un cuarto caso, el compilador te obliga a manejarlo."
+resumen:
+  - "Una data class compara por contenido y genera to string y copy."
+  - "Copy crea una versión modificada sin cambiar la original."
+  - "Enum class es un conjunto fijo de valores."
+  - "Sealed es un conjunto fijo de tipos, cada uno con sus datos."
+  - "Un when sobre una sealed es exhaustivo sin else."
+entrevista:
+  en_30_segundos: "Modelo datos con data classes inmutables y `copy`, valores fijos con `enum class` y estados con sealed interfaces, que son el equivalente de los enums con valores asociados de Swift: el `when` exhaustivo hace que el compilador me avise si falta un caso."
+  trampas:
+    - pregunta: "Una data class, ¿se copia al asignarla como un struct de Swift?"
+      respuesta: "No: es una clase, así que asignarla copia la referencia. Por eso conviene que sus propiedades sean `val`: inmutable, nadie la cambia, y para \"modificar\" se usa `copy`, que crea un objeto nuevo."
+  cuando_no: "No uses una data class para algo con identidad y comportamiento propio (por ejemplo, un servicio): es para datos."
+---
+
+import ejemplo from '../../../android-samples/kotlin/trainee/DataEnumSealed.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Modelar bien los datos evita estados imposibles y mucho código repetido.
+
+- **`data class`:** clases de datos con `equals`, `hashCode`, `toString` y `copy` generados.
+- **`enum class`:** un conjunto fijo de valores, que pueden tener propiedades.
+- **`sealed interface` / `sealed class`:** un conjunto fijo de **tipos**, cada uno con sus datos. Ideal para estados de pantalla (cargando, listo, error).
+
+**Desde Swift:** `struct` pasa a ser `data class` (ojo: es una clase, se pasa por referencia, pero con `val` es inmutable y `copy` crea otra); `enum` simple pasa a ser `enum class`; `enum` con valores asociados pasa a ser `sealed`.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{ejemplo.trimEnd()}</code></pre>
+
+Imprime (salida real, compilada con kotlinc 2.1.10):
+
+```text
+true
+false
+Tarea(id=1, titulo=Yerba, hecha=false)
+Tarea(id=1, titulo=Yerba, hecha=true)
+Alta
+[ALTA, MEDIA, BAJA]
+Cargando…
+1 tareas
+Error: Sin conexión
+```
+
+Este estado sellado es el mismo patrón de los `UiState` del recorrido Android.

@@ -1,0 +1,73 @@
+---
+id: android-trainee-colecciones-y-lambdas-01
+track: android
+nivel: trainee
+modulo: "Kotlin desde cero"
+titulo: "Colecciones y lambdas: list, map, filter e it"
+duracion_min: 6
+prerequisitos: [android-trainee-interfaces-y-extensiones-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre `listOf` y `mutableListOf`?"
+    opciones: ["Ninguna.", "`listOf` crea una `List` de solo lectura (sin `add`); `mutableListOf`, una `MutableList` que se puede modificar. Se prefiere la de solo lectura.", "`listOf` es más rápida."]
+    correcta: 1
+    explicacion: "En Swift, la mutabilidad depende de `let`/`var`; en Kotlin, del tipo de la colección."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es `it` en `tareas.filter { !it.hecha }`?"
+    opciones: ["Una palabra reservada para errores.", "El nombre implícito del único parámetro de la lambda, como `$0` en Swift. Se puede nombrar: `{ tarea -> !tarea.hecha }`.", "La lista completa."]
+    correcta: 1
+    explicacion: "Si la lambda tiene dos parámetros, hay que nombrarlos: `{ a, b -> a + b }`."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué devuelve `capitales[\"Chile\"]` si la clave no está?"
+    opciones: ["Lanza un error.", "`null`: el acceso a un `Map` con corchetes devuelve un tipo nulable.", "Un texto vacío."]
+    correcta: 1
+    explicacion: "Verificado en el ejemplo. Por eso se combina con `?:` para dar un valor por defecto."
+tarea_local: "Con una lista de 5 gastos (descripción, monto, categoría), calculá el total, el gasto más caro, los gastos mayores a 1000 y el total por categoría con `groupBy`."
+resultado_esperado: "Cuatro resultados calculados con funciones de colección, sin ningún `for`."
+resumen:
+  - "List of es de solo lectura; mutable list of se puede modificar."
+  - "Una lambda es un bloque de código que se pasa como valor."
+  - "It es el nombre del único parámetro de una lambda, como pesos cero en Swift."
+  - "Filter, map, sum of y group by transforman colecciones sin bucles."
+  - "Acceder a un map con corchetes devuelve un valor nulable."
+entrevista:
+  en_30_segundos: "Prefiero colecciones de solo lectura y las transformo con `filter`, `map`, `sumOf` o `groupBy` y lambdas, en vez de bucles con variables mutables. Tengo en cuenta que acceder a un `Map` devuelve un nulable."
+  trampas:
+    - pregunta: "¿`List` de Kotlin es inmutable?"
+      respuesta: "Es de solo lectura desde tu referencia, pero puede ser una lista mutable por detrás: si alguien tiene la referencia mutable, la puede cambiar. Por eso, al exponer una lista interna, conviene devolver una copia (`toList()`)."
+  cuando_no: "Para colecciones enormes con muchas transformaciones encadenadas, `asSequence()` evita crear listas intermedias (lo ves en la lección Semi Senior de secuencias)."
+---
+
+import ejemplo from '../../../android-samples/kotlin/trainee/ColeccionesYLambdas.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Casi toda app trabaja con listas. Kotlin tiene colecciones de solo lectura y mutables, y muchas funciones para transformarlas con lambdas.
+
+- **Colecciones:** `listOf`, `setOf`, `mapOf` (solo lectura) y `mutableListOf`, `mutableSetOf`, `mutableMapOf`.
+- **Lambdas:** `{ parametro -> cuerpo }`; con un solo parámetro, `it`.
+- **Funciones clave:** `filter`, `map`, `sumOf`, `any`, `first`, `sortedBy`, `groupBy`, `joinToString`.
+- **Mapas:** `"clave" to "valor"`, y `mapa["clave"]` devuelve nulable.
+
+**Desde Swift:** `[String]` pasa a ser `List<String>`; `$0` pasa a ser `it`; `.filter`, `.map`, `.reduce` se llaman casi igual; `.sorted(by:)` pasa a ser `sortedBy { }`.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{ejemplo.trimEnd()}</code></pre>
+
+Imprime (salida real, compilada con kotlinc 2.1.10):
+
+```text
+true
+[Pagar la luz, Estudiar Kotlin]
+6
+true
+Comprar yerba
+[Estudiar Kotlin, Pagar la luz, Comprar yerba]
+{hechas=1, pendientes=2}
+Buenos Aires
+null
+5
+```
+
+Se profundiza en las lecciones Junior "Colecciones" e "Identidad con listas, conjuntos y mapas".

@@ -1,0 +1,69 @@
+---
+id: android-trainee-clases-01
+track: android
+nivel: trainee
+modulo: "Kotlin desde cero"
+titulo: "Clases: constructor, propiedades, init y herencia"
+duracion_min: 6
+prerequisitos: [android-trainee-nulos-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `class Tarea(val titulo: String, var hecha: Boolean = false)`?"
+    opciones: ["Declara una clase vacía.", "Declara la clase con su constructor primario, y `val`/`var` crean las propiedades directamente. Sin escribir campos ni asignaciones.", "Declara una función."]
+    correcta: 1
+    explicacion: "En Swift tendrías que declarar las propiedades y escribir un `init`; en Kotlin, el constructor primario lo hace todo en una línea."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué `class Admin : Usuario(nombre)` necesita que `Usuario` sea `open`?"
+    opciones: ["No lo necesita.", "Porque en Kotlin las clases son finales por defecto: para poder heredar hay que marcarlas `open`, y lo mismo con cada método que se quiera sobrescribir.", "Porque Admin es un objeto."]
+    correcta: 1
+    explicacion: "Es al revés que en Swift, donde las clases se pueden heredar salvo que sean `final`."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo se crea un objeto de una clase?"
+    opciones: ["`new Tarea(\"Yerba\")`", "`Tarea(\"Yerba\")`: en Kotlin no se usa `new`.", "`Tarea.new(\"Yerba\")`"]
+    correcta: 1
+    explicacion: "Como en Swift."
+tarea_local: "Creá una clase `CuentaBancaria(val titular: String)` con un saldo privado que arranca en 0, métodos `depositar` y `retirar` (que no deja quedar en negativo, con `require`) y una función para consultar el saldo."
+resultado_esperado: "El saldo no se puede tocar desde afuera; retirar más de lo que hay lanza `IllegalArgumentException` con tu mensaje."
+resumen:
+  - "El constructor primario va en la declaración de la clase."
+  - "Val y var en el constructor crean propiedades."
+  - "Init corre al construir y sirve para validar con require."
+  - "Las clases son finales por defecto: para heredar se marcan open."
+  - "Los objetos se crean sin new."
+entrevista:
+  en_30_segundos: "Declaro las propiedades en el constructor primario, valido en `init` con `require`, y recuerdo que las clases son finales por defecto: solo las marco `open` si están pensadas para heredarse. En general prefiero composición antes que herencia."
+  trampas:
+    - pregunta: "¿Por qué Kotlin hace las clases finales por defecto?"
+      respuesta: "Para que heredar sea una decisión de diseño explícita. Heredar de una clase que no se pensó para eso suele romperse cuando la clase base cambia; con `open`, el autor declara que está preparada."
+  cuando_no: "Para una clase que solo transporta datos, una `data class` es más corta y te da `equals`, `toString` y `copy` gratis."
+---
+
+import ejemplo from '../../../android-samples/kotlin/trainee/Clases.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Agrupar datos y comportamiento. Kotlin reduce muchísimo el código que había en Java para lo mismo.
+
+- **Constructor primario:** en la declaración. Con `val`/`var`, crea propiedades.
+- **`init`:** código que corre al construir; ideal para validar con `require`.
+- **Métodos:** funciones dentro de la clase.
+- **Herencia:** `class Hija : Padre()`. Las clases y los métodos son **finales por defecto**: se marcan `open` para heredar u `override` para sobrescribir.
+- **Visibilidad:** `public` (por defecto), `private`, `protected` e `internal` (visible en el mismo módulo).
+
+**Desde Swift:** no hay `struct` (el equivalente cercano es la data class, que viene después); `init` existe pero el primario va en la declaración; heredar es "abierto" en Swift y "cerrado" en Kotlin.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{ejemplo.trimEnd()}</code></pre>
+
+Imprime (salida real, compilada con kotlinc 2.1.10):
+
+```text
+Comprar yerba
+false
+Tarea(Comprar yerba, hecha=true)
+título de 13 letras
+Hola, Ana
+Hola, Pri (admin)
+Error: El título no puede estar vacío
+```

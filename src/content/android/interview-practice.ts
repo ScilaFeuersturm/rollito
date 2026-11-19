@@ -9,6 +9,20 @@ type Question = {
 }
 
 export const interviewPractice: Record<AndroidLevel, readonly Question[]> = {
+  trainee: [
+    { topic: "Pregunta 1", prompt: "¿Qué diferencia hay entre `val` y `var`?", answer: "`val` no se puede reasignar (como `let` en Swift); `var` sí. Uso `val` por defecto." },
+    { topic: "Pregunta 2", prompt: "¿Cuánto vale `7 / 2` en Kotlin?", answer: "3: la división entre dos `Int` es entera. Con `7 / 2.0` da 3.5." },
+    { topic: "Pregunta 3", prompt: "¿Cómo armás un texto con una variable adentro?", answer: "Con un template: `\"Hola, $nombre\"`, y para expresiones, `\"${tareas + 1}\"`." },
+    { topic: "Pregunta 4", prompt: "¿Qué es una función de una sola expresión?", answer: "Una que usa `=` en vez de llaves y `return`: `fun duplicar(n: Int) = n * 2`. El tipo de retorno se infiere." },
+    { topic: "Pregunta 5", prompt: "¿Para qué sirven los argumentos con nombre?", answer: "Para que la llamada se entienda sola y para saltear parámetros con valor por defecto: `saludar(\"Ana\", exclamacion = true)`." },
+    { topic: "Pregunta 6", prompt: "¿Kotlin tiene operador ternario?", answer: "No: `if` es una expresión que devuelve un valor: `val momento = if (horas < 12) \"mañana\" else \"tarde\"`." },
+    { topic: "Pregunta 7", prompt: "¿Qué diferencia hay entre `1..3` y `0 until 3`?", answer: "`1..3` incluye el 3; `0 until 3` no (0, 1 y 2)." },
+    { topic: "Pregunta 8", prompt: "¿Qué hace el operador Elvis `?:`?", answer: "Da un valor por defecto si lo de la izquierda es null (como `??` en Swift), o permite salir: `val x = y ?: return`." },
+    { topic: "Pregunta 9", prompt: "¿Por qué evitar `!!`?", answer: "Porque fuerza el valor y lanza una excepción si es null. Si un dato puede faltar, se maneja con `?.`, `?:` o un `if`." },
+    { topic: "Pregunta 10", prompt: "¿Por qué hay que marcar `open` una clase para heredarla?", answer: "Porque en Kotlin las clases y los métodos son finales por defecto; heredar es una decisión explícita." },
+    { topic: "Pregunta 11", prompt: "¿Cómo se declara en Kotlin lo que en Swift sería `static`?", answer: "Dentro de un `companion object`, y se usa con el nombre de la clase: `Tarea.LARGO_MAXIMO`. Para un singleton, `object`." },
+    { topic: "Pregunta 12", prompt: "¿Qué genera una `data class`?", answer: "`equals` y `hashCode` por contenido, `toString` legible, `copy` y la desestructuración." },
+  ],
   junior: [
     {
       topic: 'Kotlin y valores nulos',

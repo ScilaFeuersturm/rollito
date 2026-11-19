@@ -1,0 +1,65 @@
+---
+id: android-trainee-interfaces-y-extensiones-01
+track: android
+nivel: trainee
+modulo: "Kotlin desde cero"
+titulo: "Interfaces y extensiones"
+duracion_min: 5
+prerequisitos: [android-trainee-object-y-companion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál es el equivalente de un `protocol` de Swift?"
+    opciones: ["`abstract class`", "`interface`: declara propiedades y funciones que las clases implementan, y puede tener implementaciones por defecto (como una extensión de protocolo en Swift).", "`object`"]
+    correcta: 1
+    explicacion: "En el ejemplo, `enviar()` tiene implementación por defecto en la interfaz y usa `mensaje()`, que cada clase implementa."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `fun String.capitalizada()`?"
+    opciones: ["Crea una clase String nueva.", "Agrega una función a `String` sin modificar su código ni heredar: se llama como un método (`\"hola\".capitalizada()`). Es una función de extensión, como una `extension` de Swift.", "Nada."]
+    correcta: 1
+    explicacion: "Adentro, `this` es el texto sobre el que se llama."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué no puede hacer una función de extensión?"
+    explicacion: "Acceder a lo privado de la clase ni agregar estado (campos) de verdad: solo usa lo público. Las propiedades de extensión, como `resumen` en el ejemplo, se calculan cada vez con un `get()`."
+tarea_local: "Definí una interfaz `Forma` con `fun area(): Double` y una función por defecto `describir()` que use el área. Implementala en `Circulo` y `Rectangulo`. Después agregá una extensión `fun Double.redondeado(decimales: Int)`."
+resultado_esperado: "Una lista de `Forma` que imprime la descripción de cada una con el área redondeada."
+resumen:
+  - "Una interface es como un protocol de Swift."
+  - "Puede tener implementaciones por defecto."
+  - "Override es obligatorio al implementar."
+  - "Las extensiones agregan funciones a tipos que no son tuyos."
+  - "Una extensión no accede a lo privado ni agrega estado."
+entrevista:
+  en_30_segundos: "Uso interfaces como los protocolos de Swift, con implementaciones por defecto cuando tiene sentido, y extensiones para agregar funciones a tipos que no son míos, sin herencia. Recuerdo que las extensiones solo ven lo público y no agregan estado."
+  trampas:
+    - pregunta: "¿Interfaz o clase abstracta?"
+      respuesta: "Interfaz por defecto: una clase puede implementar varias. Clase abstracta cuando hace falta estado compartido (propiedades con valor guardado) o un constructor común, sabiendo que solo se hereda de una."
+  cuando_no: "No uses extensiones para esconder lógica de negocio importante desparramada en archivos: si una función es central para un tipo propio, va adentro de la clase."
+---
+
+import ejemplo from '../../../android-samples/kotlin/trainee/InterfacesYExtensiones.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Definir contratos que varias clases cumplen (interfaces) y agregar funciones a tipos que no son tuyos (extensiones).
+
+- **`interface`:** propiedades y funciones a implementar, con implementaciones por defecto opcionales. Una clase implementa varias: `class X : A, B`.
+- **`override`:** obligatorio al implementar algo de la interfaz.
+- **Extensiones:** `fun Tipo.funcion()` y `val Tipo.propiedad get() = ...`.
+
+**Desde Swift:** `protocol` pasa a ser `interface`; las extensiones de protocolo con implementación por defecto van directamente en la interfaz; `extension String { func x() }` pasa a ser `fun String.x()`.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{ejemplo.trimEnd()}</code></pre>
+
+Imprime (salida real, compilada con kotlinc 2.1.10):
+
+```text
+Para Ana: No te olvides de pagar la luz
+1
+Comprar yerba
+2 tareas: Yerba, Luz
+Sin tareas
+```
+
+Las extensiones se profundizan en la lección Junior "Funciones de extensión".

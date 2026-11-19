@@ -18,6 +18,29 @@ export interface Kata {
 }
 
 export const katas: Record<AndroidLevel, readonly Kata[]> = {
+  "trainee": [
+    {
+      titulo: "FizzBuzz",
+      enunciado: "Para los números del 1 al 15, devolvé \"Fizz\" si es múltiplo de 3, \"Buzz\" si es múltiplo de 5, \"FizzBuzz\" si es de los dos, y el número en otro caso.",
+      ejemplo: "`(1..15).joinToString(\" \") { fizzBuzz(it) }` → `1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz`",
+      pista: "Un `when` sin argumento, con el caso más específico (múltiplo de 15) primero.",
+      codigo: source("FizzBuzz"),
+    },
+    {
+      titulo: "El mayor sin max()",
+      enunciado: "Devolvé el número más grande de una lista sin usar `max()`, o `null` si la lista está vacía.",
+      ejemplo: "`mayor(listOf(3, 17, -2, 8))` → `17`. `mayor(emptyList())` → `null`.",
+      pista: "Arrancá con el primer elemento (no con 0, por los negativos) y recorré con un `for`.",
+      codigo: source("Mayor"),
+    },
+    {
+      titulo: "Contar vocales",
+      enunciado: "Contá cuántas vocales tiene un texto, sin distinguir mayúsculas y contando las vocales con tilde.",
+      ejemplo: "`contarVocales(\"Programación en Kotlin\")` → `8`.",
+      pista: "Un `Set` con las vocales y `count { it in vocales }` sobre el texto en minúsculas.",
+      codigo: source("ContarVocales"),
+    },
+  ],
   "junior": [
     {
       titulo: "Contar palabras",

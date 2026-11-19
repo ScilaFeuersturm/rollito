@@ -1,0 +1,68 @@
+---
+id: android-trainee-funciones-01
+track: android
+nivel: trainee
+modulo: "Kotlin desde cero"
+titulo: "Funciones: parámetros, valores por defecto y argumentos con nombre"
+duracion_min: 5
+prerequisitos: [android-trainee-textos-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es `fun duplicar(n: Int) = n * 2`?"
+    opciones: ["Un error de sintaxis.", "Una función de una sola expresión: el `=` reemplaza a las llaves y el `return`, y el tipo de retorno se infiere (`Int`).", "Una variable."]
+    correcta: 1
+    explicacion: "Muy común en Kotlin para funciones cortas."
+  - tipo: opcion_multiple
+    pregunta: "En Swift escribís `saludar(nombre: \"Ana\")`. ¿Cómo es en Kotlin?"
+    opciones: ["Igual, siempre con el nombre.", "Por defecto, sin nombre: `saludar(\"Ana\")`. El nombre es opcional y sirve para claridad o para saltear parámetros con valor por defecto: `saludar(\"Ana\", exclamacion = true)`.", "No existen los argumentos con nombre."]
+    correcta: 1
+    explicacion: "No hay labels externos como en Swift: el nombre del parámetro es el mismo adentro y afuera."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué devuelve una función sin tipo de retorno declarado y con llaves?"
+    opciones: ["Nada, da error.", "`Unit`, el equivalente de `Void` en Swift. No hace falta escribirlo.", "Un `Int`."]
+    correcta: 1
+    explicacion: "`imprimirSeparador()` del ejemplo devuelve `Unit`."
+tarea_local: "Escribí una función `precioFinal(precio: Double, descuento: Double = 0.0, conIva: Boolean = true)` y llamala de tres formas: solo con el precio, con descuento y sin IVA usando argumentos con nombre."
+resultado_esperado: "Tres resultados distintos, y llamadas que se entienden sin mirar la firma gracias a los nombres."
+resumen:
+  - "Las funciones se declaran con fun, y el tipo de retorno va después de los dos puntos."
+  - "Una función de una sola expresión usa igual en vez de llaves."
+  - "Los parámetros pueden tener valores por defecto."
+  - "Los argumentos con nombre se pueden pasar en cualquier orden."
+  - "Sin retorno, una función devuelve Unit."
+entrevista:
+  en_30_segundos: "Declaro funciones con `fun`, uso la forma de una sola expresión para las cortas, y aprovecho los valores por defecto y los argumentos con nombre para no necesitar sobrecargas y que las llamadas se lean solas."
+  trampas:
+    - pregunta: "¿Para qué sirven los argumentos con nombre si el orden ya alcanza?"
+      respuesta: "Para leer la llamada sin mirar la firma (`crear(titulo, true, false)` no dice nada; `crear(titulo, urgente = true)` sí) y para saltear parámetros con valor por defecto que están en el medio."
+  cuando_no: "Con más de cuatro o cinco parámetros, quizás convenga agruparlos en una data class en vez de sumar más valores por defecto."
+---
+
+import ejemplo from '../../../android-samples/kotlin/trainee/Funciones.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Las funciones agrupan lógica reutilizable. Kotlin suma dos cosas que en Java no había y que en Swift sí: valores por defecto y argumentos con nombre.
+
+- **Declaración:** `fun sumar(a: Int, b: Int): Int { return a + b }`.
+- **Una sola expresión:** `fun duplicar(n: Int) = n * 2`.
+- **Valores por defecto:** `saludo: String = "Hola"`.
+- **Argumentos con nombre:** `saludar(saludo = "Buen día", nombre = "Beto")`, en cualquier orden.
+- **Sin retorno:** devuelven `Unit` (el `Void` de Swift).
+
+**Desde Swift:** no hay labels externos (`func saludar(a nombre: String)`). Y la palabra es `fun`, no `func`.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{ejemplo.trimEnd()}</code></pre>
+
+Imprime (salida real, compilada con kotlinc 2.1.10):
+
+```text
+5
+42
+Hola, Ana.
+Hola, Ana!
+Buen día, Beto.
+---
+```

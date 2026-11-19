@@ -1,0 +1,64 @@
+---
+id: android-trainee-object-y-companion-01
+track: android
+nivel: trainee
+modulo: "Kotlin desde cero"
+titulo: "object y companion object: el \"static\" de Kotlin"
+duracion_min: 5
+prerequisitos: [android-trainee-data-enum-y-sealed-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo declarás en Kotlin lo que en Swift sería `static let largoMaximo = 60`?"
+    opciones: ["`static val largoMaximo = 60`", "Dentro de un `companion object` de la clase: `companion object { const val LARGO_MAXIMO = 60 }`, y se usa como `Tarea.LARGO_MAXIMO`.", "No se puede."]
+    correcta: 1
+    explicacion: "Kotlin no tiene la palabra `static`: lo que pertenece a la clase (y no a cada objeto) va en su companion object."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es un `object`?"
+    opciones: ["Cualquier instancia de una clase.", "Una declaración que crea una única instancia (un singleton), que se inicializa la primera vez que se usa.", "Un tipo de dato."]
+    correcta: 1
+    explicacion: "`Configuracion` del ejemplo es un object: hay uno solo en toda la app."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué el ejemplo usa un constructor privado y una función `crear` en el companion?"
+    explicacion: "Para que nadie pueda crear una `Tarea` inválida: la única forma es `Tarea.crear(...)`, que valida y devuelve `null` si el título no sirve. Es el patrón fábrica. Verificado: `crear(\"   \")` devuelve null y solo se cuenta la tarea válida."
+tarea_local: "Creá una clase `Usuario` con constructor privado y un companion object con `const val EDAD_MINIMA = 18` y una fábrica `crear(nombre, edad)` que devuelva `null` si la edad es menor. Probala con edades 17 y 18."
+resultado_esperado: "`Usuario.crear(\"Ana\", 17)` devuelve null y con 18 devuelve el usuario. Nadie puede llamar al constructor directamente."
+resumen:
+  - "Kotlin no tiene static: se usa companion object."
+  - "Lo que está en el companion se usa con el nombre de la clase."
+  - "Object declara un singleton, una sola instancia en toda la app."
+  - "Un constructor privado con una fábrica en el companion evita objetos inválidos."
+entrevista:
+  en_30_segundos: "Kotlin no tiene `static`: lo que pertenece a la clase va en su `companion object` (constantes, fábricas), y un singleton se declara directamente con `object`. Uso constructores privados con una fábrica en el companion cuando quiero validar antes de crear."
+  trampas:
+    - pregunta: "¿Un `object` es lo mismo que un singleton inyectado con Hilt?"
+      respuesta: "Los dos tienen una sola instancia, pero un `object` está fijo en el código: no se puede reemplazar en un test. Para dependencias que conviene cambiar en los tests (un repositorio, un cliente HTTP), mejor una clase con `@Singleton` inyectada."
+  cuando_no: "No metas estado mutable compartido en un `object` (por ejemplo, el usuario logueado): es difícil de testear y de razonar. Las constantes y funciones puras, en cambio, están bien ahí."
+---
+
+import ejemplo from '../../../android-samples/kotlin/trainee/ObjectYCompanion.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** A veces algo pertenece a la clase y no a cada objeto (una constante, una fábrica), o tiene que existir una sola vez en toda la app (una configuración).
+
+- **`object`:** un singleton. Se declara y se usa por su nombre: `Configuracion.modoOscuro`.
+- **`companion object`:** un object dentro de una clase. Lo que hay adentro se usa con el nombre de la clase: `Tarea.LARGO_MAXIMO`, `Tarea.crear(...)`. Es el reemplazo de `static`.
+
+**Desde Swift:** `static let` / `static func` pasan a ir dentro de `companion object`; un singleton `static let shared = X()` pasa a ser directamente `object X`.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{ejemplo.trimEnd()}</code></pre>
+
+Imprime (salida real, compilada con kotlinc 2.1.10):
+
+```text
+Claro
+Oscuro
+60
+Comprar yerba
+null
+1
+```
+
+Es la base de la lección Junior "Clásicos de Kotlin", que profundiza con `lateinit` y `lazy`.

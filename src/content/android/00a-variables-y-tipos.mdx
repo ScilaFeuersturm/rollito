@@ -1,0 +1,70 @@
+---
+id: android-trainee-variables-y-tipos-01
+track: android
+nivel: trainee
+modulo: "Kotlin desde cero"
+titulo: "Variables y tipos: val, var e inferencia"
+duracion_min: 5
+prerequisitos: []
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre `val` y `var`?"
+    opciones: ["`val` es para números y `var` para textos.", "`val` no se puede reasignar (como `let` en Swift); `var` sí. Se usa `val` por defecto y `var` solo cuando el valor cambia.", "Ninguna."]
+    correcta: 1
+    explicacion: "Igual que en Swift: preferí lo inmutable. Ojo: `val` impide reasignar, pero si el valor es una lista mutable, su contenido sí puede cambiar."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuánto vale `2 / 3` en Kotlin?"
+    opciones: ["0.666…", "0: la división entre dos `Int` es entera. Con un `Double` (`2 / 3.0`) da 0.666…", "Un error."]
+    correcta: 1
+    explicacion: "Verificado en el ejemplo: `cantidad / 3` imprime 0 y `cantidad / 3.0`, 0.6666666666666666. Igual que en Swift."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es `const val`?"
+    opciones: ["Lo mismo que `val`.", "Una constante que se conoce al compilar: solo para tipos básicos y `String`, en el nivel superior del archivo o dentro de un `object` o `companion object`.", "Una variable que no se puede leer."]
+    correcta: 1
+    explicacion: "Se usa para valores fijos como límites o claves. `val` sirve para cualquier valor que no se reasigna, aunque se calcule al ejecutar."
+tarea_local: "En Android Studio, creá un archivo `Variables.kt` con `fun main()`. Declará tu nombre con `val`, tus años de experiencia con `var` (y sumale uno), y calculá el promedio de horas de tres tareas. Imprimí todo."
+resultado_esperado: "Si intentás reasignar el `val`, Android Studio marca el error antes de compilar. El promedio de tres `Int` da entero salvo que uses un `Double`."
+resumen:
+  - "Val no se puede reasignar, como let en Swift; var sí."
+  - "Se usa val por defecto."
+  - "Kotlin infiere el tipo cuando es obvio."
+  - "La división entre dos enteros da un entero."
+  - "Const val es para constantes que se conocen al compilar."
+entrevista:
+  en_30_segundos: "Uso `val` por defecto y `var` solo cuando el valor cambia, igual que `let` y `var` en Swift. Kotlin infiere los tipos, y los escribo cuando aclaran. Para constantes de compilación uso `const val`."
+  trampas:
+    - pregunta: "¿Un `val` es inmutable?"
+      respuesta: "La referencia sí: no se puede reasignar. Pero si apunta a algo mutable, como una `MutableList`, el contenido puede cambiar. Para inmutabilidad real, `val` con tipos inmutables (`List`, data classes con `val`)."
+  cuando_no: "No uses `var` \"por las dudas\": si después necesitás reasignar, el compilador te avisa y lo cambiás."
+---
+
+import ejemplo from '../../../android-samples/kotlin/trainee/Variables.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Toda app guarda datos en variables. Kotlin tiene dos formas, igual que Swift, y además infiere el tipo cuando es obvio.
+
+- **`val`** (en Swift, `let`): no se puede reasignar. Es la opción por defecto.
+- **`var`** (en Swift, `var`): se puede reasignar.
+- **Inferencia:** `val cantidad = 2` es `Int` sin escribirlo. Si querés ser explícita: `val precio: Double = 1500.5`.
+- **Tipos básicos:** `Int`, `Long`, `Double`, `Float`, `Boolean`, `Char` (comillas simples) y `String` (comillas dobles).
+- **`const val`:** constante de compilación, en el nivel superior o en un `object`.
+
+**Desde Swift:** casi igual. Diferencias: el tipo va después de los dos puntos en los dos lenguajes, pero en Kotlin no hay `struct`/`class` para decidir si algo se copia (eso lo ves en la lección de data classes).
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{ejemplo.trimEnd()}</code></pre>
+
+Imprime (salida real, compilada con kotlinc 2.1.10):
+
+```text
+Comprar yerba
+2
+3001.0
+false
+C
+100
+0
+0.6666666666666666
+```

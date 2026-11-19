@@ -1,0 +1,71 @@
+---
+id: android-trainee-control-de-flujo-01
+track: android
+nivel: trainee
+modulo: "Kotlin desde cero"
+titulo: "Control de flujo: if, when, rangos y bucles"
+duracion_min: 6
+prerequisitos: [android-trainee-funciones-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué tiene de especial el `if` en Kotlin?"
+    opciones: ["Nada.", "Es una expresión: devuelve un valor (`val momento = if (horas < 12) \"mañana\" else \"tarde\"`). Por eso Kotlin no tiene el operador ternario `?:` de Swift y Java.", "No admite `else`."]
+    correcta: 1
+    explicacion: "Ojo: en Kotlin, `?:` existe pero es otra cosa, el operador Elvis para nulos."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué imprime `for (i in 0 until 3) print(i)`?"
+    opciones: ["0123", "012: `until` excluye el final. `1..3` lo incluye.", "123"]
+    correcta: 1
+    explicacion: "Verificado en el ejemplo. En Swift: `0..<3` y `1...3`."
+  - tipo: opcion_multiple
+    pregunta: "¿A qué equivale el `switch` de Swift?"
+    opciones: ["A `select`.", "A `when`, que también es una expresión, puede tener varios valores por rama (`'M', 'm' ->`), rangos (`in 1..3`) y condiciones sueltas, y no necesita `break`.", "No hay equivalente."]
+    correcta: 1
+    explicacion: "Igual que el `switch` de Swift, cuando se usa como expresión tiene que ser exhaustivo (cubrir todos los casos o tener `else`)."
+tarea_local: "Escribí una función que reciba una nota del 1 al 10 y devuelva \"Desaprobado\" (1 a 3), \"Regular\" (4 a 6), \"Bueno\" (7 a 8) o \"Excelente\" (9 a 10) usando `when` con rangos. Probala con un `for` del 1 al 10."
+resultado_esperado: "Diez líneas con la nota y su categoría, sin ningún `if` encadenado."
+resumen:
+  - "If es una expresión que devuelve un valor: reemplaza al ternario."
+  - "When es el switch de Kotlin, con rangos y varios valores por rama."
+  - "Uno punto punto tres incluye el tres; cero until tres no."
+  - "For recorre rangos y colecciones; with index da el índice."
+entrevista:
+  en_30_segundos: "Uso `if` y `when` como expresiones para asignar valores sin ternarios, `when` con rangos y varias ramas en vez de cadenas de `if`, y rangos con `..`, `until` y `downTo` en los bucles."
+  trampas:
+    - pregunta: "¿`when` sin `else` compila?"
+      respuesta: "Como sentencia, sí. Como expresión (cuando su valor se asigna o se devuelve), tiene que ser exhaustivo: o tiene `else` o cubre todos los casos, como pasa con un enum o una sealed class."
+  cuando_no: "Para dos casos, un `if` es más claro que un `when`."
+---
+
+import ejemplo from '../../../android-samples/kotlin/trainee/ControlDeFlujo.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Decidir y repetir. Kotlin tiene las estructuras de siempre, con dos detalles importantes: `if` y `when` devuelven valores.
+
+- **`if` como expresión:** reemplaza al ternario.
+- **`when`:** el `switch` de Kotlin, con varios valores por rama, rangos y condiciones.
+- **Rangos:** `1..3` (incluye el 3), `0 until 3` (no lo incluye), `10 downTo 0 step 5`.
+- **Bucles:** `for (x in coleccion)`, `while`, `repeat(3) { }`, y `withIndex()` para tener el índice.
+
+**Desde Swift:** `1...3` pasa a ser `1..3`; `0..<3` pasa a ser `0 until 3` (o `0..<3`, que también existe en Kotlin moderno); `switch` pasa a ser `when`, sin `case`.
+
+## Ejemplo
+
+<pre><code className="language-kotlin">{ejemplo.trimEnd()}</code></pre>
+
+Imprime (salida real, compilada con kotlinc 2.1.10):
+
+```text
+tarde
+Nada pendiente
+Pocas tareas
+Muchas tareas
+Media
+1 2 3 
+0 1 2 
+10 5 0 
+0: Yerba
+1: Luz
+Intentos: 2
+```
