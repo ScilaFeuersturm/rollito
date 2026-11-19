@@ -1,6 +1,6 @@
 # Cuentas de Taller Fichín (Firebase)
 
-Sin cuenta solo se ve la landing (`src/app/Landing.tsx`): qué es Rollito y "¿No tenés cuenta? Contactate con Aramis". Lecciones, repaso, simulacros, práctica y material privado piden una cuenta de miembro; después de entrar, se vuelve a la página pedida (`/cuenta/?volver=`). El progreso se guarda en Firebase y se ve en cualquier dispositivo. Hay lugar para 10 miembros; la admin genera los códigos de invitación.
+Sin cuenta solo se ve la landing (`src/app/Landing.tsx`): dice que por ahora Rollito está limitado al equipo de Taller Fichín y que, si sos del equipo, le pidas acceso a Aramis. No muestra qué contenido hay adentro. Lecciones, repaso, simulacros, práctica y material privado piden una cuenta de miembro; después de entrar, se vuelve a la página pedida (`/cuenta/?volver=`). El progreso se guarda en Firebase y se ve en cualquier dispositivo. Hay lugar para 10 miembros; la admin genera los códigos de invitación.
 
 **Límite conocido:** el sitio es estático. El HTML publicado ya no trae el texto de las lecciones y `public/robots.txt` deja indexar solo la landing, pero el contenido sigue dentro del JavaScript del sitio: alguien con conocimientos técnicos lo puede leer. Para protección real habría que cifrar el contenido y guardar la clave en Firestore, legible solo por miembros.
 
