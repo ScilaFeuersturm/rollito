@@ -1,0 +1,57 @@
+---
+id: react-senior-reconciliacion-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Reconciliación: cuándo React conserva el estado y cuándo lo descarta"
+duracion_min: 6
+prerequisitos: [react-semi-senior-performance-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "`<Contador nombre={persona} />` sin key, en la misma posición. Sumás dos veces con Ana y cambiás a Beto. ¿Qué muestra?"
+    opciones: ["`Beto: 0`.", "`Beto: 2`: mismo tipo de componente en la misma posición, así que React conserva el estado aunque cambien las props.", "Un error."]
+    correcta: 1
+    explicacion: "Verificado en el test del ejemplo. El estado pertenece a la posición en el árbol, no a las props. Es el origen de bugs como un formulario que conserva los datos de otra persona."
+  - tipo: opcion_multiple
+    pregunta: "¿Cómo hacés que el contador empiece de cero cada vez que cambia la persona?"
+    opciones: ["Con un `useEffect` que resetee el estado cuando cambia `nombre`.", "Con `key={persona}`: si la key cambia, React desmonta el componente y monta uno nuevo, con estado inicial.", "Con `memo`."]
+    correcta: 1
+    explicacion: "La key es la identidad del componente. Resetear con un efecto hace un dibujo de más con el valor viejo; cambiar la key es la forma idiomática."
+  - tipo: opcion_multiple
+    pregunta: "Un componente se dibuja a veces envuelto en un `<div>` y a veces en una `<section>`. ¿Qué pasa con su estado al cambiar?"
+    opciones: ["Se conserva.", "Se pierde: cambió el tipo del elemento padre en esa posición, así que React descarta todo ese subárbol y lo vuelve a crear.", "Depende de la key del hijo."]
+    correcta: 1
+    explicacion: "Cuando cambia el tipo de un elemento, React no intenta comparar sus hijos: desmonta y monta de nuevo."
+tarea_local: "En el editor en vivo, sumá dos veces con Ana, cambiá a Beto y fijate que el número se mantiene. Después marcá \"Usar key\" y repetí."
+resultado_esperado: "Sin key, Beto hereda el 2 de Ana. Con key, cada persona arranca de cero."
+resumen:
+  - "React compara el árbol nuevo con el anterior y actualiza solo lo que cambió."
+  - "El estado pertenece a la posición en el árbol, no a las props."
+  - "Si cambia el tipo de un elemento, se descarta todo su subárbol."
+  - "Cambiar la key es la forma idiomática de resetear un componente."
+entrevista:
+  en_30_segundos: "En cada dibujo React compara el árbol nuevo con el anterior: si en una posición sigue el mismo tipo de componente, lo actualiza y conserva su estado; si cambia el tipo o la key, lo desmonta y monta uno nuevo. Por eso uso keys estables en listas, y cambio la key a propósito cuando quiero resetear un componente, por ejemplo un formulario al cambiar de persona."
+  trampas:
+    - pregunta: "¿Por qué no declarar un componente adentro de otro?"
+      respuesta: "Porque en cada dibujo del padre se crea una función nueva, y para React es un tipo distinto: desmonta y monta el hijo cada vez, pierde su estado y el foco. Los componentes se declaran en el nivel superior del módulo."
+  cuando_no: "No uses una key aleatoria (`key={Math.random()}`) para \"forzar\" actualizaciones: remonta el componente en cada dibujo, pierde el estado y es lento."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/20-reconciliacion/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Saber cómo decide React qué conservar explica muchos bugs raros: datos que "se pasan" de un ítem a otro, un campo que pierde el foco al escribir, estado que no se resetea.
+
+En cada dibujo, React compara el árbol nuevo con el anterior, posición por posición (la **reconciliación**):
+
+- **Mismo tipo en la misma posición:** actualiza las props y **conserva el estado**.
+- **Otro tipo:** descarta ese subárbol entero y lo vuelve a crear.
+- **Otra key:** lo trata como otro componente, aunque sea del mismo tipo.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+El test del ejemplo verifica los dos casos: sin key, `Beto: 2`; con key, `Beto: 0`.

@@ -1,0 +1,53 @@
+---
+id: react-senior-componentes-compuestos-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Diseño de componentes: compuestos, controlados y no controlados"
+duracion_min: 6
+prerequisitos: [react-senior-accesibilidad-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué ventaja tiene una API compuesta (`<Tabs><Tabs.Tab/><Tabs.Panel/></Tabs>`) frente a una con props (`<Tabs items={[...]} />`)?"
+    opciones: ["Ninguna.", "Quien la usa arma la estructura que necesita (ícono en una tab, un panel con otro layout) sin que el componente prevea cada caso con una prop nueva. El estado se comparte por Context.", "Es más rápida."]
+    correcta: 1
+    explicacion: "La API con un array de props tiende a crecer con `renderTab`, `tabClassName`, `iconPosition`… La compuesta delega la estructura en quien la usa."
+  - tipo: opcion_multiple
+    pregunta: "Le pasás `activa=\"a\"` y `alCambiar` a `Tabs` y tocás la tab B. ¿Qué panel se ve?"
+    opciones: ["El B.", "El A: en modo controlado manda el padre. `alCambiar` avisa que se pidió B, pero hasta que el padre cambie `activa`, sigue A.", "Ninguno."]
+    correcta: 1
+    explicacion: "Verificado en el test. Es el mismo contrato que un `<input value>` controlado: el componente propone, el padre decide."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué `useTabs` lanza un error si no encuentra el contexto?"
+    explicacion: "Para que un uso incorrecto (un `Tabs.Tab` afuera de `Tabs`) falle enseguida con un mensaje claro, en vez de romperse más adelante con un `null` difícil de rastrear. El test verifica ese mensaje."
+tarea_local: "En el editor en vivo, agregá una tercera tab \"Todas\". Después convertí el `App` en controlado: guardá la tab activa en un estado y pasale `activa` y `alCambiar`."
+resultado_esperado: "Agregar una tab no requiere cambiar el componente `Tabs`. En modo controlado, la tab activa vive en el estado de `App`."
+resumen:
+  - "Los componentes compuestos comparten estado por Context y dejan la estructura a quien los usa."
+  - "Un componente controlado recibe el valor y avisa los cambios; uno no controlado guarda su propio estado."
+  - "Ofrecer los dos modos hace un componente reutilizable."
+  - "Un hook de contexto que falla con un mensaje claro evita usos incorrectos."
+entrevista:
+  en_30_segundos: "Cuando diseño un componente reutilizable pienso en su API. Para cosas como tabs, menús o acordeones uso componentes compuestos: comparten estado por Context y quien los usa arma la estructura. Ofrezco modo controlado y no controlado, como los inputs nativos, cuido la accesibilidad (roles y aria) y hago que los usos incorrectos fallen con un mensaje claro."
+  trampas:
+    - pregunta: "¿Qué pasa si un componente cambia de no controlado a controlado (por ejemplo, `activa` pasa de `undefined` a un valor)?"
+      respuesta: "Es un bug: el componente cambia de quién manda a mitad de camino. React avisa con los inputs nativos. Un componente bien diseñado elige el modo al montarse y lo mantiene."
+  cuando_no: "Para un componente que se usa en un solo lugar, una API compuesta es sobreingeniería: alcanza con props simples."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/31-componentes-compuestos/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** En un design system, cada componente se usa en muchos contextos. Una buena API es flexible sin llenarse de props.
+
+- **Componentes compuestos:** un padre (`Tabs`) comparte el estado por Context con sus piezas (`Tab`, `Panel`), que quien lo usa ubica como quiera.
+- **Controlado vs. no controlado:** controlado recibe el valor y avisa los cambios (`activa` + `alCambiar`); no controlado guarda su estado (`inicial`).
+- **Accesibilidad incluida:** `role="tab"`, `aria-selected`, `aria-controls`.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+Los tests verifican el modo no controlado, el controlado (manda el padre) y el error claro al usar una pieza afuera de `Tabs`.

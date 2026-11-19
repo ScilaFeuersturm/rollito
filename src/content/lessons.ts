@@ -88,6 +88,7 @@ export const claudeCodeModules = claudeCodeLessons.reduce<{ title: string; lesso
 export const reactSections = [
   { level: 'junior', title: 'Junior', description: 'JSX, componentes, props, estado, eventos, listas, renderizado condicional y formularios.' },
   { level: 'semi-senior', title: 'Semi Senior', description: 'Hooks, Context, estado global, datos remotos, routing, TypeScript, testing y performance.' },
+  { level: 'senior', title: 'Senior', description: 'Reconciliación, concurrencia, Suspense, TanStack Query, SSR, arquitectura de estado, seguridad, accesibilidad y diseño front-end.' },
 ].map(section => ({ ...section, lessons: lessons.filter(lesson => lesson.track === 'react' && lesson.nivel === section.level) }))
 
 const reactSequence = reactSections.flatMap(section => section.lessons)

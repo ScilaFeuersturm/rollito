@@ -1,0 +1,57 @@
+---
+id: react-senior-arquitectura-de-estado-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Arquitectura de estado: Context, Zustand o Redux Toolkit"
+duracion_min: 7
+prerequisitos: [react-senior-ssr-hidratacion-y-server-components-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Con Zustand, `useTareas(estado => estado.tareas.filter(t => !t.hecha).length)`. ¿Cuándo se vuelve a dibujar el componente por el store?"
+    opciones: ["Cada vez que cambia cualquier cosa del store.", "Solo cuando cambia el número que devuelve el selector.", "Nunca."]
+    correcta: 1
+    explicacion: "Esa es la ventaja frente a Context: con Context, todos los consumidores se redibujan cuando cambia el valor; con un selector, solo los que leen lo que cambió."
+  - tipo: opcion_multiple
+    pregunta: "Trampa. El selector está bien, pero el componente igual se redibuja al cambiar el filtro. ¿Por qué?"
+    opciones: ["Zustand tiene un bug.", "Porque su padre está suscripto a todo el store y se redibuja; un hijo se redibuja cuando se redibuja el padre, salvo que esté en `memo`.", "Porque falta la key."]
+    correcta: 1
+    explicacion: "Verificado: el primer test del ejemplo falló justamente por esto (3 dibujos en vez de 2), y se arregló con `memo`. El selector evita los dibujos que dispara el store, no los que dispara el padre."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuándo elegirías Redux Toolkit en vez de Zustand?"
+    opciones: ["Nunca: Zustand es mejor.", "En apps grandes con muchos equipos, donde valen la estructura (slices, acciones con nombre), las DevTools para viajar en el tiempo y un patrón que todos conocen. Zustand es más liviano y con menos ceremonia.", "Cuando no hay estado global."]
+    correcta: 1
+    explicacion: "No hay una respuesta universal: se elige por tamaño del equipo, necesidad de herramientas y lo que el equipo ya conoce."
+tarea_local: "En el editor en vivo, agregá un `console.log` en `Pendientes` y escribí en el filtro: no debería loguear. Después sacá el `memo` y repetí."
+resultado_esperado: "Con `memo`, escribir en el filtro no redibuja `Pendientes`. Sin `memo`, se redibuja en cada tecla, aunque el selector devuelva el mismo número."
+resumen:
+  - "El estado del servidor va en TanStack Query; el global de la interfaz, en un store."
+  - "Context sirve para datos que cambian poco; todos sus consumidores se redibujan."
+  - "Con Zustand, un selector redibuja solo cuando cambia lo que devuelve."
+  - "El selector no evita los dibujos que vienen del padre: para eso está memo."
+  - "Redux Toolkit suma estructura y herramientas para apps y equipos grandes."
+entrevista:
+  en_30_segundos: "Primero separo el estado del servidor (TanStack Query) del de la interfaz. Para el de la interfaz, si es local, `useState`; si es transversal y cambia poco (tema, sesión), Context; si es global y cambia seguido, un store con selectores, como Zustand, para que cada componente se redibuje solo con lo que lee. En apps grandes con muchos equipos, Redux Toolkit aporta estructura y DevTools."
+  trampas:
+    - pregunta: "Un selector de Zustand devuelve un objeto nuevo en cada llamada (`s => ({ a: s.a, b: s.b })`). ¿Qué pasa?"
+      respuesta: "Como el objeto es nuevo cada vez, el selector nunca \"devuelve lo mismo\" y el componente se redibuja de más (en Zustand 5 puede llegar a un bucle). Se usa `useShallow` para comparar el contenido, o selectores separados."
+  cuando_no: "No pongas en un store global lo que usa un solo componente: un `useState` local es más simple y más fácil de borrar."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/25-zustand/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** A medida que la app crece, el estado se reparte entre componentes que no tienen un padre cercano. La pregunta de entrevista no es "¿cuál es la mejor librería?", sino **qué estado va dónde**:
+
+1. **Del servidor:** TanStack Query (lección anterior).
+2. **Local:** `useState` en el componente.
+3. **Transversal y estable** (tema, idioma, sesión): Context.
+4. **Global y cambiante:** un store con selectores. **Zustand** es liviano; **Redux Toolkit**, más estructurado.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} dependencies={{ zustand: '5.1.0' }} />
+
+El test cuenta los dibujos de `Pendientes`: cambiar el filtro no lo redibuja (gracias al selector **y** a `memo`), y completar una tarea sí. Verificado con Zustand 5.1.0.

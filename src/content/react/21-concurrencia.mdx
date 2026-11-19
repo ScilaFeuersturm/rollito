@@ -1,0 +1,52 @@
+---
+id: react-senior-concurrencia-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Renderizado concurrente: useTransition y useDeferredValue"
+duracion_min: 7
+prerequisitos: [react-senior-reconciliacion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Un buscador filtra una lista enorme y el campo se traba al escribir. ¿Qué usás?"
+    opciones: ["`useEffect` con un `setTimeout`.", "`useDeferredValue` sobre el texto: el campo se actualiza enseguida y la lista usa el valor diferido, que React calcula cuando tiene tiempo y puede interrumpir.", "`useRef`."]
+    correcta: 1
+    explicacion: "La lista además va en `memo`, así no se recalcula mientras el valor diferido no cambió. Comparando `texto !== diferido` sabés si está desactualizada y la podés atenuar."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre `useTransition` y `useDeferredValue`?"
+    opciones: ["Ninguna.", "`useTransition` envuelve una actualización de estado que vos disparás (`iniciarTransicion(() => setX(...))`) y te da `isPending`. `useDeferredValue` difiere un valor que recibís, cuando no controlás dónde se actualiza.", "`useTransition` es para efectos."]
+    correcta: 1
+    explicacion: "Las dos marcan trabajo como no urgente: React prioriza lo que la persona está haciendo (escribir, hacer clic) y puede interrumpir lo demás."
+  - tipo: autoevaluacion
+    pregunta: "¿Una transición sirve para el valor de un campo controlado?"
+    explicacion: "No: el valor del campo tiene que actualizarse enseguida, o el input se siente roto. Se actualiza el campo de forma urgente y se difiere lo que depende de él (la lista filtrada)."
+tarea_local: "En el editor en vivo, escribí rápido en el buscador y mirá cómo la lista se atenúa mientras se pone al día. Después sacá `useDeferredValue` (pasale `texto` directo a la lista) y compará."
+resultado_esperado: "Con el valor diferido, el campo responde siempre. Sin él, en una máquina lenta, el campo se traba mientras se filtra."
+resumen:
+  - "El renderizado concurrente permite interrumpir el trabajo no urgente."
+  - "Use transition marca como no urgente una actualización que vos disparás."
+  - "Use deferred value difiere un valor que recibís."
+  - "El valor de un campo controlado siempre se actualiza de forma urgente."
+entrevista:
+  en_30_segundos: "Con el renderizado concurrente, React puede interrumpir trabajo no urgente para atender lo que la persona está haciendo. Uso `useDeferredValue` cuando un valor que cambia rápido dispara un dibujo caro, como un buscador sobre una lista grande, y `useTransition` para cambios que disparo yo, como cambiar de pestaña, mostrando `isPending` mientras tanto. No reemplazan a optimizar el cálculo: lo hacen sentir fluido."
+  trampas:
+    - pregunta: "¿`useDeferredValue` es lo mismo que un debounce?"
+      respuesta: "No. El debounce espera un tiempo fijo sin hacer nada; el valor diferido empieza a dibujar enseguida y se interrumpe si llega un valor nuevo. En una máquina rápida casi no se nota; en una lenta, se adapta solo."
+  cuando_no: "Si el problema es un pedido a la red, un debounce sigue siendo lo correcto: diferir no evita que se hagan diez pedidos."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/21-concurrencia/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Algunas actualizaciones son urgentes (el texto que escribís tiene que aparecer ya) y otras pueden esperar (filtrar 5.000 elementos). Antes de React 18, las dos competían y el campo se trababa.
+
+- **`useTransition`**: `const [isPending, iniciarTransicion] = useTransition()`. Lo que va adentro de `iniciarTransicion` es no urgente, y `isPending` dice si está en curso.
+- **`useDeferredValue`**: `const diferido = useDeferredValue(valor)`. Devuelve una versión del valor que se pone al día cuando React tiene tiempo.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+El test verifica que el campo se actualiza enseguida, que la lista termina filtrando (`Tarea 4999`, un solo resultado) y que la transición cambia de pestaña.

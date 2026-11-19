@@ -1,0 +1,56 @@
+---
+id: react-senior-tanstack-query-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Datos del servidor con TanStack Query"
+duracion_min: 7
+prerequisitos: [react-senior-suspense-y-use-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué separar el \"estado del servidor\" del estado de la interfaz?"
+    opciones: ["Por estilo.", "Porque el del servidor es una copia de algo que vive en otro lado: hay que cachearlo, saber si está viejo, volver a pedirlo y evitar pedidos duplicados. Eso es lo que resuelve TanStack Query, no un `useState`.", "Porque Redux no admite datos del servidor."]
+    correcta: 1
+    explicacion: "El estado de la interfaz (un modal abierto, un filtro) es tuyo; el del servidor es prestado. Mezclarlos en un store global obliga a reimplementar caché, reintentos e invalidación."
+  - tipo: opcion_multiple
+    pregunta: "Agregaste una tarea con una mutación. ¿Cómo aparece en la lista?"
+    opciones: ["Hay que recargar la página.", "En `onSuccess` invalidás la consulta (`invalidateQueries({ queryKey: ['tareas'] })`) y TanStack Query la vuelve a pedir sola.", "Hay que hacer `setState` de la lista a mano."]
+    correcta: 1
+    explicacion: "Verificado en el test: después de agregar, la tarea llega por la consulta invalidada. Para que aparezca antes de la respuesta, existe la actualización optimista."
+  - tipo: opcion_multiple
+    pregunta: "¿Para qué sirve la `queryKey`?"
+    opciones: ["Es un nombre decorativo.", "Identifica los datos en la caché: dos componentes con la misma key comparten el dato y el pedido. Si la key incluye parámetros (`['tarea', id]`), cada combinación tiene su propia entrada.", "Es la URL del pedido."]
+    correcta: 1
+    explicacion: "Por eso todo lo que cambia el resultado (filtros, ids, página) va en la key."
+tarea_local: "En el editor en vivo, mirá el error, reintentá y agregá una tarea. Después, en `useQuery`, sacá `retry: false` y fijate qué pasa con el primer error (por defecto reintenta solo)."
+resultado_esperado: "Con `retry: false` ves el error y el botón; sin esa opción, TanStack Query reintenta solo y el error del primer pedido no llega a mostrarse."
+resumen:
+  - "El estado del servidor se cachea, se invalida y se vuelve a pedir: no es estado de la interfaz."
+  - "Use query maneja carga, error, caché y reintentos."
+  - "La query key identifica los datos en la caché e incluye los parámetros."
+  - "Después de una mutación se invalida la consulta para que se vuelva a pedir."
+entrevista:
+  en_30_segundos: "Separo el estado del servidor del de la interfaz. Para el del servidor uso TanStack Query: `useQuery` con una `queryKey` que incluye los parámetros me da carga, error, caché, deduplicación y reintentos; las escrituras van con `useMutation` y, al terminar, invalido las consultas afectadas. Así el estado global queda chico: solo lo que es de la interfaz."
+  trampas:
+    - pregunta: "¿Qué diferencia hay entre `staleTime` y `gcTime`?"
+      respuesta: "`staleTime` es cuánto tiempo un dato se considera fresco (mientras lo es, no se vuelve a pedir). `gcTime` es cuánto tiempo se guarda en caché un dato que nadie está usando antes de borrarlo. Por defecto, `staleTime` es 0: los datos se consideran viejos enseguida."
+  cuando_no: "En una app muy chica con un par de pedidos simples, un `useEffect` bien hecho (con limpieza) alcanza. TanStack Query rinde cuando hay caché compartida, mutaciones y varios componentes leyendo lo mismo."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/23-tanstack-query/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Pedir datos con `useEffect` obliga a resolver a mano carga, error, reintentos, caché, pedidos duplicados y datos viejos. TanStack Query lo resuelve con dos hooks:
+
+- **`useQuery({ queryKey, queryFn })`**: lee y cachea. Devuelve `data`, `isPending`, `isError`, `error` y `refetch`.
+- **`useMutation({ mutationFn, onSuccess })`**: escribe. Al terminar, invalidás las consultas afectadas.
+
+Todo va dentro de un `QueryClientProvider` con un `QueryClient`.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} dependencies={{ '@tanstack/react-query': '5.108.1' }} />
+
+El test recorre el ciclo completo: carga, error, reintento, mutación y la lista actualizada por la invalidación. Verificado con TanStack Query 5.108.1.

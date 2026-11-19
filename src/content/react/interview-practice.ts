@@ -2,7 +2,9 @@
 
 type Question = { topic: string; prompt: string; answer: string }
 
-export const reactInterview: Record<'junior' | 'semi-senior', readonly Question[]> = {
+export type ReactLevel = 'junior' | 'semi-senior' | 'senior'
+
+export const reactInterview: Record<ReactLevel, readonly Question[]> = {
   'junior': [
     { topic: "Pregunta 1", prompt: "¿Qué es React y qué problema resuelve?", answer: "Una librería para construir interfaces con componentes. Describís cómo se ve la interfaz según el estado, y React se encarga de actualizar el DOM cuando el estado cambia, en vez de manipularlo a mano." },
     { topic: "Pregunta 2", prompt: "¿Qué es JSX?", answer: "Una sintaxis para escribir algo parecido a HTML dentro de JavaScript, que se compila a llamadas a funciones de React. Usa `className`, expresiones entre llaves y un solo elemento raíz." },
@@ -30,5 +32,19 @@ export const reactInterview: Record<'junior' | 'semi-senior', readonly Question[
     { topic: "Pregunta 10", prompt: "¿Cómo testeás un componente?", answer: "Con Testing Library, desde el punto de vista de la persona: busco por rol y label, actúo y verifico lo visible. `findBy` para lo asincrónico y MSW para simular la API." },
     { topic: "Pregunta 11", prompt: "Una pantalla se siente lenta. ¿Qué hacés?", answer: "Mido con el Profiler, identifico la causa (dibujos de más, trabajo pesado, bundle grande o lista larga) y aplico la técnica que corresponde: `memo`, `useDeferredValue`, code splitting o virtualización." },
     { topic: "Pregunta 12", prompt: "¿TypeScript valida los datos de una API?", answer: "No: los tipos desaparecen al compilar. Los datos externos se validan en tiempo de ejecución, por ejemplo con Zod." },
+  ],
+  'senior': [
+    { topic: "Pregunta 1", prompt: "¿Cuándo conserva React el estado de un componente y cuándo lo descarta?", answer: "Lo conserva si en esa posición del árbol sigue el mismo tipo de componente con la misma key; lo descarta si cambia el tipo o la key. Por eso cambiar la key es la forma idiomática de resetear un componente." },
+    { topic: "Pregunta 2", prompt: "¿Qué diferencia hay entre useTransition y useDeferredValue?", answer: "useTransition marca como no urgente una actualización que disparás vos y da isPending; useDeferredValue difiere un valor que recibís. Las dos dejan que React priorice lo que la persona está haciendo." },
+    { topic: "Pregunta 3", prompt: "¿Qué hace use(promesa) y qué cuidado hay que tener?", answer: "Suspende el componente hasta que la promesa se resuelve y muestra el fallback del Suspense más cercano. La promesa tiene que venir de una caché o un estado, no crearse en el render, porque si no se pide de nuevo en cada dibujo." },
+    { topic: "Pregunta 4", prompt: "¿Cómo evitás que la pantalla vuelva a un spinner al navegar con Suspense?", answer: "Haciendo el cambio dentro de una transición: React conserva la pantalla anterior hasta que lo nuevo está listo." },
+    { topic: "Pregunta 5", prompt: "¿Por qué TanStack Query y no un store global para los datos del servidor?", answer: "Porque el estado del servidor necesita caché, deduplicación, reintentos, invalidación y saber si está viejo. Un store global obliga a reimplementar todo eso; TanStack Query lo resuelve con useQuery y useMutation." },
+    { topic: "Pregunta 6", prompt: "¿Qué es la hidratación y qué la rompe?", answer: "Conectar React al HTML que vino del servidor sin recrearlo. La rompe que el primer dibujo del cliente no coincida con ese HTML, por ejemplo al leer la hora o localStorage durante el render." },
+    { topic: "Pregunta 7", prompt: "¿Qué diferencia hay entre SSR y Server Components?", answer: "SSR genera el HTML de componentes que después también corren en el navegador. Los Server Components corren solo en el servidor y no mandan su código al navegador; la interactividad queda en Client Components." },
+    { topic: "Pregunta 8", prompt: "¿Cómo elegís dónde vive cada estado?", answer: "Servidor en TanStack Query; local en useState; transversal y estable en Context; global y cambiante en un store con selectores (Zustand o Redux Toolkit según el tamaño del equipo)." },
+    { topic: "Pregunta 9", prompt: "Un selector de Zustand está bien, pero el componente se redibuja igual. ¿Por qué?", answer: "Porque se redibuja su padre. El selector evita los dibujos que dispara el store, no los que vienen del padre: para eso está memo." },
+    { topic: "Pregunta 10", prompt: "¿Qué no atrapa un error boundary?", answer: "Errores en manejadores de eventos y en código asincrónico. Esos se manejan con try/catch y estado." },
+    { topic: "Pregunta 11", prompt: "¿Cómo protegés una app React contra XSS?", answer: "React escapa el texto entre llaves. Los riesgos son dangerouslySetInnerHTML (solo con HTML sanitizado, por ejemplo con DOMPurify) y las URLs externas (validar http y https). Además, sin secretos en el bundle y con una CSP." },
+    { topic: "Pregunta 12", prompt: "Una lista de 10.000 elementos se traba. ¿Qué hacés?", answer: "Mido con el Profiler y, si el costo es dibujar tantas filas, virtualizo: dibujo solo las visibles con TanStack Virtual o react-window. Si el problema es el filtrado, useDeferredValue o mover el cálculo." },
   ],
 }

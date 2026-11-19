@@ -1,0 +1,55 @@
+---
+id: react-senior-seguridad-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Seguridad en React: XSS, HTML y URLs"
+duracion_min: 6
+prerequisitos: [react-senior-virtualizacion-y-profiling-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Mostrás un comentario de un usuario con `<p>{comentario}</p>`, y el comentario trae `<img src=x onerror=alert(1)>`. ¿Qué pasa?"
+    opciones: ["Se ejecuta el `alert`.", "Nada peligroso: React escapa el texto, así que se ve el HTML literal en pantalla y no se ejecuta.", "React lanza un error."]
+    correcta: 1
+    explicacion: "Verificado en el test: el `textContent` contiene el `<img…>` literal. Esa es la protección por defecto contra XSS."
+  - tipo: opcion_multiple
+    pregunta: "Necesitás mostrar HTML con formato que escribió un usuario. ¿Qué hacés?"
+    opciones: ["`dangerouslySetInnerHTML={{ __html: comentario }}`.", "Sanitizarlo antes, por ejemplo con DOMPurify: `dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(comentario) }}`. Conserva el formato (`<b>`) y saca lo peligroso (`onerror`).", "Escapar las comillas a mano."]
+    correcta: 1
+    explicacion: "El nombre `dangerouslySetInnerHTML` es un aviso: sin sanitizar, es una puerta a XSS. El test verifica que el `<b>` queda y el `onerror` desaparece."
+  - tipo: opcion_multiple
+    pregunta: "Trampa. ¿Qué hace React 19 con `<a href=\"javascript:alert(1)\">`?"
+    opciones: ["Lo deja tal cual.", "Lo reemplaza por una URL que solo lanza un error (`React has blocked a javascript: URL as a security precaution.`). Igual conviene validar las URLs: también hay `data:` y otros esquemas.", "No renderiza el link."]
+    correcta: 1
+    explicacion: "Verificado en el test con React 19. La validación propia (solo `http:` y `https:`) cubre lo que React no bloquea."
+tarea_local: "En el editor en vivo, cambiá el comentario por otro con un `<script>` y con un link `<a href=\"javascript:alert(1)\">`. Mirá qué queda en cada una de las tres formas de mostrarlo."
+resultado_esperado: "Como texto se ve todo literal; sanitizado desaparecen el script y el link peligroso; y `linkSeguro` devuelve `#` para cualquier esquema que no sea http o https."
+resumen:
+  - "React escapa el texto que mostrás entre llaves: es la protección por defecto contra XSS."
+  - "Dangerously set inner HTML solo con HTML sanitizado, por ejemplo con DOMPurify."
+  - "React 19 bloquea los links javascript, pero igual conviene validar las URLs."
+  - "Los secretos nunca van en el código del frontend."
+entrevista:
+  en_30_segundos: "React escapa lo que muestro entre llaves, así que el XSS clásico no entra por ahí. Los riesgos están en las salidas de emergencia: `dangerouslySetInnerHTML` solo con HTML sanitizado (DOMPurify), y URLs que vienen de afuera validadas a `http` y `https`. Además, nada de secretos en el bundle, cuidado con dónde guardo los tokens y una Content Security Policy como segunda capa."
+  trampas:
+    - pregunta: "¿Es seguro guardar el token de sesión en `localStorage`?"
+      respuesta: "Es accesible para cualquier script de la página: si hay un XSS, se lo pueden robar. Una cookie `HttpOnly` con `Secure` y `SameSite` no es accesible desde JavaScript, aunque obliga a cuidar el CSRF. Es un trade-off que se decide con el backend."
+  cuando_no: "No sanitices texto que vas a mostrar entre llaves: React ya lo escapa, y sanitizarlo de nuevo puede romper caracteres legítimos (por ejemplo, un `<` en un comentario)."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/29-seguridad/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** El XSS (cross-site scripting) es inyectar código que se ejecuta en el navegador de otra persona: puede robar sesiones o hacer acciones en su nombre. React protege por defecto, pero tiene salidas de emergencia que hay que usar con cuidado.
+
+1. **Texto entre llaves:** React lo escapa. Seguro.
+2. **`dangerouslySetInnerHTML`:** inserta HTML crudo. Solo con HTML sanitizado.
+3. **URLs que vienen de afuera:** validar el esquema (`http:`, `https:`).
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} dependencies={{ dompurify: '3.4.18' }} />
+
+Los tests verifican las tres formas y además qué hace React 19 con un `href="javascript:…"` sin validar: lo reemplaza por `javascript:throw new Error('React has blocked a javascript: URL as a security precaution.')`.

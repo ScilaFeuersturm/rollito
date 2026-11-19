@@ -1,0 +1,53 @@
+---
+id: react-senior-suspense-y-use-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Suspense y use: esperar datos de forma declarativa"
+duracion_min: 6
+prerequisitos: [react-senior-concurrencia-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hace `use(promesa)` adentro de un componente?"
+    opciones: ["Espera la promesa bloqueando el navegador.", "Suspende el componente hasta que la promesa se resuelve; mientras tanto, se muestra el `fallback` del `<Suspense>` más cercano.", "Lo mismo que `useEffect`."]
+    correcta: 1
+    explicacion: "Con `use`, el componente se escribe como si el dato ya estuviera, y la espera la resuelve el `<Suspense>` de arriba."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué no crear la promesa adentro del componente que la lee (`use(buscarTarea(1))`)?"
+    opciones: ["Es lo recomendado.", "Porque en cada dibujo se crearía una promesa nueva: el componente suspende, al volver a dibujar pide otra, y nunca termina. La promesa se crea afuera (estado, caché o librería) y se pasa.", "Porque `use` solo acepta funciones."]
+    correcta: 1
+    explicacion: "En la práctica, la caché la maneja una librería (TanStack Query con Suspense, el framework) y vos le pedís el dato."
+  - tipo: opcion_multiple
+    pregunta: "Trampa. Ya se ve la tarea 1 y pedís la 2. Sin transición, ¿qué ve la persona mientras carga? ¿Y con `startTransition`?"
+    opciones: ["Las dos veces, la tarea 1.", "Sin transición, el fallback reemplaza la tarea 1 (\"Cargando…\"); con transición, React conserva la tarea 1 en pantalla hasta que llega la 2.", "Las dos veces, el fallback."]
+    correcta: 1
+    explicacion: "Verificado en el test del ejemplo. Por eso los routers y los frameworks navegan con transiciones: evitan que la pantalla \"parpadee\" a un spinner."
+tarea_local: "En el editor en vivo, tocá \"Ver la 2\" y después \"Ver la 3 (con transición)\". Fijate qué se ve mientras carga cada una."
+resultado_esperado: "Con \"Ver la 2\" aparece \"Cargando tarea…\"; con \"Ver la 3\" se sigue viendo la tarea 2 hasta que llega la 3."
+resumen:
+  - "Use lee una promesa y suspende el componente hasta que se resuelve."
+  - "El fallback del Suspense más cercano se muestra mientras tanto."
+  - "La promesa se crea afuera del componente que la lee."
+  - "Con una transición, React conserva lo anterior en vez de mostrar el fallback."
+entrevista:
+  en_30_segundos: "Suspense hace declarativa la espera: el componente lee el dato con `use` como si ya estuviera, y el `<Suspense>` de arriba muestra un fallback mientras tanto. La promesa tiene que venir de una caché, no crearse en el render. Y para cambios que no deberían mostrar un spinner, como navegar, uso transiciones: React conserva la pantalla anterior hasta que lo nuevo está listo."
+  trampas:
+    - pregunta: "¿Dónde ponés los `<Suspense>`?"
+      respuesta: "Donde tiene sentido mostrar un estado de carga para la persona: alrededor de cada sección que carga por separado, no uno solo para toda la app. Así una sección lenta no bloquea al resto."
+  cuando_no: "Si el proyecto ya usa TanStack Query con `isPending` y anda bien, no hace falta migrar todo a Suspense: es otra forma de expresar lo mismo."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/22-suspense-y-use/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Con `useEffect` + `isLoading`, cada componente maneja su propia carga con `if` y estados. **Suspense** saca eso del componente: el componente pide el dato y, si no está, "suspende"; un `<Suspense fallback={...}>` más arriba decide qué mostrar.
+
+En React 19, **`use(promesa)`** lee una promesa adentro de un componente (incluso adentro de condiciones, a diferencia de los hooks).
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+El test verifica la trampa: sin transición vuelve el fallback; con transición se conserva la tarea anterior.

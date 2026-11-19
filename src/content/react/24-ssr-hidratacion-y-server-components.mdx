@@ -1,0 +1,72 @@
+---
+id: react-senior-ssr-hidratacion-y-server-components-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "SSR, hidratación y Server Components"
+duracion_min: 7
+prerequisitos: [react-senior-tanstack-query-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es la hidratación?"
+    opciones: ["Volver a dibujar la página desde cero en el navegador.", "Conectar React al HTML que ya vino generado del servidor: React recorre ese HTML, le agrega los eventos y el estado, sin volver a crearlo.", "Descargar las imágenes."]
+    correcta: 1
+    explicacion: "Así la página se ve enseguida (el HTML ya llegó) y se vuelve interactiva cuando carga el JavaScript."
+  - tipo: opcion_multiple
+    pregunta: "Un componente muestra `new Date().toLocaleTimeString()`. Con SSR, ¿qué problema aparece?"
+    opciones: ["Ninguno.", "Un error de hidratación: el servidor generó una hora y el navegador, al hidratar, calcula otra. El HTML no coincide con lo que React espera.", "La hora sale en inglés."]
+    correcta: 1
+    explicacion: "Lo que depende del navegador (hora, `localStorage`, `window`) se lee después de montar, en un efecto. Rollito hace eso con el progreso: arranca vacío en el servidor y en el cliente, y lo lee del navegador recién en un `useEffect`."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué tiene de distinto un Server Component?"
+    opciones: ["Es un componente con `useState` que corre en el servidor.", "Corre solo en el servidor (o al compilar): puede leer la base de datos o archivos directamente, y su código no se manda al navegador. No puede tener estado ni eventos; para eso están los Client Components (`'use client'`).", "Es lo mismo que SSR."]
+    correcta: 1
+    explicacion: "SSR genera el HTML de componentes que después también corren en el navegador. Los Server Components ni siquiera llegan al navegador como JavaScript. Hoy se usan sobre todo con frameworks como Next.js."
+tarea_local: "En Rollito, abrí el código fuente de cualquier lección publicada (Ctrl+U) y buscá `data-route`. Después mirá `src/entry-client.tsx` y `src/app/App.tsx` para ver cuándo hidrata y cómo evita el error de hidratación con el progreso."
+resultado_esperado: "El HTML llega prerenderizado con `data-route`; el cliente hidrata si la ruta coincide, y el progreso se lee recién en un `useEffect`."
+resumen:
+  - "Con SSR, el servidor manda el HTML ya generado y la página se ve enseguida."
+  - "La hidratación conecta React a ese HTML sin volver a crearlo."
+  - "El HTML del servidor y el primer dibujo del cliente tienen que coincidir."
+  - "Lo que depende del navegador se lee después de montar."
+  - "Los Server Components corren solo en el servidor y no mandan su código al navegador."
+entrevista:
+  en_30_segundos: "Con SSR o prerenderizado, el servidor manda HTML ya generado, así la página se ve rápido y se indexa bien; después React hidrata ese HTML para hacerlo interactivo, y el primer dibujo del cliente tiene que coincidir con el del servidor. Los Server Components van un paso más allá: corren solo en el servidor, acceden directo a los datos y no suman JavaScript al navegador; la interactividad queda en Client Components."
+  trampas:
+    - pregunta: "¿SSR hace que la página sea interactiva antes?"
+      respuesta: "No: hace que se **vea** antes. La interactividad llega cuando se descarga el JavaScript y termina la hidratación. Por eso importa mantener chico el bundle aunque haya SSR."
+  cuando_no: "Para una app interna detrás de un login, que no necesita SEO y se usa en buenas conexiones, una SPA sin SSR puede ser más simple de mantener."
+---
+
+## Concepto
+
+**Qué problema resuelve.** En una SPA clásica, el navegador recibe un HTML vacío, descarga el JavaScript y recién ahí dibuja: la primera pantalla tarda, y los buscadores ven poco.
+
+- **SSR o prerenderizado:** el servidor (o el build) genera el HTML de cada página. Se ve enseguida.
+- **Hidratación:** React se conecta a ese HTML existente con `hydrateRoot`, en vez de crearlo con `createRoot`.
+- **Server Components:** componentes que corren solo en el servidor; su código nunca llega al navegador.
+
+## Ejemplo
+
+Rollito usa prerenderizado: cada página se genera como HTML en el build y el navegador la hidrata. Así decide qué hacer (`src/entry-client.tsx`):
+
+```tsx
+const prerendered = root.dataset.route
+if (prerendered && sameRoute(prerendered, location.pathname)) {
+  hydrateRoot(root, app)           // el HTML coincide: se hidrata
+} else {
+  root.replaceChildren()
+  createRoot(root).render(app)     // no coincide: se dibuja desde cero
+}
+```
+
+Y así evita el error de hidratación con el progreso, que vive en el navegador (`src/app/App.tsx`):
+
+```tsx
+// El servidor no tiene localStorage: arrancamos vacío en los dos lados para que el HTML
+// prerenderizado coincida con el primer render del cliente, y recién después leemos el progreso.
+const [progress, setProgress] = useState<Progress>({})
+useEffect(() => setProgress(readProgress()), [])
+```
+
+*Server Components: hoy se usan sobre todo con Next.js (App Router). Verificá en react.dev y en la documentación del framework el estado actual.*

@@ -1,0 +1,57 @@
+---
+id: react-senior-entrevista-de-diseno-front-end-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Entrevista de diseño front-end"
+duracion_min: 7
+prerequisitos: [react-senior-componentes-compuestos-01]
+ejercicios:
+  - tipo: ordenar
+    pregunta: "Ordená los pasos para responder \"diseñá el feed de una red social\"."
+    pasos: ["Requisitos: qué tiene que hacer, para quién y con qué restricciones", "Arquitectura: componentes principales y cómo se comunican", "Modelo de datos y estado: qué vive en el servidor y qué en la interfaz", "API: qué pedidos hace, con qué forma y paginación", "Optimizaciones: rendimiento, accesibilidad, offline y seguridad"]
+    explicacion: "Primero entender el problema, después la estructura, los datos, la comunicación y, al final, las mejoras. Saltar directo a las optimizaciones es el error más común."
+  - tipo: opcion_multiple
+    pregunta: "El entrevistador dice \"diseñá un autocompletado\". ¿Qué hacés primero?"
+    opciones: ["Empezar a dibujar componentes.", "Preguntar requisitos: ¿de dónde salen las sugerencias? ¿cuántas? ¿tiene que andar offline? ¿qué pasa con el teclado y el lector de pantalla? ¿cuántos usuarios?", "Elegir la librería."]
+    correcta: 1
+    explicacion: "Las preguntas definen el diseño: no es lo mismo filtrar 50 opciones en memoria que buscar en millones en el servidor."
+  - tipo: autoevaluacion
+    pregunta: "Diseñá en voz alta, en 5 minutos, el autocompletado de un buscador de productos, siguiendo los cinco pasos."
+    explicacion: "Puntos que suman: debounce del input (300 ms) y cancelar pedidos viejos (AbortController o la caché de TanStack Query con el texto en la queryKey); caché de resultados por texto; estados de carga, vacío y error; navegación con teclado y roles de combobox; resaltar la coincidencia; límite de resultados; y medir la latencia percibida."
+tarea_local: "Elegí uno: un feed infinito, un chat o un tablero tipo Kanban. Diseñalo en papel siguiendo los cinco pasos, en 30 minutos, y explicáselo a alguien del equipo."
+resultado_esperado: "Un diagrama de componentes, el modelo de datos, la API con su paginación y al menos tres optimizaciones justificadas."
+resumen:
+  - "El orden es requisitos, arquitectura, datos y estado, API y optimizaciones."
+  - "Las preguntas de requisitos definen el diseño."
+  - "Separá el estado del servidor del de la interfaz."
+  - "Cada optimización se justifica con un problema concreto."
+entrevista:
+  en_30_segundos: "En una entrevista de diseño front-end sigo un orden: primero aclaro requisitos y restricciones, después propongo los componentes principales, el modelo de datos y dónde vive cada estado, la API con su paginación y, al final, optimizaciones de rendimiento, accesibilidad y seguridad, cada una justificada. Pienso en voz alta y explicito los trade-offs."
+  trampas:
+    - pregunta: "¿Qué hacés si no sabés algo que te preguntan en el diseño?"
+      respuesta: "Lo digo y razono en voz alta: \"no lo implementé, pero lo encararía así, y lo validaría midiendo X\". En diseño se evalúa el razonamiento, no tener todas las respuestas memorizadas."
+  cuando_no: "No dibujes cada componente chico: en 45 minutos importa la estructura general y las decisiones difíciles, no el detalle de cada botón."
+---
+
+## Concepto
+
+**Qué problema resuelve.** En el nivel Senior suele haber una entrevista de diseño: "diseñá un feed", "un autocompletado", "un chat". No hay una respuesta correcta; se evalúa cómo razonás. Un orden que funciona:
+
+1. **Requisitos:** funcionales (qué hace) y no funcionales (cuántos usuarios, offline, accesibilidad, dispositivos).
+2. **Arquitectura:** los componentes principales y cómo se comunican.
+3. **Datos y estado:** qué viene del servidor (y cómo se cachea) y qué es de la interfaz.
+4. **API:** endpoints, forma de los datos y paginación (por cursor o por número de página).
+5. **Optimizaciones:** rendimiento (virtualización, debounce, code splitting), accesibilidad, offline y seguridad.
+
+## Ejemplo
+
+**Feed infinito, resumido:**
+
+- **Requisitos:** lista de publicaciones, carga al hacer scroll, me gusta con respuesta inmediata, en el celular.
+- **Arquitectura:** `Feed` → `ListaVirtualizada` → `Publicacion` (+ `BotonMeGusta`).
+- **Datos:** TanStack Query con `useInfiniteQuery` y paginación por cursor; el me gusta como mutación optimista.
+- **API:** `GET /feed?cursor=…` devuelve `{ items, siguienteCursor }`.
+- **Optimizaciones:** virtualización para miles de publicaciones, imágenes con carga diferida y tamaños responsive, `IntersectionObserver` para pedir la siguiente página, y una región `status` que anuncia "Se cargaron 20 publicaciones más".
+
+Cada decisión de este bloque ya la viste en una lección: TanStack Query (23), virtualización (28), accesibilidad (30).

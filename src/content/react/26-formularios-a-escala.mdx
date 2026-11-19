@@ -1,0 +1,52 @@
+---
+id: react-senior-formularios-a-escala-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Formularios a escala: React Hook Form y Zod"
+duracion_min: 6
+prerequisitos: [react-senior-arquitectura-de-estado-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué ventaja tiene definir la validación con un esquema de Zod?"
+    opciones: ["Ninguna, es más código.", "El esquema es la única fuente de verdad: valida en tiempo de ejecución y, con `z.infer`, define el tipo de TypeScript de los datos. No hay que mantener las reglas y el tipo por separado.", "Que valida en el servidor."]
+    correcta: 1
+    explicacion: "Y el mismo esquema se puede usar en el servidor para validar lo que llega. TypeScript solo no valida nada en tiempo de ejecución."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué React Hook Form escala mejor que un `useState` por campo?"
+    opciones: ["Porque no usa React.", "Porque registra los campos sin hacerlos controlados (no redibuja todo el formulario en cada tecla), centraliza errores y envío, y se integra con un esquema mediante un resolver.", "Porque valida solo en el servidor."]
+    correcta: 1
+    explicacion: "En un formulario de 30 campos, redibujar todo en cada tecla se nota. `register` conecta el campo sin que su valor viva en el estado de React."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué el campo numérico usa `register('estimacion', { valueAsNumber: true })`?"
+    explicacion: "Porque un input siempre entrega texto. Con `valueAsNumber`, React Hook Form lo convierte a número antes de validar, y el esquema puede pedir `z.number()`. Si el campo queda vacío, llega `NaN` y el esquema muestra \"Tiene que ser un número\", como verifica el test."
+tarea_local: "En el editor en vivo, enviá el formulario vacío, después con un título de 2 letras y una estimación de 0, y por último con datos válidos."
+resultado_esperado: "Ves los mensajes del esquema en cada caso y, con datos válidos, \"Guardada: … (N h)\"."
+resumen:
+  - "Un esquema de Zod valida y define el tipo de los datos al mismo tiempo."
+  - "React Hook Form registra los campos sin redibujar todo en cada tecla."
+  - "El resolver conecta el esquema con el formulario."
+  - "Los errores se muestran junto al campo y se marcan con aria invalid."
+entrevista:
+  en_30_segundos: "Para formularios medianos o grandes uso React Hook Form con un esquema de Zod: el esquema es la única fuente de verdad para validar y tipar, y React Hook Form registra los campos sin redibujar todo en cada tecla. Muestro los errores junto a cada campo, accesibles, y reuso el mismo esquema en el servidor si se puede."
+  trampas:
+    - pregunta: "¿Alcanza con validar en el formulario?"
+      respuesta: "No. La validación del cliente es para la experiencia de la persona; cualquiera puede mandar un pedido directo a la API. El servidor siempre valida de nuevo."
+  cuando_no: "Para un formulario de uno o dos campos, un `useState` controlado (como en la lección de formularios) es más simple."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/26-formularios-a-escala/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Con muchos campos, un `useState` por campo y validaciones a mano se vuelven difíciles de mantener, y el formulario se redibuja entero en cada tecla.
+
+- **Zod:** describís los datos con un esquema (`z.object({ ... })`). Valida y, con `z.infer`, te da el tipo.
+- **React Hook Form:** `useForm` + `register` por campo + `handleSubmit`. Con `zodResolver(esquema)`, usa el esquema para validar.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} dependencies={{ 'react-hook-form': '7.92.0', '@hookform/resolvers': '7.0.7', zod: '4.6.7' }} />
+
+El test verifica los mensajes del esquema con el formulario vacío y el guardado con datos válidos. Verificado con React Hook Form 7.92.0, @hookform/resolvers 7.0.7 y Zod 4.

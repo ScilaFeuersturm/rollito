@@ -1,0 +1,54 @@
+---
+id: react-senior-accesibilidad-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Accesibilidad: foco, errores y anuncios"
+duracion_min: 6
+prerequisitos: [react-senior-seguridad-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Un formulario muestra un error debajo del campo. ¿Cómo se entera una persona que usa lector de pantalla?"
+    opciones: ["Con el color rojo.", "Con `aria-invalid=\"true\"` en el campo y `aria-describedby` apuntando al id del mensaje: al llegar al campo, el lector lee el error. Además, el foco se lleva al campo con error.", "No hace falta nada."]
+    correcta: 1
+    explicacion: "Verificado en el test: el campo queda con `aria-invalid` y su `aria-describedby` coincide con el id del mensaje. `useId` genera ids únicos y estables."
+  - tipo: opcion_multiple
+    pregunta: "Agregaste una tarea y la lista cambió, pero el foco quedó en el botón. ¿Cómo avisás que salió bien?"
+    opciones: ["Con un `alert()`.", "Con una región `role=\"status\"` (aria-live polite): cuando cambia su texto, el lector lo anuncia sin interrumpir.", "Cambiando el título de la página."]
+    correcta: 1
+    explicacion: "La región tiene que existir antes de que cambie su contenido; por eso el `<p role=\"status\">` está siempre, aunque esté vacío."
+  - tipo: autoevaluacion
+    pregunta: "¿Por qué Testing Library recomienda buscar con `getByRole('textbox', { name: 'Nueva tarea' })`?"
+    explicacion: "Porque es como encuentra el campo un lector de pantalla: por su rol y su nombre accesible (el label). Si el test no lo encuentra así, probablemente una persona con lector de pantalla tampoco. Los tests accesibles y la accesibilidad se refuerzan entre sí."
+tarea_local: "En el editor en vivo, usá solo el teclado: Tab hasta el botón, Enter con el campo vacío, escribí una tarea y Enter. Si podés, activá el lector de pantalla de tu sistema (Narrador en Windows, VoiceOver en macOS) y repetí."
+resultado_esperado: "Con el campo vacío, el foco vuelve al campo y se lee el error; al agregar, se anuncia \"Tarea agregada: …\" y el foco queda listo para la siguiente."
+resumen:
+  - "Cada campo tiene un label asociado."
+  - "Los errores se asocian con aria invalid y aria describedby."
+  - "El foco se mueve a propósito: al error o al lugar donde sigue la tarea."
+  - "Una región con rol status anuncia los cambios sin interrumpir."
+  - "Buscar por rol en los tests ayuda a detectar problemas de accesibilidad."
+entrevista:
+  en_30_segundos: "Empiezo por HTML semántico (botones que son `button`, labels asociados) y después manejo lo que React cambia dinámicamente: muevo el foco a propósito, asocio los errores con `aria-invalid` y `aria-describedby`, y anuncio los cambios con una región `status`. Lo pruebo con teclado, con un lector de pantalla y con tests que buscan por rol."
+  trampas:
+    - pregunta: "¿Un `div` con `onClick` es un botón?"
+      respuesta: "No: no recibe foco con Tab, no responde a Enter ni a Espacio y el lector no lo anuncia como botón. Agregar `role`, `tabIndex` y manejo de teclado es reinventar el `button`: se usa `<button>`."
+  cuando_no: "No agregues ARIA si el HTML nativo ya lo resuelve: \"no ARIA es mejor que mal ARIA\". Un `<button>` ya es un botón; ponerle `role=\"button\"` no suma nada."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/30-accesibilidad/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** En una página estática, el HTML semántico resuelve casi toda la accesibilidad. En una app de React, la interfaz cambia sin recargar, y una persona con lector de pantalla puede no enterarse de esos cambios. Tres herramientas:
+
+1. **Foco a propósito:** llevar el foco adonde la persona tiene que seguir.
+2. **Errores asociados:** `aria-invalid` + `aria-describedby`.
+3. **Anuncios:** una región `role="status"` que el lector lee cuando cambia.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+Los tests verifican el error asociado al campo, que el foco vuelve al campo y el anuncio al agregar.

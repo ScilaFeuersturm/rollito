@@ -1,0 +1,55 @@
+---
+id: react-senior-virtualizacion-y-profiling-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Performance avanzada: profiling, virtualización y React Compiler"
+duracion_min: 7
+prerequisitos: [react-senior-error-boundaries-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Una lista de 10.000 tareas tarda en aparecer y el scroll se traba. ¿Qué técnica aplicás?"
+    opciones: ["`useMemo` en cada fila.", "Virtualización: dibujar solo las filas visibles (más un margen) y moverlas al hacer scroll. El ejemplo dibuja 12 filas en vez de 10.000.", "Paginar con un botón \"Ver más\" siempre."]
+    correcta: 1
+    explicacion: "En proyectos reales se usa una librería como TanStack Virtual o react-window; el ejemplo muestra el mecanismo en pocas líneas, verificado con un test."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué hacés antes de optimizar?"
+    opciones: ["Agregar `memo` a todo.", "Medir con el Profiler de React DevTools: ver qué componentes se dibujan, cuántas veces y cuánto tardan. Optimizar sin medir suele agregar complejidad sin ganar nada.", "Pasar a otro framework."]
+    correcta: 1
+    explicacion: "El Profiler muestra un gráfico por cada dibujo y por qué se dibujó cada componente (si está activada esa opción)."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué cambia el React Compiler en cómo se usan `memo`, `useMemo` y `useCallback`?"
+    explicacion: "El compilador analiza el código al compilar y agrega la memorización automáticamente, así que gran parte del `memo`, `useMemo` y `useCallback` manual deja de hacer falta. Funciona si el código respeta las reglas de React (componentes puros, sin mutar props ni estado). Verificá en react.dev el estado actual y cómo activarlo en tu build."
+tarea_local: "En el editor en vivo, hacé scroll en la lista y abrí las herramientas del navegador para contar cuántos `li` hay en el DOM. Después, en tu proyecto, abrí React DevTools, grabá con el Profiler mientras usás una pantalla y buscá el componente que más tarda."
+resultado_esperado: "En el ejemplo hay 12 `li` en el DOM aunque la lista tenga 10.000. En tu proyecto, identificás qué componente se dibuja de más o tarda más."
+resumen:
+  - "Antes de optimizar, se mide con el Profiler."
+  - "La virtualización dibuja solo las filas visibles de una lista larga."
+  - "Memo, use memo y use callback ayudan cuando el Profiler muestra dibujos caros de más."
+  - "El React Compiler agrega la memorización automáticamente si el código respeta las reglas de React."
+entrevista:
+  en_30_segundos: "Primero mido con el Profiler para encontrar la causa real. Según lo que encuentre: si hay dibujos de más, `memo` y referencias estables (o el React Compiler, que lo hace automático); si es una lista larga, virtualización; si es trabajo pesado que bloquea el input, `useDeferredValue`; si es el tamaño del bundle, code splitting con `lazy`."
+  trampas:
+    - pregunta: "¿`memo` siempre mejora el rendimiento?"
+      respuesta: "No. Tiene un costo (comparar las props en cada dibujo del padre) y no sirve si las props cambian siempre, por ejemplo una función o un objeto nuevo en cada dibujo. Rinde cuando el componente es caro y sus props suelen ser las mismas."
+  cuando_no: "Con una lista de 50 o 100 elementos, la virtualización suele no hacer falta: agrega complejidad (alturas fijas, scroll, accesibilidad) sin un beneficio que se note."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/28-virtualizacion/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** En lo Semi Senior viste `memo`, `useMemo` y code splitting. En el nivel Senior se espera que puedas **diagnosticar**: medir, encontrar la causa y elegir la técnica.
+
+- **Profiler** (React DevTools): qué se dibuja, cuántas veces y cuánto tarda.
+- **Virtualización:** para listas largas, se dibuja solo lo visible.
+- **React Compiler:** memoriza automáticamente al compilar, si el código cumple las reglas de React.
+
+## Ejemplo
+
+Virtualización en pocas líneas: con alturas fijas, la fila visible se calcula a partir del scroll.
+
+<ReactPlayground code={ejemplo} />
+
+El test verifica que hay 12 filas en el DOM (no 10.000) y que, al hacer scroll hasta la mitad, aparece `Tarea 5001` y desaparece `Tarea 1`.

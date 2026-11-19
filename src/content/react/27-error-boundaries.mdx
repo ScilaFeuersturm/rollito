@@ -1,0 +1,53 @@
+---
+id: react-senior-error-boundaries-01
+track: react
+nivel: senior
+modulo: "React"
+titulo: "Error boundaries y observabilidad"
+duracion_min: 6
+prerequisitos: [react-senior-formularios-a-escala-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Un componente lanza un error al dibujar y no hay ningún error boundary. ¿Qué pasa?"
+    opciones: ["Solo ese componente desaparece.", "React desmonta todo el árbol: la persona ve la pantalla en blanco.", "React ignora el error."]
+    correcta: 1
+    explicacion: "Por eso conviene poner error boundaries alrededor de cada sección independiente: si falla una tarjeta, el resto de la pantalla sigue funcionando, como verifica el test."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué errores **no** atrapa un error boundary?"
+    opciones: ["Los que ocurren al dibujar.", "Los de los manejadores de eventos y del código asincrónico (un `onClick` o un `fetch`): ahí se usa `try/catch` y se pasa el error al estado.", "Los de los hijos."]
+    correcta: 1
+    explicacion: "El boundary atrapa errores durante el dibujo, en los métodos de ciclo de vida y en los constructores de sus hijos."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué hacés en `componentDidCatch`?"
+    explicacion: "Reportar el error a la herramienta de monitoreo (Sentry, Crashlytics, la que use el equipo) con el `componentStack`, que dice en qué parte del árbol pasó, sin datos personales. `getDerivedStateFromError` cambia el estado para mostrar el mensaje alternativo."
+tarea_local: "En el editor en vivo, rompé la tarjeta y fijate que el título del panel sigue ahí. Reintentá. Después mové el `LimiteDeError` para que envuelva todo el `main` y compará."
+resultado_esperado: "Con el boundary alrededor de la tarjeta, solo ella se reemplaza por el mensaje. Alrededor de todo el `main`, desaparece todo el panel."
+resumen:
+  - "Un error al dibujar sin boundary desmonta toda la app."
+  - "El error boundary muestra un mensaje alternativo solo para su sección."
+  - "Se escribe como clase, con get derived state from error y component did catch."
+  - "No atrapa errores de eventos ni de código asincrónico."
+  - "En component did catch se reporta el error al monitoreo, sin datos personales."
+entrevista:
+  en_30_segundos: "Pongo error boundaries alrededor de cada sección independiente, así un error en una tarjeta no deja la pantalla en blanco: muestro un mensaje con reintento y reporto el error con su `componentStack` a la herramienta de monitoreo. Sé que no atrapan errores de eventos ni asincrónicos: esos los manejo con `try/catch` y estado."
+  trampas:
+    - pregunta: "¿Hay un hook para hacer un error boundary?"
+      respuesta: "No: todavía se escribe como clase con `getDerivedStateFromError` y `componentDidCatch`. Muchos equipos usan la librería `react-error-boundary`, que la envuelve en un componente fácil de usar."
+  cuando_no: "No envuelvas cada componente chico en su propio boundary: elegí las secciones que tienen sentido fallar por separado (una tarjeta, un widget, una ruta)."
+---
+
+import { ReactPlayground } from '../../components/lesson/ReactPlayground'
+import ejemplo from '../../../react-samples/27-error-boundaries/App.tsx?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Un error al dibujar, sin protección, desmonta toda la app: pantalla en blanco. Un **error boundary** atrapa los errores de sus hijos y muestra un mensaje alternativo solo para esa sección.
+
+- `static getDerivedStateFromError(error)`: guarda el error en el estado para mostrar el mensaje.
+- `componentDidCatch(error, info)`: reporta el error, con `info.componentStack`.
+
+## Ejemplo
+
+<ReactPlayground code={ejemplo} />
+
+El test verifica que solo la tarjeta se reemplaza, que el título del panel sigue, que el error se reporta y que reintentar vuelve a mostrar la tarjeta.

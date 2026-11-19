@@ -26,7 +26,7 @@ export const flashcardsPath = '/flashcards/android/'
 export const reactInterviewPath = (level: string) => `/simulacro/react/${level}/`
 export const reactPracticePath = (level: string) => `/practica/react/${level}/`
 // Niveles de React que ya tienen simulacro y práctica de código.
-export const reactPracticeLevels = reactSections.filter(section => section.level === 'junior' || section.level === 'semi-senior')
+export const reactPracticeLevels = reactSections
 export const interviewPath = (level: AndroidLevel) => `/simulacro/android/${level}/`
 export const practicePath = (level: AndroidLevel) => `/practica/android/${level}/`
 export const privadoPath = '/privado/'
