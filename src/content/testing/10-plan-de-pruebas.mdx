@@ -1,0 +1,56 @@
+---
+id: testing-junior-plan-de-pruebas-01
+track: testing
+nivel: junior
+modulo: "Testing manual"
+titulo: "Plan de pruebas: alcance, riesgos y cuándo parar"
+duracion_min: 6
+prerequisitos: [testing-junior-testing-manual-mobile-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué tiene que responder un plan de pruebas?"
+    opciones: ["Solo la lista de casos.", "Qué se prueba y qué no (alcance), cómo (técnicas y tipos), con qué recursos y entornos, en qué orden según el riesgo, y cuándo se considera terminado.", "Quién tiene la culpa si algo falla."]
+    correcta: 1
+    explicacion: "Lo más valioso suele ser lo que queda fuera del alcance, por escrito: evita malentendidos."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuándo se deja de probar?"
+    opciones: ["Cuando no aparecen más bugs.", "Cuando se cumplen los criterios de salida acordados: por ejemplo, los casos críticos pasan, no hay bugs de severidad alta abiertos y el riesgo que queda es aceptado por el negocio.", "Cuando se termina el tiempo, siempre."]
+    correcta: 1
+    explicacion: "Como no se puede probar todo, se acuerda de antemano qué significa \"suficiente\"."
+  - tipo: autoevaluacion
+    pregunta: "¿Cómo priorizás qué probar primero con poco tiempo?"
+    explicacion: "Por riesgo: probabilidad de que falle por impacto si falla. Primero lo más usado, lo que maneja dinero o datos sensibles, lo que cambió recientemente y lo que ya falló antes."
+tarea_local: "Escribí un plan de una página para probar el carrito de compras de una tienda online: alcance, fuera de alcance, tres riesgos, enfoque y criterios de salida."
+resultado_esperado: "Un plan corto donde el alcance y los criterios de salida están por escrito, y los riesgos ordenan qué se prueba primero."
+resumen:
+  - "El plan acuerda qué se prueba, cómo, dónde y en qué orden."
+  - "Lo que queda fuera del alcance también va por escrito."
+  - "Se prioriza por riesgo: probabilidad por impacto."
+  - "Los criterios de salida dicen cuándo es suficiente."
+entrevista:
+  en_30_segundos: "Antes de probar, acuerdo un plan: alcance y lo que queda afuera, enfoque y técnicas, entornos y datos, riesgos y criterios de entrada y salida. Priorizo por riesgo, y como no se puede probar todo, dejo por escrito qué significa \"suficiente\" para que la decisión de liberar sea informada."
+  trampas:
+    - pregunta: "¿Un plan de pruebas tiene que ser un documento largo?"
+      respuesta: "No. En equipos ágiles puede ser una página o una sección del ticket. Lo importante es que el alcance, los riesgos y los criterios de salida estén acordados y por escrito."
+  cuando_no: "Para un cambio chico y de bajo riesgo, el plan puede ser una línea en el PR: qué probaste y cómo."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Sin plan, se prueba lo que se ocurre en el momento y se discute al final si alcanzó. El plan acuerda todo eso **antes**.
+
+- **Alcance:** qué entra y qué no.
+- **Enfoque:** tipos de prueba y técnicas.
+- **Entornos y datos:** dónde y con qué.
+- **Riesgos:** qué puede salir mal y qué se prueba primero.
+- **Criterios de entrada:** cuándo se puede empezar (por ejemplo, el smoke pasó).
+- **Criterios de salida:** cuándo se considera terminado.
+
+## Ejemplo
+
+Plan resumido para las cuentas de Rollito:
+
+- **Alcance:** registro con código, login, recuperación y cambio de contraseña, sincronización del progreso, panel de admin. **Fuera:** el contenido de las lecciones.
+- **Riesgos principales:** que alguien sin invitación acceda (alto), que se mezcle el progreso entre personas (alto), mensajes confusos (medio).
+- **Enfoque:** reglas de seguridad contra el emulador (21 casos), validaciones con tests unitarios, exploratorio en el celular y smoke después de cada deploy.
+- **Criterio de salida:** todas las pruebas de reglas pasan y no hay bugs de severidad alta abiertos.

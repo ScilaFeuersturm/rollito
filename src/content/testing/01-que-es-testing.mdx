@@ -1,0 +1,61 @@
+---
+id: testing-junior-que-es-testing-01
+track: testing
+nivel: junior
+modulo: "Testing manual"
+titulo: "Qué es testing y para qué sirve"
+duracion_min: 5
+prerequisitos: []
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué diferencia hay entre verificar y validar?"
+    opciones: ["Son sinónimos.", "Verificar es comprobar que se construyó bien (cumple la especificación); validar, que se construyó lo correcto (resuelve la necesidad de la persona).", "Verificar lo hace QA y validar, el cliente."]
+    correcta: 1
+    explicacion: "Un login puede cumplir todos los requisitos escritos (verificado) y aun así no servir si la persona no entiende cómo entrar (no validado)."
+  - tipo: opcion_multiple
+    pregunta: "¿Se puede probar todo?"
+    opciones: ["Sí, con suficiente tiempo.", "No: las combinaciones de datos, dispositivos y caminos son prácticamente infinitas. Por eso se eligen casos con técnicas y se prioriza por riesgo.", "Sí, si se automatiza."]
+    correcta: 1
+    explicacion: "Es uno de los principios clásicos del testing: el testing exhaustivo es imposible."
+  - tipo: opcion_multiple
+    pregunta: "Un test no encontró ningún bug. ¿Qué significa?"
+    opciones: ["Que el software no tiene bugs.", "Que con esos casos no apareció ninguno. El testing muestra la presencia de defectos, no su ausencia.", "Que el test está mal."]
+    correcta: 1
+    explicacion: "Por eso importa elegir bien los casos: un test que nunca puede fallar no da información."
+tarea_local: "Pensá en la última app que usaste y que falló. Describí la falla que viste y arriesgá cuál pudo ser el defecto y el error que lo causó."
+resultado_esperado: "Una falla concreta separada en error, defecto y falla, aunque el defecto sea una hipótesis."
+resumen:
+  - "El testing busca errores antes de que los encuentre alguien que usa la app."
+  - "Un error lleva a un defecto, y el defecto se ve como una falla."
+  - "Verificar es construirlo bien; validar es construir lo correcto."
+  - "No se puede probar todo: se elige qué probar según el riesgo."
+  - "El testing muestra la presencia de defectos, no su ausencia."
+entrevista:
+  en_30_segundos: "El testing busca defectos antes de que lleguen a las personas que usan el producto. Como no se puede probar todo, elijo los casos con técnicas y priorizo por riesgo: lo que más se usa, lo que más daño haría si falla y lo que cambió recientemente. Verifico que cumpla lo especificado y valido que resuelva la necesidad real."
+  trampas:
+    - pregunta: "¿QA es el único responsable de la calidad?"
+      respuesta: "No. La calidad es de todo el equipo: quien define los requisitos, quien programa y quien prueba. QA aporta una mirada especializada y técnicas, pero no puede \"agregar\" calidad al final."
+  cuando_no: "No hace falta un proceso de testing pesado para un prototipo que se va a tirar: ahí alcanza con probar el camino principal."
+---
+
+## Concepto
+
+**Qué problema resuelve.** El software lo escriben personas, y las personas se equivocan. El testing busca esos errores **antes** de que los encuentre alguien que usa la app, cuando arreglarlos sale más caro.
+
+Tres palabras que se confunden:
+
+- **Error (o equivocación):** lo que hace una persona, por ejemplo entender mal un requisito.
+- **Defecto (bug):** el problema que queda en el código o en la configuración.
+- **Falla:** lo que se ve cuando ese defecto se ejecuta: un crash, un mensaje equivocado, un dato mal guardado.
+
+Y una idea central: **testing no es solo "hacer clic hasta que algo se rompa"**. Es elegir qué probar, con qué datos y en qué orden, según el riesgo.
+
+## Ejemplo
+
+Una falla real de este mismo sitio: durante varias horas, Rollito no se publicaba aunque el código estaba bien en la máquina de quien lo escribía.
+
+- **Error:** una regla del `.gitignore` pensada para una carpeta excluía también otra con el mismo nombre.
+- **Defecto:** un archivo que el sitio necesita nunca llegó al repositorio.
+- **Falla:** el servidor fallaba al construir el sitio y seguía mostrando la versión vieja.
+
+Se encontró revisando el estado del deploy, no el código: probar también es mirar dónde corre el software de verdad.

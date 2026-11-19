@@ -93,6 +93,14 @@ export const reactSections = [
 
 const reactSequence = reactSections.flatMap(section => section.lessons)
 
+export const testingSections = [
+  { level: 'junior', title: 'Junior', description: 'Testing manual: técnicas para diseñar casos, exploratorio, reporte de bugs, mobile y plan de pruebas.' },
+  { level: 'semi-senior', title: 'Semi Senior', description: 'Automatización: pirámide, APIs, E2E con Playwright, Page Object Model, datos de prueba, tests inestables, mobile y CI.' },
+  { level: 'senior', title: 'Senior', description: 'Estrategia: shift-left, contract testing, performance, seguridad, accesibilidad, mutation testing, testing en producción y liderazgo de QA.' },
+].map(section => ({ ...section, lessons: lessons.filter(lesson => lesson.track === 'testing' && lesson.nivel === section.level) }))
+
+const testingSequence = testingSections.flatMap(section => section.lessons)
+
 const architectureSequence = architectureSections.flatMap(section => section.lessons)
 const androidSequence = androidSections.flatMap(section => section.lessons)
 
@@ -102,6 +110,7 @@ export function nextLesson(lesson: Lesson): Lesson | undefined {
     : lesson.track === 'react' ? reactSequence
     : lesson.track === 'entrevistas' ? interviewLessons
     : lesson.track === 'claude-code' ? claudeCodeLessons
+    : lesson.track === 'testing' ? testingSequence
     : androidSequence
   const position = sequence.findIndex(item => item.id === lesson.id)
   return position === -1 ? undefined : sequence[position + 1]

@@ -1,4 +1,4 @@
-import { androidSections, architectureSections, claudeCodeModules, functionalLessons, interviewLessons, reactSections, type Lesson } from '../content/lessons'
+import { androidSections, architectureSections, claudeCodeModules, testingSections, functionalLessons, interviewLessons, reactSections, type Lesson } from '../content/lessons'
 import type { Progress } from '../progress/progress'
 import styles from './App.module.css'
 import { Link } from './router'
@@ -105,6 +105,23 @@ export function Home({ progress }: { progress: Progress }) {
               {reactSections.map(section => <section key={section.level} className={styles.level}
                 aria-labelledby={`react-${section.level}`}>
                 <h4 id={`react-${section.level}`}>{section.title}</h4>
+                <p>{section.description}</p>
+                {section.lessons.length > 0
+                  ? <LessonList items={section.lessons} progress={progress} />
+                  : <p className={styles.pending}>Lecciones en preparación</p>}
+              </section>)}
+            </div>
+          </details>
+        </section>
+        <section className={styles.trackCard} aria-labelledby="testing">
+          <h3 id="testing">Testing</h3>
+          <p>Testing manual y automatizado: diseño de casos, reporte de bugs, Playwright, APIs, CI y estrategia de calidad.</p>
+          <details>
+            <summary>Ver lecciones de Testing</summary>
+            <div className={styles.roadmap}>
+              {testingSections.map(section => <section key={section.level} className={styles.level}
+                aria-labelledby={`testing-${section.level}`}>
+                <h4 id={`testing-${section.level}`}>{section.title}</h4>
                 <p>{section.description}</p>
                 {section.lessons.length > 0
                   ? <LessonList items={section.lessons} progress={progress} />

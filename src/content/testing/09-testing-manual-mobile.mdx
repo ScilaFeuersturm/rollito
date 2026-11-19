@@ -1,0 +1,58 @@
+---
+id: testing-junior-testing-manual-mobile-01
+track: testing
+nivel: junior
+modulo: "Testing manual"
+titulo: "Testing manual de apps móviles"
+duracion_min: 6
+prerequisitos: [testing-junior-smoke-sanity-y-regresion-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es lo que más diferencia probar una app móvil de probar una web?"
+    opciones: ["Nada.", "El entorno cambia todo el tiempo: rotación, segundo plano, interrupciones (una llamada), red que se corta, permisos, batería y una gran variedad de dispositivos y versiones.", "Que no se puede automatizar."]
+    correcta: 1
+    explicacion: "Muchos bugs móviles aparecen al rotar o al volver de segundo plano, cosas que no existen en una web."
+  - tipo: opcion_multiple
+    pregunta: "Estás llenando un formulario largo en el celular y entra una llamada. Al volver, ¿qué verificás?"
+    opciones: ["Que la app se cierre.", "Que lo que escribiste siga ahí: la app pasó a segundo plano y el sistema pudo haberla matado.", "Que suene la llamada."]
+    correcta: 1
+    explicacion: "Es la muerte del proceso que viste en el recorrido Android: el estado tiene que sobrevivir."
+  - tipo: autoevaluacion
+    pregunta: "Nombrá cinco situaciones de red que probarías en una app."
+    explicacion: "Sin conexión desde el inicio; se corta a la mitad de una carga; modo avión al enviar un formulario; red lenta (3G); cambio de wifi a datos; y volver a tener conexión después de un error (¿se puede reintentar?)."
+tarea_local: "Elegí una app de tu celular y probá: rotar a la mitad de una tarea, ponerla en segundo plano 5 minutos, activar el modo avión y negar un permiso. Anotá qué pasa en cada caso."
+resultado_esperado: "Cuatro observaciones; con suerte, al menos un comportamiento raro para reportar."
+resumen:
+  - "En el celular, el entorno cambia todo el tiempo."
+  - "Se prueban rotación, segundo plano y muerte del proceso."
+  - "Se prueban interrupciones, red cambiante y permisos negados."
+  - "Se prueban distintos tamaños, versiones, fuente grande y lectores de pantalla."
+entrevista:
+  en_30_segundos: "En mobile, además de lo funcional, pruebo lo que la app no controla: rotación, segundo plano y muerte del proceso, interrupciones, red que se corta o es lenta, permisos negados, distintos dispositivos y versiones, fuente grande y lectores de pantalla. Uso una checklist para no olvidar ninguno."
+  trampas:
+    - pregunta: "¿Alcanza con probar en el emulador?"
+      respuesta: "Para mucho, sí, y es más rápido. Pero hay cosas que conviene confirmar en dispositivos reales: rendimiento, cámara, notificaciones, batería, gestos y comportamientos de fabricantes concretos."
+  cuando_no: "No hace falta probar cada pantalla en 20 dispositivos: se elige una matriz chica con los más usados por el público de la app."
+---
+
+## Concepto
+
+**Qué problema resuelve.** En el celular, la app no controla el entorno. Una checklist de lo que cambia:
+
+- **Ciclo de vida:** rotar, mandar a segundo plano, volver, que el sistema mate el proceso.
+- **Interrupciones:** llamadas, notificaciones, alarma, batería baja.
+- **Red:** sin conexión, lenta, intermitente, cambio de wifi a datos.
+- **Permisos:** concederlos, negarlos, revocarlos desde la configuración.
+- **Dispositivos:** tamaños de pantalla, versiones del sistema, tamaño de fuente grande, modo oscuro.
+- **Accesibilidad:** TalkBack en Android, VoiceOver en iOS.
+- **Deep links:** abrir la app desde un link, con y sin sesión.
+
+## Ejemplo
+
+Checklist aplicada al detalle de una tarea (el live coding del recorrido Android):
+
+1. Rotar con el detalle abierto: la tarea sigue y no se vuelve a pedir.
+2. Activar el modo avión y abrir otra tarea: aparece el error con "Reintentar".
+3. Abrir el deep link `rollito://tareas/7` con la app cerrada: abre el detalle y Atrás va a la lista.
+4. Fuente grande del sistema: el título no se corta.
+5. Con TalkBack, el botón "Reintentar" se anuncia como botón.

@@ -1,0 +1,57 @@
+---
+id: testing-junior-smoke-sanity-y-regresion-01
+track: testing
+nivel: junior
+modulo: "Testing manual"
+titulo: "Smoke, sanity y regresión"
+duracion_min: 5
+prerequisitos: [testing-junior-reportar-un-bug-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Llega una versión nueva a testing. ¿Qué corrés primero?"
+    opciones: ["La regresión completa.", "Un smoke test: unas pocas pruebas del camino principal para saber si la versión es estable como para seguir probando.", "Nada, se espera."]
+    correcta: 1
+    explicacion: "Si el smoke falla (no abre, no deja entrar), no tiene sentido seguir: se devuelve la versión."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es una prueba de regresión?"
+    opciones: ["Probar un bug nuevo.", "Volver a probar lo que ya funcionaba para confirmar que un cambio no lo rompió.", "Probar en una versión vieja."]
+    correcta: 1
+    explicacion: "Es la que más conviene automatizar: se repite en cada cambio y es aburrida a mano."
+  - tipo: opcion_multiple
+    pregunta: "Se corrigió un bug del login. ¿Qué es la prueba de sanity?"
+    opciones: ["Probar toda la app.", "Una verificación enfocada en la zona del cambio: que el bug esté corregido y que lo más cercano siga andando, antes de una regresión más amplia.", "Probar el rendimiento."]
+    correcta: 1
+    explicacion: "Smoke es ancho y superficial; sanity, angosto y enfocado."
+tarea_local: "Escribí el smoke test de 5 pasos de una app que uses todos los días. Después pensá qué pondrías en una regresión de esa misma app."
+resultado_esperado: "Un smoke de 5 pasos del camino principal y una lista de regresión más amplia, priorizada por lo que más se usa."
+resumen:
+  - "El smoke verifica que la versión está viva, con pocas pruebas del camino principal."
+  - "El sanity se enfoca en la zona de un cambio puntual."
+  - "La regresión confirma que lo que andaba siga andando."
+  - "La regresión es lo primero que conviene automatizar."
+entrevista:
+  en_30_segundos: "Cuando llega una versión, corro un smoke del camino principal; si falla, la devuelvo. Para un cambio puntual hago sanity en la zona afectada, y antes de liberar, regresión. La regresión es lo primero que automatizo, porque se repite en cada cambio."
+  trampas:
+    - pregunta: "¿La regresión es probar todo de nuevo?"
+      respuesta: "Idealmente, lo más importante de nuevo, priorizado por riesgo y por cercanía al cambio. Por eso conviene automatizarla: a mano, se termina recortando."
+  cuando_no: "En un proyecto recién empezado, sin funcionalidades estables, una regresión formal no tiene mucho para cubrir: alcanza con smoke y sanity."
+---
+
+## Concepto
+
+**Qué problema resuelve.** No siempre hay tiempo de probar todo. Estos tres tipos dicen **qué** probar según el momento.
+
+- **Smoke:** ¿la versión está viva? Pocas pruebas del camino principal. Ancho y superficial.
+- **Sanity:** ¿el cambio puntual funciona? Enfocado en la zona del cambio.
+- **Regresión:** ¿lo que andaba sigue andando? Amplio. Es lo primero que conviene automatizar.
+
+## Ejemplo
+
+El smoke test de Rollito después de cada deploy, que se hizo durante toda la construcción del sitio:
+
+1. La landing responde y muestra "limitada al equipo de Taller Fichín".
+2. `/cuenta/` responde y muestra las opciones.
+3. Una lección nueva responde.
+4. Una URL inventada da 404.
+
+Y la regresión automatizada: los tests de Vitest (más de 80), los de las reglas de Firestore y, en el nivel Semi Senior, los de Playwright.

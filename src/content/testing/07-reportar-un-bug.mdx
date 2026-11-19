@@ -1,0 +1,65 @@
+---
+id: testing-junior-reportar-un-bug-01
+track: testing
+nivel: junior
+modulo: "Testing manual"
+titulo: "Reportar un bug: severidad, prioridad y ciclo de vida"
+duracion_min: 7
+prerequisitos: [testing-junior-testing-exploratorio-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué título de bug es mejor?"
+    opciones: ["\"El registro no anda\".", "\"Registro: un nombre hecho solo de espacios muestra un error sobre el código de invitación\".", "\"Bug urgente!!!\"."]
+    correcta: 1
+    explicacion: "Un buen título dice dónde, qué pasa y en qué condición, en una línea. Se tiene que entender sin abrir el reporte."
+  - tipo: opcion_multiple
+    pregunta: "Un error de ortografía en la pantalla de inicio que ve todo el mundo. ¿Severidad y prioridad?"
+    opciones: ["Severidad alta y prioridad alta.", "Severidad baja (no rompe nada) y prioridad posiblemente alta (lo ve todo el mundo y daña la imagen).", "Severidad alta y prioridad baja."]
+    correcta: 1
+    explicacion: "La severidad mide el impacto técnico; la prioridad, la urgencia para el negocio. No siempre coinciden."
+  - tipo: ordenar
+    pregunta: "Ordená un ciclo de vida típico de un bug."
+    pasos: ["Nuevo: alguien lo reporta", "Asignado: alguien lo toma", "Resuelto: se corrigió", "Verificado: QA confirma la corrección", "Cerrado"]
+    explicacion: "Si la verificación falla, el bug vuelve a abrirse. También puede terminar como \"no se reproduce\", \"duplicado\" o \"funciona como se diseñó\"."
+tarea_local: "Reportá el último bug que viste en una app, con todas las partes: título, pasos, esperado, obtenido, entorno, evidencia, severidad y prioridad justificadas."
+resultado_esperado: "Un reporte que otra persona podría reproducir sin hacerte ninguna pregunta."
+resumen:
+  - "Un buen reporte tiene título, pasos, esperado, obtenido, evidencia y entorno."
+  - "El título dice dónde, qué pasa y en qué condición."
+  - "La severidad es el impacto técnico; la prioridad, la urgencia para el negocio."
+  - "El ciclo de vida va de nuevo a cerrado, pasando por la verificación."
+entrevista:
+  en_30_segundos: "Reporto bugs que se puedan reproducir sin preguntarme nada: un título que dice dónde, qué y cuándo, pasos numerados desde un estado conocido, esperado contra obtenido, evidencia y entorno. Separo severidad (impacto técnico) de prioridad (urgencia para el negocio), y verifico la corrección antes de cerrar."
+  trampas:
+    - pregunta: "Un bug no se puede reproducir siempre. ¿Lo reportás igual?"
+      respuesta: "Sí, aclarando con qué frecuencia pasa (por ejemplo, 2 de cada 10 veces), las condiciones en que apareció y toda la evidencia posible (logs, video). Los bugs intermitentes suelen ser de concurrencia, red o datos, y son de los más importantes."
+  cuando_no: "Un detalle de estilo sin impacto, en una pantalla que se va a rediseñar, quizás no merezca un reporte formal: alcanza con un comentario al equipo."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Un bug que no se entiende no se arregla. Un buen reporte le ahorra horas a quien lo corrige.
+
+**Partes de un buen reporte:**
+
+- **Título:** dónde, qué pasa y en qué condición.
+- **Pasos para reproducirlo:** numerados, desde un estado conocido.
+- **Resultado esperado y resultado obtenido.**
+- **Evidencia:** captura, video o logs.
+- **Entorno:** dispositivo, sistema, navegador, versión de la app.
+- **Severidad y prioridad.**
+
+**Severidad vs. prioridad:** la severidad es cuánto rompe (técnico); la prioridad, cuánto urge arreglarlo (negocio).
+
+## Ejemplo
+
+Un reporte real de Rollito, encontrado al preparar esta ruta:
+
+**Título:** Registro: un nombre hecho solo de espacios muestra un error sobre el código de invitación.
+
+- **Pasos:** 1) Sin sesión, ir a `/cuenta/` → "Tengo un código". 2) Código válido, nombre `"   "`, mail nuevo, contraseña de 10 caracteres. 3) Tocar "Crear mi cuenta".
+- **Esperado:** un mensaje sobre el nombre, sin crear la cuenta.
+- **Obtenido:** "El código de invitación no es válido o ya se usó." La cuenta se crea y se borra.
+- **Causa encontrada:** el campo `required` acepta espacios; el servidor rechaza el nombre vacío y ese rechazo se muestra como error del código.
+- **Severidad:** media (bloquea el registro con un mensaje equivocado). **Prioridad:** alta (afecta la primera experiencia de cada persona).
+- **Estado:** resuelto y verificado con tests (`src/cuenta/validar.test.ts`).

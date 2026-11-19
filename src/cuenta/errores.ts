@@ -20,6 +20,10 @@ export function mensajeDeError(error: unknown): string {
       return 'No hay conexión. Revisá tu red.'
     case 'permission-denied':
       return 'El código de invitación no es válido o ya se usó.'
+    case 'nombre-invalido':
+      return 'Escribí tu nombre (de 1 a 60 caracteres).'
+    case 'clave-corta':
+      return 'La contraseña tiene que tener al menos 8 caracteres.'
     case 'claves-distintas':
       return 'Las dos contraseñas nuevas no coinciden.'
     default:

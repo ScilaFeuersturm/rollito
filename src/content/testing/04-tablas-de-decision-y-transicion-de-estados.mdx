@@ -1,0 +1,55 @@
+---
+id: testing-junior-tablas-de-decision-y-transicion-de-estados-01
+track: testing
+nivel: junior
+modulo: "Testing manual"
+titulo: "Tablas de decisión y transición de estados"
+duracion_min: 6
+prerequisitos: [testing-junior-particion-de-equivalencia-y-valores-limite-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Cuándo conviene una tabla de decisión?"
+    opciones: ["Cuando hay un solo campo.", "Cuando el resultado depende de una combinación de condiciones: la tabla lista cada combinación y su resultado esperado, así no se escapa ninguna.", "Solo en testing automatizado."]
+    correcta: 1
+    explicacion: "Con 3 condiciones de sí o no hay 8 combinaciones. Escribirlas obliga a preguntar qué pasa en las raras."
+  - tipo: opcion_multiple
+    pregunta: "En Rollito, ¿qué ve alguien con cuenta pero sin invitación que entra a una lección?"
+    opciones: ["La lección.", "\"Acceso restringido\": no es miembro, así que se trata como sin acceso, y desde la cuenta le piden un código.", "Un error."]
+    correcta: 1
+    explicacion: "Es una transición que se suele olvidar: \"logueado\" no significa \"con acceso\"."
+  - tipo: autoevaluacion
+    pregunta: "Dibujá los estados de una cuenta de Rollito y las transiciones entre ellos."
+    explicacion: "Sin cuenta → (registro con código) → miembro. Sin cuenta → (cuenta creada, código inválido) → se borra la cuenta y vuelve a sin cuenta. Cuenta sin invitación → (canjea código) → miembro. Miembro → (la admin quita el acceso) → cuenta sin invitación. Miembro → (salir) → sin sesión. Admin es un miembro con un documento en admins."
+tarea_local: "Hacé la tabla de decisión de un descuento: 10% si la compra supera $10.000, 5% extra si es cliente frecuente, y nada si usa un cupón de otra promo. Listá todas las combinaciones."
+resultado_esperado: "Ocho combinaciones (tres condiciones de sí o no), cada una con su descuento esperado, incluidas las que el enunciado no aclara y hay que preguntar."
+resumen:
+  - "Una tabla de decisión lista cada combinación de condiciones con su resultado."
+  - "Escribir la tabla obliga a preguntar por las combinaciones raras."
+  - "Un diagrama de estados muestra los estados y los eventos que los cambian."
+  - "Se prueban las transiciones válidas y también algunas inválidas."
+entrevista:
+  en_30_segundos: "Cuando el resultado depende de varias condiciones, armo una tabla de decisión con todas las combinaciones; cuando depende del estado, dibujo un diagrama de transiciones y pruebo cada transición válida y algunas inválidas. Las dos técnicas me hacen preguntar por los casos que nadie definió."
+  trampas:
+    - pregunta: "Con 5 condiciones de sí o no hay 32 combinaciones. ¿Las probás todas?"
+      respuesta: "Las escribo todas para no olvidar ninguna, pero las agrupo cuando el resultado es el mismo (si una condición decide sola, el resto no importa) y priorizo por riesgo las que quedan."
+  cuando_no: "Si hay una sola condición, una tabla es exagerada: alcanza con dos casos."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Cuando el resultado depende de **varias condiciones juntas**, o de **en qué estado está** algo, es fácil probar el camino feliz y olvidar combinaciones.
+
+**Tabla de decisión:** una fila por condición, una columna por combinación, y el resultado esperado de cada una.
+
+**Transición de estados:** dibujás los estados posibles y los eventos que pasan de uno a otro. Probás cada transición válida y algunas inválidas (por ejemplo, canjear un código ya usado).
+
+## Ejemplo
+
+Acceso a una lección de Rollito:
+
+- **¿Tiene sesión? No** → "Acceso restringido".
+- **¿Tiene sesión? Sí · ¿Es miembro? No** → "Acceso restringido", y en la cuenta, "Falta tu invitación".
+- **¿Tiene sesión? Sí · ¿Es miembro? Sí** → la lección.
+- **¿Es admin? Sí** → la lección, y además el panel de administración.
+
+Y una transición inválida que está probada contra el emulador: un miembro que intenta canjear un segundo código. Las reglas lo rechazan.

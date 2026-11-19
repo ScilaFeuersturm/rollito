@@ -78,6 +78,14 @@ describe('canje de invitaciones', () => {
     await assertFails(canjear(como('ana'), 'ana', 'codigo-2'))
   })
 
+  it('un nombre vacío no se acepta (por ejemplo, solo espacios recortados)', async () => {
+    const db = como('ana')
+    const batch = writeBatch(db)
+    batch.set(doc(db, 'miembros/ana'), { nombre: '', email: 'ana@ejemplo.com', invitacion: 'codigo-1', creadoEn: serverTimestamp() })
+    batch.update(doc(db, 'invitaciones/codigo-1'), { usada: true, usadaPor: 'ana', usadaEn: serverTimestamp() })
+    await assertFails(batch.commit())
+  })
+
   it('sin cuenta no se puede canjear', async () => {
     await assertFails(canjear(anonimo(), 'ana', 'codigo-1'))
   })

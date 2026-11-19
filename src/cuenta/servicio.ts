@@ -8,6 +8,7 @@ import {
 import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, serverTimestamp, setDoc, writeBatch } from 'firebase/firestore'
 import type { Progress } from '../progress/progress'
 import { limpiar } from './combinar'
+import { validarClave, validarNombre } from './validar'
 
 const app = initializeApp({
   apiKey: 'AIzaSyA14lpxBPAxjDA_KjzlgRBa-5lN5D9uLZU',
@@ -62,16 +63,20 @@ const normalizarCodigo = (codigo: string) => codigo.trim().toLowerCase()
 export async function canjear(nombre: string, codigo: string) {
   const user = auth.currentUser
   if (!user) throw new Error('sin-sesion')
+  const nombreLimpio = validarNombre(nombre)
   const id = normalizarCodigo(codigo)
   if (!/^[a-z0-9-]{4,40}$/.test(id)) throw Object.assign(new Error('codigo'), { code: 'permission-denied' })
   const batch = writeBatch(db)
-  batch.set(doc(db, 'miembros', user.uid), { nombre: nombre.trim(), email: user.email, invitacion: id, creadoEn: serverTimestamp() })
+  batch.set(doc(db, 'miembros', user.uid), { nombre: nombreLimpio, email: user.email, invitacion: id, creadoEn: serverTimestamp() })
   batch.update(doc(db, 'invitaciones', id), { usada: true, usadaPor: user.uid, usadaEn: serverTimestamp() })
   await batch.commit()
 }
 
 // Si el código no sirve, borramos la cuenta recién creada para no dejar cuentas huérfanas.
 export async function registrar(nombre: string, email: string, clave: string, codigo: string) {
+  // Se valida antes de crear la cuenta, así un dato inválido no crea y borra una cuenta.
+  validarNombre(nombre)
+  validarClave(clave)
   const { user } = await createUserWithEmailAndPassword(auth, email.trim(), clave)
   try {
     await canjear(nombre, codigo)
@@ -90,6 +95,7 @@ export async function recuperar(email: string) {
 export async function cambiarClave(actual: string, nueva: string) {
   const user = auth.currentUser
   if (!user?.email) throw new Error('sin-sesion')
+  validarClave(nueva)
   await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, actual))
   await updatePassword(user, nueva)
 }

@@ -1,0 +1,55 @@
+---
+id: testing-junior-testing-exploratorio-01
+track: testing
+nivel: junior
+modulo: "Testing manual"
+titulo: "Testing exploratorio"
+duracion_min: 6
+prerequisitos: [testing-junior-casos-de-prueba-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es el testing exploratorio?"
+    opciones: ["Hacer clic al azar.", "Aprender, diseñar y ejecutar pruebas al mismo tiempo, con un objetivo (charter) y un tiempo acotado, anotando lo que se prueba y lo que se encuentra.", "Probar sin saber qué hace la app."]
+    correcta: 1
+    explicacion: "No es improvisado: tiene un objetivo, un tiempo y notas. La diferencia con los casos escritos es que el diseño se va haciendo mientras se prueba."
+  - tipo: opcion_multiple
+    pregunta: "¿Cuál es un buen charter?"
+    opciones: ["\"Probar la app.\"", "\"Explorar el registro con datos límite y caracteres especiales, para encontrar validaciones faltantes o mensajes confusos. 30 minutos.\"", "\"Encontrar todos los bugs.\""]
+    correcta: 1
+    explicacion: "Un charter dice qué explorar, con qué recursos o técnicas y qué se busca."
+  - tipo: autoevaluacion
+    pregunta: "Nombrá cinco cosas que probarías en una sesión exploratoria de un formulario."
+    explicacion: "Campos vacíos y solo espacios; valores límite; caracteres especiales y emojis; copiar y pegar textos largos; doble clic en enviar; volver atrás y adelante; recargar a la mitad; perder la conexión al enviar; usar solo el teclado; y qué pasa con lo escrito si hay un error."
+tarea_local: "Hacé una sesión exploratoria de 20 minutos en una app que uses, con un charter escrito antes de empezar. Anotá lo que probaste, lo que encontraste y las preguntas que te quedaron."
+resultado_esperado: "Un charter, una lista de lo probado, al menos un hallazgo (aunque sea una mejora de uso) y una o dos preguntas para el equipo."
+resumen:
+  - "El testing exploratorio aprende, diseña y ejecuta pruebas al mismo tiempo."
+  - "Se organiza con un charter, un tiempo acotado y notas."
+  - "Las heurísticas dan ideas: límites, interrupciones, repetición y datos raros."
+  - "Complementa a los casos escritos: encuentra lo que nadie pensó."
+entrevista:
+  en_30_segundos: "Combino casos escritos con sesiones exploratorias: con un charter que define qué explorar y para qué, un tiempo acotado y notas de lo probado y lo encontrado. Uso heurísticas como límites, interrupciones, repetición y datos raros, y lo que encuentro valioso lo convierto en casos de regresión."
+  trampas:
+    - pregunta: "¿El exploratorio reemplaza a los casos escritos?"
+      respuesta: "No: se complementan. Los casos escritos garantizan que lo importante se verifique siempre igual; el exploratorio encuentra lo que nadie anticipó. Un hallazgo exploratorio importante suele convertirse en un caso escrito o automatizado."
+  cuando_no: "Para verificar un requisito legal o de cumplimiento, hace falta un caso escrito y reproducible, con evidencia: la exploración sola no alcanza."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Los casos escritos verifican lo que alguien pensó de antemano. Muchos bugs aparecen en lo que nadie pensó. El testing exploratorio usa la curiosidad de forma organizada.
+
+- **Charter:** el objetivo de la sesión. "Explorar X, con Y, para descubrir Z."
+- **Tiempo acotado:** sesiones de 30 a 90 minutos.
+- **Notas:** qué probaste, qué encontraste y qué preguntas surgieron.
+- **Heurísticas:** ideas para probar, como límites, interrupciones, repetición, orden distinto o datos raros.
+
+## Ejemplo
+
+**Charter:** "Explorar la pantalla de cuenta de Rollito usando solo el teclado y un celular, para encontrar problemas de uso y accesibilidad. 30 minutos."
+
+**Notas de una sesión real (resumidas):**
+
+- Las tres opciones (Entrar, Tengo un código, Olvidé mi contraseña) **no parecían botones**: eran texto suelto con un subrayado. Lo reportó el equipo y se corrigió con botones con borde y `aria-pressed`.
+- Con Tab se llega a todos los campos en orden lógico. Bien.
+- Pregunta para el equipo: ¿qué pasa si alguien toca "Crear mi cuenta" dos veces rápido?

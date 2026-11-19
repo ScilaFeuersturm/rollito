@@ -1,0 +1,59 @@
+---
+id: testing-junior-niveles-y-tipos-de-prueba-01
+track: testing
+nivel: junior
+modulo: "Testing manual"
+titulo: "Niveles y tipos de prueba"
+duracion_min: 6
+prerequisitos: [testing-junior-que-es-testing-01]
+ejercicios:
+  - tipo: ordenar
+    pregunta: "Ordená los niveles de prueba, del más chico al más grande."
+    pasos: ["Unitaria: una función o un componente aislado", "De integración: varias piezas juntas", "De sistema: la aplicación completa", "De aceptación: el cliente o el negocio confirma que sirve"]
+    explicacion: "Cuanto más grande el nivel, más realista la prueba, pero también más lenta y más difícil de diagnosticar cuando falla."
+  - tipo: opcion_multiple
+    pregunta: "Probar que una pantalla carga en menos de 2 segundos con 1000 usuarios, ¿qué tipo de prueba es?"
+    opciones: ["Funcional.", "No funcional (de rendimiento): no prueba qué hace, sino cómo lo hace.", "De regresión."]
+    correcta: 1
+    explicacion: "Las no funcionales cubren rendimiento, seguridad, usabilidad, accesibilidad y compatibilidad."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué es una prueba de caja negra?"
+    opciones: ["Una prueba que se hace sin luz.", "Una que se diseña mirando solo entradas y salidas, sin conocer el código por dentro. La de caja blanca se diseña mirando el código.", "Una prueba automatizada."]
+    correcta: 1
+    explicacion: "El testing manual suele ser de caja negra; los tests unitarios suelen ser de caja blanca."
+tarea_local: "Elegí una funcionalidad de una app que conozcas (por ejemplo, el login) y escribí un ejemplo de prueba para cada nivel y uno de prueba no funcional."
+resultado_esperado: "Cuatro ejemplos, uno por nivel, y al menos uno no funcional (rendimiento, seguridad o accesibilidad)."
+resumen:
+  - "Los niveles son unitaria, integración, sistema y aceptación."
+  - "Funcional es qué hace; no funcional es cómo lo hace."
+  - "Caja negra mira entradas y salidas; caja blanca mira el código."
+  - "La regresión comprueba que lo que andaba siga andando."
+entrevista:
+  en_30_segundos: "Distingo niveles (unitaria, integración, sistema y aceptación) y tipos: funcionales y no funcionales, de caja negra o de caja blanca, de confirmación y de regresión. Elijo la combinación según el riesgo: muchas pruebas chicas y rápidas abajo, y menos pruebas grandes y realistas arriba."
+  trampas:
+    - pregunta: "¿Una prueba de aceptación es lo mismo que una de sistema?"
+      respuesta: "No. La de sistema la hace el equipo para verificar que la aplicación completa cumple lo especificado; la de aceptación la hace (o la guía) el negocio o el cliente para confirmar que le sirve."
+  cuando_no: "No hace falta cubrir todos los niveles con la misma intensidad: un componente simple puede no necesitar pruebas de integración propias."
+---
+
+## Concepto
+
+**Qué problema resuelve.** "Probalo" puede significar cosas muy distintas. Ponerles nombre ayuda a planificar y a hablar con el equipo.
+
+**Niveles:** unitaria, de integración, de sistema y de aceptación.
+
+**Tipos:**
+
+- **Funcional:** qué hace. "Al tocar Reintentar, vuelve a cargar."
+- **No funcional:** cómo lo hace. Rendimiento, seguridad, usabilidad, accesibilidad, compatibilidad.
+- **Caja negra o caja blanca:** según si mirás el código o no.
+- **Confirmación y regresión:** volver a probar un bug corregido, y probar que lo que andaba siga andando.
+
+## Ejemplo
+
+En Rollito conviven varios niveles:
+
+- **Unitarias:** `validarNombre` y `validarClave` se prueban solas, con Vitest.
+- **De integración:** las reglas de Firestore se prueban contra el emulador de Firebase, con datos reales.
+- **De sistema:** con Playwright se abre el sitio construido en un navegador (en el nivel Semi Senior de esta ruta).
+- **De aceptación:** el equipo usa la plataforma y avisa, como cuando reportó que los botones de la cuenta no parecían clickeables.

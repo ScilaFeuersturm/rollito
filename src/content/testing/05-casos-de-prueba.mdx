@@ -1,0 +1,61 @@
+---
+id: testing-junior-casos-de-prueba-01
+track: testing
+nivel: junior
+modulo: "Testing manual"
+titulo: "Escribir casos de prueba"
+duracion_min: 6
+prerequisitos: [testing-junior-tablas-de-decision-y-transicion-de-estados-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "¿Qué partes tiene un buen caso de prueba?"
+    opciones: ["Solo los pasos.", "Un identificador, el objetivo, las precondiciones, los datos, los pasos y el resultado esperado, para que cualquiera del equipo lo pueda ejecutar igual.", "El nombre de quien lo escribió y la fecha."]
+    correcta: 1
+    explicacion: "Si dos personas ejecutan el caso y obtienen resultados distintos sin que cambie el software, el caso está mal escrito."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué está mal en el resultado esperado \"funciona bien\"?"
+    opciones: ["Nada.", "No es verificable: no dice qué tiene que verse. Un buen resultado esperado es observable: \"aparece el mensaje X y el botón queda habilitado\".", "Es muy largo."]
+    correcta: 1
+    explicacion: "Un resultado esperado vago hace que cada persona decida si pasó o no."
+  - tipo: autoevaluacion
+    pregunta: "¿Qué relación hay entre un caso de prueba y un criterio de aceptación?"
+    explicacion: "Cada criterio de aceptación de una historia de usuario debería tener al menos un caso que lo verifique (trazabilidad). Si el criterio está en Gherkin (Dado, Cuando, Entonces), se convierte casi directo en un caso: precondiciones, pasos y resultado esperado."
+tarea_local: "Escribí tres casos de prueba para \"recuperar la contraseña\" de Rollito: uno con un mail registrado, uno con un mail no registrado y uno con un mail mal escrito."
+resultado_esperado: "Tres casos con precondiciones, datos, pasos y un resultado esperado observable. Ojo: por seguridad, el mensaje con un mail no registrado tiene que ser el mismo que con uno registrado."
+resumen:
+  - "Un caso de prueba tiene precondiciones, datos, pasos y resultado esperado."
+  - "El resultado esperado tiene que ser observable, no \"funciona bien\"."
+  - "Cualquiera del equipo tiene que poder ejecutarlo igual."
+  - "Cada criterio de aceptación tiene al menos un caso que lo verifica."
+entrevista:
+  en_30_segundos: "Escribo casos que cualquiera pueda ejecutar igual: precondiciones claras, datos concretos, pasos de una acción y un resultado esperado observable. Cada criterio de aceptación tiene al menos un caso, y los priorizo por riesgo para saber qué ejecutar primero cuando hay poco tiempo."
+  trampas:
+    - pregunta: "¿Cuántos casos por funcionalidad?"
+      respuesta: "Los que salen de aplicar las técnicas (particiones, límites, tablas) a los criterios de aceptación, priorizados por riesgo. No hay un número fijo: un formulario de pago merece más casos que un texto de ayuda."
+  cuando_no: "Para explorar una funcionalidad nueva que todavía cambia todos los días, escribir casos detallados es desperdicio: conviene una sesión exploratoria y escribir casos cuando se estabilice."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Un caso de prueba bien escrito se puede ejecutar igual hoy, el mes que viene o por otra persona, y su resultado no se discute.
+
+**Partes de un caso:**
+
+- **ID y título:** qué verifica, en una línea.
+- **Precondiciones:** en qué estado tiene que estar todo antes de empezar.
+- **Datos:** con qué valores.
+- **Pasos:** acciones concretas, una por línea.
+- **Resultado esperado:** algo que se puede observar.
+
+Se conecta con lo que viste en Análisis funcional: cada criterio de aceptación (escrito en Gherkin) tiene al menos un caso que lo verifica.
+
+## Ejemplo
+
+**CP-07 · Un nombre hecho solo de espacios no se acepta al registrarse**
+
+- **Precondiciones:** sin sesión iniciada; existe un código de invitación sin usar.
+- **Datos:** código válido; nombre `"   "` (tres espacios); mail nuevo; contraseña de 10 caracteres.
+- **Pasos:** 1) Entrar a `/cuenta/`. 2) Tocar "Tengo un código". 3) Completar los datos. 4) Tocar "Crear mi cuenta".
+- **Resultado esperado:** aparece "Escribí tu nombre (de 1 a 60 caracteres)."; no se crea ninguna cuenta; el código sigue sin usar.
+
+Antes de la corrección, este caso fallaba: el mensaje hablaba del código de invitación.
