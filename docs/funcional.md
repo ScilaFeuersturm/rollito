@@ -1,6 +1,6 @@
 # Análisis funcional · Trainee
 
-**Estado:** las lecciones 1 a 11 están aprobadas y publicadas en `src/content/funcional/`, con repaso en audio (`/repaso/funcional/`) y simulacro de entrevista (`/simulacro/funcional/`, datos en `src/content/funcional/interview-practice.ts`). La lección 12 (integradora con Taller Fichín) está en borrador para revisar.
+**Estado:** las lecciones 1 a 11 están aprobadas y publicadas en `src/content/funcional/`, con repaso en audio (`/repaso/funcional/`) y simulacro de entrevista (`/simulacro/funcional/`, datos en `src/content/funcional/interview-practice.ts`). La lección 12 (integradora con Taller Fichín) también está publicada.
 
 Track pensado para alguien que se suma como analista funcional sin experiencia previa (primer uso real: una persona que se suma a Taller Fichín). Cada lección sigue el formato habitual: concepto con analogía, ejemplo, ejercicios de autoevaluación, tarea práctica, resumen y "cómo contarlo en una entrevista".
 
@@ -566,9 +566,8 @@ El recorrido es el mismo que harías en un proyecto:
 6. Priorizar.
 7. Documentar.
 
-Arrancás con **supuestos** y los validás con el equipo:
+Ya sabés que **el juego lo publica alguien del equipo**. El resto arranca como **supuestos** que validás con el equipo:
 
-- Publica una persona del equipo.
 - Cada juego tiene título, descripción, capturas, plataforma (jugable en el navegador o con link a una tienda), controles y créditos.
 - Otra persona del equipo lo revisa antes de que aparezca.
 
@@ -628,4 +627,4 @@ Hacé el integrador con el equipo real de Taller Fichín. Entrevistá al menos a
 - [x] ¿El ejemplo del estudio contable te sirve como hilo conductor, o preferís otro negocio? **Sí.**
 - [x] ¿Querés el repaso en audio también en este track (lee solo el resumen, como en Arquitectura)? **Sí.**
 - [x] ¿Sumamos un simulacro de entrevista para analista funcional trainee, como los de Android? **Sí.**
-- [ ] Lección 12: ¿te sirven los supuestos (publica alguien del equipo, otra persona revisa, la ficha lleva título, descripción, capturas, plataforma, controles y créditos)? Si alguno no es así en Taller Fichín, lo ajusto.
+- [x] Lección 12: confirmado que el juego lo publica alguien del equipo. La revisión previa y los datos de la ficha quedan como supuestos para validar en el ejercicio.
