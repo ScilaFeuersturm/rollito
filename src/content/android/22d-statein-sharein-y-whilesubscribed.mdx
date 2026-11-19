@@ -1,0 +1,72 @@
+---
+id: android-semi-senior-statein-sharein-y-whilesubscribed-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "stateIn, shareIn y WhileSubscribed(5000)"
+duracion_min: 6
+prerequisitos: [android-semi-senior-operadores-de-flow-01, android-semi-senior-eventos-de-una-sola-vez-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "En el snippet, ¿cuántas veces imprime `[fuente] arranca`?"
+    opciones: ["Una: `stateIn` arranca la fuente una sola vez.", "Dos: al abrir la pantalla y al volver de segundo plano. En la rotación no se detiene, porque la pausa (200 ms) es menor que el tiempo de espera (500 ms).", "Tres: al abrir, después de la rotación y al volver."]
+    correcta: 1
+    explicacion: "Salida real: `pantalla abierta`, `[fuente] arranca`, `rotación…`, `segundo plano…`, `[fuente] se detiene`, `al volver… true`, `[fuente] arranca`, `[fuente] se detiene`. La fuente solo se detiene cuando pasan más de 500 ms sin colectores."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué se usa justamente `WhileSubscribed(5000)` en los ViewModels?"
+    opciones: ["Porque es el tiempo de un ANR.", "Porque es un margen que cubre de sobra una rotación (la pantalla vuelve a colectar en milisegundos) y, a la vez, corta la fuente si la app queda en segundo plano.", "Porque Compose recompone cada 5 segundos."]
+    correcta: 1
+    explicacion: "Es una heurística. Con 0, cada rotación reiniciaría la consulta a la base o la ubicación. Sin límite (`Eagerly` o `Lazily`), la fuente seguiría trabajando con la app en segundo plano."
+  - tipo: opcion_multiple
+    pregunta: "Al volver de segundo plano, ¿qué ve primero la pantalla?"
+    opciones: ["El valor inicial (`-1` o `Cargando`), porque la fuente se reinició.", "El último valor que quedó guardado; después llega el nuevo cuando la fuente vuelve a emitir.", "Nada hasta que la fuente emita."]
+    correcta: 1
+    explicacion: "Por defecto, `WhileSubscribed` conserva el último valor (`replayExpirationMillis` es infinito), así que la pantalla no parpadea a `Cargando`. Si ese valor viejo puede confundir, se configura `replayExpirationMillis`."
+  - tipo: autoevaluacion
+    pregunta: "Explicá la diferencia entre `SharingStarted.Eagerly`, `Lazily` y `WhileSubscribed`."
+    explicacion: "`Eagerly` arranca la fuente enseguida y no la detiene nunca (mientras viva el scope). `Lazily` la arranca con el primer colector y tampoco la detiene. `WhileSubscribed(t)` la arranca con el primer colector y la detiene `t` milisegundos después de que se va el último; si vuelve uno, la reinicia. En pantallas, lo habitual es `WhileSubscribed(5000)`."
+tarea_local: "En Android Studio, corré `StateInWhileSubscribed`. Después cambiá `WhileSubscribed(500)` por `WhileSubscribed(0)` y, en otra corrida, por `SharingStarted.Lazily`."
+resultado_esperado: "Con 0, la fuente se detiene y arranca también en la rotación (tres arranques). Con `Lazily`, arranca una sola vez y nunca se detiene antes del final."
+resumen:
+  - "State in convierte un flow frío en un state flow caliente, compartido dentro de un scope."
+  - "While subscribed detiene la fuente un tiempo después de que se va el último colector."
+  - "Con cinco segundos, una rotación no reinicia la fuente, pero el segundo plano sí la detiene."
+  - "Al volver se muestra el último valor guardado mientras llega el nuevo."
+  - "Share in hace lo mismo pero da un shared flow, sin valor inicial obligatorio."
+entrevista:
+  en_30_segundos: "Expongo el estado con `stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), valorInicial)`. Así, la fuente (Room, ubicación, red) se comparte entre colectores, sigue viva durante una rotación porque la pantalla vuelve a colectar enseguida, y se detiene si la app queda más de cinco segundos en segundo plano. Combinado con `collectAsStateWithLifecycle` en la UI, nada trabaja de más."
+  trampas:
+    - pregunta: "¿Qué pasa si llamás a `stateIn` dentro de una función, por ejemplo `fun estado() = repo.flujo.stateIn(...)`?"
+      respuesta: "Cada llamada crea un `StateFlow` nuevo y arranca otra suscripción a la fuente. `stateIn` se aplica una vez y se guarda en una propiedad (`val estado = ...`)."
+    - pregunta: "¿`WhileSubscribed(5000)` sirve si colecto con `lifecycleScope.launch { collect }` sin `repeatOnLifecycle`?"
+      respuesta: "No del todo: ese colector no se va al pasar a segundo plano (sigue hasta `onDestroy`), así que la fuente nunca se detiene. `WhileSubscribed` necesita que la UI deje de colectar, con `repeatOnLifecycle` o `collectAsStateWithLifecycle`."
+  cuando_no: "Si el valor tiene que estar listo antes de que alguien lo mire (por ejemplo, una configuración que se usa en varias pantallas), `Eagerly` en un scope de aplicación puede tener más sentido que `WhileSubscribed`."
+---
+
+import stateIn from '../../../android-samples/kotlin/corrutinas/StateInWhileSubscribed.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** Un repositorio te da un `Flow` frío, por ejemplo una consulta de Room que emite cada vez que cambia la tabla. Si cada colector lo colecta por su cuenta, abrís una consulta por colector, y además se reinicia en cada rotación. `stateIn` lo convierte en un `StateFlow` caliente: **una sola** suscripción a la fuente, compartida, con el último valor siempre disponible.
+
+```kotlin
+val estado: StateFlow<TareasUiState> = repo.tareas()
+    .map { TareasUiState.Contenido(it) }
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TareasUiState.Cargando)
+```
+
+**Cuándo arranca y cuándo para** lo decide `SharingStarted`:
+
+- `Eagerly`: arranca ya y no para mientras viva el scope.
+- `Lazily`: arranca con el primer colector y no para.
+- `WhileSubscribed(5000)`: arranca con el primer colector y para cinco segundos después de que se va el último.
+
+**Por qué 5000:** al rotar, la Activity se destruye y la nueva vuelve a colectar en milisegundos, así que la fuente no llega a detenerse. Si la app pasa a segundo plano, la UI deja de colectar y, a los cinco segundos, la fuente se detiene y no consume batería ni red. Es una heurística, no un número mágico.
+
+`shareIn` es lo mismo, pero devuelve un `SharedFlow`: no pide valor inicial y se configura cuántos valores repite (`replay`).
+
+## Ejemplo
+
+Simulación con los tiempos achicados diez veces: espera de 500 ms, una rotación de 200 ms y un segundo plano de 800 ms. Predecí cuántas veces arranca la fuente.
+
+<pre><code className="language-kotlin">{stateIn.trimEnd()}</code></pre>

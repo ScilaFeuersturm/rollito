@@ -1,0 +1,83 @@
+---
+id: android-semi-senior-predeci-la-salida-cancelacion-y-excepciones-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Predecí la salida: cancelación y excepciones"
+duracion_min: 7
+prerequisitos: [android-semi-senior-predeci-la-salida-launch-async-y-withcontext-01, android-semi-senior-excepciones-en-corrutinas-01]
+ejercicios:
+  - tipo: ordenar
+    pregunta: "Snippet 5 (`CancelarConFinally`). Ordená las líneas como las imprime el programa."
+    pasos: ["trabajo 0", "trabajo 1", "trabajo 2", "limpieza", "cancelado"]
+    explicacion: "Imprime a los 0, 100 y 200 ms. A los 250 ms llega la cancelación mientras está en `delay`: el `delay` lanza `CancellationException`, corre el `finally` y `cancelAndJoin()` espera a que termine. Por eso `limpieza` sale antes que `cancelado`."
+  - tipo: opcion_multiple
+    pregunta: "Snippet 6 (`CancelacionCooperativa`). Se cancela a los 100 ms. ¿Qué imprime?"
+    opciones: ["Solo `cancelado`: el bucle se corta a los 100 ms.", "`terminé el bucle (isActive = false)` y después `cancelado`: el bucle no tiene puntos de suspensión, así que corre los 300 ms completos aunque esté cancelado.", "Lanza `CancellationException` y el programa termina con error."]
+    correcta: 1
+    explicacion: "La cancelación es cooperativa: marca el `Job` como cancelado, pero el código tiene que revisarlo. `delay` y las funciones `suspend` de la librería lo revisan; un bucle de CPU no. Se arregla con `while (isActive && ...)` o `ensureActive()` en cada vuelta."
+  - tipo: opcion_multiple
+    pregunta: "Snippet 7 (`SupervisorScopeVsCoroutineScope`). ¿Se imprime `B terminó`? ¿Y `D terminó`?"
+    opciones: ["Las dos: cada `launch` es independiente.", "`B terminó` no (la falla de A cancela a B, y la excepción sube y se atrapa); `D terminó` sí (en `supervisorScope` la falla de C no afecta a D).", "Ninguna: cualquier excepción cancela todo el programa."]
+    correcta: 1
+    explicacion: "Salida real: `atrapé: falló A`, `handler: falló C`, `D terminó`, `fin`. En `coroutineScope`, la excepción de un hijo cancela a los hermanos y se relanza en quien llamó, por eso el `try/catch` de afuera la atrapa. En `supervisorScope`, cada hijo maneja su falla; el `CoroutineExceptionHandler` funciona porque C es hijo directo del supervisor."
+  - tipo: opcion_multiple
+    pregunta: "Snippet 8 (`SupervisorJobYAsync`). ¿Qué imprime?"
+    opciones: ["`await lanzó: sin red`, `el otro siguió`, `scope activo: true`", "`await lanzó: sin red`, `scope activo: false`", "El programa se cae: la excepción de `async` no se puede atrapar."]
+    correcta: 0
+    explicacion: "`async` guarda la excepción y la lanza en `await()`, donde se atrapa. Como el scope tiene `SupervisorJob`, la falla de un hijo no cancela al otro ni al scope. Es exactamente cómo está armado `viewModelScope`."
+  - tipo: autoevaluacion
+    pregunta: "En el snippet 8, ¿qué cambia si en vez de `SupervisorJob()` usás `Job()`?"
+    explicacion: "La falla de `pedido` cancela al `Job` padre y, con él, a `otro`. Salida real: `await lanzó: sin red` y `scope activo: false`. `el otro siguió` no se imprime, y el scope ya no sirve para lanzar nada nuevo. Por eso un scope de pantalla usa `SupervisorJob`: un pedido que falla no puede matar a todos los demás."
+tarea_local: "En Android Studio, corré los cuatro snippets en un archivo con `main`. En el 6, agregá `ensureActive()` dentro del `while` y volvé a correrlo. En el 8, cambiá `SupervisorJob()` por `Job()`."
+resultado_esperado: "Con `ensureActive()`, el snippet 6 imprime solo `cancelado`. Con `Job()`, el 8 imprime `await lanzó: sin red` y `scope activo: false`."
+resumen:
+  - "Al cancelar, el delay lanza la excepción de cancelación y corre el finally."
+  - "La cancelación es cooperativa: un bucle sin suspensión tiene que revisar is active."
+  - "En coroutine scope, un hijo que falla cancela a sus hermanos y la excepción sube."
+  - "En supervisor scope y con supervisor job, cada hijo falla solo."
+  - "La excepción de async aparece al llamar a await."
+entrevista:
+  en_30_segundos: "La cancelación en corrutinas es cooperativa: las funciones `suspend` de la librería la revisan, pero un bucle de CPU tiene que llamar a `ensureActive()`. Con un `Job` común, un hijo que falla cancela al padre y a sus hermanos; con `SupervisorJob` o `supervisorScope`, cada hijo falla por su cuenta, y por eso `viewModelScope` usa un supervisor. Limpio recursos en `finally` y nunca me trago la `CancellationException`."
+  trampas:
+    - pregunta: "¿Un `try/catch` alrededor de un `launch` atrapa la excepción que lanza adentro?"
+      respuesta: "No. `launch` vuelve enseguida y la excepción ocurre después, dentro de la corrutina. Se atrapa adentro del bloque, con `coroutineScope` alrededor (que la relanza) o con un `CoroutineExceptionHandler` en una corrutina raíz."
+    - pregunta: "En un `finally` de una corrutina cancelada, ¿puedo llamar a una función `suspend`?"
+      respuesta: "Si suspende, lanza `CancellationException` enseguida, porque la corrutina ya está cancelada. Para una limpieza que necesita suspender (por ejemplo, guardar algo), se envuelve en `withContext(NonCancellable)`."
+  cuando_no: "No uses `supervisorScope` cuando las tareas dependen unas de otras y todas tienen que salir bien: ahí querés que la falla de una cancele a las demás."
+---
+
+import cancelarConFinally from '../../../android-samples/kotlin/corrutinas/CancelarConFinally.kt?raw'
+import cancelacionCooperativa from '../../../android-samples/kotlin/corrutinas/CancelacionCooperativa.kt?raw'
+import supervisorScopeVsCoroutineScope from '../../../android-samples/kotlin/corrutinas/SupervisorScopeVsCoroutineScope.kt?raw'
+import supervisorJobYAsync from '../../../android-samples/kotlin/corrutinas/SupervisorJobYAsync.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** La mitad de los bugs con corrutinas aparece cuando algo se cancela o falla: trabajo que sigue después de cerrar la pantalla, o un error que se lleva puesto todo el scope. Las preguntas de entrevista apuntan justo ahí. Tres reglas del mecanismo:
+
+1. **Cancelar es pedir, no forzar.** El `Job` queda marcado como cancelado, y en el siguiente punto de suspensión (`delay`, `await`, `withContext`…) se lanza `CancellationException`. Un bucle de CPU sin suspensión no se entera hasta que revisa `isActive` o llama a `ensureActive()`.
+2. **Con un `Job` común, la falla viaja hacia arriba.** El hijo que falla cancela al padre, el padre cancela a los demás hijos y la excepción se relanza.
+3. **Con un supervisor, la falla se queda en el hijo.** `SupervisorJob` o `supervisorScope`: los hermanos siguen. `async` guarda su excepción hasta el `await()`.
+
+**Antes vs. ahora.** Con `AsyncTask.cancel(true)` interrumpías el hilo y esperabas que el código lo revisara: en el fondo, la misma idea cooperativa, pero sin estructura. Acá la cancelación baja sola por el árbol de corrutinas.
+
+## Ejemplo
+
+Predecí la salida de cada snippet y respondé los ejercicios. Las salidas son las reales (kotlinc 2.1.10 y kotlinx-coroutines), estables en varias corridas.
+
+**Snippet 5**
+
+<pre><code className="language-kotlin">{cancelarConFinally.trimEnd()}</code></pre>
+
+**Snippet 6**
+
+<pre><code className="language-kotlin">{cancelacionCooperativa.trimEnd()}</code></pre>
+
+**Snippet 7**
+
+<pre><code className="language-kotlin">{supervisorScopeVsCoroutineScope.trimEnd()}</code></pre>
+
+**Snippet 8**
+
+<pre><code className="language-kotlin">{supervisorJobYAsync.trimEnd()}</code></pre>

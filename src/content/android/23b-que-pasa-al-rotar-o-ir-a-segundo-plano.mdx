@@ -1,0 +1,120 @@
+---
+id: android-semi-senior-que-pasa-al-rotar-o-ir-a-segundo-plano-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Qué pasa al rotar o al ir a segundo plano"
+duracion_min: 7
+prerequisitos: [android-semi-senior-ciclo-de-vida-y-stateflow-en-compose-01, android-semi-senior-statein-sharein-y-whilesubscribed-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "Escenario 1. La carga del perfil tarda 3 segundos y rotás la pantalla al segundo 1. ¿Qué pasa?"
+    opciones: ["La carga se cancela y vuelve a empezar en la Activity nueva.", "La carga sigue: `viewModelScope` vive en el ViewModel, que sobrevive a la rotación. La Activity nueva ve `Cargando` y, al segundo 3, `Listo`.", "La app muestra un error porque la Activity vieja ya no existe."]
+    correcta: 1
+    explicacion: "El `init` no se vuelve a ejecutar, porque el ViewModel es el mismo. La pantalla nueva empieza a colectar y `StateFlow` le da enseguida el valor actual."
+  - tipo: opcion_multiple
+    pregunta: "Escenario 2. La misma carga, pero lanzada con `lifecycleScope.launch` en `onCreate` de la Activity. Rotás al segundo 1. ¿Qué pasa?"
+    opciones: ["Lo mismo que en el escenario 1.", "La carga se cancela, porque `lifecycleScope` muere en `onDestroy`, y la Activity nueva la lanza otra vez desde cero: se pide dos veces y la persona espera más.", "La carga sigue en segundo plano y la Activity nueva recibe el resultado."]
+    correcta: 1
+    explicacion: "`lifecycleScope` está atado a la Activity, que se destruye al rotar. Por eso los datos de la pantalla se cargan en el ViewModel, no en la Activity."
+  - tipo: opcion_multiple
+    pregunta: "Escenario 3. `lifecycleScope.launch { viewModel.ubicacion.collect { mostrar(it) } }` en `onCreate`. Apretás Home y la app queda en segundo plano diez minutos. ¿Qué pasa?"
+    opciones: ["La colección se pausa sola al pasar a segundo plano.", "Sigue colectando todo el tiempo: `lifecycleScope` recién se cancela en `onDestroy`. La fuente (GPS) sigue activa, gasta batería y se actualiza una UI que nadie ve.", "Android mata la corrutina a los 5 segundos."]
+    correcta: 1
+    explicacion: "Es la diferencia con `LiveData`, que sí se pausa sola. Con `Flow`, la colección se ata al ciclo de vida con `repeatOnLifecycle` o, en Compose, con `collectAsStateWithLifecycle`."
+  - tipo: opcion_multiple
+    pregunta: "Escenario 4. El mismo `collect`, ahora dentro de `repeatOnLifecycle(Lifecycle.State.STARTED)`. Apretás Home y después volvés. ¿Qué pasa?"
+    opciones: ["Al ir a segundo plano (`onStop`) se cancela la colección; al volver (`onStart`) arranca una nueva y, si es un `StateFlow`, recibe enseguida el último valor.", "La colección sigue, pero no actualiza la UI.", "Al volver no pasa nada hasta que se recrea la Activity."]
+    correcta: 0
+    explicacion: "`repeatOnLifecycle` cancela el bloque al bajar de `STARTED` y lo vuelve a ejecutar al subir. Si además el flow es un `stateIn(WhileSubscribed(5000))`, a los cinco segundos en segundo plano también se detiene la fuente."
+  - tipo: opcion_multiple
+    pregunta: "Escenario 5. Compose con `collectAsStateWithLifecycle()` sobre un `stateIn(viewModelScope, WhileSubscribed(5000), Cargando)`. Rotás, y después dejás la app un minuto en segundo plano y volvés. ¿Qué pasa con la fuente?"
+    opciones: ["Se reinicia en las dos situaciones.", "En la rotación no se detiene (la pantalla vuelve a colectar enseguida); en el minuto de segundo plano se detiene a los 5 segundos y, al volver, arranca de nuevo mostrando primero el último valor guardado.", "No se detiene nunca mientras viva el ViewModel."]
+    correcta: 1
+    explicacion: "Es el combo recomendado: la UI deja de colectar cuando no se ve, y `WhileSubscribed(5000)` distingue una rotación (pausa corta) de un segundo plano real."
+tarea_local: "En Android Studio, armá una pantalla que colecte un flow que emite un número cada segundo (`flow { while (true) { emit(n++); delay(1000) } }`) y que lo loguee con `Log.d` en cada emisión. Probalo con `lifecycleScope.launch { collect }`, con `repeatOnLifecycle(STARTED)` y con `collectAsStateWithLifecycle()`, apretando Home 10 segundos cada vez."
+resultado_esperado: "Con el primero, los logs siguen con la app en segundo plano. Con los otros dos, se cortan al apretar Home y vuelven al abrir la app."
+resumen:
+  - "El scope del view model sobrevive a la rotación; el scope del ciclo de vida de la Activity no."
+  - "Un collect en el scope del ciclo de vida sin repeat on lifecycle sigue en segundo plano hasta on destroy."
+  - "Repeat on lifecycle cancela la colección al pasar a segundo plano y la reinicia al volver."
+  - "En Compose, collect as state with lifecycle hace lo mismo."
+  - "While subscribed de cinco segundos diferencia una rotación de un segundo plano real."
+entrevista:
+  en_30_segundos: "Cargo los datos en el ViewModel con `viewModelScope`, porque sobrevive a la rotación. En la UI colecto siempre atado al ciclo de vida: `collectAsStateWithLifecycle` en Compose o `repeatOnLifecycle(STARTED)` en vistas, así nada trabaja con la app en segundo plano. Y expongo el estado con `stateIn(WhileSubscribed(5000))`, para que una rotación no reinicie la fuente pero el segundo plano sí la detenga."
+  trampas:
+    - pregunta: "En un Fragment, ¿uso `lifecycleScope` o `viewLifecycleOwner.lifecycleScope` para colectar y actualizar el binding?"
+      respuesta: "`viewLifecycleOwner.lifecycleScope`, con `repeatOnLifecycle`. La vista del Fragment puede destruirse y recrearse mientras el Fragment sigue vivo (por ejemplo, en el back stack). Si usás el del Fragment, colectás dos veces o tocás un binding que ya no existe."
+    - pregunta: "¿`collectAsState()` y `collectAsStateWithLifecycle()` son lo mismo?"
+      respuesta: "No. `collectAsState()` colecta mientras el composable está en la composición, aunque la app esté en segundo plano. `collectAsStateWithLifecycle()` (de `lifecycle-runtime-compose`) también respeta el ciclo de vida. En Android, la recomendada es la segunda."
+  cuando_no: "Si algo tiene que seguir aunque la persona salga de la pantalla o cierre la app (una subida de archivos, una sincronización), no va en `viewModelScope` ni en `lifecycleScope`: va en WorkManager."
+---
+
+## Concepto
+
+**Qué problema resuelve.** Una rotación destruye y recrea la Activity; ir a segundo plano la detiene. Según el scope donde corre una corrutina y cómo se colecta un flow, el trabajo sigue, se cancela, se repite o desperdicia batería. En entrevista te lo preguntan como "¿qué pasa si…?".
+
+**Antes vs. ahora.** En la época de MVP manejabas esto a mano: cancelabas en `onDestroy`, te desuscribías en `onStop` y retenías el Presenter con trucos. Hoy cada pieza tiene un ciclo de vida definido:
+
+- `viewModelScope`: vive lo que el ViewModel. Sobrevive a la rotación y se cancela cuando la pantalla se va de verdad.
+- `lifecycleScope`: vive lo que la Activity (o el Fragment). Se cancela en `onDestroy`, incluida la rotación.
+- `repeatOnLifecycle(STARTED)`: ejecuta el bloque mientras la pantalla está visible; lo cancela en `onStop` y lo reinicia en `onStart`.
+- `collectAsStateWithLifecycle()`: lo mismo, para Compose.
+
+## Ejemplo
+
+Cinco escenarios. Para cada uno, pensá qué pasa al rotar y al ir a segundo plano antes de responder.
+
+**Escenario 1:** carga en el ViewModel.
+
+```kotlin
+class PerfilViewModel(private val repo: PerfilRepository) : ViewModel() {
+    private val _estado = MutableStateFlow<PerfilUiState>(PerfilUiState.Cargando)
+    val estado = _estado.asStateFlow()
+
+    init {
+        viewModelScope.launch { _estado.value = PerfilUiState.Listo(repo.cargar()) } // tarda 3 s
+    }
+}
+```
+
+**Escenario 2:** la misma carga, en la Activity.
+
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    lifecycleScope.launch { mostrar(repo.cargar()) } // tarda 3 s
+}
+```
+
+**Escenario 3:** colectar sin ciclo de vida.
+
+```kotlin
+lifecycleScope.launch {
+    viewModel.ubicacion.collect { mostrar(it) }
+}
+```
+
+**Escenario 4:** colectar con `repeatOnLifecycle`.
+
+```kotlin
+lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewModel.ubicacion.collect { mostrar(it) }
+    }
+}
+```
+
+**Escenario 5:** Compose + `stateIn`.
+
+```kotlin
+// ViewModel
+val estado = repo.tareas()
+    .map { TareasUiState.Contenido(it) }
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TareasUiState.Cargando)
+
+// Pantalla
+val estado by viewModel.estado.collectAsStateWithLifecycle()
+```
+
+*Estos snippets usan librerías de Android, así que no se compilan en `android-samples`. Probalos con la tarea de abajo.*

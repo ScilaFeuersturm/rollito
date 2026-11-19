@@ -1,0 +1,80 @@
+---
+id: android-semi-senior-eventos-de-una-sola-vez-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Eventos de una sola vez: StateFlow, SharedFlow o Channel"
+duracion_min: 7
+prerequisitos: [android-semi-senior-flow-stateflow-y-sharedflow-01, android-semi-senior-livedata-vs-stateflow-01]
+ejercicios:
+  - tipo: opcion_multiple
+    pregunta: "En el snippet, el evento se emite antes de que haya pantallas colectando. ¿Qué líneas imprime?"
+    opciones: ["Las cinco: cada tipo entrega el evento a cada pantalla.", "`StateFlow, pantalla 1`, `Channel, pantalla 1` y `StateFlow, pantalla 2`.", "Solo `Channel, pantalla 1`."]
+    correcta: 1
+    explicacion: "`StateFlow` guarda el último valor y se lo da a cada colector nuevo, así que la pantalla 2 vuelve a mostrar el snackbar (el bug clásico al rotar). `SharedFlow` sin replay descarta lo que se emite cuando nadie escucha. `Channel` guarda el evento hasta que alguien lo recibe, y lo entrega una sola vez."
+  - tipo: opcion_multiple
+    pregunta: "¿Por qué un `MutableSharedFlow()` con `extraBufferCapacity = 10` igual puede perder un evento?"
+    opciones: ["Porque el buffer solo se usa cuando hay suscriptores: si nadie colecta, la emisión se descarta.", "Porque `extraBufferCapacity` solo funciona con `replay = 1`.", "No lo pierde: el buffer guarda los últimos 10."]
+    correcta: 0
+    explicacion: "El buffer de `SharedFlow` absorbe a los suscriptores lentos, pero si no hay ninguno (por ejemplo, entre `onStop` y `onStart`, o durante una rotación), el evento se pierde."
+  - tipo: opcion_multiple
+    pregunta: "¿Qué recomienda la guía de arquitectura de Android para eventos del ViewModel hacia la UI, como mostrar un mensaje?"
+    opciones: ["Usar siempre `SharedFlow`.", "Modelarlos como parte del estado (por ejemplo, `mensaje: String?` en el `UiState`) y que la UI avise cuando lo mostró, para limpiarlo.", "Usar `LiveData` con un `SingleLiveEvent`."]
+    correcta: 1
+    explicacion: "Con estado no se pierde nada: si la pantalla no está, el mensaje espera; al mostrarse, la UI llama a `onMensajeMostrado()` y el ViewModel lo pone en `null`. Es más código, pero es predecible y fácil de testear. Verificá la versión vigente de la guía en developer.android.com (sección UI events)."
+  - tipo: autoevaluacion
+    pregunta: "Te preguntan: \"¿cómo navegás o mostrás un snackbar desde el ViewModel?\". Respondé en 30 segundos con las opciones y su contra principal."
+    explicacion: "StateFlow sin más: se repite al rotar. SharedFlow sin replay: se pierde si nadie colecta. Channel + `receiveAsFlow()`: no se pierde ni se repite y entrega a un solo colector; hay que colectarlo con `repeatOnLifecycle` y, para no perderlo en el borde, en `Dispatchers.Main.immediate`. Evento como estado: lo recomendado por la guía; nunca se pierde y se testea fácil, a cambio de un poco más de código (la UI confirma que lo consumió). Mi elección por defecto: evento como estado; Channel si el equipo ya lo usa y entiende sus bordes."
+tarea_local: "En Android Studio, en un archivo con `main`, corré el snippet `EventosDeUnaSolaVez`. Después cambiá `MutableSharedFlow<String>()` por `MutableSharedFlow<String>(replay = 1)` y volvé a correrlo."
+resultado_esperado: "Con `replay = 1`, el `SharedFlow` ya no pierde el evento, pero vuelve a entregarlo a cada colector nuevo: tiene el mismo problema de repetición que `StateFlow`."
+resumen:
+  - "State flow repite el último valor a cada colector nuevo: el evento se vuelve a mostrar al rotar."
+  - "Shared flow sin replay descarta lo que se emite cuando nadie colecta."
+  - "Channel guarda el evento hasta que alguien lo recibe y lo entrega una sola vez."
+  - "La guía de Android recomienda modelar el evento como estado y marcarlo como consumido."
+entrevista:
+  en_30_segundos: "Para eventos de una sola vez, como navegar o mostrar un snackbar, `StateFlow` no sirve sin más porque los repite al rotar, y `SharedFlow` sin replay los pierde si nadie está colectando. Hay dos opciones sólidas: un `Channel` con `receiveAsFlow()`, colectado con `repeatOnLifecycle`, o, como recomienda la guía de Android, modelar el evento como parte del estado y que la UI avise cuando lo consumió. Por defecto elijo la segunda: no se pierde nada y es fácil de testear."
+  trampas:
+    - pregunta: "¿Y si uso `StateFlow` y después de mostrar el snackbar lo pongo en `null` desde la UI?"
+      respuesta: "Eso ya es \"evento como estado\", y está bien siempre que el ViewModel sea el dueño: la UI llama a `onMensajeMostrado()` y el ViewModel limpia el valor. Lo que no conviene es que la UI escriba directo en el `MutableStateFlow`."
+    - pregunta: "¿Un `Channel` puede perder un evento?"
+      respuesta: "En un borde muy fino, sí: si el evento se recibe justo cuando la pantalla pasa a `STOPPED`, puede quedar sin procesar. Colectarlo con `withContext(Dispatchers.Main.immediate)` dentro de `repeatOnLifecycle` reduce ese riesgo. Por eso la guía prefiere el estado."
+  cuando_no: "Si de verdad hay varios colectores que tienen que enterarse del mismo evento a la vez (por ejemplo, analíticas y UI), un `Channel` no sirve, porque entrega cada evento a un solo colector: ahí va `SharedFlow`."
+---
+
+import eventos from '../../../android-samples/kotlin/corrutinas/EventosDeUnaSolaVez.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** El ViewModel necesita decirle a la UI "navegá al detalle" o "mostrá este error una vez". Si el evento se repite, el snackbar aparece de nuevo al rotar. Si se pierde, la persona nunca se entera de que algo falló. Es la pregunta trampa clásica, porque ninguna herramienta es perfecta.
+
+**Antes vs. ahora.** Con MVP, el Presenter llamaba a `view.showError()` y listo, salvo que la vista estuviera desconectada (entonces se perdía). Con `LiveData` apareció el famoso `SingleLiveEvent`, un parche para lo mismo. El problema siempre fue igual: un evento no es estado, pero la UI se recrea.
+
+**Las opciones:**
+
+- **`StateFlow`**: guarda el último valor. *A favor:* nunca se pierde. *En contra:* se repite a cada colector nuevo (rotación, volver de segundo plano).
+- **`SharedFlow` sin replay**: *A favor:* no se repite y admite varios colectores. *En contra:* si nadie colecta en ese momento, el evento se descarta, aunque tenga buffer.
+- **`Channel` + `receiveAsFlow()`**: *A favor:* guarda el evento hasta que alguien lo recibe y lo entrega una sola vez. *En contra:* un solo colector, y en un borde fino se puede perder; se colecta con `repeatOnLifecycle` en `Dispatchers.Main.immediate`.
+- **Evento como estado** (lo que recomienda la guía de Android): el mensaje va en el `UiState` y la UI avisa cuando lo mostró. *A favor:* no se pierde ni se repite y se testea como cualquier estado. *En contra:* un poco más de código.
+
+## Ejemplo
+
+Simulación en Kotlin puro: el evento se emite mientras no hay pantalla (como durante una rotación) y después llegan dos pantallas, una tras otra. Predecí qué imprime antes de mirar el primer ejercicio.
+
+<pre><code className="language-kotlin">{eventos.trimEnd()}</code></pre>
+
+Y así queda el evento como estado en un ViewModel:
+
+```kotlin
+data class PerfilUiState(val cargando: Boolean = false, val mensaje: String? = null)
+
+class PerfilViewModel : ViewModel() {
+    private val _estado = MutableStateFlow(PerfilUiState())
+    val estado: StateFlow<PerfilUiState> = _estado.asStateFlow()
+
+    fun alFallarGuardado() = _estado.update { it.copy(mensaje = "No se pudo guardar") }
+    fun onMensajeMostrado() = _estado.update { it.copy(mensaje = null) }
+}
+```
+
+En Compose: `LaunchedEffect(estado.mensaje)` muestra el snackbar si `mensaje` no es `null` y, al terminar, llama a `onMensajeMostrado()`.

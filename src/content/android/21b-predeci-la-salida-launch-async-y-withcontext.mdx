@@ -1,0 +1,82 @@
+---
+id: android-semi-senior-predeci-la-salida-launch-async-y-withcontext-01
+track: android
+nivel: semi-senior
+modulo: "Android intermedio"
+titulo: "Predecí la salida: launch, async y withContext"
+duracion_min: 7
+prerequisitos: [android-semi-senior-corrutinas-scopes-y-cancelacion-01]
+ejercicios:
+  - tipo: ordenar
+    pregunta: "Snippet 1 (`OrdenDeLaunch`). Ordená las líneas como las imprime el programa."
+    pasos: ["A", "C", "E", "B", "D"]
+    explicacion: "`runBlocking` usa un solo hilo. `launch` no ejecuta el bloque en ese momento: lo encola. El cuerpo de `runBlocking` sigue sin suspenderse (A, C, E), y recién cuando termina, el hilo queda libre para los hijos, en el orden en que se lanzaron (B, D)."
+  - tipo: opcion_multiple
+    pregunta: "Snippet 2 (`AsyncEnParalelo`). ¿Qué imprime?"
+    opciones: ["terminó perfil · terminó pedidos · perfil + pedidos · tardó 400 ms o más", "terminó pedidos · terminó perfil · perfil + pedidos · tardó menos de 400 ms", "terminó perfil · perfil + pedidos · terminó pedidos · tardó menos de 400 ms"]
+    correcta: 1
+    explicacion: "Los dos `async` arrancan a la vez: pedidos termina a los 100 ms y perfil a los 300 ms. El primer `await()` espera a perfil, y para entonces pedidos ya terminó. En total tarda unos 300 ms (el más lento), no 400 (la suma)."
+  - tipo: opcion_multiple
+    pregunta: "Snippet 3 (`WithContextEspera`). ¿Qué imprime la línea 3?"
+    opciones: ["Se imprime antes que la 2, porque `withContext` corre en paralelo.", "`3 recibí dato en main`: `withContext` suspende hasta que termina el bloque, devuelve su valor y la corrutina vuelve al hilo original.", "`3 recibí dato en DefaultDispatcher-worker-1`: después de `withContext` la corrutina se queda en el otro hilo."]
+    correcta: 1
+    explicacion: "`withContext` no lanza nada en paralelo: cambia de contexto, espera el resultado y vuelve. Es lo que usa un repositorio para leer de red o disco sin que el ViewModel sepa de hilos."
+  - tipo: ordenar
+    pregunta: "Snippet 4 (`CoroutineScopeEspera`). Ordená las líneas como las imprime el programa."
+    pasos: ["lancé las dos", "textos", "imágenes", "listo"]
+    explicacion: "`coroutineScope` no termina hasta que terminan todos sus hijos. Por eso `listo` sale al final, aunque `cargarTodo()` parezca \"lanzar y volver\". Es la concurrencia estructurada: una función `suspend` no deja trabajo colgando cuando devuelve."
+  - tipo: autoevaluacion
+    pregunta: "Explicá en voz alta, sin mirar: ¿qué diferencia hay entre `launch`, `async` y `withContext`?"
+    explicacion: "`launch` lanza una corrutina que no devuelve resultado (devuelve un `Job`). `async` lanza una que devuelve un resultado futuro (`Deferred`, se lee con `await()`); sirve para hacer cosas en paralelo. `withContext` no lanza nada: ejecuta un bloque en otro contexto (por ejemplo, otro dispatcher), suspende hasta que termina y devuelve su valor."
+tarea_local: "En Android Studio, creá un archivo Kotlin con `main` (o un test unitario con `runTest`), pegá los cuatro snippets y corrélos. En el 2, cambiá los `async` por llamadas directas a `pedir(...)` y mirá cuánto tarda."
+resultado_esperado: "Las salidas coinciden con las respuestas. Sin `async`, el snippet 2 tarda 400 ms o más, porque las llamadas van una después de la otra."
+resumen:
+  - "Launch encola la corrutina: el código que sigue se ejecuta antes si no hay suspensión."
+  - "Async corre en paralelo y await espera el resultado; el total es el más lento, no la suma."
+  - "With context suspende, devuelve un valor y vuelve al hilo original."
+  - "Coroutine scope no termina hasta que terminan todos sus hijos."
+entrevista:
+  en_30_segundos: "Uso `launch` para trabajo sin resultado, `async` cuando necesito resultados en paralelo y `withContext` para cambiar de dispatcher dentro de una función `suspend`, por ejemplo red en `Dispatchers.IO`. Con concurrencia estructurada, una función `suspend` que lanza hijos dentro de `coroutineScope` no devuelve hasta que terminan todos."
+  trampas:
+    - pregunta: "¿Dos llamadas a funciones `suspend` seguidas corren en paralelo?"
+      respuesta: "No. Dentro de una corrutina, las llamadas `suspend` son secuenciales, igual que el código común: la segunda empieza cuando termina la primera. Para paralelizar hace falta `async` (o `launch`) dentro de un scope."
+    - pregunta: "¿Lanzar una corrutina con `launch` la manda a otro hilo?"
+      respuesta: "No. Usa el dispatcher del scope. `viewModelScope` usa `Dispatchers.Main`, así que un `launch` ahí corre en el hilo principal hasta que algo cambie de dispatcher."
+  cuando_no: "No uses `async` para una sola tarea que vas a esperar enseguida (`async { x() }.await()`): es lo mismo que llamar a `x()` directamente, o a `withContext` si necesitás otro dispatcher."
+---
+
+import ordenDeLaunch from '../../../android-samples/kotlin/corrutinas/OrdenDeLaunch.kt?raw'
+import asyncEnParalelo from '../../../android-samples/kotlin/corrutinas/AsyncEnParalelo.kt?raw'
+import withContextEspera from '../../../android-samples/kotlin/corrutinas/WithContextEspera.kt?raw'
+import coroutineScopeEspera from '../../../android-samples/kotlin/corrutinas/CoroutineScopeEspera.kt?raw'
+
+## Concepto
+
+**Qué problema resuelve.** En una entrevista te muestran diez líneas con corrutinas y te preguntan qué imprime. No se trata de memorizar: se resuelve con cuatro reglas del mecanismo.
+
+1. **`launch` encola; no ejecuta en ese momento.** El bloque corre cuando el hilo queda libre, es decir, cuando la corrutina actual suspende o termina.
+2. **`runBlocking` usa un solo hilo.** Entre sus hijos no hay paralelismo real: se turnan en cada punto de suspensión (`delay`, `await`, `join`).
+3. **`async` + `await`:** los `async` arrancan juntos; `await()` suspende hasta tener ese resultado.
+4. **`withContext` y `coroutineScope` esperan.** El primero, a que termine su bloque; el segundo, a que terminen todos sus hijos.
+
+**Antes vs. ahora.** Con un `Thread` o un `AsyncTask`, el orden dependía del sistema operativo. Con corrutinas en un solo hilo, el orden es determinista si conocés estas reglas. Por eso se puede preguntar en una entrevista.
+
+## Ejemplo
+
+Leé cada snippet, predecí la salida y respondé los ejercicios de abajo. Las salidas son las reales: se compilaron y corrieron con kotlinc 2.1.10 y kotlinx-coroutines.
+
+**Snippet 1**
+
+<pre><code className="language-kotlin">{ordenDeLaunch.trimEnd()}</code></pre>
+
+**Snippet 2**
+
+<pre><code className="language-kotlin">{asyncEnParalelo.trimEnd()}</code></pre>
+
+**Snippet 3**
+
+<pre><code className="language-kotlin">{withContextEspera.trimEnd()}</code></pre>
+
+**Snippet 4**
+
+<pre><code className="language-kotlin">{coroutineScopeEspera.trimEnd()}</code></pre>
